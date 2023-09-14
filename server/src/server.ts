@@ -9,8 +9,8 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(errorHandler);
 app.use("/api", userRoutes);
+app.use(errorHandler);
 
 mongoose.connect(env.MONGO_COMPASS_URI).then(() => {
   console.log("Connected to database");
