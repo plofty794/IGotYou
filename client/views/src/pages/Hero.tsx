@@ -27,7 +27,7 @@ function Hero() {
         </div>
         <Link
           to={"/login"}
-          className={`text-slate-700 font-extrabold w-max ${buttonVariants({
+          className={`w-max ${buttonVariants({
             variant: "secondary",
           })}`}
         >
