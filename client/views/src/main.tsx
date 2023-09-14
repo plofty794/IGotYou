@@ -1,10 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React, { Suspense, lazy } from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import Loader from "./partials/Loader.tsx";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const App = lazy(() => import("./App.tsx"));
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <Suspense fallback={<Loader />}>
+      <App />
+    </Suspense>
+  </React.StrictMode>
+);

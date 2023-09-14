@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Hero from "./pages/Hero";
 import RootLayout from "./RootLayout";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route path="/" element={<Hero />} />
         </Route>
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
