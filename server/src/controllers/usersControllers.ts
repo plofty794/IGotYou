@@ -1,6 +1,7 @@
+import { isValidObjectId } from "mongoose";
 import { RequestHandler } from "express";
 import { Users } from "../models/Users";
-import { BadRequest } from "http-errors";
+import { BadRequest, Unauthorized } from "http-errors";
 import bcrypt from "bcrypt";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
@@ -64,6 +65,22 @@ export const logInUser: RequestHandler = async (req, res, next) => {
     }
     const { _id, username } = user;
     res.status(200).json({ user: { _id, username } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser: RequestHandler = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    if (!isValidObjectId(id)) {
+      throw Unauthorized("Invalid userID");
+    }
+    const user = await Users.findByIdAndDelete(id);
+    if (!user) {
+      throw BadRequest("User doesn't exist");
+    }
+    res.status(201).json({ message: "User has been removed" });
   } catch (error) {
     next(error);
   }
