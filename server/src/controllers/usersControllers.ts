@@ -85,3 +85,10 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+declare module "express-serve-static-core" {
+  interface Request {
+    ipinfo?: {};
+    user?: {};
+  }
+}

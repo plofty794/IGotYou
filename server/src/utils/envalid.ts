@@ -7,4 +7,5 @@ export default cleanEnv(process.env, {
   MONGO_COMPASS_URI: str(),
   PORT: port(),
   SALT: num(),
+  IPINFO_TOKEN: str(),
 });

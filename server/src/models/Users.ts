@@ -21,7 +21,8 @@ const usersSchema = new Schema(
       required: true,
     },
     role: {
-      type: String,
+      type: ["Guest", "Host"],
+      default: "Guest",
       required: true,
     },
   },

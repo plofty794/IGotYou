@@ -89,18 +89,18 @@ function Login() {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="font-bold" variant={"default"} size={"sm"}>
-                    Create an account.
+                    Create an account
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="text-white border border-slate-700 bg-neutral-900 sm:max-w-[390px]">
                   <DialogHeader>
                     <DialogTitle>
-                      <h1 className="font-normal text-xl text-center">
+                      <header className="font-normal text-xl text-center">
                         Sign up to{" "}
                         <span className="font-bold text-lg font-pacifico">
                           IGotYou
                         </span>
-                      </h1>
+                      </header>
                     </DialogTitle>
                   </DialogHeader>
                   <Register />

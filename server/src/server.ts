@@ -4,8 +4,17 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { errorHandler } from "./controllers/errorsController";
 import { userRoutes } from "./routes/userRoutes";
+// import ipinfoMiddleware, { defaultIPSelector } from "ipinfo-express";
 const app = express();
 
+// app.use(
+//   ipinfoMiddleware({
+//     token: env.IPINFO_TOKEN,
+//     ipSelector: defaultIPSelector,
+//     cache: null,
+//     timeout: 5000,
+//   })
+// );
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
