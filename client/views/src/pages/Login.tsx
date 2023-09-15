@@ -7,6 +7,15 @@ import { LoginSchema, ZodLoginSchema } from "@/zod/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "@/hooks/useLogin";
 import { Toaster } from "@/components/ui/toaster";
+import {
+  Dialog,
+  DialogHeader,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import Register from "./Register";
 
 function Login() {
   const { mutate, isLoading } = useLogin();
@@ -42,18 +51,25 @@ function Login() {
           onSubmit={handleSubmit(handleLogin)}
           className="border border-slate-700 bg-neutral-900 flex flex-col gap-2 rounded-md px-4 py-5 w-80 mx-auto"
         >
-          <Label htmlFor="email">Email</Label>
+          <Label className="text-xs" htmlFor="email">
+            Email
+          </Label>
           <Input
+            id="email"
             className="border-slate-700 bg-stone-950 text-xs"
             autoFocus
+            autoComplete="email"
             type="text"
             {...register("email")}
           />
           {errors.email && (
             <p className="text-red-600 text-xs">{errors.email.message}</p>
           )}
-          <Label htmlFor="password">Password</Label>
+          <Label className="text-xs" htmlFor="password">
+            Password
+          </Label>
           <Input
+            id="password"
             className="border-slate-700 bg-stone-950 text-xs"
             type="password"
             {...register("password")}
@@ -61,17 +77,40 @@ function Login() {
           {errors.password && (
             <p className="text-red-600 text-xs">{errors.password.message}</p>
           )}
+
           <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-        <div className="border border-slate-700 text-xs rounded py-4 px-12">
+        <div className="border border-slate-700 text-xs rounded py-4 px-8">
           <p>
-            New to GitHub?{" "}
+            New to IGotYou?{" "}
             <span>
-              <Link className="text-blue-600 hover:underline" to={"/register"}>
-                Create an account.
-              </Link>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="font-bold" variant={"default"} size={"sm"}>
+                    Create an account.
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="text-white border border-slate-700 bg-neutral-900 sm:max-w-[390px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <h1 className="font-normal text-xl text-center">
+                        Sign up to{" "}
+                        <span className="font-bold text-lg font-pacifico">
+                          IGotYou
+                        </span>
+                      </h1>
+                    </DialogTitle>
+                  </DialogHeader>
+                  <Register />
+                  <DialogFooter className="text-center text-xs text-white">
+                    Sign up and become a part of the conversation. Share your
+                    thoughts, ideas, and feedback with us and connect with
+                    others who share your interests.
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </span>
           </p>
         </div>

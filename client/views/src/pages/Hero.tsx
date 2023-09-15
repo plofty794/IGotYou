@@ -14,11 +14,10 @@ function Hero() {
             Discover a world of creative possibilities with IGotYou, the
             ultimate platform for{" "}
             <span className="text-sky-400 font-semibold">
-              connecting customers{" "}
+              connecting customers with multimedia artists.{" "}
             </span>{" "}
-            with multimedia artists. From breathtaking photography and
-            captivating videography to stunning graphic arts and more, IGotYou
-            is your{" "}
+            From breathtaking photography and captivating videography to
+            stunning graphic arts and more, IGotYou is your{" "}
             <span className="text-sky-400 font-semibold">
               one-stop destination{" "}
             </span>{" "}
