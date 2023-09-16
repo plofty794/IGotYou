@@ -10,7 +10,6 @@ const usersSchema = new Schema(
     },
     email: {
       type: String,
-      required: true,
     },
     password: {
       type: String,
@@ -18,7 +17,6 @@ const usersSchema = new Schema(
     },
     mobilePhone: {
       type: Number,
-      required: false,
     },
     role: {
       type: ["Guest", "Host"],

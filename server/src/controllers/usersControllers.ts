@@ -8,7 +8,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
   try {
     const users = await Users.find({});
     if (!users.length) {
-      throw createHttpError(400, "No users found.");
+      throw createHttpError(400, "No accounts found.");
     }
     const accounts = users.map((user) => ({
       _id: user._id,
@@ -62,6 +62,14 @@ export const logInUser: RequestHandler = async (req, res, next) => {
     }
     const { _id, username } = user;
     res.status(200).json({ user: { _id, username } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logOutUser: RequestHandler = async (req, res, next) => {
+  try {
+    res.status(200).json({ message: "User has been logged out" });
   } catch (error) {
     next(error);
   }

@@ -4,8 +4,6 @@ import { Label } from "@/components/ui/label";
 import { RegisterSchema, ZodRegisterSchema } from "@/zod/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signInWithPopup } from "firebase/auth";
-import { GoogleProvider, auth } from "@/firebase config/config";
 import ErrorMessage from "@/partials/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
 
@@ -27,11 +25,6 @@ function Register() {
   function handleRegister(data: RegisterSchema) {
     const { username, password } = data;
     mutate({ username, password });
-  }
-
-  async function handleGoogleSignin() {
-    const { user } = await signInWithPopup(auth, GoogleProvider);
-    console.log(user);
   }
 
   return (
@@ -80,14 +73,7 @@ function Register() {
             <ErrorMessage message={errors.confirmPassword.message} />
           )}
           <div className="mt-2 flex flex-col">
-            <Button
-              type="button"
-              variant={"outline"}
-              onClick={handleGoogleSignin}
-            >
-              Continue with Google
-            </Button>
-            <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
+            <Button className="bg-green-700 hover:bg-green-600 mt-1 text-xs">
               {isLoading ? "Signing up..." : "Sign up"}
             </Button>
           </div>
