@@ -1,23 +1,23 @@
-import "react-phone-number-input/style.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Toaster } from "@/components/ui/toaster";
 import { RegisterSchema, ZodRegisterSchema } from "@/zod/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import PhoneInput, { Value } from "react-phone-number-input";
-import { useState } from "react";
+import { signInWithPopup } from "firebase/auth";
+import { GoogleProvider, auth } from "@/firebase config/config";
+import ErrorMessage from "@/partials/ErrorMessage";
+import { useRegister } from "@/hooks/useRegister";
 
 function Register() {
-  const [phoneNumber, setPhoneNumber] = useState<Value | undefined>(undefined);
+  const { mutate, isLoading } = useRegister();
   const {
     handleSubmit,
     formState: { errors },
     register,
   } = useForm<RegisterSchema>({
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
       confirmPassword: "",
     },
@@ -25,7 +25,13 @@ function Register() {
   });
 
   function handleRegister(data: RegisterSchema) {
-    console.log(data);
+    const { username, password } = data;
+    mutate({ username, password });
+  }
+
+  async function handleGoogleSignin() {
+    const { user } = await signInWithPopup(auth, GoogleProvider);
+    console.log(user);
   }
 
   return (
@@ -35,19 +41,19 @@ function Register() {
           onSubmit={handleSubmit(handleRegister)}
           className=" bg-neutral-900 flex flex-col gap-2 rounded-md py-5 w-full mx-auto"
         >
-          <Label className="text-xs" htmlFor="email">
-            Email
+          <Label className="text-xs" htmlFor="username">
+            Username
           </Label>
           <Input
-            id="email"
+            id="username"
             className="border-slate-700 bg-stone-950 text-xs"
             autoFocus
-            autoComplete="email"
+            autoComplete="username"
             type="text"
-            {...register("email")}
+            {...register("username")}
           />
-          {errors.email && (
-            <p className="text-red-600 text-xs">{errors.email.message}</p>
+          {errors.username && (
+            <ErrorMessage message={errors.username.message} />
           )}
           <Label className="text-xs" htmlFor="password">
             Password
@@ -59,7 +65,7 @@ function Register() {
             {...register("password")}
           />
           {errors.password && (
-            <p className="text-red-600 text-xs">{errors.password.message}</p>
+            <ErrorMessage message={errors.password.message} />
           )}
           <Label className="text-xs" htmlFor="confirmPassword">
             Confirm password
@@ -71,26 +77,22 @@ function Register() {
             {...register("confirmPassword")}
           />
           {errors.confirmPassword && (
-            <p className="text-red-600 text-xs">
-              {errors.confirmPassword.message}
-            </p>
+            <ErrorMessage message={errors.confirmPassword.message} />
           )}
-          <PhoneInput
-            defaultCountry="PH"
-            labels={{ RU: "Россия", US: "США" }}
-            value={phoneNumber}
-            onChange={(value) => setPhoneNumber(value)}
-          />
-          {/* {errors.password && (
-            <p className="text-red-600 text-xs">{errors.password.message}</p>
-          )} */}
-          <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
-            {/* {isLoading ? "Signing in..." : "Sign in"} */}
-            Sign up
-          </Button>
+          <div className="mt-2 flex flex-col">
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={handleGoogleSignin}
+            >
+              Continue with Google
+            </Button>
+            <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
+              {isLoading ? "Signing up..." : "Sign up"}
+            </Button>
+          </div>
         </form>
       </div>
-      <Toaster />
     </>
   );
 }

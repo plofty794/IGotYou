@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { LoginSchema, ZodLoginSchema } from "@/zod/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "@/hooks/useLogin";
-import { Toaster } from "@/components/ui/toaster";
 import {
   Dialog,
   DialogHeader,
@@ -16,6 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import Register from "./Register";
+import ErrorMessage from "@/partials/ErrorMessage";
 
 function Login() {
   const { mutate, isLoading } = useLogin();
@@ -36,7 +36,7 @@ function Login() {
   }
 
   return (
-    <div className="text-white min-h-screen flex flex-col gap-5 justify-center items-center bg-neutral-950">
+    <div className="text-white min-h-screen flex flex-col gap-5 justify-center items-center bg-[#0C1015]">
       <Link
         to={"/"}
         className="text-white absolute top-0 left-0 text-xs p-2 hover:underline"
@@ -49,36 +49,33 @@ function Login() {
       <div className="flex flex-col gap-4">
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="border border-slate-700 bg-neutral-900 flex flex-col gap-2 rounded-md px-4 py-5 w-80 mx-auto"
+          className="border border-slate-700 bg-[#161B22] flex flex-col gap-2 rounded-md px-4 py-5 w-80 mx-auto"
         >
           <Label className="text-xs" htmlFor="email">
             Email
           </Label>
           <Input
             id="email"
-            className="border-slate-700 bg-stone-950 text-xs"
+            className="border-slate-700 bg-[#0D1117] text-xs"
             autoFocus
             autoComplete="email"
             type="text"
             {...register("email")}
           />
-          {errors.email && (
-            <p className="text-red-600 text-xs">{errors.email.message}</p>
-          )}
+          {errors.email && <ErrorMessage message={errors.email.message} />}
           <Label className="text-xs" htmlFor="password">
             Password
           </Label>
           <Input
             id="password"
-            className="border-slate-700 bg-stone-950 text-xs"
+            className="border-slate-700 bg-[#0D1117] text-xs"
             type="password"
             {...register("password")}
           />
           {errors.password && (
-            <p className="text-red-600 text-xs">{errors.password.message}</p>
+            <ErrorMessage message={errors.password.message} />
           )}
-
-          <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
+          <Button className=" bg-[#7E44C5] hover:bg-[#8b53ce] mt-3 text-xs">
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
@@ -88,7 +85,11 @@ function Login() {
             <span>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="font-bold" variant={"default"} size={"sm"}>
+                  <Button
+                    className="font-bold ml-1"
+                    variant={"outline"}
+                    size={"sm"}
+                  >
                     Create an account
                   </Button>
                 </DialogTrigger>
@@ -115,7 +116,6 @@ function Login() {
           </p>
         </div>
       </div>
-      <Toaster />
     </div>
   );
 }

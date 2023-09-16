@@ -18,7 +18,7 @@ const usersSchema = new Schema(
     },
     mobilePhone: {
       type: Number,
-      required: true,
+      required: false,
     },
     role: {
       type: ["Guest", "Host"],
@@ -35,4 +35,5 @@ usersSchema.pre("save", async function () {
 });
 
 export type TUser = InferSchemaType<typeof usersSchema>;
-export const Users = model("Users", usersSchema);
+const Users = model("Users", usersSchema);
+export default Users;

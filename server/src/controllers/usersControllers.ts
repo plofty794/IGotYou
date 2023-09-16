@@ -1,6 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import { RequestHandler } from "express";
-import { Users } from "../models/Users";
+import Users from "../models/Users";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 
@@ -25,23 +25,20 @@ export const getUsers: RequestHandler = async (req, res, next) => {
 type TCreateUser = {
   username?: string;
   email?: string;
-  phoneNumber?: string;
 };
 
 export const createUser: RequestHandler = async (req, res, next) => {
-  const { email, phoneNumber }: TCreateUser = req.body;
+  const { username }: TCreateUser = req.body;
   try {
-    const userExist = await Users.findOne({ email }).select("+username").exec();
+    console.log(req.body);
+    const userExist = await Users.findOne({ username });
     if (userExist) {
-      throw createHttpError(400, "Username/Email already exist");
-    }
-    const mobilePhoneExist = await Users.findOne({ phoneNumber });
-    if (mobilePhoneExist) {
-      throw createHttpError(400, "Phone number is already taken");
+      throw createHttpError(400, "Username already exist");
     }
     const newUser = await Users.create({ ...req.body });
-    const { _id, username } = newUser;
-    res.status(201).json({ user: { _id, username } });
+    res
+      .status(201)
+      .json({ user: { id: newUser._id, username: newUser.username } });
   } catch (error) {
     next(error);
   }
