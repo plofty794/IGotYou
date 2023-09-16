@@ -10,6 +10,8 @@ import Login from "./pages/Login";
 import { Toaster } from "./components/ui/toaster";
 import { useUserStore } from "./store/userStore";
 import Profile from "./pages/Profile";
+import Home from "./pages/Home";
+import About from "./pages/About";
 
 function App() {
   const user = useUserStore((state) => state.user);
@@ -19,8 +21,16 @@ function App() {
       <Router>
         <Routes>
           <Route element={<RootLayout />}>
-            <Route path="/" element={<Hero />} />
+            <Route
+              path="/get-started"
+              element={user ? <Navigate replace to={"/"} /> : <Hero />}
+            />
+            <Route path="/about-us" element={<About />} />
           </Route>
+          <Route
+            path="/"
+            element={user ? <Home /> : <Navigate replace to={"/get-started"} />}
+          />
           <Route
             path="/login"
             element={
