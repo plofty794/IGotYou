@@ -8,9 +8,12 @@ import ErrorMessage from "@/partials/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
+  // sendEmailVerification,
 } from "firebase/auth";
-import { actionCodeSettings, auth } from "@/firebase config/config";
+import {
+  auth,
+  // actionCodeSettings
+} from "@/firebase config/config";
 import { useAccessTokenStore } from "@/store/accessTokenStore";
 
 function Register() {
@@ -29,19 +32,18 @@ function Register() {
     resolver: zodResolver(ZodRegisterSchema),
   });
 
-  auth.currentUser?.getIdToken().then((res) => console.log(res));
-
   async function handleRegister(data: RegisterSchema) {
     const { email, password } = data;
     try {
-      mutate({ email, password });
       const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      await sendEmailVerification(user, actionCodeSettings);
-      user.getIdToken().then((token) => setAccessToken(token));
+      // await sendEmailVerification(user, actionCodeSettings);
+      const accessToken = await user.getIdToken();
+      mutate({ email, password, accessToken });
+      accessToken && setAccessToken(accessToken);
     } catch (error) {
       console.log(error);
     }

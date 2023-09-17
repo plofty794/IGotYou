@@ -7,6 +7,7 @@ import { AxiosError, AxiosResponse } from "axios";
 type TRegister = {
   email: string;
   password: string;
+  accessToken: string;
 };
 
 export function useRegister() {
@@ -18,10 +19,6 @@ export function useRegister() {
     },
     onSuccess(res) {
       toast({ description: "User created successfully.", variant: "default" });
-      toast({
-        description: "An email verification has been sent to your email",
-        variant: "default",
-      });
       setUser(res.data.user);
     },
     onError(err) {

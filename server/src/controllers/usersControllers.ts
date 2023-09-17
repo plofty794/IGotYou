@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
+import { verifyAccessToken } from "../utils/verifyAccessToken";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
   try {
@@ -25,19 +26,27 @@ export const getUsers: RequestHandler = async (req, res, next) => {
 type TCreateUser = {
   username?: string;
   email?: string;
+  accessToken: string;
 };
 
 export const createUser: RequestHandler = async (req, res, next) => {
-  const { email }: TCreateUser = req.body;
+  const { email, accessToken }: TCreateUser = req.body;
   try {
     const userExist = await Users.findOne({ email });
     if (userExist) {
       throw createHttpError(400, "Email already exist");
     }
-    const newUser = await Users.create({ ...req.body });
-    res
-      .status(201)
-      .json({ user: { id: newUser._id, username: newUser.email } });
+    const decodedToken = await verifyAccessToken(accessToken);
+    if (typeof decodedToken == "string") {
+      throw createHttpError(401, decodedToken);
+    }
+
+    const newUser = await Users.create({
+      ...req.body,
+      uid: decodedToken.uid,
+      email_verified: decodedToken.email_verified,
+    });
+    res.status(201).json({ user: { id: newUser._id, email: newUser.email } });
   } catch (error) {
     next(error);
   }

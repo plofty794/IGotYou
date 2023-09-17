@@ -1,7 +1,12 @@
+import { FirebaseError } from "firebase-admin";
 import { auth } from "../firebase admin config/config";
 
 export async function verifyAccessToken(accessToken: string) {
-  const { email, email_verified } = await auth.verifyIdToken(accessToken, true);
-
-  return { email, email_verified };
+  try {
+    const decodedToken = await auth.verifyIdToken(accessToken, true);
+    return decodedToken;
+  } catch (err) {
+    const error = err as FirebaseError;
+    return error.message;
+  }
 }

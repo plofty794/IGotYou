@@ -12,10 +12,13 @@ import { useUserStore } from "./store/userStore";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import { useAccessTokenStore } from "./store/accessTokenStore";
 
 function App() {
   const user = useUserStore((state) => state.user);
+  const accessToken = useAccessTokenStore((state) => state.accessToken);
   console.log(user);
+  console.log(accessToken);
   return (
     <>
       <Router>
@@ -35,7 +38,7 @@ function App() {
             path="/login"
             element={
               user ? (
-                <Navigate replace to={`/users/show/${user._id}`} />
+                <Navigate replace to={`/users/show/${user.id}`} />
               ) : (
                 <Login />
               )

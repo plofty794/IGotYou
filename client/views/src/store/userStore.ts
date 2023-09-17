@@ -2,7 +2,7 @@ import { axiosRoute } from "@/axios/axiosRoute";
 import { create } from "zustand";
 
 type TUserSchema = {
-  _id: string;
+  id: string;
   email: string;
 };
 

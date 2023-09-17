@@ -4,11 +4,19 @@ import bcrypt from "bcrypt";
 
 const usersSchema = new Schema(
   {
+    uid: {
+      type: String,
+      required: true,
+    },
     username: {
       type: String,
     },
     email: {
       type: String,
+      required: true,
+    },
+    email_verified: {
+      type: Boolean,
       required: true,
     },
     password: {
