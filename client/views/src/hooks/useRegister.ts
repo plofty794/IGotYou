@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 
 type TRegister = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -18,6 +18,10 @@ export function useRegister() {
     },
     onSuccess(res) {
       toast({ description: "User created successfully.", variant: "default" });
+      toast({
+        description: "An email verification has been sent to your email",
+        variant: "default",
+      });
       setUser(res.data.user);
     },
     onError(err) {

@@ -28,17 +28,16 @@ type TCreateUser = {
 };
 
 export const createUser: RequestHandler = async (req, res, next) => {
-  const { username }: TCreateUser = req.body;
+  const { email }: TCreateUser = req.body;
   try {
-    console.log(req.body);
-    const userExist = await Users.findOne({ username });
+    const userExist = await Users.findOne({ email });
     if (userExist) {
-      throw createHttpError(400, "Username already exist");
+      throw createHttpError(400, "Email already exist");
     }
     const newUser = await Users.create({ ...req.body });
     res
       .status(201)
-      .json({ user: { id: newUser._id, username: newUser.username } });
+      .json({ user: { id: newUser._id, username: newUser.email } });
   } catch (error) {
     next(error);
   }
@@ -61,7 +60,7 @@ export const logInUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(401, "Incorrect password");
     }
     const { _id, username } = user;
-    res.status(200).json({ user: { _id, username } });
+    res.status(200).json({ user: { _id, email: user.email, username } });
   } catch (error) {
     next(error);
   }

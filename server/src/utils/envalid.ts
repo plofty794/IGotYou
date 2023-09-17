@@ -8,4 +8,6 @@ export default cleanEnv(process.env, {
   PORT: port(),
   SALT: num(),
   IPINFO_TOKEN: str(),
+  REFRESH_TOKEN_KEY: str(),
+  GOOGLE_APPLICATION_CREDENTIALS: str(),
 });

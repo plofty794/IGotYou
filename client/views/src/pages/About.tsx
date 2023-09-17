@@ -3,8 +3,8 @@ import ProfileCard from "@/partials/ProfileCard";
 function About() {
   return (
     <div className="pt-2">
-      <div className="text-slate-200 flex flex-col items-center min-h-[420px] gap-6 px-12 my-24">
-        <h1 className="text-white font-extrabold text-4xl">About us,</h1>
+      <div className="text-slate-200 flex flex-col min-h-[420px] gap-6 px-12 my-20">
+        <h1 className="text-white font-extrabold text-5xl">About us,</h1>
         <div className="font-medium flex flex-col gap-3 w-[820px]">
           <p>
             At IGotYou, we believe that creativity knows no bounds, and artistic

@@ -6,8 +6,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/partials/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { actionCodeSettings, auth } from "@/firebase config/config";
+import { useAccessTokenStore } from "@/store/accessTokenStore";
 
 function Register() {
+  const setAccessToken = useAccessTokenStore((state) => state.setAccessToken);
   const { mutate, isLoading } = useRegister();
   const {
     handleSubmit,
@@ -15,16 +22,29 @@ function Register() {
     register,
   } = useForm<RegisterSchema>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
     resolver: zodResolver(ZodRegisterSchema),
   });
 
-  function handleRegister(data: RegisterSchema) {
-    const { username, password } = data;
-    mutate({ username, password });
+  auth.currentUser?.getIdToken().then((res) => console.log(res));
+
+  async function handleRegister(data: RegisterSchema) {
+    const { email, password } = data;
+    try {
+      mutate({ email, password });
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await sendEmailVerification(user, actionCodeSettings);
+      user.getIdToken().then((token) => setAccessToken(token));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -34,20 +54,18 @@ function Register() {
           onSubmit={handleSubmit(handleRegister)}
           className=" bg-neutral-900 flex flex-col gap-2 rounded-md py-5 w-full mx-auto"
         >
-          <Label className="text-xs" htmlFor="username">
-            Username
+          <Label className="text-xs" htmlFor="email">
+            Email
           </Label>
           <Input
-            id="username"
+            id="email"
             className="border-slate-700 bg-stone-950 text-xs"
             autoFocus
             autoComplete="username"
             type="text"
-            {...register("username")}
+            {...register("email")}
           />
-          {errors.username && (
-            <ErrorMessage message={errors.username.message} />
-          )}
+          {errors.email && <ErrorMessage message={errors.email.message} />}
           <Label className="text-xs" htmlFor="password">
             Password
           </Label>

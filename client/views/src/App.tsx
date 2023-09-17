@@ -35,7 +35,7 @@ function App() {
             path="/login"
             element={
               user ? (
-                <Navigate replace to={`/users/show/${user.id}`} />
+                <Navigate replace to={`/users/show/${user._id}`} />
               ) : (
                 <Login />
               )

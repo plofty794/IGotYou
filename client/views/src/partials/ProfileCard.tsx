@@ -15,7 +15,7 @@ function ProfileCard({ name, photoUrl }: ProfileCardProps) {
     <>
       <div
         ref={ref}
-        className={`card-container -translate-full blur opacity-0 transition-all text-slate-200 ${
+        className={`card-container blur opacity-0 transition duration-200 text-slate-200 ${
           entry?.isIntersecting
             ? entry?.target.classList.add("show")
             : entry?.target.classList.remove("show")
