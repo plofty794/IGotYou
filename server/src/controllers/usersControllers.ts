@@ -3,7 +3,7 @@ import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
-import { verifyAccessToken } from "../utils/verifyAccessToken";
+import { DecodedIdToken } from "firebase-admin/auth";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
   try {
@@ -26,27 +26,21 @@ export const getUsers: RequestHandler = async (req, res, next) => {
 type TCreateUser = {
   username?: string;
   email?: string;
-  accessToken: string;
+  password?: string;
 };
 
 export const createUser: RequestHandler = async (req, res, next) => {
-  const { email, accessToken }: TCreateUser = req.body;
+  const { email }: TCreateUser = req.body;
   try {
-    const userExist = await Users.findOne({ email });
+    const userExist = await Users.findOne({ email }).select("+username").exec();
     if (userExist) {
-      throw createHttpError(400, "Email already exist");
+      throw createHttpError(400, "Username/Email already exist");
     }
-    const decodedToken = await verifyAccessToken(accessToken);
-    if (typeof decodedToken == "string") {
-      throw createHttpError(401, decodedToken);
-    }
-
-    const newUser = await Users.create({
-      ...req.body,
-      uid: decodedToken.uid,
-      email_verified: decodedToken.email_verified,
-    });
-    res.status(201).json({ user: { id: newUser._id, email: newUser.email } });
+    const newUser = await Users.create({ ...req.body });
+    const { username, email_verified } = newUser;
+    res
+      .status(201)
+      .json({ user: { email: newUser.email, username, email_verified } });
   } catch (error) {
     next(error);
   }
@@ -62,11 +56,11 @@ export const logInUser: RequestHandler = async (req, res, next) => {
   try {
     const user = await Users.findOne({ email });
     if (!user) {
-      throw createHttpError(401, "Email doesn't exist");
+      throw createHttpError(400, "Email doesn't exist");
     }
     const correctPassword = await bcrypt.compare(password!, user.password);
     if (!correctPassword) {
-      throw createHttpError(401, "Incorrect password");
+      throw createHttpError(400, "Incorrect password");
     }
     const { _id, username } = user;
     res.status(200).json({ user: { _id, email: user.email, username } });
@@ -103,5 +97,6 @@ declare module "express-serve-static-core" {
   interface Request {
     ipinfo?: {};
     user?: {};
+    token: { decodedToken: DecodedIdToken };
   }
 }

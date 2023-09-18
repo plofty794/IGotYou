@@ -7,7 +7,7 @@ type TAccessToken = {
 
 export const useAccessTokenStore = create<TAccessToken>((set) => ({
   accessToken: null,
-  setAccessToken: (payload) => {
+  setAccessToken: async (payload) => {
     set({ accessToken: payload });
   },
 }));

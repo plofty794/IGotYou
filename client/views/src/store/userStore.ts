@@ -1,9 +1,11 @@
-import { axiosRoute } from "@/axios/axiosRoute";
+import { auth } from "@/firebase config/config";
 import { create } from "zustand";
 
 type TUserSchema = {
-  id: string;
+  username: string;
   email: string;
+  uid: string;
+  email_verified: false;
 };
 
 type TUser = {
@@ -14,6 +16,15 @@ type TUser = {
 
 export const useUserStore = create<TUser>((set) => ({
   user: null,
-  setUser: (payload) => set({ user: payload }),
-  logOutUser: async () => await axiosRoute.delete("/api/users/logout"),
+  setUser: (payload) => {
+    set({ user: payload });
+    localStorage.setItem(
+      "email_verified",
+      JSON.stringify(payload.email_verified)
+    );
+  },
+  logOutUser: async () => {
+    await auth.signOut();
+    localStorage.clear();
+  },
 }));

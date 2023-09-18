@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import Register from "./Register";
 import ErrorMessage from "@/partials/ErrorMessage";
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "@/firebase config/config";
 
 function Login() {
   const { mutate, isLoading } = useLogin();
@@ -32,6 +34,7 @@ function Login() {
   });
 
   function handleLogin(data: LoginSchema) {
+    // const {email, password} = data
     mutate(data);
   }
 
@@ -43,20 +46,20 @@ function Login() {
       >
         Back to Homepage
       </Link>
-      <h1 className="text-xl text-center">
-        Sign in to <span className="text-lg font-pacifico">IGotYou</span>
-      </h1>
       <div className="flex flex-col gap-4">
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="border border-slate-700 bg-[#161B22] flex flex-col gap-2 rounded-md px-4 py-5 w-80 mx-auto"
+          className="border border-slate-700 bg-neutral-900 flex flex-col gap-2 rounded-md px-4 py-5 w-80 mx-auto"
         >
+          <h1 className="text-xl text-center mb-5">
+            Sign in to <span className="text-lg font-pacifico">IGotYou</span>
+          </h1>
           <Label className="text-xs" htmlFor="email">
             Email
           </Label>
           <Input
             id="email"
-            className="border-slate-700 bg-[#0D1117] text-xs"
+            className="border-slate-700 bg-stone-950 text-xs"
             autoFocus
             autoComplete="email"
             type="text"
@@ -68,18 +71,18 @@ function Login() {
           </Label>
           <Input
             id="password"
-            className="border-slate-700 bg-[#0D1117] text-xs"
+            className="border-slate-700 bg-stone-950 text-xs"
             type="password"
             {...register("password")}
           />
           {errors.password && (
             <ErrorMessage message={errors.password.message} />
           )}
-          <Button className=" bg-[#7E44C5] hover:bg-[#8b53ce] mt-3 text-xs">
+          <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-        <div className="border border-slate-700 text-xs rounded py-4 px-8">
+        <div className="border border-slate-700 bg-neutral-900 text-xs rounded py-4 px-8">
           <p>
             New to IGotYou?{" "}
             <span>

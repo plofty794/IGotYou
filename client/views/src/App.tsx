@@ -8,17 +8,20 @@ import Hero from "./pages/Hero";
 import RootLayout from "./RootLayout";
 import Login from "./pages/Login";
 import { Toaster } from "./components/ui/toaster";
-import { useUserStore } from "./store/userStore";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import { useAccessTokenStore } from "./store/accessTokenStore";
+import { auth } from "./firebase config/config";
+import { User } from "firebase/auth";
+import { useState } from "react";
 
 function App() {
-  const user = useUserStore((state) => state.user);
-  const accessToken = useAccessTokenStore((state) => state.accessToken);
-  console.log(user);
-  console.log(accessToken);
+  const item = localStorage.getItem("email_verified");
+  const [User, setUser] = useState<User | null>(null);
+  auth.onAuthStateChanged((user) => {
+    if (!user) return setUser(null);
+    setUser(user);
+  });
   return (
     <>
       <Router>
@@ -26,19 +29,19 @@ function App() {
           <Route element={<RootLayout />}>
             <Route
               path="/get-started"
-              element={user ? <Navigate replace to={"/"} /> : <Hero />}
+              element={item ? <Navigate replace to={"/"} /> : <Hero />}
             />
             <Route path="/about-us" element={<About />} />
           </Route>
           <Route
             path="/"
-            element={user ? <Home /> : <Navigate replace to={"/get-started"} />}
+            element={item ? <Home /> : <Navigate replace to={"/get-started"} />}
           />
           <Route
             path="/login"
             element={
-              user ? (
-                <Navigate replace to={`/users/show/${user.id}`} />
+              item ? (
+                <Navigate replace to={`/users/show/${User && User.uid}`} />
               ) : (
                 <Login />
               )
@@ -46,7 +49,7 @@ function App() {
           />
           <Route
             path={"/users/show/:id"}
-            element={user ? <Profile /> : <Navigate replace to={"/login"} />}
+            element={item ? <Profile /> : <Navigate replace to={"/login"} />}
           />
         </Routes>
       </Router>

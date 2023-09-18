@@ -6,18 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/partials/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
-import {
-  createUserWithEmailAndPassword,
-  // sendEmailVerification,
-} from "firebase/auth";
-import {
-  auth,
-  // actionCodeSettings
-} from "@/firebase config/config";
-import { useAccessTokenStore } from "@/store/accessTokenStore";
 
 function Register() {
-  const setAccessToken = useAccessTokenStore((state) => state.setAccessToken);
   const { mutate, isLoading } = useRegister();
   const {
     handleSubmit,
@@ -25,6 +15,7 @@ function Register() {
     register,
   } = useForm<RegisterSchema>({
     defaultValues: {
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -33,17 +24,9 @@ function Register() {
   });
 
   async function handleRegister(data: RegisterSchema) {
-    const { email, password } = data;
+    const { username, email, password } = data;
     try {
-      const { user } = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      // await sendEmailVerification(user, actionCodeSettings);
-      const accessToken = await user.getIdToken();
-      mutate({ email, password, accessToken });
-      accessToken && setAccessToken(accessToken);
+      mutate({ username, email, password });
     } catch (error) {
       console.log(error);
     }
@@ -56,6 +39,20 @@ function Register() {
           onSubmit={handleSubmit(handleRegister)}
           className=" bg-neutral-900 flex flex-col gap-2 rounded-md py-5 w-full mx-auto"
         >
+          <Label className="text-xs" htmlFor="username">
+            Username
+          </Label>
+          <Input
+            id="username"
+            className="border-slate-700 bg-stone-950 text-xs"
+            autoFocus
+            autoComplete="username"
+            type="text"
+            {...register("username")}
+          />
+          {errors.username && (
+            <ErrorMessage message={errors.username.message} />
+          )}
           <Label className="text-xs" htmlFor="email">
             Email
           </Label>
@@ -63,7 +60,7 @@ function Register() {
             id="email"
             className="border-slate-700 bg-stone-950 text-xs"
             autoFocus
-            autoComplete="username"
+            autoComplete="email"
             type="text"
             {...register("email")}
           />
