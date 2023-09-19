@@ -27,6 +27,10 @@ const usersSchema = new Schema(
     mobilePhone: {
       type: Number,
     },
+    mobile_isVerified: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: ["Guest", "Host"],
       default: "Guest",

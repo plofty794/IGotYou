@@ -5,6 +5,6 @@ type TProps = {
 };
 
 const ErrorMessage: FC<TProps> = ({ message }) => {
-  return <p className="text-red-500 text-xs">{message}</p>;
+  return <p className="text-red-500 text-xs font-semibold">{message}</p>;
 };
 export default ErrorMessage;

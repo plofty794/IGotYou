@@ -20,12 +20,17 @@ export function useRegister() {
       return await axiosRoute.post("/api/users/register", { ...data });
     },
     onSuccess(res, variables) {
-      toast({ description: "User created successfully.", variant: "default" });
       createUserWithEmailAndPassword(
         auth,
         variables.email,
         variables.password
-      ).then((value) => setUser({ ...res.data.user, uid: value.user.uid }));
+      ).then((value) => {
+        setUser({ ...res.data.user, uid: value.user.uid });
+        toast({
+          description: "User created successfully.",
+          variant: "default",
+        });
+      });
     },
     onError(err) {
       const error = err as AxiosError;

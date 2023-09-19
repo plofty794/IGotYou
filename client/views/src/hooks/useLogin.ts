@@ -14,13 +14,15 @@ function useLogin() {
       return await axiosRoute.post("/api/users/login", { ...data });
     },
     onSuccess(res, variables) {
-      toast({ description: "Logged in successfully." });
       signInWithEmailAndPassword(
         auth,
         variables.email,
         variables.password
       ).then((value) => {
         setUser({ ...res.data.user, uid: value.user.uid });
+        toast({
+          title: `Welcome, ${res.data.user.username} 👋`,
+        });
       });
     },
     onError(err) {

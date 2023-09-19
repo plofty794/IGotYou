@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&family=Pacifico&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;900&family=Pacifico&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +10,7 @@
 }
 
 .active {
-  color: #7e89f2;
+  color: #ff385c;
 }
 
 .card-container:nth-child(1) {

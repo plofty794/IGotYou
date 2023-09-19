@@ -16,10 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import Register from "./Register";
 import ErrorMessage from "@/partials/ErrorMessage";
+import { useEffect } from "react";
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
 
 function Login() {
+  useEffect(() => {
+    document.title = "IGotYou - Sign in";
+  }, []);
+
   const { mutate, isLoading } = useLogin();
   const {
     register,
@@ -39,84 +44,85 @@ function Login() {
   }
 
   return (
-    <div className="text-white min-h-screen flex flex-col gap-5 justify-center items-center bg-[#0C1015]">
+    <div className="min-h-screen flex flex-col gap-5 justify-center items-center">
       <Link
         to={"/"}
-        className="text-white absolute top-0 left-0 text-xs p-2 hover:underline"
+        className="font-medium absolute top-0 left-0 text-xs p-2 hover:underline"
       >
         Back to Homepage
       </Link>
+      <div className="font-medium">
+        <h1 className="text-lg text-center mb-2">
+          Sign in to{" "}
+          <span className="font-bold text-2xl text-[#FF385C]">IGotYou</span>
+        </h1>
+      </div>
       <div className="flex flex-col gap-4">
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="border border-slate-700 bg-neutral-900 flex flex-col gap-2 rounded-md px-4 py-5 w-80 mx-auto"
+          className="flex flex-col gap-2 border border-slate-300 rounded-md shadow px-4 py-5 w-80 mx-auto"
         >
-          <h1 className="text-xl text-center mb-5">
-            Sign in to <span className="text-lg font-pacifico">IGotYou</span>
-          </h1>
-          <Label className="text-xs" htmlFor="email">
+          <Label className="text-xs font-semibold" htmlFor="email">
             Email
           </Label>
           <Input
             id="email"
-            className="border-slate-700 bg-stone-950 text-xs"
+            className="border-slate-700 text-xs font-medium"
             autoFocus
             autoComplete="email"
             type="text"
             {...register("email")}
           />
           {errors.email && <ErrorMessage message={errors.email.message} />}
-          <Label className="text-xs" htmlFor="password">
+          <Label className="text-xs font-semibold" htmlFor="password">
             Password
           </Label>
           <Input
             id="password"
-            className="border-slate-700 bg-stone-950 text-xs"
+            className="border-slate-700 text-xs font-medium"
             type="password"
             {...register("password")}
           />
           {errors.password && (
             <ErrorMessage message={errors.password.message} />
           )}
-          <Button className="bg-green-700 hover:bg-green-600 mt-3 text-xs">
+          <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs">
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-        <div className="border border-slate-700 bg-neutral-900 text-xs rounded py-4 px-8">
-          <p>
-            New to IGotYou?{" "}
-            <span>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    className="font-bold ml-1"
-                    variant={"outline"}
-                    size={"sm"}
-                  >
-                    Create an account
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="text-white border border-slate-700 bg-neutral-900 sm:max-w-[390px]">
-                  <DialogHeader>
-                    <DialogTitle>
-                      <header className="font-normal text-xl text-center">
-                        Sign up to{" "}
-                        <span className="font-bold text-lg font-pacifico">
-                          IGotYou
-                        </span>
-                      </header>
-                    </DialogTitle>
-                  </DialogHeader>
-                  <Register />
-                  <DialogFooter className="text-center text-xs text-white">
-                    Sign up and become a part of the conversation. Share your
-                    thoughts, ideas, and feedback with us and connect with
-                    others who share your interests.
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </span>
-          </p>
+        <div className="flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
+          <p className="font-semibold">New to IGotYou? </p>
+          <span>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  className="text-white ml-1 font-semibold bg-[#222222] hover:bg-[#2d2d2d]"
+                  variant={"secondary"}
+                  size={"sm"}
+                >
+                  Create an account
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="border border-slate-300 sm:max-w-[390px]">
+                <DialogHeader>
+                  <DialogTitle>
+                    <h1 className="text-lg text-center">
+                      Sign up to{" "}
+                      <span className="font-bold text-2xl text-[#FF385C]">
+                        IGotYou
+                      </span>
+                    </h1>
+                  </DialogTitle>
+                </DialogHeader>
+                <Register />
+                <DialogFooter className="text-center text-xs font-medium">
+                  Sign up and become a part of the conversation. Share your
+                  thoughts, ideas, and feedback with us and connect with others
+                  who share your interests.
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </span>
         </div>
       </div>
     </div>
