@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { RegisterSchema, ZodRegisterSchema } from "@/zod/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import ErrorMessage from "@/partials/ErrorMessage";
+import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
 
 function Register() {

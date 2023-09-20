@@ -14,8 +14,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import Register from "./Register";
-import ErrorMessage from "@/partials/ErrorMessage";
+import Register from "../partials/components/Register";
+import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
@@ -92,37 +92,33 @@ function Login() {
         </form>
         <div className="flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
           <p className="font-semibold">New to IGotYou? </p>
-          <span>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  className="text-white ml-1 font-semibold bg-[#222222] hover:bg-[#2d2d2d]"
-                  variant={"secondary"}
-                  size={"sm"}
-                >
-                  Create an account
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="border border-slate-300 sm:max-w-[390px]">
-                <DialogHeader>
-                  <DialogTitle>
-                    <h1 className="text-lg text-center">
-                      Sign up to{" "}
-                      <span className="font-bold text-2xl text-[#FF385C]">
-                        IGotYou
-                      </span>
-                    </h1>
-                  </DialogTitle>
-                </DialogHeader>
-                <Register />
-                <DialogFooter className="text-center text-xs font-medium">
-                  Sign up and become a part of the conversation. Share your
-                  thoughts, ideas, and feedback with us and connect with others
-                  who share your interests.
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </span>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                className="text-white ml-1 font-semibold bg-[#222222] hover:bg-[#2d2d2d]"
+                variant={"secondary"}
+                size={"sm"}
+              >
+                Create an account
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="border border-slate-300 sm:max-w-[390px]">
+              <DialogHeader>
+                <DialogTitle className="text-lg text-center">
+                  Sign up to{" "}
+                  <span className="font-bold text-2xl text-[#FF385C]">
+                    IGotYou
+                  </span>
+                </DialogTitle>
+              </DialogHeader>
+              <Register />
+              <DialogFooter className="text-center text-xs font-medium">
+                Sign up and become a part of the conversation. Share your
+                thoughts, ideas, and feedback with us and connect with others
+                who share your interests.
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

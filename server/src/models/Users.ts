@@ -1,19 +1,19 @@
-import { Schema, InferSchemaType, model } from "mongoose";
+import { Schema, InferSchemaType, model, Types } from "mongoose";
 import env from "../utils/envalid";
 import bcrypt from "bcrypt";
 
 const usersSchema = new Schema(
   {
-    uid: {
-      type: String,
-    },
+    //User Details
     username: {
       type: String,
       required: true,
+      unique: true,
     },
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     email_verified: {
       type: Boolean,
@@ -24,18 +24,19 @@ const usersSchema = new Schema(
       type: String,
       required: true,
     },
-    mobilePhone: {
+    contactPhone: {
       type: Number,
     },
-    mobile_isVerified: {
+    mobile_verified: {
       type: Boolean,
       default: false,
     },
-    role: {
-      type: ["Guest", "Host"],
-      default: "Guest",
-      required: true,
+    user_location: {
+      type: Types.ObjectId,
+      ref: "Location",
     },
+    // Host details
+    hostStatus: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -46,5 +47,6 @@ usersSchema.pre("save", async function () {
 });
 
 export type TUser = InferSchemaType<typeof usersSchema>;
+
 const Users = model("Users", usersSchema);
 export default Users;

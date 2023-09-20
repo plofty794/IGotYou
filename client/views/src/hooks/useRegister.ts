@@ -25,11 +25,7 @@ export function useRegister() {
         variables.email,
         variables.password
       ).then((value) => {
-        setUser({ ...res.data.user, uid: value.user.uid });
-        toast({
-          description: "User created successfully.",
-          variant: "default",
-        });
+        setUser({ ...res.data.user, isAnonymous: value.user.isAnonymous });
       });
     },
     onError(err) {

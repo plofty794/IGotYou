@@ -1,4 +1,4 @@
-import ImageCard from "@/partials/ImageCard";
+import ImageCard from "@/partials/components/ImageCard";
 import { useEffect } from "react";
 
 function About() {

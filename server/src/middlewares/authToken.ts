@@ -8,7 +8,6 @@ export const authToken = async (
   next: NextFunction
 ) => {
   const accessToken = req.headers["authorization"]?.split(" ")[1];
-  console.log(accessToken);
   if (!accessToken) {
     return next(createHttpError(400, "Token is required"));
   }
@@ -16,7 +15,5 @@ export const authToken = async (
   if (typeof decodedToken == "string") {
     return next(createHttpError(401, decodedToken));
   }
-  console.log(decodedToken);
-  req.token.decodedToken = decodedToken;
   next();
 };

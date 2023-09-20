@@ -12,12 +12,29 @@ export const getUsers: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "No accounts found.");
     }
     const accounts = users.map((user) => ({
-      _id: user._id,
       username: user.username,
-      email: user.email,
-      role: user.role,
+      email: { email: user.email, isVerified: user.email_verified },
+      isHost: user.hostStatus,
+      mobilePhone: {
+        contact: user.contactPhone,
+        isVerified: user.mobile_verified,
+      },
     }));
     res.status(200).json({ accounts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserProfile: RequestHandler = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await Users.findById(id);
+    if (!user) {
+      throw createHttpError(400, "No account with that id");
+    }
+    const { email, username, hostStatus } = user;
+    res.status(200).json({ email, username, hostStatus });
   } catch (error) {
     next(error);
   }
@@ -37,10 +54,10 @@ export const createUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Username/Email already exist");
     }
     const newUser = await Users.create({ ...req.body });
-    const { username, email_verified } = newUser;
-    res
-      .status(201)
-      .json({ user: { email: newUser.email, username, email_verified } });
+    const { username, email_verified, hostStatus, _id } = newUser;
+    res.status(201).json({
+      user: { _id, email: newUser.email, username, email_verified, hostStatus },
+    });
   } catch (error) {
     next(error);
   }
@@ -93,10 +110,10 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-declare module "express-serve-static-core" {
-  interface Request {
-    ipinfo?: {};
-    user?: {};
-    token: { decodedToken: DecodedIdToken };
-  }
-}
+// declare module "express-serve-static-core" {
+//   interface Request {
+//     ipinfo?: {};
+//     user?: {};
+//     token: { decodedToken: DecodedIdToken };
+//   }
+// }

@@ -4,7 +4,7 @@ import { create } from "zustand";
 type TUserSchema = {
   username: string;
   email: string;
-  uid: string;
+  _id: string;
   email_verified: false;
 };
 
@@ -18,10 +18,7 @@ export const useUserStore = create<TUser>((set) => ({
   user: null,
   setUser: (payload) => {
     set({ user: payload });
-    localStorage.setItem(
-      "email_verified",
-      JSON.stringify(payload.email_verified)
-    );
+    localStorage.setItem("ID", payload._id);
   },
   logOutUser: async () => {
     await auth.signOut();

@@ -19,9 +19,10 @@ function useLogin() {
         variables.email,
         variables.password
       ).then((value) => {
-        setUser({ ...res.data.user, uid: value.user.uid });
+        setUser({ ...res.data.user, isAnonymous: value.user.isAnonymous });
         toast({
           title: `Welcome, ${res.data.user.username} 👋`,
+          className: "bg-[#F2F2F2]",
         });
       });
     },
