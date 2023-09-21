@@ -8,6 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { LocationSchema, ZodLocationSchema } from "@/zod/locationSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   BackpackIcon,
   Pencil2Icon,
@@ -15,8 +17,28 @@ import {
   RocketIcon,
 } from "@radix-ui/react-icons";
 import { Label } from "@radix-ui/react-label";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "./ErrorMessage";
 
 function ProfileButtonGroup() {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<LocationSchema>({
+    defaultValues: {
+      address: "",
+      city: "",
+      state: "",
+      postal_code: "",
+    },
+    resolver: zodResolver(ZodLocationSchema),
+  });
+
+  function handleLocationSubmit(data: LocationSchema) {
+    console.log(data);
+  }
+
   return (
     <>
       <Dialog>
@@ -105,13 +127,34 @@ function ProfileButtonGroup() {
               account and remove your data from our servers.
             </DialogDescription>
           </DialogHeader>
-          <form className="mt-4">
-            <Label className="text-sm font-medium" htmlFor="school">
-              Where I went to school:
+          <form onSubmit={handleSubmit(handleLocationSubmit)} className="mt-4">
+            <Label className="text-sm font-medium" htmlFor="address">
+              Address
             </Label>
-            <Input autoFocus id="school" name="school" />
+            <Input {...register("address")} autoFocus id="address" />
+            {errors.address && (
+              <ErrorMessage message={errors.address?.message} />
+            )}
+            <Label className="text-sm font-medium" htmlFor="city">
+              City
+            </Label>
+            <Input {...register("city")} autoFocus id="city" />
+            {errors.city && <ErrorMessage message={errors.city?.message} />}
+            <Label className="text-sm font-medium" htmlFor="state">
+              State
+            </Label>
+            <Input {...register("state")} autoFocus id="state" />
+            {errors.state && <ErrorMessage message={errors.state?.message} />}
+            <Label className="text-sm font-medium" htmlFor="postal-code">
+              Postal code
+            </Label>
+            <Input {...register("postal_code")} autoFocus type="number" />
+            {errors.postal_code && (
+              <ErrorMessage message={errors.postal_code?.message} />
+            )}
+
             <Button
-              className="bg-[#222222] text-white font-medium my-2"
+              className="bg-[#222222] text-white font-medium mt-7"
               size={"lg"}
               variant={"secondary"}
             >

@@ -49,7 +49,7 @@ function About() {
             photoUrl="https://scontent.fmnl13-1.fna.fbcdn.net/v/t39.30808-6/281455949_1976878979186720_4039918151550893059_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=1b51e3&_nc_eui2=AeGOQGPA3G59iu63NJ4P44mC2aBCFULI1bHZoEIVQsjVsQw53XqgxomFiBE5e73KSY2lVLQ4FM8c51nvp8z4a4Hz&_nc_ohc=VlenqvMyNikAX9hoXPq&_nc_ht=scontent.fmnl13-1.fna&oh=00_AfCnh_3rQywT0B74da0lO4TvhlwYB06spgGi1OHzztnvKQ&oe=650A07C3"
           />
           <ImageCard
-            name="John Rizbert Naz"
+            name="John Rizbert Miras"
             photoUrl="https://scontent.fmnl13-2.fna.fbcdn.net/v/t1.6435-9/83192389_3106836926208432_7955476375152885760_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_eui2=AeFbd_bVxypbiqSQzxmb-QnCl6wamGo29NmXrBqYajb02f8kmV3N5AWhCk5NMN0CJx_6nCCJ84ppMS7vwOlt_NfK&_nc_ohc=8B2RXZLiYlwAX82oIz5&_nc_ht=scontent.fmnl13-2.fna&oh=00_AfCcqQiJBDPkWJyLz_gQovZKgX_2TKxwdRm9zYH7Y0zXDw&oe=652CC88F"
           />
           <ImageCard

@@ -86,6 +86,20 @@ export const logInUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+type TLocation = {
+  address: string;
+  city: string;
+  state: string;
+  postal_code: number;
+};
+
+export const updateUser: RequestHandler = async (req, res, next) => {
+  const { address, city, state, postal_code }: TLocation = req.body;
+  try {
+    res.status(200).json({ address, city, state, postal_code });
+  } catch (error) {}
+};
+
 export const logOutUser: RequestHandler = async (req, res, next) => {
   try {
     res.status(200).json({ message: "User has been logged out" });

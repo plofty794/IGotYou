@@ -7,14 +7,15 @@ const locationSchema = new Schema({
   },
   city: {
     type: String,
+    required: true,
   },
   state: {
     type: String,
+    required: true,
   },
   postal_code: {
-    type: String,
+    type: Number,
     required: true,
-    unique: true,
   },
 });
 

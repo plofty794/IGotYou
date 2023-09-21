@@ -18,6 +18,7 @@ import { useState } from "react";
 function App() {
   const item = localStorage.getItem("ID");
   const [User, setUser] = useState<User | null>(null);
+
   auth.onAuthStateChanged((user) => {
     if (!user) return setUser(null);
     setUser(user);
