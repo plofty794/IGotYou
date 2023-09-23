@@ -28,7 +28,9 @@ function ProfileContent({ data }: TProps) {
             <span className="text-[#222222] text-2xl font-semibold">
               {data?.data.username}
             </span>
-            <span className="text-[#222222] text-md font-medium">Guest</span>
+            <span className="text-[#222222] text-md font-medium">
+              {data?.data.hostStatus ? "Host" : "Guest"}
+            </span>
           </CardFooter>
         </Card>
         <Card className="w-[342px]">

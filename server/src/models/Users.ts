@@ -32,8 +32,7 @@ const usersSchema = new Schema(
       default: false,
     },
     user_location: {
-      type: Types.ObjectId,
-      ref: "Location",
+      type: String,
     },
     // Host details
     hostStatus: { type: Boolean, default: false },

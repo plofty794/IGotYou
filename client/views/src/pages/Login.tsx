@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { LoginSchema, ZodLoginSchema } from "@/zod/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import "../../node_modules/@geoapify/geocoder-autocomplete/styles/minimal.css";
 import useLogin from "@/hooks/useLogin";
 import {
   Dialog,
@@ -17,6 +18,7 @@ import {
 import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
+
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
 
@@ -46,7 +48,7 @@ function Login() {
   return (
     <div className="min-h-screen flex flex-col gap-5 justify-center items-center">
       <Link
-        to={"/"}
+        to={"/get-started"}
         className="font-medium absolute top-0 left-0 text-xs p-2 hover:underline"
       >
         Back to Homepage

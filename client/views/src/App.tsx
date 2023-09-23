@@ -14,6 +14,7 @@ import About from "./pages/About";
 import { auth } from "./firebase config/config";
 import { User } from "firebase/auth";
 import { useState } from "react";
+import GeoApify from "./pages/GeoApify";
 
 function App() {
   const item = localStorage.getItem("ID");
@@ -52,6 +53,8 @@ function App() {
             path={"/users/show/:id"}
             element={item ? <Profile /> : <Navigate replace to={"/login"} />}
           />
+          <Route path="/geo" element={<GeoApify />} />
+          <Route path="*" element={<h1>404 Page not found</h1>} />
         </Routes>
       </Router>
       <Toaster />

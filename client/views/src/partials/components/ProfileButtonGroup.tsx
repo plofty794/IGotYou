@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,24 +20,49 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { useGetCurrentLocation } from "@/hooks/useGetCurrentLocation";
+import { useState } from "react";
+import useGeoding from "@/hooks/useGeoding";
 
 function ProfileButtonGroup() {
+  const [results, setResults] = useState([]);
+  const geoCode = useGeoding();
+  const [address, setAddress] = useState("");
+  const { data } = useGetCurrentLocation();
   const {
     handleSubmit,
     register,
     formState: { errors },
+    setValue,
   } = useForm<LocationSchema>({
     defaultValues: {
       address: "",
-      city: "",
-      state: "",
-      postal_code: "",
     },
     resolver: zodResolver(ZodLocationSchema),
   });
 
-  function handleLocationSubmit(data: LocationSchema) {
-    console.log(data);
+  function handleGetCurrentLoc() {
+    console.log(data?.data);
+    const suburb =
+      data?.data.features[0].properties?.suburb ||
+      data?.data.features[0].properties?.road;
+    data?.data &&
+      setAddress(
+        suburb +
+          " " +
+          data?.data.features[0].properties.address_line1 +
+          " " +
+          data?.data.features[0].properties.address_line2
+      );
+    address && setValue("address", address);
+  }
+
+  async function handleLocationSubmit(data: LocationSchema) {
+    const res = await geoCode(data.address);
+    setResults((prev) => [...prev, ...res?.results]);
+    console.log(results);
   }
 
   return (
@@ -121,45 +147,45 @@ function ProfileButtonGroup() {
         </DialogTrigger>
         <DialogContent className="p-8">
           <DialogHeader>
-            <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
+            <DialogTitle className="text-3xl">Where do you live?</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleLocationSubmit)} className="mt-4">
             <Label className="text-sm font-medium" htmlFor="address">
-              Address
+              Your Address
             </Label>
-            <Input {...register("address")} autoFocus id="address" />
+            <Input
+              {...register("address")}
+              placeholder="Full Address w/ Zip code"
+              autoFocus
+              id="address"
+            />
             {errors.address && (
               <ErrorMessage message={errors.address?.message} />
             )}
-            <Label className="text-sm font-medium" htmlFor="city">
-              City
-            </Label>
-            <Input {...register("city")} autoFocus id="city" />
-            {errors.city && <ErrorMessage message={errors.city?.message} />}
-            <Label className="text-sm font-medium" htmlFor="state">
-              State
-            </Label>
-            <Input {...register("state")} autoFocus id="state" />
-            {errors.state && <ErrorMessage message={errors.state?.message} />}
-            <Label className="text-sm font-medium" htmlFor="postal-code">
-              Postal code
-            </Label>
-            <Input {...register("postal_code")} autoFocus type="number" />
-            {errors.postal_code && (
-              <ErrorMessage message={errors.postal_code?.message} />
-            )}
-
-            <Button
-              className="bg-[#222222] text-white font-medium mt-7"
-              size={"lg"}
-              variant={"secondary"}
-            >
-              Save
-            </Button>
+            <ul>
+              {results.map((result) => (
+                <li>{result.plus_code_short}</li>
+              ))}
+            </ul>
+            <div className="flex gap-2 items-center pt-6">
+              <Button
+                className="bg-[#222222] text-white font-medium"
+                size={"lg"}
+                variant={"secondary"}
+              >
+                Save
+              </Button>
+              <Button
+                type="button"
+                className="bg-[#222222] text-white font-medium text-xs"
+                size={"lg"}
+                variant={"secondary"}
+                onClick={() => handleGetCurrentLoc()}
+              >
+                <FontAwesomeIcon className="mr-2" icon={faLocationDot} />
+                Get your current location
+              </Button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
