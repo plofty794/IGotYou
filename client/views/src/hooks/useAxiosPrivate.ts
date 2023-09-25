@@ -12,9 +12,8 @@ interface AxiosConfig extends AxiosRequestConfig {
 export function useAxiosPrivate() {
   const newAccessToken = useAccessToken();
   const setAccessToken = useAccessTokenStore((state) => state.setAccessToken);
-  const accessToken = useAccessTokenStore((state) => state.accessToken);
   auth.currentUser?.getIdToken().then((token) => setAccessToken(token));
-  console.log(accessToken);
+  const accessToken = useAccessTokenStore((state) => state.accessToken);
   useEffect(() => {
     const requestInterceptor = axiosPrivate.interceptors.request.use(
       (config) => {
@@ -29,9 +28,9 @@ export function useAxiosPrivate() {
       (res) => res,
       async (error) => {
         const prevRequest = error.config as AxiosConfig;
-        if (error.response.status === 400) {
+        if (error.response.status === 401) {
           const IdToken = await newAccessToken();
-          accessToken && setAccessToken(IdToken!);
+          IdToken && setAccessToken(IdToken);
           prevRequest.headers!.Authorization = `Bearer ${IdToken}`;
           return axiosPrivate(prevRequest);
         }

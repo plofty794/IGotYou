@@ -18,12 +18,12 @@ function Hero() {
           <h2 className="text-[#222222]">
             Discover a world of creative possibilities with IGotYou, the
             ultimate platform for{" "}
-            <span className="text-[#FF385C] font-bold">
+            <span className="text-[#A259FF] font-bold">
               connecting customers with multimedia artists.{" "}
             </span>{" "}
             From breathtaking photography and captivating videography to
             stunning graphic arts and more, IGotYou is your{" "}
-            <span className="text-[#FF385C] font-bold">
+            <span className="text-[#A259FF] font-bold">
               one-stop destination{" "}
             </span>{" "}
             to bring your vision to life.
@@ -31,7 +31,7 @@ function Hero() {
         </div>
         <Link
           to={"/login"}
-          className={`mt-2 text-white w-max bg-[#FF385C] hover:bg-[#E8204E] ${buttonVariants(
+          className={`mt-2 text-white w-max bg-[#222222] hover:bg-[#2d2c2c] ${buttonVariants(
             {
               variant: "secondary",
             }

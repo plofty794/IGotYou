@@ -8,9 +8,9 @@ function About() {
 
   return (
     <div className="text-[#222222] pt-2">
-      <div className="flex flex-col min-h-[420px] gap-6 px-12 my-20">
-        <h1 className="font-extrabold text-5xl">About us,</h1>
-        <div className="font-medium flex flex-col gap-3 w-[820px]">
+      <div className="flex flex-col justify-center min-h-[420px] gap-6 px-12 my-16">
+        <h1 className="font-bold text-4xl text-[#222222]">About us,</h1>
+        <div className="text-sm font-medium flex flex-col gap-3 w-[820px]">
           <p>
             At IGotYou, we believe that creativity knows no bounds, and artistic
             expression should be accessible to all. Our platform was born out of

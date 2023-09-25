@@ -42,7 +42,12 @@ function ProfileContent({ data }: TProps) {
           <CardContent>
             {data?.data.email && (
               <>
-                <CheckIcon className="inline-block font-bold" />{" "}
+                <CheckIcon
+                  color="#39c152"
+                  width={22}
+                  height={22}
+                  className="inline-block"
+                />{" "}
                 <span className="text-[#222222] ml-2">Email address</span>
               </>
             )}

@@ -16,7 +16,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
       email: { email: user.email, isVerified: user.email_verified },
       isHost: user.hostStatus,
       mobilePhone: {
-        contact: user.contactPhone,
+        contact: user.mobilePhone,
         isVerified: user.mobile_verified,
       },
     }));
@@ -33,7 +33,7 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
-    const { email, username, hostStatus } = user;
+    const { email, username, hostStatus, address } = user;
     res.status(200).json({ email, username, hostStatus });
   } catch (error) {
     next(error);
@@ -54,9 +54,16 @@ export const createUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Username/Email already exist");
     }
     const newUser = await Users.create({ ...req.body });
-    const { username, email_verified, hostStatus, _id } = newUser;
+    const { username, email_verified, hostStatus, _id, address } = newUser;
     res.status(201).json({
-      user: { _id, email: newUser.email, username, email_verified, hostStatus },
+      user: {
+        _id,
+        email: newUser.email,
+        username,
+        email_verified,
+        hostStatus,
+        address,
+      },
     });
   } catch (error) {
     next(error);
@@ -86,18 +93,17 @@ export const logInUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-type TLocation = {
-  address: string;
-  city: string;
-  state: string;
-  postal_code: number;
-};
-
 export const updateUser: RequestHandler = async (req, res, next) => {
-  const { address, city, state, postal_code }: TLocation = req.body;
+  const { id } = req.params;
   try {
-    res.status(200).json({ address, city, state, postal_code });
-  } catch (error) {}
+    const user = await Users.findByIdAndUpdate(id, { ...req.body });
+    if (!user) {
+      throw createHttpError(400, "Error updating user");
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logOutUser: RequestHandler = async (req, res, next) => {

@@ -10,7 +10,7 @@
 }
 
 .active {
-  color: #ff385c;
+  color: #5551ff;
 }
 
 .card-container:nth-child(1) {
@@ -29,4 +29,14 @@
 .show {
   opacity: 1;
   filter: blur(0px);
+}
+
+.geo input {
+  padding-inline: 10px;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(230, 230, 230);
+}
+
+.geo input:focus {
+  border: 1px solid rgb(0, 0, 0);
 }

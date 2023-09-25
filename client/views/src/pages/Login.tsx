@@ -56,7 +56,7 @@ function Login() {
       <div className="font-medium">
         <h1 className="text-lg text-center mb-2">
           Sign in to{" "}
-          <span className="font-bold text-2xl text-[#FF385C]">IGotYou</span>
+          <span className="font-bold text-2xl text-[#222222]">IGotYou</span>
         </h1>
       </div>
       <div className="flex flex-col gap-4">
@@ -108,7 +108,7 @@ function Login() {
               <DialogHeader>
                 <DialogTitle className="text-lg text-center">
                   Sign up to{" "}
-                  <span className="font-bold text-2xl text-[#FF385C]">
+                  <span className="font-bold text-2xl text-[#222222]">
                     IGotYou
                   </span>
                 </DialogTitle>

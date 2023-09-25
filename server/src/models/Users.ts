@@ -24,14 +24,23 @@ const usersSchema = new Schema(
       type: String,
       required: true,
     },
-    contactPhone: {
+    mobilePhone: {
       type: Number,
     },
     mobile_verified: {
       type: Boolean,
       default: false,
     },
-    user_location: {
+    address: {
+      type: String,
+    },
+    school: {
+      type: String,
+    },
+    FunFact: {
+      type: String,
+    },
+    Work: {
       type: String,
     },
     // Host details
