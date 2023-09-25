@@ -2,48 +2,113 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
+import { FunFactSchema, ZodFunFactSchema } from "@/zod/funFactSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { RocketIcon } from "@radix-ui/react-icons";
 import { Label } from "@radix-ui/react-label";
+import { QueryState, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "../../ErrorMessage";
+
+type TData = {
+  email: string;
+  username: string;
+  hostStatus: boolean;
+  funFact?: string;
+  address?: string;
+  work?: string;
+  school: string;
+};
 
 function FunFact() {
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+  } = useForm<FunFactSchema>({
+    defaultValues: {
+      funFact: "",
+    },
+    resolver: zodResolver(ZodFunFactSchema),
+  });
+  const queryClient = useQueryClient();
+  const { mutate } = useUpdateUserProfile();
+  const ID = localStorage.getItem("ID");
+  const data = queryClient.getQueryData<QueryState<TData>>([
+    "profile",
+    ID && ID,
+  ]);
+
+  function handleFunFactSubmit(data: FunFactSchema) {
+    mutate({ funFact: data.funFact });
+  }
+
   return (
     <Dialog>
       <DialogTrigger
-        className="hover:bg-[#e9e9e9] w-full font-medium text-md shadow-md
-            flex justify-start items-center pl-4 pr-6 py-8 rounded"
+        className={`hover:bg-[#e9e9e9] w-full font-medium ${
+          data?.data?.funFact ? "text-xs" : "text-md"
+        }
+           shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
         <span className="mr-2">
           <RocketIcon color="black" width={25} height={25} />
         </span>
-        My fun fact
+        {data?.data?.funFact
+          ? `Fun Fact about you: ${data?.data.funFact}`
+          : "My Fun Fact:"}
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
-          <DialogTitle>Are you sure absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle className="text-2xl">
+            {data?.data?.funFact ? "Fun Fact:" : "What's a Fun Fact about you?"}
+          </DialogTitle>
         </DialogHeader>
-        <form className="mt-4">
-          <Label className="text-sm font-medium" htmlFor="school">
-            Where I went to school:
-          </Label>
-          <Input autoFocus id="school" name="school" />
-          <Button
-            className="bg-[#222222] text-white font-medium my-2"
-            size={"lg"}
-            variant={"secondary"}
-          >
-            Save
-          </Button>
-        </form>
+        {data?.data?.funFact ? (
+          <div className="mt-4">
+            <p className="text-sm font-medium mb-2">{data?.data.funFact}</p>
+            <div className="flex gap-2 items-center pt-2">
+              <Button
+                onClick={() => mutate({ funFact: "" })}
+                className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
+                size={"lg"}
+                variant={"secondary"}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit(handleFunFactSubmit)} className="mt-4">
+            <Label className="text-sm font-medium" htmlFor="funFact">
+              Your Fun Fact
+            </Label>
+            <Input
+              {...register("funFact")}
+              type="text"
+              id="funFact"
+              className="mb-2"
+            />
+            {errors.funFact && (
+              <ErrorMessage message={errors.funFact.message} />
+            )}
+            <div className="flex gap-2 items-center pt-2">
+              <Button
+                className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
+                size={"lg"}
+                variant={"secondary"}
+              >
+                Save
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );

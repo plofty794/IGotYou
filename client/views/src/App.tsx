@@ -13,17 +13,19 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import { auth } from "./firebase config/config";
 import { User } from "firebase/auth";
-import { useState } from "react";
-import GeoApify from "./pages/GeoApify";
+import { useEffect, useState } from "react";
 
 function App() {
   const item = localStorage.getItem("ID");
   const [User, setUser] = useState<User | null>(null);
 
-  auth.onAuthStateChanged((user) => {
-    if (!user) return setUser(null);
-    setUser(user);
-  });
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (!user) return setUser(null);
+      setUser(user);
+    });
+  }, []);
+
   return (
     <>
       <Router>
@@ -53,7 +55,7 @@ function App() {
             path={"/users/show/:id"}
             element={item ? <Profile /> : <Navigate replace to={"/login"} />}
           />
-          <Route path="/geo" element={<GeoApify />} />
+
           <Route path="*" element={<h1>404 Page not found</h1>} />
         </Routes>
       </Router>

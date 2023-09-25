@@ -29,7 +29,7 @@ export function useAxiosPrivate() {
       async (error) => {
         const prevRequest = error.config as AxiosConfig;
         if (error.response.status === 401) {
-          const IdToken = await newAccessToken();
+          const IdToken = await newAccessToken;
           IdToken && setAccessToken(IdToken);
           prevRequest.headers!.Authorization = `Bearer ${IdToken}`;
           return axiosPrivate(prevRequest);

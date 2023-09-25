@@ -16,7 +16,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
       email: { email: user.email, isVerified: user.email_verified },
       isHost: user.hostStatus,
       mobilePhone: {
-        contact: user.mobilePhone,
+        contact: user.mobile_phone,
         isVerified: user.mobile_verified,
       },
     }));
@@ -33,8 +33,11 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
-    const { email, username, hostStatus, address } = user;
-    res.status(200).json({ email, username, hostStatus });
+    const { email, username, hostStatus, address, funFact, school, work } =
+      user;
+    res
+      .status(200)
+      .json({ email, username, hostStatus, address, funFact, school, work });
   } catch (error) {
     next(error);
   }
@@ -54,17 +57,8 @@ export const createUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Username/Email already exist");
     }
     const newUser = await Users.create({ ...req.body });
-    const { username, email_verified, hostStatus, _id, address } = newUser;
-    res.status(201).json({
-      user: {
-        _id,
-        email: newUser.email,
-        username,
-        email_verified,
-        hostStatus,
-        address,
-      },
-    });
+    const { _id, username } = newUser;
+    res.status(201).json({ user: { _id, username } });
   } catch (error) {
     next(error);
   }
@@ -87,7 +81,7 @@ export const logInUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Incorrect password");
     }
     const { _id, username } = user;
-    res.status(200).json({ user: { _id, email: user.email, username } });
+    res.status(200).json({ user: { _id, username } });
   } catch (error) {
     next(error);
   }

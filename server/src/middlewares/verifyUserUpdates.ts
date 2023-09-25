@@ -19,8 +19,9 @@ export const verifyUserUpdates = async (
   const country_code = address?.match(/[A-Z]+$/g)?.join("");
 
   if (!postcode || !country_code) {
-    return next(createHttpError(400, "Incomplete address"));
+    return next();
   }
+
   const validPostCode = postcodeValidator(postcode, country_code);
   if (!validPostCode) {
     return next(createHttpError(400, "Invalid zip code"));

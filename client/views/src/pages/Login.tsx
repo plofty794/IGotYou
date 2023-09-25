@@ -18,6 +18,7 @@ import {
 import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
+import { MixIcon } from "@radix-ui/react-icons";
 
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
@@ -53,11 +54,11 @@ function Login() {
       >
         Back to Homepage
       </Link>
-      <div className="font-medium">
-        <h1 className="text-lg text-center mb-2">
-          Sign in to{" "}
-          <span className="font-bold text-2xl text-[#222222]">IGotYou</span>
-        </h1>
+      <div className="flex gap-1 font-medium">
+        <h1 className="text-lg text-center">Sign in to </h1>
+        <span className="bg-[#FF7262] text-white">
+          <MixIcon width={35} height={35} />
+        </span>
       </div>
       <div className="flex flex-col gap-4">
         <form

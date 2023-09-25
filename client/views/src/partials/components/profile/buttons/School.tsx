@@ -2,50 +2,123 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GEOAPIFY_KEY } from "@/constants/API_Keys";
+import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
+import {
+  GeoapifyContext,
+  GeoapifyGeocoderAutocomplete,
+} from "@geoapify/react-geocoder-autocomplete";
 import { Pencil2Icon } from "@radix-ui/react-icons";
+import { QueryState, useQueryClient } from "@tanstack/react-query";
+import { FormEvent, useState } from "react";
+import ErrorMessage from "../../ErrorMessage";
+
+type TData = {
+  email: string;
+  username: string;
+  hostStatus: boolean;
+  school?: string;
+  address?: string;
+  work?: string;
+  funFact: string;
+};
 
 function School() {
+  const queryClient = useQueryClient();
+  const { mutate } = useUpdateUserProfile();
+  const [school, setSchool] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const ID = localStorage.getItem("ID");
+  const data = queryClient.getQueryData<QueryState<TData>>([
+    "profile",
+    ID && ID,
+  ]);
+
+  function handleSchoolSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!school) return setErrorMessage("Invalid school name code ");
+    mutate({ school });
+    setErrorMessage("");
+  }
+
   return (
     <Dialog>
       <DialogTrigger
-        className="hover:bg-[#e9e9e9] w-full font-medium text-md shadow-md
-            flex justify-start items-center pl-4 pr-6 py-8 rounded"
+        className={`hover:bg-[#e9e9e9] w-full font-medium ${
+          data?.data?.school ? "text-xs" : "text-md"
+        }
+           shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
         <span className="mr-2">
           <Pencil2Icon color="black" width={25} height={25} />
         </span>
-        <p>Where I went to school</p>
+        {data?.data?.school
+          ? `Where I go to school: ${data?.data.school}`
+          : "Where I you go to school:"}
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
-          <DialogTitle className="text-2xl mb-4">
-            Where did you go to school?
+          <DialogTitle className="text-2xl">
+            {data?.data?.school
+              ? "Current school"
+              : "Where do you go to school?"}
           </DialogTitle>
-          <DialogDescription>
-            Whether it’s home school, high school, or trade school, name the
-            school that made you who you are.
-          </DialogDescription>
         </DialogHeader>
-        <form className="mt-4">
-          <Label className="text-sm font-medium" htmlFor="school">
-            Where I went to school
-          </Label>
-          <Input autoFocus id="school" name="school" />
-          <Button
-            className="bg-[#222222] text-white font-medium my-2"
-            size={"lg"}
-            variant={"secondary"}
-          >
-            Save
-          </Button>
-        </form>
+        {data?.data?.school ? (
+          <form onSubmit={handleSchoolSubmit} className="mt-4">
+            <p className="text-sm font-medium mb-2">{data?.data.school}</p>
+            <div className="flex gap-2 items-center pt-2">
+              <Button
+                onClick={() => mutate({ school: "" })}
+                className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
+                size={"lg"}
+                variant={"secondary"}
+              >
+                Delete
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <form onSubmit={handleSchoolSubmit} className="mt-4">
+            <Label className="text-sm font-medium" htmlFor="school">
+              Your current school
+            </Label>
+            <GeoapifyContext apiKey={GEOAPIFY_KEY}>
+              <div className="geo mb-1">
+                <GeoapifyGeocoderAutocomplete
+                  filterByCountryCode={["ph"]}
+                  placeSelect={(value) => console.log(value)}
+                  allowNonVerifiedHouseNumber={false}
+                  skipIcons={true}
+                  placeholder="Enter school name"
+                  postprocessHook={(value) => {
+                    setSchool(
+                      `${
+                        value.properties.formatted
+                      }, ${value.properties.country_code.toUpperCase()}`
+                    );
+                    return value.properties.formatted;
+                  }}
+                />
+              </div>
+              {errorMessage && <ErrorMessage message={errorMessage} />}
+            </GeoapifyContext>
+            <div className="flex gap-2 items-center pt-2">
+              <Button
+                className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
+                size={"lg"}
+                variant={"secondary"}
+              >
+                Save
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );

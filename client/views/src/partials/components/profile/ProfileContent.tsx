@@ -4,10 +4,12 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { CheckIcon } from "@radix-ui/react-icons";
+import { CheckCircledIcon, IdCardIcon } from "@radix-ui/react-icons";
 
 import { AxiosResponse } from "axios";
 import ProfileButtonGroup from "./ProfileButtonGroup";
+import { Skeleton } from "@/components/ui/skeleton";
+import PersonalInfoSheet from "./PersonalInfoSheet";
 
 type TProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,15 +20,15 @@ function ProfileContent({ data }: TProps) {
   return (
     <section className="flex gap-24 px-40 mt-14">
       <div className="flex flex-col gap-7 justify-between">
-        <Card className="flex flex-col justify-center items-center gap-5 w-[342px] px-28 py-5 shadow-2xl">
+        <Card className="flex flex-col justify-center items-center gap-5 w-[342px] px-28 py-5 shadow">
           <CardHeader className="text-white rounded-full w-[100px] h-[100px] bg-[#222222]">
             <span className="text-center text-5xl font-semibold">
-              {data?.data.username[0].toUpperCase()}
+              {data?.data.username[0].toUpperCase() ?? "?"}
             </span>
           </CardHeader>
           <CardFooter className="p-0 flex flex-col">
             <span className="text-[#222222] text-2xl font-semibold">
-              {data?.data.username}
+              {data?.data.username ?? <Skeleton className="h-4 w-[100px]" />}
             </span>
             <span className="text-[#222222] text-md font-medium">
               {data?.data.hostStatus ? "Host" : "Guest"}
@@ -35,22 +37,39 @@ function ProfileContent({ data }: TProps) {
         </Card>
         <Card className="w-[342px]">
           <CardHeader>
-            <p className="text-[#222222] text-xl font-semibold">
-              {data?.data.username + "'s"} confirmed information
-            </p>
+            <span className="text-[#222222] text-xl font-semibold">
+              {data?.data.username ? (
+                data?.data.username + "'s confirmed information"
+              ) : (
+                <Skeleton className="h-4 w-[250px]" />
+              )}
+            </span>
           </CardHeader>
           <CardContent>
-            {data?.data.email && (
+            {data?.data.email ? (
               <>
-                <CheckIcon
-                  color="#39c152"
+                <CheckCircledIcon
+                  color="#FFF"
                   width={22}
                   height={22}
-                  className="inline-block"
+                  className="inline-block bg-[#39c152] rounded-full"
                 />{" "}
                 <span className="text-[#222222] ml-2">Email address</span>
               </>
+            ) : (
+              <Skeleton className="h-4 w-[250px]" />
             )}
+          </CardContent>
+        </Card>
+        <Card className="w-[342px]">
+          <CardHeader className="text-[#222222] px-6 pt-6 pb-2">
+            <span className="text-lg font-semibold">
+              <IdCardIcon width={40} height={40} />
+            </span>
+            <p className="font-semibold text-md">Personal info</p>
+          </CardHeader>
+          <CardContent>
+            <PersonalInfoSheet />
           </CardContent>
         </Card>
       </div>

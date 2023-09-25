@@ -1,10 +1,10 @@
 import { auth } from "@/firebase config/config";
 
 function useAccessToken() {
-  return async function getAccessToken() {
-    const accessToken = await auth.currentUser?.getIdToken();
-    return accessToken;
-  };
+  return auth.currentUser
+    ?.getIdToken()
+    .then((token) => token)
+    .catch((err) => console.error(err));
 }
 
 export default useAccessToken;

@@ -1,8 +1,9 @@
-import { useUserStore } from "@/store/userStore";
-import { Button } from "@/components/ui/button";
 import { Suspense, lazy } from "react";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import ProfileLoader from "@/partials/loaders/ProfileLoader";
+import { Link } from "react-router-dom";
+import UserDropDownButton from "@/partials/UserDropDownButton";
+import { MixIcon } from "@radix-ui/react-icons";
 
 const ProfileContent = lazy(
   () => import("@/partials/components/profile/ProfileContent")
@@ -11,27 +12,15 @@ const ProfileContent = lazy(
 function Profile() {
   const { data } = useGetUserProfile();
 
-  const logOut = useUserStore((state) => state.logOutUser);
-
-  function handleSignOut() {
-    logOut();
-  }
-
   return (
-    <div className="min-h-screen">
-      <nav className="shadow py-5 px-20 flex justify-between items-center">
-        <span className="font-bold text-xl text-[#222222]">IGotYou</span>
+    <div className="min-h-full bg-[#F2F2F2] pb-10">
+      <nav className="bg-white shadow py-5 px-20 flex justify-between items-center">
+        <Link to={"/"} className="font-bold text-xl bg-[#FF7262] text-white">
+          <MixIcon width={35} height={35} />
+        </Link>
         <ul className="text-sm font-medium flex justify-center items-center gap-5">
           <li>Become a Host</li>
-          <li>Dropdown menu</li>
-          <Button
-            className="bg-[#5551FF] hover:bg-[#4947e4] text-white"
-            variant={"secondary"}
-            size={"sm"}
-            onClick={handleSignOut}
-          >
-            Sign out
-          </Button>
+          <UserDropDownButton />
         </ul>
       </nav>
       <Suspense fallback={<ProfileLoader />}>

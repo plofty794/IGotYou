@@ -24,12 +24,12 @@ const usersSchema = new Schema(
       type: String,
       required: true,
     },
-    mobilePhone: {
-      type: Number,
-    },
     mobile_verified: {
       type: Boolean,
       default: false,
+    },
+    mobile_phone: {
+      type: String,
     },
     address: {
       type: String,
@@ -37,10 +37,10 @@ const usersSchema = new Schema(
     school: {
       type: String,
     },
-    FunFact: {
+    funFact: {
       type: String,
     },
-    Work: {
+    work: {
       type: String,
     },
     // Host details

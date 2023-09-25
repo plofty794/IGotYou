@@ -25,8 +25,7 @@ function useUpdateUserProfile() {
     mutationFn: async (data: TUserUpdates) => {
       return axiosPrivate.patch(`/api/users/update/${ID}`, { ...data });
     },
-    onSuccess(data, variables) {
-      console.log(data);
+    onSuccess(_, variables) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       queryClient.setQueryData(["profile", ID && ID], (prevData: any) => {
         return { data: { ...prevData.data, ...variables } };
