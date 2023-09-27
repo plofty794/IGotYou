@@ -2,8 +2,8 @@ import { Suspense, lazy } from "react";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import ProfileLoader from "@/partials/loaders/ProfileLoader";
 import { Link } from "react-router-dom";
-import UserDropDownButton from "@/partials/UserDropDownButton";
-import { MixIcon } from "@radix-ui/react-icons";
+import UserDropDownButton from "@/partials/components/UserDropDownButton";
+import { CrumpledPaperIcon } from "@radix-ui/react-icons";
 
 const ProfileContent = lazy(
   () => import("@/partials/components/profile/ProfileContent")
@@ -13,10 +13,10 @@ function Profile() {
   const { data } = useGetUserProfile();
 
   return (
-    <div className="min-h-full bg-[#F2F2F2] pb-10">
+    <main className="min-h-full bg-[#F2F2F2] pb-10">
       <nav className="bg-white shadow py-5 px-20 flex justify-between items-center">
-        <Link to={"/"} className="font-bold text-xl bg-[#FF7262] text-white">
-          <MixIcon width={35} height={35} />
+        <Link to={"/"}>
+          <CrumpledPaperIcon width={25} height={25} />
         </Link>
         <ul className="text-sm font-medium flex justify-center items-center gap-5">
           <li>Become a Host</li>
@@ -26,7 +26,7 @@ function Profile() {
       <Suspense fallback={<ProfileLoader />}>
         <ProfileContent data={data} />
       </Suspense>
-    </div>
+    </main>
   );
 }
 

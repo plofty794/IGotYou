@@ -10,6 +10,9 @@ import { AxiosResponse } from "axios";
 import ProfileButtonGroup from "./ProfileButtonGroup";
 import { Skeleton } from "@/components/ui/skeleton";
 import PersonalInfoSheet from "./PersonalInfoSheet";
+import { auth } from "@/firebase config/config";
+import { Button } from "@/components/ui/button";
+import useVerifyEmail from "@/hooks/useVerifyEmail";
 
 type TProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,6 +20,8 @@ type TProps = {
 };
 
 function ProfileContent({ data }: TProps) {
+  const { mutate } = useVerifyEmail();
+
   return (
     <section className="flex gap-24 px-40 mt-14">
       <div className="flex flex-col gap-7 justify-between">
@@ -54,7 +59,11 @@ function ProfileContent({ data }: TProps) {
                   height={22}
                   className="inline-block bg-[#39c152] rounded-full"
                 />{" "}
-                <span className="text-[#222222] ml-2">Email address</span>
+                <span className="text-[#222222] ml-2 text-sm">
+                  {auth.currentUser?.emailVerified
+                    ? "Email address (verified)"
+                    : "Email address (not verified)"}
+                </span>
               </>
             ) : (
               <Skeleton className="h-4 w-[250px]" />
@@ -64,12 +73,30 @@ function ProfileContent({ data }: TProps) {
         <Card className="w-[342px]">
           <CardHeader className="text-[#222222] px-6 pt-6 pb-2">
             <span className="text-lg font-semibold">
-              <IdCardIcon width={40} height={40} />
+              <IdCardIcon width={35} height={35} />
             </span>
-            <p className="font-semibold text-md">Personal info</p>
+            <p
+              className={`font-semibold ${
+                auth.currentUser?.emailVerified ? "text-sm" : "text-xs"
+              }`}
+            >
+              {auth.currentUser?.emailVerified
+                ? "Personal info"
+                : "Verify your email to edit your Personal info"}
+            </p>
           </CardHeader>
           <CardContent>
-            <PersonalInfoSheet />
+            {auth.currentUser?.emailVerified ? (
+              <PersonalInfoSheet />
+            ) : (
+              <Button
+                onClick={() => mutate({ email_verified: true })}
+                size={"sm"}
+                className="font-semibold bg-[#222222]"
+              >
+                Verify email
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>

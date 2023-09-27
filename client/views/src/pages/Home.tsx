@@ -1,13 +1,13 @@
-import UserDropDownButton from "@/partials/UserDropDownButton";
-import { MixIcon } from "@radix-ui/react-icons";
+import UserDropDownButton from "@/partials/components/UserDropDownButton";
+import { CrumpledPaperIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="min-h-screen bg-[#F2F2F2]">
+    <main className="min-h-screen bg-[#F2F2F2]">
       <nav className="bg-white shadow py-5 px-20 flex justify-between items-center">
-        <Link to={"/"} className="font-bold text-xl bg-[#FF7262] text-white">
-          <MixIcon width={35} height={35} />
+        <Link to={"/"}>
+          <CrumpledPaperIcon width={25} height={25} />
         </Link>
         <ul className="text-sm font-medium flex justify-center items-center gap-5">
           <li>Become a Host</li>
@@ -15,7 +15,10 @@ function Home() {
           <UserDropDownButton />
         </ul>
       </nav>
-    </div>
+      <section>
+        <h1>HOME</h1>
+      </section>
+    </main>
   );
 }
 

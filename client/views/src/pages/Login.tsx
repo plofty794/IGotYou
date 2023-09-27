@@ -18,7 +18,7 @@ import {
 import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
-import { MixIcon } from "@radix-ui/react-icons";
+import { CrumpledPaperIcon } from "@radix-ui/react-icons";
 
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
@@ -56,9 +56,8 @@ function Login() {
       </Link>
       <div className="flex gap-1 font-medium">
         <h1 className="text-lg text-center">Sign in to </h1>
-        <span className="bg-[#FF7262] text-white">
-          <MixIcon width={35} height={35} />
-        </span>
+
+        <CrumpledPaperIcon width={25} height={25} />
       </div>
       <div className="flex flex-col gap-4">
         <form
@@ -89,8 +88,19 @@ function Login() {
           {errors.password && (
             <ErrorMessage message={errors.password.message} />
           )}
-          <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs">
+          <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold">
             {isLoading ? "Signing in..." : "Sign in"}
+          </Button>
+          <Button className="text-[#222222] border border-black hover:bg-[#F2F2F2] mt-3 text-xs font-semibold">
+            <img
+              width={20}
+              height={20}
+              className="mr-2"
+              loading="lazy"
+              src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+              alt="Google logo"
+            />{" "}
+            Continue with Google
           </Button>
         </form>
         <div className="flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
@@ -109,9 +119,11 @@ function Login() {
               <DialogHeader>
                 <DialogTitle className="text-lg text-center">
                   Sign up to{" "}
-                  <span className="font-bold text-2xl text-[#222222]">
-                    IGotYou
-                  </span>
+                  <CrumpledPaperIcon
+                    className="inline-block"
+                    width={25}
+                    height={25}
+                  />
                 </DialogTitle>
               </DialogHeader>
               <Register />

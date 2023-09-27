@@ -89,7 +89,7 @@ function Register() {
             <ErrorMessage message={errors.confirmPassword.message} />
           )}
           <div className="mt-1 flex flex-col">
-            <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-1 text-xs">
+            <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-1 text-xs font-semibold">
               {isLoading ? "Signing up..." : "Sign up"}
             </Button>
           </div>

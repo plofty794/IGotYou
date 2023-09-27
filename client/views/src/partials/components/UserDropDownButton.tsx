@@ -12,11 +12,11 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TextAlignJustifyIcon } from "@radix-ui/react-icons";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { useUserStore } from "@/store/userStore";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { auth } from "../firebase config/config";
+import { auth } from "../../firebase config/config";
 import { User } from "firebase/auth";
 
 export function UserDropDownButton() {
@@ -41,7 +41,7 @@ export function UserDropDownButton() {
           className="rounded-2xl bg-[#F2F2F2] border border-neutral-300"
           variant="secondary"
         >
-          <TextAlignJustifyIcon width={20} height={20} />
+          <HamburgerMenuIcon width={15} height={15} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 absolute left-[-200px] font-medium">
