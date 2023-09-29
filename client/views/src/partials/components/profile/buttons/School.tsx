@@ -70,7 +70,7 @@ function School() {
           </DialogTitle>
         </DialogHeader>
         {data?.data?.school ? (
-          <form onSubmit={handleSchoolSubmit} className="mt-4">
+          <div className="mt-4">
             <p className="text-sm font-medium mb-2">{data?.data.school}</p>
             <div className="flex gap-2 items-center pt-2">
               <Button
@@ -82,7 +82,7 @@ function School() {
                 Delete
               </Button>
             </div>
-          </form>
+          </div>
         ) : (
           <form onSubmit={handleSchoolSubmit} className="mt-4">
             <Label className="text-sm font-medium" htmlFor="school">

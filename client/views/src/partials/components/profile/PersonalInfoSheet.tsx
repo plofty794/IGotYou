@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetClose,
@@ -11,7 +9,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
 import { QueryState, useQueryClient } from "@tanstack/react-query";
+import { Separator } from "@/components/ui/separator";
+import CollapsibleUsername from "./collapsibles/CollapsibleUsername";
+import CollapsibleEmail from "./collapsibles/CollapsibleEmail";
+import CollapsiblePhoneNumber from "./collapsibles/CollapsiblePhoneNumber";
 
 type TData = {
   email: string;
@@ -35,10 +38,10 @@ function PersonalInfoSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button className="font-semibold" variant="outline">
-          Open sheet
+          Edit info
         </Button>
       </SheetTrigger>
-      <SheetContent side={"top"}>
+      <SheetContent className="profile-sheet overflow-auto" side={"left"}>
         <SheetHeader>
           <SheetTitle>Edit Personal info</SheetTitle>
           <SheetDescription>
@@ -46,39 +49,21 @@ function PersonalInfoSheet() {
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Legal name
-            </Label>
-            <Input autoFocus id="name" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Email
-            </Label>
-            <Input id="name" value={data?.data?.email} className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              value={data?.data?.username}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Phone number
-            </Label>
-            <Input id="username" className="col-span-3" />
-          </div>
+          <CollapsibleUsername data={data} />
+          <Separator />
+          <CollapsibleEmail data={data} />
+          <Separator />
+          <CollapsiblePhoneNumber data={data} />
+          <Separator />
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button className="bg-[#222222] font-semibold" type="submit">
-              Save changes
+            <Button
+              size={"lg"}
+              className="bg-[#222222] font-semibold text-md"
+              type="submit"
+            >
+              Close
             </Button>
           </SheetClose>
         </SheetFooter>

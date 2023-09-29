@@ -21,7 +21,7 @@ function RootLayout() {
             </NavLink>
           </ul>
         </nav>
-        <section>{<Outlet />}</section>
+        <section className="my-5">{<Outlet />}</section>
       </main>
     </>
   );

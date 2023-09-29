@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
+import { DotPulse } from "@uiball/loaders";
 
 function Register() {
   const { mutate, isLoading } = useRegister();
@@ -90,7 +91,11 @@ function Register() {
           )}
           <div className="mt-1 flex flex-col">
             <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-1 text-xs font-semibold">
-              {isLoading ? "Signing up..." : "Sign up"}
+              {isLoading ? (
+                <DotPulse size={25} speed={1} color="white" />
+              ) : (
+                "Sign up"
+              )}
             </Button>
           </div>
         </form>

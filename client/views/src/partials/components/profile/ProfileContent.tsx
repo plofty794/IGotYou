@@ -75,14 +75,13 @@ function ProfileContent({ data }: TProps) {
             <span className="text-lg font-semibold">
               <IdCardIcon width={35} height={35} />
             </span>
-            <p
-              className={`font-semibold ${
-                auth.currentUser?.emailVerified ? "text-sm" : "text-xs"
-              }`}
-            >
+            <p className="font-semibold text-md">
               {auth.currentUser?.emailVerified
                 ? "Personal info"
                 : "Verify your email to edit your Personal info"}
+            </p>
+            <p className="text-xs font-medium">
+              Provide personal details and how we can reach you
             </p>
           </CardHeader>
           <CardContent>
@@ -105,7 +104,7 @@ function ProfileContent({ data }: TProps) {
           <CardHeader className="text-[#222222] text-4xl font-semibold">
             <h2>Your profile</h2>
           </CardHeader>
-          <div className="text-[#222222] font-medium px-6 py-2">
+          <div className="text-[#222222] text-sm font-medium px-6 py-2">
             <h3>
               The information you share will be used across IGotYou to help
               other guests and hosts get to know you.

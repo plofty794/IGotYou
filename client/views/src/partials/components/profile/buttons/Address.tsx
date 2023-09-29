@@ -71,7 +71,7 @@ function Address() {
           </DialogTitle>
         </DialogHeader>
         {data?.data?.address ? (
-          <form onSubmit={handleAddressSubmit} className="mt-4">
+          <div className="mt-4">
             <p className="text-sm font-medium mb-2">{data?.data.address}</p>
             <div className="flex gap-2 items-center pt-2">
               <Button
@@ -83,7 +83,7 @@ function Address() {
                 Delete
               </Button>
             </div>
-          </form>
+          </div>
         ) : (
           <form onSubmit={handleAddressSubmit} className="mt-4">
             <Label className="text-sm font-medium" htmlFor="address">

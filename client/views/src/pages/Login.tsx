@@ -19,6 +19,9 @@ import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
 import { CrumpledPaperIcon } from "@radix-ui/react-icons";
+import { signInWithPopup } from "firebase/auth";
+import { GoogleAuth, auth } from "@/firebase config/config";
+import { DotPulse } from "@uiball/loaders";
 
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
@@ -46,8 +49,13 @@ function Login() {
     mutate(data);
   }
 
+  async function handleGoogleSignIn() {
+    const { user } = await signInWithPopup(auth, GoogleAuth);
+    console.log(user);
+  }
+
   return (
-    <div className="min-h-screen flex flex-col gap-5 justify-center items-center">
+    <div className="min-h-screen bg-[#F2F2F2] flex flex-col gap-5 justify-center items-center">
       <Link
         to={"/get-started"}
         className="font-medium absolute top-0 left-0 text-xs p-2 hover:underline"
@@ -62,7 +70,7 @@ function Login() {
       <div className="flex flex-col gap-4">
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="flex flex-col gap-2 border border-slate-300 rounded-md shadow px-4 py-5 w-80 mx-auto"
+          className="bg-white flex flex-col gap-2 border border-slate-300 rounded-md shadow px-4 py-5 w-80 mx-auto"
         >
           <Label className="text-xs font-semibold" htmlFor="email">
             Email
@@ -89,9 +97,17 @@ function Login() {
             <ErrorMessage message={errors.password.message} />
           )}
           <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold">
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? (
+              <DotPulse size={25} speed={1} color="white" />
+            ) : (
+              "Sign in"
+            )}
           </Button>
-          <Button className="text-[#222222] border border-black hover:bg-[#F2F2F2] mt-3 text-xs font-semibold">
+          <Button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="text-[#222222] border border-black hover:bg-[#F2F2F2] mt-2 text-xs font-semibold"
+          >
             <img
               width={20}
               height={20}
@@ -103,13 +119,13 @@ function Login() {
             Continue with Google
           </Button>
         </form>
-        <div className="flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
+        <div className="bg-white flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
           <p className="font-semibold">New to IGotYou? </p>
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                className="text-white ml-1 font-semibold bg-[#222222] hover:bg-[#2d2d2d]"
-                variant={"secondary"}
+                className="text-[#9D54FC] p-0 ml-1 font-semibold"
+                variant={"link"}
                 size={"sm"}
               >
                 Create an account

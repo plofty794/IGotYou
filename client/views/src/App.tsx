@@ -14,6 +14,7 @@ import About from "./pages/About";
 import { auth } from "./firebase config/config";
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   const item = localStorage.getItem("ID");
@@ -23,6 +24,7 @@ function App() {
     auth.onAuthStateChanged((user) => {
       if (!user) return setUser(null);
       setUser(user);
+      console.log(User);
     });
   }, []);
 
@@ -43,20 +45,14 @@ function App() {
           />
           <Route
             path="/login"
-            element={
-              item ? (
-                <Navigate replace to={`/users/show/${User && User.uid}`} />
-              ) : (
-                <Login />
-              )
-            }
+            element={item ? <Navigate replace to={"/"} /> : <Login />}
           />
           <Route
             path={"/users/show/:id"}
             element={item ? <Profile /> : <Navigate replace to={"/login"} />}
           />
 
-          <Route path="*" element={<h1>404 Page not found</h1>} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
       <Toaster />
