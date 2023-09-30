@@ -14,16 +14,23 @@ import { QueryState, useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
 import CollapsibleUsername from "./collapsibles/CollapsibleUsername";
 import CollapsibleEmail from "./collapsibles/CollapsibleEmail";
-import CollapsiblePhoneNumber from "./collapsibles/CollapsiblePhoneNumber";
+import { Suspense, lazy } from "react";
+
+const CollapsiblePhoneNumber = lazy(
+  () => import("./collapsibles/CollapsiblePhoneNumber")
+);
 
 type TData = {
-  email: string;
-  username: string;
-  hostStatus: boolean;
+  email?: string;
+  username?: string;
+  hostStatus?: boolean;
   work?: string;
   address?: string;
   funFact?: string;
-  school: string;
+  school?: string;
+  email_verified: boolean;
+  mobile_phone: string;
+  mobile_verified: boolean;
 };
 
 function PersonalInfoSheet() {
@@ -41,7 +48,10 @@ function PersonalInfoSheet() {
           Edit info
         </Button>
       </SheetTrigger>
-      <SheetContent className="profile-sheet overflow-auto" side={"left"}>
+      <SheetContent
+        className="profile-sheet overflow-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-gray-200"
+        side={"left"}
+      >
         <SheetHeader>
           <SheetTitle>Edit Personal info</SheetTitle>
           <SheetDescription>
@@ -53,14 +63,16 @@ function PersonalInfoSheet() {
           <Separator />
           <CollapsibleEmail data={data} />
           <Separator />
-          <CollapsiblePhoneNumber data={data} />
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <CollapsiblePhoneNumber data={data} />
+          </Suspense>
           <Separator />
         </div>
         <SheetFooter>
           <SheetClose asChild>
             <Button
               size={"lg"}
-              className="bg-[#222222] font-semibold text-md"
+              className="bg-[#222222] font-semibold text-md mt-4"
               type="submit"
             >
               Close

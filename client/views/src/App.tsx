@@ -24,24 +24,20 @@ function App() {
     auth.onAuthStateChanged((user) => {
       if (!user) return setUser(null);
       setUser(user);
-      console.log(User);
     });
-  }, []);
+  }, [User]);
 
   return (
     <>
       <Router>
         <Routes>
           <Route element={<RootLayout />}>
-            <Route
-              path="/get-started"
-              element={item ? <Navigate replace to={"/"} /> : <Hero />}
-            />
+            <Route path="/get-started" element={<Hero />} />
             <Route path="/about-us" element={<About />} />
           </Route>
           <Route
             path="/"
-            element={item ? <Home /> : <Navigate replace to={"/get-started"} />}
+            element={item ? <Home /> : <Navigate replace to={"/login"} />}
           />
           <Route
             path="/login"

@@ -33,11 +33,30 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
-    const { email, username, hostStatus, address, funFact, school, work } =
-      user;
-    res
-      .status(200)
-      .json({ email, username, hostStatus, address, funFact, school, work });
+    const {
+      email,
+      username,
+      hostStatus,
+      address,
+      funFact,
+      school,
+      work,
+      email_verified,
+      mobile_verified,
+      mobile_phone,
+    } = user;
+    res.status(200).json({
+      email,
+      username,
+      hostStatus,
+      address,
+      funFact,
+      school,
+      work,
+      email_verified,
+      mobile_verified,
+      mobile_phone,
+    });
   } catch (error) {
     next(error);
   }

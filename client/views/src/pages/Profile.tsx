@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import ProfileLoader from "@/partials/loaders/ProfileLoader";
 import { Link } from "react-router-dom";
@@ -11,6 +11,10 @@ const ProfileContent = lazy(
 
 function Profile() {
   const { data } = useGetUserProfile();
+
+  useEffect(() => {
+    document.title = "IGotYou - Profile";
+  }, []);
 
   return (
     <main className="min-h-full bg-[#F2F2F2] pb-10">

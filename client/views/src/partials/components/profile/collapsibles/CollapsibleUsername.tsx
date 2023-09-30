@@ -10,13 +10,15 @@ import { QueryState } from "@tanstack/react-query";
 import { useState } from "react";
 
 type TData = {
-  email: string;
-  username: string;
-  hostStatus: boolean;
+  email?: string;
+  username?: string;
+  hostStatus?: boolean;
   work?: string;
   address?: string;
   funFact?: string;
-  school: string;
+  school?: string;
+  email_verified: boolean;
+  mobile_phone: string;
 };
 
 type TCollapsibleData = {
@@ -28,12 +30,10 @@ function CollapsibleUsername({ data }: TCollapsibleData) {
 
   return (
     <Collapsible open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <div className="flex justify-between">
-        <div>
-          <Label className="text-md" htmlFor="username">
-            Username
-          </Label>
-          <p id="username" className={`text-sm ${isOpen ? "hidden" : ""}`}>
+      <div className="flex justify-between items-start">
+        <div className="text-sm">
+          <Label htmlFor="username">Username</Label>
+          <p id="username" className={`mt-2 ${isOpen ? "hidden" : ""}`}>
             {data?.data?.username}
           </p>
         </div>
@@ -44,7 +44,7 @@ function CollapsibleUsername({ data }: TCollapsibleData) {
         </CollapsibleTrigger>
       </div>
       <CollapsibleContent>
-        <span className="text-sm">
+        <span className="text-xs">
           This is the name on your IGotYou account.
         </span>
         <div className="mt-4 flex gap-2">

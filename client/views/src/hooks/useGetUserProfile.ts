@@ -7,7 +7,6 @@ function useGetUserProfile() {
   const [ID, setID] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "IGotYou - User Profile";
     const ID = localStorage.getItem("ID");
     ID && setID(ID);
   }, []);

@@ -75,7 +75,10 @@ function Address() {
             <p className="text-sm font-medium mb-2">{data?.data.address}</p>
             <div className="flex gap-2 items-center pt-2">
               <Button
-                onClick={() => mutate({ address: "" })}
+                onClick={() => {
+                  setAddress("");
+                  mutate({ address: "" });
+                }}
                 className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
                 size={"lg"}
                 variant={"secondary"}

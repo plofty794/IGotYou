@@ -10,9 +10,9 @@ import { AxiosResponse } from "axios";
 import ProfileButtonGroup from "./ProfileButtonGroup";
 import { Skeleton } from "@/components/ui/skeleton";
 import PersonalInfoSheet from "./PersonalInfoSheet";
-import { auth } from "@/firebase config/config";
 import { Button } from "@/components/ui/button";
 import useVerifyEmail from "@/hooks/useVerifyEmail";
+import { auth } from "@/firebase config/config";
 
 type TProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,7 +28,7 @@ function ProfileContent({ data }: TProps) {
         <Card className="flex flex-col justify-center items-center gap-5 w-[342px] px-28 py-5 shadow">
           <CardHeader className="text-white rounded-full w-[100px] h-[100px] bg-[#222222]">
             <span className="text-center text-5xl font-semibold">
-              {data?.data.username[0].toUpperCase() ?? "?"}
+              {data?.data?.username[0].toUpperCase() ?? "?"}
             </span>
           </CardHeader>
           <CardFooter className="p-0 flex flex-col">
@@ -50,9 +50,9 @@ function ProfileContent({ data }: TProps) {
               )}
             </span>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col">
             {data?.data.email ? (
-              <>
+              <div className="my-1">
                 <CheckCircledIcon
                   color="#FFF"
                   width={22}
@@ -60,13 +60,28 @@ function ProfileContent({ data }: TProps) {
                   className="inline-block bg-[#39c152] rounded-full"
                 />{" "}
                 <span className="text-[#222222] ml-2 text-sm">
-                  {auth.currentUser?.emailVerified
+                  {data.data?.email_verified
                     ? "Email address (verified)"
                     : "Email address (not verified)"}
                 </span>
-              </>
+              </div>
             ) : (
               <Skeleton className="h-4 w-[250px]" />
+            )}
+            {data?.data.mobile_phone && (
+              <div className="my-1">
+                <CheckCircledIcon
+                  color="#FFF"
+                  width={22}
+                  height={22}
+                  className="inline-block bg-[#39c152] rounded-full"
+                />{" "}
+                <span className="text-[#222222] ml-2 text-sm">
+                  {data?.data.mobile_verified
+                    ? "Mobile phone (verified)"
+                    : "Mobile phone (not verified)"}
+                </span>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -76,7 +91,7 @@ function ProfileContent({ data }: TProps) {
               <IdCardIcon width={35} height={35} />
             </span>
             <p className="font-semibold text-md">
-              {auth.currentUser?.emailVerified
+              {data?.data?.email_verified
                 ? "Personal info"
                 : "Verify your email to edit your Personal info"}
             </p>
@@ -85,11 +100,13 @@ function ProfileContent({ data }: TProps) {
             </p>
           </CardHeader>
           <CardContent>
-            {auth.currentUser?.emailVerified ? (
+            {data?.data?.email_verified ? (
               <PersonalInfoSheet />
             ) : (
               <Button
-                onClick={() => mutate({ email_verified: true })}
+                onClick={() =>
+                  mutate({ email_verified: auth.currentUser?.emailVerified })
+                }
                 size={"sm"}
                 className="font-semibold bg-[#222222]"
               >
@@ -111,7 +128,7 @@ function ProfileContent({ data }: TProps) {
             </h3>
           </div>
           <CardFooter className="mt-2 text-[#3c3b3b]">
-            <div className="w-full grid grid-cols-2 gap-2 ">
+            <div className="w-full grid lg:grid-cols-2 md:grid-cols-1 gap-2 ">
               <ProfileButtonGroup />
             </div>
           </CardFooter>

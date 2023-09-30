@@ -41,7 +41,19 @@ function School() {
 
   function handleSchoolSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!school) return setErrorMessage("Invalid school name code ");
+    console.log(school);
+    if (!school) {
+      setSchool("");
+      return setErrorMessage("Invalid school name");
+    }
+    if (
+      !school.includes("University") &&
+      !school.includes("College") &&
+      !school.includes("School")
+    ) {
+      setSchool("");
+      return setErrorMessage("Enter a School/University/College");
+    }
     mutate({ school });
     setErrorMessage("");
   }
@@ -74,7 +86,10 @@ function School() {
             <p className="text-sm font-medium mb-2">{data?.data.school}</p>
             <div className="flex gap-2 items-center pt-2">
               <Button
-                onClick={() => mutate({ school: "" })}
+                onClick={() => {
+                  setSchool("");
+                  mutate({ school: "" });
+                }}
                 className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
                 size={"lg"}
                 variant={"secondary"}
@@ -92,7 +107,6 @@ function School() {
               <div className="geo mb-1">
                 <GeoapifyGeocoderAutocomplete
                   filterByCountryCode={["ph"]}
-                  placeSelect={(value) => console.log(value)}
                   allowNonVerifiedHouseNumber={false}
                   skipIcons={true}
                   placeholder="Enter school name"

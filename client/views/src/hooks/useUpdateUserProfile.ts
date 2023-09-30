@@ -5,10 +5,15 @@ import { toast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
 
 type TUserUpdates = {
-  address?: string;
-  school?: string;
+  email?: string;
+  username?: string;
+  hostStatus?: boolean;
   work?: string;
+  address?: string;
   funFact?: string;
+  school?: string;
+  email_verified?: boolean;
+  mobile_phone?: string;
 };
 
 function useUpdateUserProfile() {

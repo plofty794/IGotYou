@@ -62,7 +62,7 @@ function FunFact() {
         </span>
         {data?.data?.funFact
           ? `Fun Fact about you: ${data?.data.funFact}`
-          : "My Fun Fact:"}
+          : "My Fun Fact"}
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>

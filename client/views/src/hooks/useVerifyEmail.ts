@@ -5,13 +5,14 @@ import { toast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
 import { sendEmailVerification } from "firebase/auth";
 import { auth } from "@/firebase config/config";
+import { FirebaseError } from "firebase/app";
 
 type TUserUpdates = {
   address?: string;
   school?: string;
   work?: string;
   funFact?: string;
-  email_verified: boolean;
+  email_verified?: boolean;
 };
 
 function useVerifyEmail() {
@@ -23,12 +24,22 @@ function useVerifyEmail() {
     const ID = localStorage.getItem("ID");
     ID && setID(ID);
   }, []);
+
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
-      await sendEmailVerification(auth.currentUser!);
-      await auth.currentUser?.reload();
-      await auth.updateCurrentUser(auth.currentUser);
-      return axiosPrivate.patch(`/api/users/update/${ID}`, { ...data });
+      try {
+        await sendEmailVerification(auth.currentUser!);
+        await auth.currentUser?.reload();
+        await auth.updateCurrentUser(auth.currentUser);
+        return axiosPrivate.patch(`/api/users/update/${ID}`, { ...data });
+      } catch (err) {
+        const error = err as FirebaseError;
+        toast({
+          title: "Oops! An error occurred.",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     },
     onSuccess: async (_, variables) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

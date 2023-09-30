@@ -1,8 +1,13 @@
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import { CrumpledPaperIcon } from "@radix-ui/react-icons";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
+  useEffect(() => {
+    document.title = "IGotYou";
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#F2F2F2]">
       <nav className="bg-white shadow py-5 px-20 flex justify-between items-center">
