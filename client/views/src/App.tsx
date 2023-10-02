@@ -1,20 +1,21 @@
 import {
-  BrowserRouter as Router,
-  Routes,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
   Route,
   Navigate,
 } from "react-router-dom";
 import Hero from "./pages/Hero";
 import RootLayout from "./RootLayout";
 import Login from "./pages/Login";
-import { Toaster } from "./components/ui/toaster";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import { auth } from "./firebase config/config";
-import { User } from "firebase/auth";
-import { useEffect, useState } from "react";
 import PageNotFound from "./pages/PageNotFound";
+import { useEffect, useState } from "react";
+import { User } from "firebase/auth";
+import VerifyPhone from "./pages/PhoneVerify";
 
 function App() {
   const item = localStorage.getItem("ID");
@@ -23,37 +24,53 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (!user) return setUser(null);
-      setUser(user);
+      user && setUser(user);
     });
-  }, [User]);
+  }, [User, item]);
 
-  return (
-    <>
-      <Router>
-        <Routes>
-          <Route element={<RootLayout />}>
-            <Route path="/get-started" element={<Hero />} />
-            <Route path="/about-us" element={<About />} />
-          </Route>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route element={<RootLayout />}>
+          <Route path="/get-started" element={<Hero />} />
+          <Route path="/about-us" element={<About />} />
+        </Route>
+        <Route>
           <Route
             path="/"
-            element={item ? <Home /> : <Navigate replace to={"/login"} />}
+            element={
+              User ?? item ? <Home /> : <Navigate replace to={"/login"} />
+            }
           />
+          <Route
+            path="/users/show/:id"
+            element={
+              User ?? item ? <Profile /> : <Navigate replace to={"/login"} />
+            }
+          />
+          <Route
+            path="/account/verify-phone"
+            element={
+              User ?? item ? (
+                <VerifyPhone />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+        </Route>
+        <Route>
           <Route
             path="/login"
-            element={item ? <Navigate replace to={"/"} /> : <Login />}
+            element={User ?? item ? <Navigate replace to={"/"} /> : <Login />}
           />
-          <Route
-            path={"/users/show/:id"}
-            element={item ? <Profile /> : <Navigate replace to={"/login"} />}
-          />
-
           <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Router>
-      <Toaster />
-    </>
+        </Route>
+      </>
+    )
   );
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;

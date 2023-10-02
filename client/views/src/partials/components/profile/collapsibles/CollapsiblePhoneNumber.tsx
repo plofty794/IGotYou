@@ -16,9 +16,9 @@ type TData = {
   address?: string;
   funFact?: string;
   school?: string;
-  email_verified: boolean;
-  mobile_phone: string;
-  mobile_verified: boolean;
+  emailVerified: boolean;
+  mobilePhone: string;
+  mobileVerified: boolean;
 };
 
 type TCollapsibleData = {
@@ -37,14 +37,14 @@ function CollapsiblePhoneNumber({ data }: TCollapsibleData) {
             id="phone-number"
             className={`text-xs mt-2 ${isOpen ? "hidden" : ""}`}
           >
-            {data?.data?.mobile_phone
+            {data?.data?.mobilePhone
               ? "Edit your mobile phone"
               : "Add a phone number so confirmed guests and IGotYou can get in touch."}
           </p>
         </div>
         <CollapsibleTrigger>
           <span className="underline font-medium text-sm">
-            {isOpen ? "Cancel" : data?.data?.mobile_phone ? "Edit" : "Add"}
+            {isOpen ? "Cancel" : data?.data?.mobilePhone ? "Edit" : "Add"}
           </span>
         </CollapsibleTrigger>
       </div>
@@ -54,8 +54,8 @@ function CollapsiblePhoneNumber({ data }: TCollapsibleData) {
         </span>
         <div className="mt-4 flex gap-2">
           <PhoneNumberSelect
-            mobile_phone={data?.data?.mobile_phone}
-            mobile_verified={data?.data?.mobile_verified}
+            mobilePhone={data?.data?.mobilePhone}
+            mobileVerified={data?.data?.mobileVerified}
           />
         </div>
       </CollapsibleContent>

@@ -15,20 +15,11 @@ import {
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { useUserStore } from "@/store/userStore";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { auth } from "../../firebase config/config";
-import { User } from "firebase/auth";
 
 export function UserDropDownButton() {
   const logOut = useUserStore((state) => state.logOutUser);
-  const [User, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (!user) return setUser(null);
-      setUser(user);
-    });
-  }, []);
+  const User = auth.currentUser;
 
   function handleSignOut() {
     logOut();

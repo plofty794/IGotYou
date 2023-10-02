@@ -12,8 +12,8 @@ type TUserUpdates = {
   address?: string;
   funFact?: string;
   school?: string;
-  email_verified?: boolean;
-  mobile_phone?: string;
+  emailVerified?: boolean;
+  mobilePhone?: string;
 };
 
 function useUpdateUserProfile() {

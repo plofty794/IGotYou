@@ -13,11 +13,11 @@ export const getUsers: RequestHandler = async (req, res, next) => {
     }
     const accounts = users.map((user) => ({
       username: user.username,
-      email: { email: user.email, isVerified: user.email_verified },
+      email: { email: user.email, isVerified: user.emailVerified },
       isHost: user.hostStatus,
       mobilePhone: {
-        contact: user.mobile_phone,
-        isVerified: user.mobile_verified,
+        contact: user.mobilePhone,
+        isVerified: user.mobileVerified,
       },
     }));
     res.status(200).json({ accounts });
@@ -41,9 +41,9 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
       funFact,
       school,
       work,
-      email_verified,
-      mobile_verified,
-      mobile_phone,
+      emailVerified,
+      mobileVerified,
+      mobilePhone,
     } = user;
     res.status(200).json({
       email,
@@ -53,9 +53,9 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
       funFact,
       school,
       work,
-      email_verified,
-      mobile_verified,
-      mobile_phone,
+      emailVerified,
+      mobileVerified,
+      mobilePhone,
     });
   } catch (error) {
     next(error);
@@ -66,6 +66,7 @@ type TCreateUser = {
   username?: string;
   email?: string;
   password?: string;
+  providerId?: string;
 };
 
 export const createUser: RequestHandler = async (req, res, next) => {
@@ -86,18 +87,21 @@ export const createUser: RequestHandler = async (req, res, next) => {
 type TUserLogIn = {
   email?: string;
   password?: string;
+  providerID: string;
 };
 
 export const logInUser: RequestHandler = async (req, res, next) => {
-  const { email, password }: TUserLogIn = req.body;
+  const { email, password, providerID }: TUserLogIn = req.body;
   try {
     const user = await Users.findOne({ email });
     if (!user) {
       throw createHttpError(400, "Email doesn't exist");
     }
-    const correctPassword = await bcrypt.compare(password!, user.password);
-    if (!correctPassword) {
-      throw createHttpError(400, "Incorrect password");
+    if (providerID === "password" && password != null) {
+      const correctPassword = await bcrypt.compare(password, user.password!);
+      if (!correctPassword) {
+        throw createHttpError(400, "Incorrect password");
+      }
     }
     const { _id, username } = user;
     res.status(200).json({ user: { _id, username } });
@@ -106,14 +110,48 @@ export const logInUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+type TUsername = {
+  username?: string;
+};
+
 export const updateUser: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
+  const { username }: TUsername = req.body;
   try {
+    const usernameExist = await Users.findOne({ username });
+    if (usernameExist) {
+      throw createHttpError(400, "Username already exist");
+    }
     const user = await Users.findByIdAndUpdate(id, { ...req.body });
     if (!user) {
       throw createHttpError(400, "Error updating user");
     }
     res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+type TGoogleSignIn = {
+  username: string;
+  email: string;
+  providerId: string;
+  emailVerified: boolean;
+};
+
+export const googleSignIn: RequestHandler = async (req, res, next) => {
+  const { email }: TGoogleSignIn = req.body;
+  try {
+    const userExist = await Users.findOne({ email });
+    if (userExist) {
+      return res
+        .status(200)
+        .json({ user: { _id: userExist._id, username: userExist.username } });
+    }
+    const newUser = await Users.create({ ...req.body });
+    res
+      .status(201)
+      .json({ user: { _id: newUser._id, username: newUser.username } });
   } catch (error) {
     next(error);
   }

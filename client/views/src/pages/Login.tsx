@@ -19,14 +19,14 @@ import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
 import { CrumpledPaperIcon } from "@radix-ui/react-icons";
-import { signInWithPopup } from "firebase/auth";
-import { GoogleAuth, auth } from "@/firebase config/config";
 import { DotPulse } from "@uiball/loaders";
+import useGoogleSignin from "@/hooks/useGoogleSignin";
 
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
 
 function Login() {
+  const googleSignIn = useGoogleSignin();
   useEffect(() => {
     document.title = "IGotYou - Sign in";
   }, []);
@@ -49,9 +49,8 @@ function Login() {
     mutate(data);
   }
 
-  async function handleGoogleSignIn() {
-    const { user } = await signInWithPopup(auth, GoogleAuth);
-    console.log(user);
+  function handleGoogleSignIn() {
+    googleSignIn.mutate();
   }
 
   return (

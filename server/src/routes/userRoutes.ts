@@ -4,6 +4,7 @@ import {
   deleteUser,
   getUserProfile,
   getUsers,
+  googleSignIn,
   logInUser,
   logOutUser,
   updateUser,
@@ -15,6 +16,7 @@ const router = Router();
 router.get("/users", getUsers);
 router.get("/users/profile/:id", authToken, getUserProfile);
 router.post("/users/login", logInUser);
+router.post("/users/login/google", googleSignIn);
 router.post("/users/register", createUser);
 router.patch("/users/update/:id", authToken, verifyUserUpdates, updateUser);
 router.delete("/users/logout", logOutUser);

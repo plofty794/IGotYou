@@ -12,7 +12,7 @@ type TUserUpdates = {
   school?: string;
   work?: string;
   funFact?: string;
-  email_verified?: boolean;
+  emailVerified?: boolean;
 };
 
 function useVerifyEmail() {
@@ -34,9 +34,15 @@ function useVerifyEmail() {
         return axiosPrivate.patch(`/api/users/update/${ID}`, { ...data });
       } catch (err) {
         const error = err as FirebaseError;
+        const message = (
+          error.code.split("/")[1].slice(0, 1).toUpperCase() +
+          error.code.split("/")[1].slice(1)
+        )
+          .split("-")
+          .join(" ");
         toast({
           title: "Oops! An error occurred.",
-          description: error.message,
+          description: message,
           variant: "destructive",
         });
       }

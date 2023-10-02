@@ -16,7 +16,6 @@ function Register() {
     register,
   } = useForm<RegisterSchema>({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -40,20 +39,6 @@ function Register() {
           onSubmit={handleSubmit(handleRegister)}
           className="flex flex-col gap-2 py-5 w-full mx-auto"
         >
-          <Label className="text-xs font-semibold" htmlFor="username">
-            Username
-          </Label>
-          <Input
-            id="username"
-            className="border-slate-700 text-xs font-medium"
-            autoFocus
-            autoComplete="username"
-            type="text"
-            {...register("username")}
-          />
-          {errors.username && (
-            <ErrorMessage message={errors.username.message} />
-          )}
           <Label className="text-xs font-semibold" htmlFor="email">
             Email
           </Label>

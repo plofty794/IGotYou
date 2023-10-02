@@ -4,8 +4,11 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { CheckCircledIcon, IdCardIcon } from "@radix-ui/react-icons";
-
+import {
+  CheckCircledIcon,
+  CrossCircledIcon,
+  IdCardIcon,
+} from "@radix-ui/react-icons";
 import { AxiosResponse } from "axios";
 import ProfileButtonGroup from "./ProfileButtonGroup";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,10 +28,12 @@ function ProfileContent({ data }: TProps) {
   return (
     <section className="flex gap-24 px-40 mt-14">
       <div className="flex flex-col gap-7 justify-between">
-        <Card className="flex flex-col justify-center items-center gap-5 w-[342px] px-28 py-5 shadow">
+        <Card className="flex flex-col justify-center items-center gap-5 w-[342px] px-22 py-5 shadow">
           <CardHeader className="text-white rounded-full w-[100px] h-[100px] bg-[#222222]">
             <span className="text-center text-5xl font-semibold">
-              {data?.data?.username[0].toUpperCase() ?? "?"}
+              {data?.data?.username
+                ? data?.data?.username[0].toUpperCase()
+                : "?"}
             </span>
           </CardHeader>
           <CardFooter className="p-0 flex flex-col">
@@ -46,12 +51,12 @@ function ProfileContent({ data }: TProps) {
               {data?.data.username ? (
                 data?.data.username + "'s confirmed information"
               ) : (
-                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[250px] mx-auto" />
               )}
             </span>
           </CardHeader>
           <CardContent className="flex flex-col">
-            {data?.data.email ? (
+            {data?.data.emailVerified ? (
               <div className="my-1">
                 <CheckCircledIcon
                   color="#FFF"
@@ -60,15 +65,23 @@ function ProfileContent({ data }: TProps) {
                   className="inline-block bg-[#39c152] rounded-full"
                 />{" "}
                 <span className="text-[#222222] ml-2 text-sm">
-                  {data.data?.email_verified
-                    ? "Email address (verified)"
-                    : "Email address (not verified)"}
+                  Email address (verified)
                 </span>
               </div>
             ) : (
-              <Skeleton className="h-4 w-[250px]" />
+              <div className="my-1">
+                <CrossCircledIcon
+                  color="#FFF"
+                  width={22}
+                  height={22}
+                  className="inline-block bg-[#e94242] rounded-full"
+                />{" "}
+                <span className="text-[#222222] ml-2 text-sm">
+                  Email address (not verified)
+                </span>
+              </div>
             )}
-            {data?.data.mobile_phone && (
+            {data?.data.mobileVerified ? (
               <div className="my-1">
                 <CheckCircledIcon
                   color="#FFF"
@@ -77,9 +90,19 @@ function ProfileContent({ data }: TProps) {
                   className="inline-block bg-[#39c152] rounded-full"
                 />{" "}
                 <span className="text-[#222222] ml-2 text-sm">
-                  {data?.data.mobile_verified
-                    ? "Mobile phone (verified)"
-                    : "Mobile phone (not verified)"}
+                  Mobile phone (verified)
+                </span>
+              </div>
+            ) : (
+              <div className="my-1">
+                <CrossCircledIcon
+                  color="#FFF"
+                  width={22}
+                  height={22}
+                  className="inline-block bg-[#e94242] rounded-full"
+                />{" "}
+                <span className="text-[#222222] ml-2 text-sm">
+                  Mobile phone (not verified)
                 </span>
               </div>
             )}
@@ -91,7 +114,7 @@ function ProfileContent({ data }: TProps) {
               <IdCardIcon width={35} height={35} />
             </span>
             <p className="font-semibold text-md">
-              {data?.data?.email_verified
+              {data?.data?.emailVerified
                 ? "Personal info"
                 : "Verify your email to edit your Personal info"}
             </p>
@@ -100,12 +123,12 @@ function ProfileContent({ data }: TProps) {
             </p>
           </CardHeader>
           <CardContent>
-            {data?.data?.email_verified ? (
+            {data?.data?.emailVerified ? (
               <PersonalInfoSheet />
             ) : (
               <Button
                 onClick={() =>
-                  mutate({ email_verified: auth.currentUser?.emailVerified })
+                  mutate({ emailVerified: auth.currentUser?.emailVerified })
                 }
                 size={"sm"}
                 className="font-semibold bg-[#222222]"

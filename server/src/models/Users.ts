@@ -4,10 +4,12 @@ import bcrypt from "bcrypt";
 
 const usersSchema = new Schema(
   {
+    providerId: {
+      type: String,
+    },
     //User Details
     username: {
       type: String,
-      required: true,
       unique: true,
     },
     email: {
@@ -15,20 +17,19 @@ const usersSchema = new Schema(
       required: true,
       unique: true,
     },
-    email_verified: {
+    emailVerified: {
       type: Boolean,
       default: false,
       required: true,
     },
     password: {
       type: String,
-      required: true,
     },
-    mobile_verified: {
+    mobileVerified: {
       type: Boolean,
       default: false,
     },
-    mobile_phone: {
+    mobilePhone: {
       type: String,
     },
     address: {
@@ -43,6 +44,9 @@ const usersSchema = new Schema(
     work: {
       type: String,
     },
+    photoUrl: {
+      type: String,
+    },
     // Host details
     hostStatus: { type: Boolean, default: false },
   },
@@ -50,8 +54,10 @@ const usersSchema = new Schema(
 );
 
 usersSchema.pre("save", async function () {
-  const hashedPassword = await bcrypt.hash(this.password, env.SALT);
-  this.password = hashedPassword;
+  if (this.password) {
+    const hashedPassword = await bcrypt.hash(this?.password, env.SALT);
+    this.password = hashedPassword;
+  }
 });
 
 export type TUser = InferSchemaType<typeof usersSchema>;

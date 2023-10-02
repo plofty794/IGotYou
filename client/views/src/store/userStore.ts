@@ -17,8 +17,8 @@ type TUser = {
 export const useUserStore = create<TUser>((set) => ({
   user: null,
   setUser: (payload) => {
-    set({ user: payload });
     localStorage.setItem("ID", payload._id);
+    set({ user: payload });
   },
   logOutUser: async () => {
     await auth.signOut();

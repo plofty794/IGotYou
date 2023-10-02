@@ -17,8 +17,8 @@ type TData = {
   address?: string;
   funFact?: string;
   school?: string;
-  email_verified: boolean;
-  mobile_phone: string;
+  emailVerified: boolean;
+  mobilePhone: string;
 };
 
 type TCollapsibleData = {

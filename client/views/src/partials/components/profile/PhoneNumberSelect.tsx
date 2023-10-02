@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import ErrorMessage from "../ErrorMessage";
 import ParsePhoneNumber from "libphonenumber-js/mobile"; // isPossiblePhoneNumber, // isValidPhoneNumber,
 import { CountryCode, getCountries, getPhoneCode } from "libphonenumber-js";
@@ -20,13 +20,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { DotPulse } from "@uiball/loaders";
+import { Link } from "react-router-dom";
 
 type TMobilePhone = {
-  mobile_phone?: string;
-  mobile_verified?: boolean;
+  mobilePhone?: string;
+  mobileVerified?: boolean;
 };
 
-function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
+function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
   const [countryCode, setCountryCode] = useState<CountryCode>("PH");
   const { mutate, isLoading } = useUpdateUserProfile();
   const {
@@ -36,7 +37,7 @@ function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
     setError,
   } = useForm<MobilePhoneSchema>({
     defaultValues: {
-      mobile_phone: mobile_phone ?? "",
+      mobile_phone: mobilePhone ?? "",
     },
     resolver: zodResolver(ZodMobilePhoneSchema),
   });
@@ -52,7 +53,7 @@ function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
     if (!phoneNumber?.isValid()) {
       return setError("mobile_phone", { message: "Invalid mobile phone" });
     }
-    mutate({ mobile_phone: phoneNumber.formatInternational() });
+    mutate({ mobilePhone: phoneNumber.formatInternational() });
   }
 
   return (
@@ -78,7 +79,7 @@ function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
         </SelectContent>
       </Select>
       <form onSubmit={handleSubmit(mobilePhoneSubmit)}>
-        {!mobile_phone && (
+        {!mobilePhone && (
           <span className="absolute z-10 bottom-[238px] right-[302px]">
             {"+" + getPhoneCode(countryCode)}
           </span>
@@ -86,7 +87,7 @@ function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
 
         <Input
           {...register("mobile_phone")}
-          className={`mb-1 ${mobile_phone ? "p-3" : "pl-12"}`}
+          className={`mb-1 ${mobilePhone ? "p-3" : "pl-12"}`}
           type="tel"
         />
         {errors.mobile_phone && (
@@ -94,7 +95,7 @@ function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
         )}
         <div className="flex gap-2">
           <Button size={"sm"} className="mt-3 w-max font-semibold bg-[#222222]">
-            {mobile_phone ? (
+            {mobilePhone ? (
               "Edit"
             ) : isLoading ? (
               <DotPulse size={25} speed={1} color="white" />
@@ -102,13 +103,15 @@ function PhoneNumberSelect({ mobile_phone, mobile_verified }: TMobilePhone) {
               "Add"
             )}
           </Button>
-          {!mobile_verified && (
-            <Button
-              size={"sm"}
-              className="mt-3 w-max font-semibold bg-[#222222]"
+          {!mobileVerified && (
+            <Link
+              to={"/account/verify-phone"}
+              className={`mt-3 w-max font-semibold bg-[#222222] ${buttonVariants(
+                { size: "sm" }
+              )}`}
             >
               Verify mobile phone
-            </Button>
+            </Link>
           )}
         </div>
       </form>
