@@ -1,4 +1,3 @@
-import { CrumpledPaperIcon } from "@radix-ui/react-icons";
 import { NavLink, Outlet } from "react-router-dom";
 
 function RootLayout() {
@@ -7,7 +6,14 @@ function RootLayout() {
       <main className="min-h-screen">
         <nav className="text-slate-950 flex justify-between items-center px-12 py-6 shadow">
           <div className="-tracking-wide font-bold text-xl flex items-center justify-center gap-2 pointer-events-none">
-            <CrumpledPaperIcon width={25} height={25} />
+            <span>
+              <img
+                className="w-[40px] h-[40px]"
+                loading="lazy"
+                src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
+                alt="logo"
+              />
+            </span>
           </div>
           <ul className="font-semibold text-sm flex justify-center items-center gap-8">
             <NavLink className="hover:text-[#A259FF]" to={"/about-us"}>

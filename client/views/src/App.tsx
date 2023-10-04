@@ -16,6 +16,7 @@ import PageNotFound from "./pages/PageNotFound";
 import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import VerifyPhone from "./pages/PhoneVerify";
+import { verifyPhoneLoader } from "./constants/API_Keys";
 
 function App() {
   const item = localStorage.getItem("ID");
@@ -50,6 +51,7 @@ function App() {
           />
           <Route
             path="/account/verify-phone"
+            loader={verifyPhoneLoader}
             element={
               User ?? item ? (
                 <VerifyPhone />

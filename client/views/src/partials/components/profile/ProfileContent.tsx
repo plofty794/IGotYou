@@ -9,6 +9,7 @@ import {
   CrossCircledIcon,
   IdCardIcon,
 } from "@radix-ui/react-icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AxiosResponse } from "axios";
 import ProfileButtonGroup from "./ProfileButtonGroup";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,13 +29,16 @@ function ProfileContent({ data }: TProps) {
   return (
     <section className="flex gap-24 px-40 mt-14">
       <div className="flex flex-col gap-7 justify-between">
-        <Card className="flex flex-col justify-center items-center gap-5 w-[342px] px-22 py-5 shadow">
-          <CardHeader className="text-white rounded-full w-[100px] h-[100px] bg-[#222222]">
-            <span className="text-center text-5xl font-semibold">
-              {data?.data?.username
-                ? data?.data?.username[0].toUpperCase()
-                : "?"}
-            </span>
+        <Card className="flex flex-col justify-center items-center w-[342px] px-22 py-5 shadow">
+          <CardHeader className="p-4">
+            <Avatar className="w-[80px] h-[80px]">
+              <AvatarImage
+                loading="lazy"
+                src="https://github.com/shadcn.png"
+                alt="@shadcn"
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
           </CardHeader>
           <CardFooter className="p-0 flex flex-col">
             <span className="text-[#222222] text-2xl font-semibold">

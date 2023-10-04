@@ -3,7 +3,6 @@ import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
-import { DecodedIdToken } from "firebase-admin/auth";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
   try {
@@ -21,6 +20,19 @@ export const getUsers: RequestHandler = async (req, res, next) => {
       },
     }));
     res.status(200).json({ accounts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserPhone: RequestHandler = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await Users.findById(id);
+    if (!user) {
+      throw createHttpError(400, "No account with that id");
+    }
+    res.status(200).json({ user: { mobilePhone: user.mobilePhone } });
   } catch (error) {
     next(error);
   }

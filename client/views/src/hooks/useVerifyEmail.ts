@@ -48,6 +48,7 @@ function useVerifyEmail() {
       }
     },
     onSuccess: async (_, variables) => {
+      console.log("Success");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       queryClient.setQueryData(["profile", ID && ID], (prevData: any) => {
         return { data: { ...prevData.data, ...variables } };
@@ -55,7 +56,7 @@ function useVerifyEmail() {
       toast({
         title: "Verification email has been sent",
         description: "Reload this page after verifying your email",
-        className: "bg-[#F2F2F2]",
+        className: "bg-[#FFF] text-[#222222]",
       });
     },
     onError(err) {

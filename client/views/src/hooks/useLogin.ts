@@ -24,6 +24,7 @@ function useLogin() {
         data.user.username &&
           toast({
             title: `Welcome, ${data.user.username} 👋`,
+            className: "bg-[#FFF] text-[#222222]",
           });
         return setUser({ ...data.user });
       } catch (err) {

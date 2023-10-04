@@ -18,7 +18,6 @@ import {
 import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
-import { CrumpledPaperIcon } from "@radix-ui/react-icons";
 import { DotPulse } from "@uiball/loaders";
 import useGoogleSignin from "@/hooks/useGoogleSignin";
 
@@ -61,10 +60,16 @@ function Login() {
       >
         Back to Homepage
       </Link>
-      <div className="flex gap-1 font-medium">
+      <div className="flex items-center gap-2 font-medium">
         <h1 className="text-lg text-center">Sign in to </h1>
-
-        <CrumpledPaperIcon width={25} height={25} />
+        <span>
+          <img
+            className="w-[40px] h-[40px]"
+            loading="lazy"
+            src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
+            alt="logo"
+          />
+        </span>
       </div>
       <div className="flex flex-col gap-4">
         <form
@@ -95,6 +100,12 @@ function Login() {
           {errors.password && (
             <ErrorMessage message={errors.password.message} />
           )}
+          <Link
+            to={"/forgot-password"}
+            className="text-xs text-end underline text-[#222222] font-medium"
+          >
+            Forgot password?
+          </Link>
           <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold">
             {isLoading ? (
               <DotPulse size={25} speed={1} color="white" />
@@ -132,13 +143,16 @@ function Login() {
             </DialogTrigger>
             <DialogContent className="border border-slate-300 sm:max-w-[390px]">
               <DialogHeader>
-                <DialogTitle className="text-lg text-center">
+                <DialogTitle className="flex gap-2 items-center justify-center text-lg font-medium">
                   Sign up to{" "}
-                  <CrumpledPaperIcon
-                    className="inline-block"
-                    width={25}
-                    height={25}
-                  />
+                  <span>
+                    <img
+                      className="w-[40px] h-[40px]"
+                      loading="lazy"
+                      src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
+                      alt="logo"
+                    />
+                  </span>
                 </DialogTitle>
               </DialogHeader>
               <Register />

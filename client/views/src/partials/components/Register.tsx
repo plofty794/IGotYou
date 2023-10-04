@@ -24,9 +24,9 @@ function Register() {
   });
 
   async function handleRegister(data: RegisterSchema) {
-    const { username, email, password } = data;
+    const { email, password } = data;
     try {
-      mutate({ username, email, password });
+      mutate({ email, password });
     } catch (error) {
       console.log(error);
     }

@@ -14,7 +14,7 @@ function Hero() {
           Unlock Your Creative Vision with IGotYou: Your Gateway to Multimedia
           Excellence.
         </h1>
-        <div className="font-semibold w-4/5 mx-auto">
+        <div className="font-medium w-4/5 mx-auto">
           <h2 className="text-[#222222]">
             Discover a world of creative possibilities with IGotYou, the
             ultimate platform for{" "}

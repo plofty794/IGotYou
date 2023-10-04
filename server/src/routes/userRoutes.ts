@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createUser,
   deleteUser,
+  getUserPhone,
   getUserProfile,
   getUsers,
   googleSignIn,
@@ -15,6 +16,7 @@ const router = Router();
 
 router.get("/users", getUsers);
 router.get("/users/profile/:id", authToken, getUserProfile);
+router.get("/users/phone/:id", authToken, getUserPhone);
 router.post("/users/login", logInUser);
 router.post("/users/login/google", googleSignIn);
 router.post("/users/register", createUser);

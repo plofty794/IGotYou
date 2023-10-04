@@ -37,7 +37,7 @@ function useUpdateUserProfile() {
       });
       toast({
         description: "Profile has been updated",
-        className: "bg-[#F2F2F2]",
+        className: "bg-[#FFF] text-[#222222]",
       });
     },
     onError(err) {

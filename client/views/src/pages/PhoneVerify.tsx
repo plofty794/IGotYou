@@ -1,11 +1,18 @@
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OtpInput from "react-otp-input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Label } from "@radix-ui/react-label";
 import { auth } from "@/firebase config/config";
 import Lottie from "lottie-react";
 import messageSent from "../assets/messageSent.json";
-import sending from "../assets/sending.json";
 import {
   ConfirmationResult,
   RecaptchaVerifier,
@@ -13,34 +20,38 @@ import {
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { Link } from "react-router-dom";
-import { Input } from "@/components/ui/input";
+import { Link, useLoaderData } from "react-router-dom";
+import { UseQueryResult } from "@tanstack/react-query";
+import { DotPulse } from "@uiball/loaders";
+
+type TLoaderData = {
+  user: {
+    mobilePhone: string;
+  };
+};
 
 function VerifyPhone() {
-  const [ID, setID] = useState<string | null>(null);
-  const [mobilePhone, setMobilePhone] = useState("");
+  const { data } = useLoaderData() as UseQueryResult<TLoaderData>;
+  const mobilePhone = data?.user.mobilePhone;
   const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
     null
   );
   const [OTP, setOTP] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const ID = localStorage.getItem("ID");
-    ID && setID(ID);
+    document.title = "IGotYou - Profile";
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 800);
   }, []);
 
   async function sendOTP() {
-    if (!mobilePhone)
-      return toast({
-        description: "Mobile phone is required",
-        variant: "destructive",
-      });
     try {
       const reCaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {});
       const confirm = await signInWithPhoneNumber(
         auth,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        "+63" + mobilePhone,
+        mobilePhone!,
         reCaptcha
       );
       setConfirmation(confirm);
@@ -70,92 +81,111 @@ function VerifyPhone() {
 
   return (
     <>
-      <main className="bg-[#F2F2F2] min-h-screen flex flex-col gap-2 items-center justify-center">
-        <section className="flex items-center"></section>
-        {confirmation ? (
-          <Card className="px-12 py-2">
-            <CardHeader className="text-3xl font-semibold">
-              We sent you a code
-              <Lottie
-                className="w-[100px] h-[100px] mx-auto"
-                animationData={messageSent}
-                loop={true}
-              />
-            </CardHeader>
-            <CardContent className="flex flex-col items-center gap-2">
-              <Label className="font-medium text-sm">
-                Enter OTP below to verify your mobile phone
-              </Label>
-              <OtpInput
-                inputStyle={
-                  "text-3xl mr-2 outline-none border-b-black border-b"
-                }
-                value={OTP}
-                onChange={setOTP}
-                numInputs={6}
-                renderSeparator={<span> </span>}
-                renderInput={(props) => <input {...props} />}
-              />
-              <div className="flex gap-3 mt-4">
-                <Button
-                  className="bg-[#222222] text-white w-max font-medium"
-                  onClick={verifyOTP}
-                >
-                  Verify OTP
-                </Button>
-                <Link
-                  to={`/users/show/${ID}`}
-                  className={`bg-[#222222] text-white w-max font-medium ${buttonVariants(
-                    {}
-                  )}`}
-                >
-                  Go back
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <>
-            <Card className="px-8 py-2">
-              <CardHeader className="text-2xl font-semibold p-4">
-                Verify your mobile phone
-                <Lottie
-                  className="w-[120px] h-[120px] mx-auto"
-                  animationData={sending}
-                  loop={true}
-                />
-              </CardHeader>
-              <CardContent className="flex flex-col items-center gap-2">
-                <Input
-                  value={mobilePhone}
-                  onChange={(e) => setMobilePhone(e.target.value)}
-                  autoFocus
-                  placeholder="Enter your mobile phone"
-                />
-                <div className="flex flex-col gap-3 mt-3">
-                  <div id="recaptcha-container"></div>
-                  <div className="flex items-center justify-center gap-3">
-                    <Button
-                      className="bg-[#222222] text-white w-max font-medium"
-                      onClick={sendOTP}
-                    >
-                      Send OTP
-                    </Button>
-                    <Link
-                      to={`/users/show/${ID}`}
-                      className={`bg-[#222222] text-white w-max font-medium ${buttonVariants(
-                        {}
-                      )}`}
-                    >
-                      Go back
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </>
-        )}
-      </main>
+      {isLoaded ? (
+        <main className="bg-[#F2F2F2] min-h-screen flex flex-col gap-2 items-center justify-center">
+          <Link
+            to={"/"}
+            className={`bg-[#222222] text-white font-medium mx-auto ${buttonVariants(
+              { size: "sm" }
+            )}`}
+          >
+            Go back
+          </Link>
+          <section>
+            {!confirmation ? (
+              <Tabs defaultValue="send" className="w-[450px]">
+                <TabsList className="grid w-full grid-cols-2 bg-[#e9e7e7]">
+                  <TabsTrigger value="send">Send OTP</TabsTrigger>
+                </TabsList>
+                <TabsContent value="send">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Verify your phone</CardTitle>
+                      <CardDescription>
+                        Send OTP to your mobile phone here. Click Send when
+                        you're ready.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2 pb-2">
+                      <div className="space-y-1 text-center">
+                        <Label
+                          className="text-sm font-medium"
+                          htmlFor="mobilePhone"
+                        >
+                          Mobile phone
+                        </Label>
+                        <p id="mobilePhone" className="text-lg font-medium">
+                          {mobilePhone}
+                        </p>
+                      </div>
+                      <div
+                        id="recaptcha-container"
+                        className="mx-auto w-max"
+                      ></div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button
+                        onClick={sendOTP}
+                        className="bg-[#222222] text-white p-6 font-medium mx-auto text-xl"
+                      >
+                        Send OTP
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            ) : (
+              <Tabs defaultValue="verify" className="w-[400px]">
+                <TabsList className="grid w-full grid-cols-2 bg-[#e9e7e7]">
+                  <TabsTrigger value="verify">Verify OTP</TabsTrigger>
+                </TabsList>
+                <TabsContent value="verify">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Verify</CardTitle>
+                      <CardDescription>
+                        Verify your OTP to your mobile phone here. Click Verify
+                        when you're done.
+                      </CardDescription>
+                      <Lottie
+                        className="w-[100px] h-[100px] mx-auto"
+                        animationData={messageSent}
+                      />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-1 flex flex-col items-center">
+                        <OtpInput
+                          inputStyle={
+                            "text-3xl mr-2 outline-none border-b-black border-b"
+                          }
+                          value={OTP}
+                          onChange={setOTP}
+                          numInputs={6}
+                          renderSeparator={<span> </span>}
+                          renderInput={(props) => <input {...props} />}
+                        />
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button
+                        onClick={verifyOTP}
+                        size={"lg"}
+                        className="bg-[#222222] text-white font-medium mx-auto"
+                      >
+                        Verify OTP
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            )}
+          </section>
+        </main>
+      ) : (
+        <div className="min-h-screen flex items-center justify-center">
+          <DotPulse color="#222222" size={50} />
+        </div>
+      )}
     </>
   );
 }

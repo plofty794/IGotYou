@@ -8,7 +8,6 @@ import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 type TRegister = {
-  username: string;
   email: string;
   password: string;
 };
