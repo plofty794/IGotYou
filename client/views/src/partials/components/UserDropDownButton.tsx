@@ -36,7 +36,7 @@ export function UserDropDownButton() {
           <DropdownMenuItem className="p-3">Wishlists</DropdownMenuItem>
           <DropdownMenuItem className="p-3">Bookings</DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-3">Manage bookings</DropdownMenuItem>
           <DropdownMenuItem className="p-3">
@@ -45,7 +45,7 @@ export function UserDropDownButton() {
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuItem className="p-3">
           <span className="w-full cursor-pointer" onClick={handleSignOut}>
             Sign out

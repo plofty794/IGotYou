@@ -53,20 +53,22 @@ function Address() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] w-full font-medium ${
-          data?.data?.address ? "text-sm" : "text-md"
+          data?.data?.address ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
         <span className="mr-2">
           <HomeIcon color="black" width={25} height={25} />
         </span>
-        {data?.data?.address
-          ? `Where I live: ${data?.data.address}`
-          : "Where I live:"}
+        <p className="text-zinc-500">
+          {data?.data?.address
+            ? `Where I live: ${data?.data.address}`
+            : "Where I live"}
+        </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-xl text-[#222222]">
             {data?.data?.address ? "Current address" : "Where do you live?"}
           </DialogTitle>
         </DialogHeader>

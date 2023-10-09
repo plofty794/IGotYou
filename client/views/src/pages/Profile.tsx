@@ -18,7 +18,7 @@ function Profile() {
     document.title = "IGotYou - Profile";
     setTimeout(() => {
       setIsLoaded(true);
-    }, 1000);
+    }, 1100);
   }, []);
 
   return (
@@ -35,7 +35,6 @@ function Profile() {
           </span>
         </Link>
         <ul className="text-sm font-medium flex justify-center items-center gap-5">
-          <li>Become a Host</li>
           <UserDropDownButton />
         </ul>
       </nav>

@@ -27,7 +27,7 @@ type TMobilePhone = {
   mobileVerified?: boolean;
 };
 
-function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
+function PhoneNumberSelect({ mobilePhone }: TMobilePhone) {
   const [countryCode, setCountryCode] = useState<CountryCode>("PH");
   const { mutate, isLoading } = useUpdateUserProfile();
   const {
@@ -80,7 +80,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
       </Select>
       <form onSubmit={handleSubmit(mobilePhoneSubmit)}>
         {!mobilePhone && (
-          <span className="absolute z-10 bottom-[238px] right-[302px]">
+          <span className="absolute z-10 bottom-[248px] right-[302px]">
             {"+" + getPhoneCode(countryCode)}
           </span>
         )}
@@ -98,12 +98,12 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
             {mobilePhone ? (
               "Edit"
             ) : isLoading ? (
-              <DotPulse size={25} speed={1} color="white" />
+              <DotPulse size={15} speed={1} color="white" />
             ) : (
               "Add"
             )}
           </Button>
-          {!mobileVerified && (
+          {mobilePhone && (
             <Link
               to={"/account/verify-phone"}
               className={`mt-3 w-max font-semibold bg-[#222222] ${buttonVariants(

@@ -53,21 +53,23 @@ function FunFact() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] w-full font-medium ${
-          data?.data?.funFact ? "text-xs" : "text-md"
+          data?.data?.funFact ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
         <span className="mr-2">
           <RocketIcon color="black" width={25} height={25} />
         </span>
-        {data?.data?.funFact
-          ? `Fun Fact about you: ${data?.data.funFact}`
-          : "My Fun Fact"}
+        <p className="text-zinc-500">
+          {data?.data?.funFact
+            ? `Fun Fact about you: ${data?.data.funFact}`
+            : "My Fun Fact"}
+        </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
-            {data?.data?.funFact ? "Fun Fact:" : "What's a Fun Fact about you?"}
+          <DialogTitle className="text-xl text-[#222222]">
+            {data?.data?.funFact ? "Fun fact:" : "What's a fun fact about you?"}
           </DialogTitle>
         </DialogHeader>
         {data?.data?.funFact ? (

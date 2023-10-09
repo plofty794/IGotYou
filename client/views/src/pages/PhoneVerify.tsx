@@ -5,7 +5,6 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OtpInput from "react-otp-input";
@@ -40,10 +39,10 @@ function VerifyPhone() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    document.title = "IGotYou - Profile";
+    document.title = "IGotYou - Verify Phone";
     setTimeout(() => {
       setIsLoaded(true);
-    }, 800);
+    }, 500);
   }, []);
 
   async function sendOTP() {
@@ -100,7 +99,6 @@ function VerifyPhone() {
                 <TabsContent value="send">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Verify your phone</CardTitle>
                       <CardDescription>
                         Send OTP to your mobile phone here. Click Send when
                         you're ready.
@@ -135,49 +133,41 @@ function VerifyPhone() {
                 </TabsContent>
               </Tabs>
             ) : (
-              <Tabs defaultValue="verify" className="w-[400px]">
-                <TabsList className="grid w-full grid-cols-2 bg-[#e9e7e7]">
-                  <TabsTrigger value="verify">Verify OTP</TabsTrigger>
-                </TabsList>
-                <TabsContent value="verify">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Verify</CardTitle>
-                      <CardDescription>
-                        Verify your OTP to your mobile phone here. Click Verify
-                        when you're done.
-                      </CardDescription>
-                      <Lottie
-                        className="w-[100px] h-[100px] mx-auto"
-                        animationData={messageSent}
-                      />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-1 flex flex-col items-center">
-                        <OtpInput
-                          inputStyle={
-                            "text-3xl mr-2 outline-none border-b-black border-b"
-                          }
-                          value={OTP}
-                          onChange={setOTP}
-                          numInputs={6}
-                          renderSeparator={<span> </span>}
-                          renderInput={(props) => <input {...props} />}
-                        />
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        onClick={verifyOTP}
-                        size={"lg"}
-                        className="bg-[#222222] text-white font-medium mx-auto"
-                      >
-                        Verify OTP
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+              <Card className="w-[450px]">
+                <CardHeader>
+                  <CardDescription>
+                    Enter the OTP sent to your mobile phone here. Click Verify
+                    when you're done.
+                  </CardDescription>
+                  <Lottie
+                    className="w-[100px] h-[100px] mx-auto"
+                    animationData={messageSent}
+                  />
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-1 flex flex-col items-center">
+                    <OtpInput
+                      inputStyle={
+                        "text-3xl mr-2 outline-none border-b-black border-b"
+                      }
+                      value={OTP}
+                      onChange={setOTP}
+                      numInputs={6}
+                      renderSeparator={<span> </span>}
+                      renderInput={(props) => <input {...props} />}
+                    />
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    onClick={verifyOTP}
+                    size={"lg"}
+                    className="bg-[#222222] text-white font-medium mx-auto"
+                  >
+                    Verify OTP
+                  </Button>
+                </CardFooter>
+              </Card>
             )}
           </section>
         </main>

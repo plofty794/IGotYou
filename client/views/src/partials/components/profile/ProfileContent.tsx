@@ -44,7 +44,7 @@ function ProfileContent({ data }: TProps) {
             <span className="text-[#222222] text-2xl font-semibold">
               {data?.data.username ?? <Skeleton className="h-4 w-[100px]" />}
             </span>
-            <span className="text-[#222222] text-md font-medium">
+            <span className="text-zinc-500 text-sm font-medium">
               {data?.data.hostStatus ? "Host" : "Guest"}
             </span>
           </CardFooter>

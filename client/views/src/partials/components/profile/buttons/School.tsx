@@ -62,20 +62,22 @@ function School() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] w-full font-medium ${
-          data?.data?.school ? "text-xs" : "text-md"
+          data?.data?.school ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
         <span className="mr-2">
           <Pencil2Icon color="black" width={25} height={25} />
         </span>
-        {data?.data?.school
-          ? `Where I go to school: ${data?.data.school}`
-          : "Where I you go to school:"}
+        <p className="text-zinc-500">
+          {data?.data?.school
+            ? `Where I go to school: ${data?.data.school}`
+            : "Where I you go to school"}
+        </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-xl text-[#222222]">
             {data?.data?.school
               ? "Current school"
               : "Where do you go to school?"}

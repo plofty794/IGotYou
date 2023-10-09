@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 
-function RootLayout() {
+function HeroLayout() {
   return (
     <>
       <main className="min-h-screen">
@@ -8,14 +8,14 @@ function RootLayout() {
           <div className="-tracking-wide font-bold text-xl flex items-center justify-center gap-2 pointer-events-none">
             <span>
               <img
-                className="w-[40px] h-[40px]"
+                className="w-[30px] h-[30px]"
                 loading="lazy"
                 src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
                 alt="logo"
               />
             </span>
           </div>
-          <ul className="font-semibold text-sm flex justify-center items-center gap-8">
+          <ul className="font-semibold text-xs flex justify-center items-center gap-8">
             <NavLink className="hover:text-[#A259FF]" to={"/about-us"}>
               About us
             </NavLink>
@@ -33,4 +33,4 @@ function RootLayout() {
   );
 }
 
-export default RootLayout;
+export default HeroLayout;

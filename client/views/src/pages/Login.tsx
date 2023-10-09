@@ -61,10 +61,10 @@ function Login() {
         Back to Homepage
       </Link>
       <div className="flex items-center gap-2 font-medium">
-        <h1 className="text-lg text-center">Sign in to </h1>
+        <h1 className="text-base text-center">Sign in to </h1>
         <span>
           <img
-            className="w-[40px] h-[40px]"
+            className="w-[30px] h-[30px]"
             loading="lazy"
             src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
             alt="logo"
@@ -116,7 +116,7 @@ function Login() {
           <Button
             type="button"
             onClick={handleGoogleSignIn}
-            className="text-[#222222] border border-black hover:bg-[#F2F2F2] mt-2 text-xs font-semibold"
+            className="text-[#222222] hover:bg-[#F2F2F2] border mt-2 text-xs font-semibold"
           >
             <img
               width={20}
@@ -143,11 +143,11 @@ function Login() {
             </DialogTrigger>
             <DialogContent className="border border-slate-300 sm:max-w-[390px]">
               <DialogHeader>
-                <DialogTitle className="flex gap-2 items-center justify-center text-lg font-medium">
+                <DialogTitle className="flex gap-2 items-center justify-center text-base font-medium">
                   Sign up to{" "}
                   <span>
                     <img
-                      className="w-[40px] h-[40px]"
+                      className="w-[30px] h-[30px]"
                       loading="lazy"
                       src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
                       alt="logo"

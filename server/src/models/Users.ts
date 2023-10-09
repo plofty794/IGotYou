@@ -31,6 +31,7 @@ const usersSchema = new Schema(
     },
     mobilePhone: {
       type: String,
+      unique: true,
     },
     address: {
       type: String,
@@ -61,6 +62,5 @@ usersSchema.pre("save", async function () {
 });
 
 export type TUser = InferSchemaType<typeof usersSchema>;
-
 const Users = model("Users", usersSchema);
 export default Users;
