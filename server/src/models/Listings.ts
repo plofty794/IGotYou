@@ -1,5 +1,16 @@
 import { Schema, InferSchemaType, model, Types } from "mongoose";
 
+const listingPhotosSchema = new Schema({
+  public_id: {
+    type: String,
+    required: true,
+  },
+  secure_url: {
+    type: String,
+    required: true,
+  },
+});
+
 const listingSchema = new Schema(
   {
     serviceType: {
@@ -10,13 +21,14 @@ const listingSchema = new Schema(
         "Content and Marketing",
       ],
       default: ["Events and Entertainment"],
+      required: true,
     },
-    name: {
+    serviceDescription: {
       type: String,
       required: true,
     },
-    price: {
-      type: String,
+    listingPhotos: {
+      type: [listingPhotosSchema],
       required: true,
     },
   },

@@ -36,10 +36,10 @@ function ServiceDescription() {
             </h1>
             <span className="text-sm font-medium">(Service name)</span>
           </div>
+
           <Input
             autoFocus
             spellCheck
-            required
             placeholder={"Ex. Mang Juan's Photography service"}
             className="w-[400px] mb-2"
             value={service.serviceDescription}

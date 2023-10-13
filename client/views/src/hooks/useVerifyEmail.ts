@@ -55,7 +55,7 @@ function useVerifyEmail() {
       });
       toast({
         title: "Verification email has been sent",
-        description: "Reload this page after verifying your email",
+        description: "Click the verify button again after verifying your email",
         className: "bg-[#FFF] text-[#222222]",
       });
     },

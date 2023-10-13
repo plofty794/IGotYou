@@ -3,9 +3,20 @@ import UserDropDownButton from "../partials/components/UserDropDownButton";
 import { LiaVideoSolid } from "react-icons/lia";
 import { MdAudiotrack, MdOutlineEventSeat } from "react-icons/md";
 import { RiFilePaperLine } from "react-icons/ri";
-import { MagicWandIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon, MagicWandIcon } from "@radix-ui/react-icons";
 import { Button } from "../components/ui/button";
 import { auth } from "@/firebase config/config";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 function RootLayout() {
   const User = auth.currentUser;
@@ -28,9 +39,8 @@ function RootLayout() {
           <span className="border rounded-lg w-[400px] border-zinc-500 text-center">
             Search Navigation
           </span>
-
           <span className="text-sm font-medium flex justify-center items-center gap-5">
-            {User?.emailVerified && (
+            {User && User?.emailVerified ? (
               <Button
                 className="font-medium text-xs"
                 variant={"ghost"}
@@ -38,9 +48,77 @@ function RootLayout() {
                   navigate(`/become-a-host/${User && User.uid}/overview`)
                 }
               >
-                Make a Listing
+                Switch to hosting
               </Button>
+            ) : (
+              <AlertDialog>
+                <AlertDialogTrigger className="text-xs font-medium hover:bg-zinc-100 p-2 rounded">
+                  Want to host?
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      Verify your email first{" "}
+                      <ExclamationTriangleIcon
+                        color="orange"
+                        width={25}
+                        height={25}
+                      />
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-zinc-950 font-medium">
+                      Why do you need to verify my email to do this action?
+                      Verifying your email is a crucial step for several
+                      reasons:
+                      <span className="text-xs text-zinc-700">
+                        <ul className="pt-2 px-6 list-disc">
+                          <li>
+                            Security: Verifying your email helps us ensure that
+                            you are the rightful owner of the account. It adds
+                            an extra layer of security, making it harder for
+                            unauthorized users to gain access.
+                          </li>
+                          <li>
+                            Communication: We may need to contact you regarding
+                            your account, updates, or important information. A
+                            verified email ensures we can reach you reliably.
+                          </li>
+                          <li>
+                            Account Recovery: In case you ever forget your
+                            password or get locked out of your account, a
+                            verified email is the primary means for account
+                            recovery, helping you regain access.
+                          </li>
+                          <li>
+                            Account Integrity: It helps maintain the integrity
+                            of our community by ensuring that users are genuine
+                            and not creating multiple accounts for misuse.
+                          </li>
+                          <li>
+                            Personalization: Verified email allows us to
+                            personalize your experience and tailor our services
+                            to your preferences and needs.
+                          </li>
+                        </ul>
+                      </span>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction
+                      onClick={() =>
+                        navigate(`/users/show/${User && User.uid}`)
+                      }
+                      className="font-medium text-sm bg-[#222222] text-white "
+                    >
+                      Go to your profile
+                    </AlertDialogAction>
+                    <AlertDialogCancel className="font-medium text-sm bg-[#222222] text-white ">
+                      Close
+                    </AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
+
             <UserDropDownButton />
           </span>
         </nav>

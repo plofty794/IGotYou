@@ -28,7 +28,7 @@ import AboutYourService from "./pages/become a host/steps/AboutYourService";
 import Service from "./pages/become a host/Service";
 import ServiceDescription from "./pages/become a host/ServiceDescription";
 import MakeItStandOut from "./pages/become a host/steps/MakeItStandOut";
-import Photos from "./pages/become a host/Photos";
+import Photos from "./pages/become a host/steps/Photos";
 
 function App() {
   const item = localStorage.getItem("ID");

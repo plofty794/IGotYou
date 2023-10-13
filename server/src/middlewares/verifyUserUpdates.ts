@@ -17,18 +17,20 @@ export const verifyUserUpdates = async (
   next: NextFunction
 ) => {
   const { address, mobilePhone }: TUserUpdates = req.body;
-  const postcode = address?.match(/\d{4}/g)?.join("");
-  const country_code = address?.match(/[A-Z]+$/g)?.join("");
+  // const postcode = address?.match(/\d{4}/g)?.join("");
+  // const country_code = address?.match(/[A-Z]+$/g)?.join("");
 
-  const mobilePhoneTaken = await Users.findOne({ mobilePhone });
+  // const validPostCode = postcodeValidator(postcode!, country_code!);
+  // if (!validPostCode) {
+  //   return next(createHttpError(400, "Invalid zip code"));
+  // }
 
-  if (mobilePhoneTaken) {
-    return next(createHttpError(400, "Mobile phone already taken"));
-  }
+  if (mobilePhone) {
+    const mobilePhoneTaken = await Users.findOne({ mobilePhone });
 
-  const validPostCode = postcodeValidator(postcode!, country_code!);
-  if (!validPostCode) {
-    return next(createHttpError(400, "Invalid zip code"));
+    if (mobilePhoneTaken) {
+      return next(createHttpError(400, "Mobile phone already taken"));
+    }
   }
   next();
 };

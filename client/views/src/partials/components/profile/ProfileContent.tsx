@@ -120,9 +120,9 @@ function ProfileContent({ data }: TProps) {
             <p className="font-semibold text-md">
               {data?.data?.emailVerified
                 ? "Personal info"
-                : "Verify your email to edit your Personal info"}
+                : "Verify your email to edit your personal info"}
             </p>
-            <p className="text-xs font-medium">
+            <p className="text-xs font-medium text-zinc-500">
               Provide personal details and how we can reach you
             </p>
           </CardHeader>

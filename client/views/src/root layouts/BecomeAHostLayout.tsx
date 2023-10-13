@@ -5,16 +5,21 @@ import { DotPulse } from "@uiball/loaders";
 import { auth } from "@/firebase config/config";
 import { useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
+import useUploadListing from "@/hooks/useUploadListing";
+import { FilePondFile } from "filepond";
 
-type TServiceType = {
+type TListing = {
   serviceType: string;
   serviceDescription?: string;
+  listingPhotos: FilePondFile[];
 };
 
 function BecomeAHostLayout() {
-  const [service, setService] = useState<TServiceType>({
+  const { mutate } = useUploadListing();
+  const [service, setService] = useState<TListing>({
     serviceType: "Events and Entertainment",
     serviceDescription: "",
+    listingPhotos: [],
   });
   const User = auth.currentUser;
   const {
@@ -54,43 +59,89 @@ function BecomeAHostLayout() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (
+            service.serviceDescription == null &&
+            service.listingPhotos.length < 1
+          )
+            return console.log("Invalid");
           next();
-          console.log(service);
+          mutate(service);
         }}
       >
         {<Outlet context={{ setService, service }} />}
         <div className="w-full flex justify-between items-center px-8 py-6">
-          {!isFirstPage && (
+          {isFirstPage && (
             <Button
               type="button"
-              onClick={previous}
-              variant={"link"}
-              className="font-medium p-6"
-            >
-              Back
-            </Button>
-          )}
-          {!isLastPage && (
-            <Button
+              onClick={next}
               size={"lg"}
               className="bg-[#222222] rounded-full text-lg font-semibold p-6"
             >
-              {isFetching ? (
-                <DotPulse size={40} color="#FFF" />
-              ) : currentStepIndex > 0 ? (
-                "Next"
-              ) : (
-                "Get started"
-              )}
+              {isFetching ? <DotPulse size={40} color="#FFF" /> : "Get started"}
             </Button>
+          )}
+          {currentStepIndex > 0 && currentStepIndex !== 3 && !isLastPage && (
+            <>
+              <Button
+                type="button"
+                onClick={previous}
+                size={"lg"}
+                variant={"link"}
+                className="text-sm font-medium p-6"
+              >
+                Back
+              </Button>
+              <Button
+                type="button"
+                onClick={next}
+                size={"lg"}
+                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+              >
+                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+              </Button>
+            </>
+          )}
+          {currentStepIndex === 3 && (
+            <>
+              <Button
+                type="button"
+                onClick={previous}
+                size={"lg"}
+                variant={"link"}
+                className="text-sm font-medium p-6"
+              >
+                Back
+              </Button>
+              <Button
+                disabled={!service.serviceDescription}
+                type="button"
+                onClick={next}
+                size={"lg"}
+                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+              >
+                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+              </Button>
+            </>
           )}
           {isLastPage && (
-            <Button
-              size={"lg"}
-              className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-            >
-              Done
-            </Button>
+            <>
+              <Button
+                type="button"
+                onClick={previous}
+                size={"lg"}
+                variant={"link"}
+                className="text-sm font-medium p-6"
+              >
+                Back
+              </Button>
+              <Button
+                disabled={service.listingPhotos.length < 5}
+                size={"lg"}
+                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+              >
+                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Done"}
+              </Button>
+            </>
           )}
         </div>
       </form>
