@@ -1,4 +1,5 @@
 import { Router } from "express";
+const router = Router();
 import {
   createUser,
   deleteUser,
@@ -13,7 +14,6 @@ import {
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
 import { addListing } from "../controllers/listingsControllers";
-const router = Router();
 
 router.get("/users", getUsers);
 router.get("/users/profile/:id", authToken, getUserProfile);

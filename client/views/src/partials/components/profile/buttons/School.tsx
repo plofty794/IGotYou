@@ -61,7 +61,7 @@ function School() {
   return (
     <Dialog>
       <DialogTrigger
-        className={`hover:bg-[#e9e9e9] w-full font-medium ${
+        className={`hover:bg-[#e9e9e9] border w-full font-medium ${
           data?.data?.school ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}

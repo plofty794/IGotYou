@@ -2,6 +2,7 @@ import cloudinary, { UploadApiResponse } from "cloudinary";
 import env from "../utils/envalid";
 import { RequestHandler } from "express";
 import Listings from "../models/Listings";
+import Users from "../models/Users";
 import createHttpError from "http-errors";
 
 cloudinary.v2.config({
@@ -11,8 +12,9 @@ cloudinary.v2.config({
 });
 
 type TFileType = {
-  name: string;
-  id: string;
+  public_id: string;
+  secure_url: string;
+  original_filename: string;
 };
 
 type TListing = {
@@ -21,16 +23,36 @@ type TListing = {
   listingPhotos: TFileType[];
 };
 
+export const getListings: RequestHandler = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const listings = await Listings.find({ host: id }).populate({
+      path: "host",
+      select: "email",
+    });
+    res.status(200).json({ listings });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const addListing: RequestHandler = async (req, res, next) => {
   const { serviceType, serviceDescription, listingPhotos }: TListing = req.body;
+  const { id } = req.params;
   try {
-    const photosPromises = listingPhotos.map((photo) =>
-      cloudinary.v2.uploader.upload(photo.name, {
-        folder: "IGotYou-Listings",
-      })
-    );
-    const photos = await Promise.all(photosPromises);
-    res.status(200).json({ photos });
+    const newListing = await (
+      await Listings.create({ ...req.body, host: id })
+    ).populate({ path: "host", select: "email" });
+    if (!newListing) {
+      throw createHttpError(400, "Error creating a listing");
+    }
+    const user = await Users.findById(id);
+    if (!user?.hostStatus) {
+      await Users.findByIdAndUpdate(id, {
+        hostStatus: true,
+      });
+    }
+    res.json({ newListing });
   } catch (error) {
     next(error);
   }

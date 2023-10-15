@@ -11,7 +11,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -65,10 +64,11 @@ function RootLayout() {
                         height={25}
                       />
                     </AlertDialogTitle>
-                    <AlertDialogDescription className="text-zinc-950 font-medium">
-                      Why do you need to verify my email to do this action?
-                      Verifying your email is a crucial step for several
-                      reasons:
+                    <div className="text-zinc-950 font-medium">
+                      <span className="text-xs">
+                        Verifying your email is a crucial step for several
+                        reasons:
+                      </span>
                       <span className="text-xs text-zinc-700">
                         <ul className="pt-2 px-6 list-disc">
                           <li>
@@ -100,7 +100,7 @@ function RootLayout() {
                           </li>
                         </ul>
                       </span>
-                    </AlertDialogDescription>
+                    </div>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogAction
@@ -111,7 +111,7 @@ function RootLayout() {
                     >
                       Go to your profile
                     </AlertDialogAction>
-                    <AlertDialogCancel className="font-medium text-sm bg-[#222222] text-white ">
+                    <AlertDialogCancel className="font-medium text-sm bg-red-500 hover:bg-red-600 hover:text-white text-white ">
                       Close
                     </AlertDialogCancel>
                   </AlertDialogFooter>

@@ -30,7 +30,7 @@ function MakeItStandOut() {
           <div className="w-full">
             <span className="font-medium">
               <Lottie
-                className="w-[320px] h-[320px]"
+                className="w-[350px] h-[350px]"
                 animationData={standout}
                 loop={false}
               />

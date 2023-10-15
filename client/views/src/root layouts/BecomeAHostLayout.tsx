@@ -6,16 +6,24 @@ import { auth } from "@/firebase config/config";
 import { useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import useUploadListing from "@/hooks/useUploadListing";
-import { FilePondFile } from "filepond";
+
+type TFileType = {
+  public_id: string;
+  secure_url: string;
+  original_filename: string;
+  bytes: number;
+  thumbnail_url: string;
+  format: string;
+};
 
 type TListing = {
   serviceType: string;
   serviceDescription?: string;
-  listingPhotos: FilePondFile[];
+  listingPhotos: TFileType[];
 };
 
 function BecomeAHostLayout() {
-  const { mutate } = useUploadListing();
+  const { mutate, isLoading } = useUploadListing();
   const [service, setService] = useState<TListing>({
     serviceType: "Events and Entertainment",
     serviceDescription: "",
@@ -61,7 +69,7 @@ function BecomeAHostLayout() {
           e.preventDefault();
           if (
             service.serviceDescription == null &&
-            service.listingPhotos.length < 1
+            service.listingPhotos.length < 5
           )
             return console.log("Invalid");
           next();
@@ -126,6 +134,7 @@ function BecomeAHostLayout() {
           {isLastPage && (
             <>
               <Button
+                disabled={service.listingPhotos.length > 0}
                 type="button"
                 onClick={previous}
                 size={"lg"}
@@ -139,7 +148,7 @@ function BecomeAHostLayout() {
                 size={"lg"}
                 className="bg-[#222222] rounded-full text-lg font-semibold p-6"
               >
-                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Done"}
+                {isLoading ? <DotPulse size={40} color="#FFF" /> : "Done"}
               </Button>
             </>
           )}

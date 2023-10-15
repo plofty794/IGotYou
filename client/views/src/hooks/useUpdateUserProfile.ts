@@ -14,6 +14,7 @@ type TUserUpdates = {
   school?: string;
   emailVerified?: boolean;
   mobilePhone?: string;
+  mobileVerified?: boolean;
 };
 
 function useUpdateUserProfile() {

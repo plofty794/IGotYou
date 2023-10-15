@@ -9,6 +9,10 @@ const listingPhotosSchema = new Schema({
     type: String,
     required: true,
   },
+  original_filename: {
+    type: String,
+    required: true,
+  },
 });
 
 const listingSchema = new Schema(
@@ -30,6 +34,10 @@ const listingSchema = new Schema(
     listingPhotos: {
       type: [listingPhotosSchema],
       required: true,
+    },
+    host: {
+      type: Types.ObjectId,
+      ref: "Users",
     },
   },
   { timestamps: true }

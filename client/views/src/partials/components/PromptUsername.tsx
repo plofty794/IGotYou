@@ -40,11 +40,11 @@ function PromptUsername() {
 
   return (
     <section className="pt-52 flex flex-col items-center justify-center gap-4">
-      <Alert className="w-max">
+      <Alert className="w-max font-medium shadow border">
         <InfoCircledIcon className="mt-2 h-5 w-5" />
         <div className="ml-2 p-2 pb-0">
           <AlertTitle>Oops!</AlertTitle>
-          <AlertDescription className="text-xs">
+          <AlertDescription className="text-xs text-zinc-500">
             We've noticed you don't have a username.
           </AlertDescription>
         </div>

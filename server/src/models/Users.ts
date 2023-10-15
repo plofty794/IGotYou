@@ -49,10 +49,6 @@ const usersSchema = new Schema(
     },
     // Host details
     hostStatus: { type: Boolean, default: false },
-    listings: {
-      type: Types.ObjectId,
-      ref: "Listings",
-    },
   },
   { timestamps: true }
 );

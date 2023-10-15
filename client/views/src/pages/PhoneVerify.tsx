@@ -15,13 +15,14 @@ import messageSent from "../assets/messageSent.json";
 import {
   ConfirmationResult,
   RecaptchaVerifier,
-  signInWithPhoneNumber,
+  linkWithPhoneNumber,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Link, useLoaderData } from "react-router-dom";
 import { UseQueryResult } from "@tanstack/react-query";
 import { DotPulse } from "@uiball/loaders";
+import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 
 type TLoaderData = {
   user: {
@@ -30,6 +31,7 @@ type TLoaderData = {
 };
 
 function VerifyPhone() {
+  const { mutate } = useUpdateUserProfile();
   const { data } = useLoaderData() as UseQueryResult<TLoaderData>;
   const mobilePhone = data?.user.mobilePhone;
   const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(
@@ -40,16 +42,18 @@ function VerifyPhone() {
 
   useEffect(() => {
     document.title = "IGotYou - Verify Phone";
-    setTimeout(() => {
+    const Timeout = setTimeout(() => {
       setIsLoaded(true);
     }, 500);
+
+    return () => clearTimeout(Timeout);
   }, []);
 
   async function sendOTP() {
     try {
       const reCaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {});
-      const confirm = await signInWithPhoneNumber(
-        auth,
+      const confirm = await linkWithPhoneNumber(
+        auth.currentUser!,
         mobilePhone!,
         reCaptcha
       );
@@ -62,8 +66,8 @@ function VerifyPhone() {
 
   async function verifyOTP() {
     try {
-      const User = await confirmation?.confirm(OTP);
-      console.log(User);
+      await confirmation?.confirm(OTP);
+      mutate({ mobileVerified: true });
       toast({
         title: "Success!",
         description: "Mobile phone has been verified.",

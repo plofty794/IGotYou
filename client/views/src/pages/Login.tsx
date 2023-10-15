@@ -58,7 +58,7 @@ function Login() {
         to={"/get-started"}
         className="font-medium absolute top-0 left-0 text-xs p-2 hover:underline"
       >
-        Back to Homepage
+        Go to Hero page
       </Link>
       <div className="flex items-center gap-2 font-medium">
         <h1 className="text-base text-center">Sign in to </h1>

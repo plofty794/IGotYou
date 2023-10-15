@@ -7,7 +7,9 @@ function Photos() {
 
   useEffect(() => {
     document.title = "IGotYou - Make it Stand out";
-    setTimeout(() => setIsFadingIn(false), 400);
+    const Timeout = setTimeout(() => setIsFadingIn(false), 400);
+
+    return () => clearTimeout(Timeout);
   }, []);
 
   return (
@@ -17,17 +19,17 @@ function Photos() {
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-14 h-max flex flex-col items-center justify-center gap-8">
+        <section className="my-14 h-max flex flex-col items-center justify-center gap-4">
           <div className="text-center w-[1024px]">
             <h1 className="text-3xl font-semibold">
               Add some photos of your service
             </h1>
-            <p>
-              You'll need 5 photos to get started. You can add more or make
-              changes later.
+            <p className="text-zinc-500 font-medium text-sm">
+              You'll need 5 images to start. You can add more and make changes
+              later.
             </p>
           </div>
-          <div className="w-[600px]">
+          <div className="flex flex-col items-center gap-2 w-[600px]">
             <PhotoUploader />
           </div>
         </section>
@@ -37,9 +39,3 @@ function Photos() {
 }
 
 export default Photos;
-
-declare global {
-  interface Window {
-    cloudinary: undefined;
-  }
-}

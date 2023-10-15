@@ -1,11 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAxiosPrivate } from "./useAxiosPrivate";
-import { FilePondFile } from "filepond";
+
+type TFileType = {
+  public_id: string;
+  secure_url: string;
+  original_filename: string;
+};
 
 type TListing = {
   serviceType: string;
   serviceDescription?: string;
-  listingPhotos: FilePondFile[];
+  listingPhotos: TFileType[];
 };
 
 function useUploadListing() {
@@ -20,8 +25,6 @@ function useUploadListing() {
     onSuccess(data) {
       console.log(data.data);
     },
-    retry: 3,
-    retryDelay: 3000,
   });
 }
 

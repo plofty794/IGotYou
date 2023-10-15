@@ -40,7 +40,7 @@ function ServiceDescription() {
           <Input
             autoFocus
             spellCheck
-            placeholder={"Ex. Mang Juan's Photography service"}
+            placeholder={"Ex. Mang Juan's Photography Service"}
             className="w-[400px] mb-2"
             value={service.serviceDescription}
             onChange={(e) =>

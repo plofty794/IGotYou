@@ -95,13 +95,68 @@ function App() {
         </Route>
 
         {/* BECOME A HOST Routes */}
-        <Route path="/become-a-host/:id" element={<BecomeAHostLayout />}>
-          <Route path="overview" element={<BecomeAHostOverview />} />
-          <Route path="about-your-service" element={<AboutYourService />} />
-          <Route path="service" element={<Service />} />
-          <Route path="service-description" element={<ServiceDescription />} />
-          <Route path="make-it-standout" element={<MakeItStandOut />} />
-          <Route path="photos" element={<Photos />} />
+        <Route
+          path="/become-a-host/:id"
+          element={
+            User ?? item ? (
+              <BecomeAHostLayout />
+            ) : (
+              <Navigate to={"/login"} replace />
+            )
+          }
+        >
+          <Route
+            path="overview"
+            element={
+              User ?? item ? (
+                <BecomeAHostOverview />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="about-your-service"
+            element={
+              User ?? item ? (
+                <AboutYourService />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="service"
+            element={
+              User ?? item ? <Service /> : <Navigate to={"/login"} replace />
+            }
+          />
+          <Route
+            path="service-description"
+            element={
+              User ?? item ? (
+                <ServiceDescription />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="make-it-standout"
+            element={
+              User ?? item ? (
+                <MakeItStandOut />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="photos"
+            element={
+              User ?? item ? <Photos /> : <Navigate to={"/login"} replace />
+            }
+          />
         </Route>
 
         {/* LOGIN & 404 Routes */}

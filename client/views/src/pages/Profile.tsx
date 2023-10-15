@@ -5,20 +5,24 @@ import { Link } from "react-router-dom";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import PromptUsername from "@/partials/components/PromptUsername";
 import { DotPulse } from "@uiball/loaders";
+import useGetListings from "@/hooks/useGetListings";
 
 const ProfileContent = lazy(
   () => import("@/partials/components/profile/ProfileContent")
 );
 
 function Profile() {
-  const { data } = useGetUserProfile();
+  const profileData = useGetUserProfile();
+  const listingsData = useGetListings();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     document.title = "IGotYou - Profile";
-    setTimeout(() => {
+    const Timeout = setTimeout(() => {
       setIsLoaded(true);
     }, 1100);
+
+    return () => clearTimeout(Timeout);
   }, []);
 
   return (
@@ -40,8 +44,11 @@ function Profile() {
       </nav>
       {isLoaded ? (
         <Suspense fallback={<ProfileLoader />}>
-          {data?.data.username ? (
-            <ProfileContent data={data} />
+          {profileData.data?.data.username ? (
+            <ProfileContent
+              profileData={profileData.data}
+              listingsData={listingsData.data}
+            />
           ) : (
             <PromptUsername />
           )}
