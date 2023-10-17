@@ -12,15 +12,16 @@ function Listings({ listingsData, username }: TListingProps) {
   return (
     <section className="w-full rounded-xl bg-white shadow-2xl p-6">
       <h2 className="mb-5 font-semibold text-xl text-[#222222]">
-        {username}'s listings
+        {username}'s services
       </h2>
       <div className="grid items-center justify-center lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 ">
         {listingsData?.data.listings?.map((listing, idx) => (
           <div
+            key={idx + idx}
             className="flex justify-center items-center flex-col gap-2"
-            key={idx}
           >
             <Swiper
+              key={idx}
               cssMode={true}
               navigation={true}
               pagination={true}
@@ -29,7 +30,7 @@ function Listings({ listingsData, username }: TListingProps) {
               modules={[Navigation, Pagination, Mousewheel, Keyboard]}
             >
               {listing.listingPhotos.map((photo) => (
-                <SwiperSlide>
+                <SwiperSlide key={photo.public_id}>
                   <img
                     key={photo._id}
                     loading="lazy"

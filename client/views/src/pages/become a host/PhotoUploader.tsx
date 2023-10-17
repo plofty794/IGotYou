@@ -35,7 +35,7 @@ type TSetServiceProps = {
 function PhotoUploader() {
   const { setService, service } = useOutletContext<TSetServiceProps>();
 
-  const myWidget = window.cloudinary.createUploadWidget(
+  const cloudinaryWidget = window.cloudinary.createUploadWidget(
     {
       cloudName: "dop5kqpod",
       uploadPreset: "s6lymwwh",
@@ -63,7 +63,7 @@ function PhotoUploader() {
     }
   );
 
-  console.log(service.listingPhotos);
+  console.log(cloudinaryWidget);
 
   return (
     <>
@@ -72,7 +72,7 @@ function PhotoUploader() {
           type="button"
           variant={"outline"}
           className="font-semibold text-lg mb-2"
-          onClick={() => myWidget.open()}
+          onClick={() => cloudinaryWidget.open()}
         >
           <MdOutlineAddAPhoto />
         </Button>
@@ -124,7 +124,7 @@ function PhotoUploader() {
             <Button
               className="shadow-none text-4xl text-rose-400 bg-zinc-100 hover:bg-zinc-100 hover:text-rose-500 flex flex-col items-center justify-center w-full h-full"
               type="button"
-              onClick={() => myWidget.open()}
+              onClick={() => cloudinaryWidget.open()}
             >
               <LiaCloudUploadAltSolid />
               <span className="text-xs font-medium text-zinc-600 w-[195px]">

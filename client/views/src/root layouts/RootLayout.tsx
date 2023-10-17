@@ -3,7 +3,7 @@ import UserDropDownButton from "../partials/components/UserDropDownButton";
 import { LiaVideoSolid } from "react-icons/lia";
 import { MdAudiotrack, MdOutlineEventSeat } from "react-icons/md";
 import { RiFilePaperLine } from "react-icons/ri";
-import { ExclamationTriangleIcon, MagicWandIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon, HomeIcon } from "@radix-ui/react-icons";
 import { Button } from "../components/ui/button";
 import { auth } from "@/firebase config/config";
 import {
@@ -128,9 +128,9 @@ function RootLayout() {
             className="flex flex-col items-center gap-1 text-[#434242] hover:text-[#a259ff]"
           >
             <span>
-              <MagicWandIcon width={18} height={18} />
+              <HomeIcon width={18} height={18} />
             </span>
-            <h3>Popular</h3>
+            <h3>Home</h3>
           </NavLink>
           <NavLink
             to={"/category/photography&videography"}

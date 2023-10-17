@@ -1,11 +1,11 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import useGetUserProfile from "@/hooks/useGetUserProfile";
 import ProfileLoader from "@/partials/loaders/ProfileLoader";
 import { Link } from "react-router-dom";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import PromptUsername from "@/partials/components/PromptUsername";
-import { DotPulse } from "@uiball/loaders";
-import useGetListings from "@/hooks/useGetListings";
+import { DotSpinner } from "@uiball/loaders";
+import useGetUserListings from "@/hooks/useGetUserListings";
 
 const ProfileContent = lazy(
   () => import("@/partials/components/profile/ProfileContent")
@@ -13,16 +13,10 @@ const ProfileContent = lazy(
 
 function Profile() {
   const profileData = useGetUserProfile();
-  const listingsData = useGetListings();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const listingsData = useGetUserListings();
 
   useEffect(() => {
     document.title = "IGotYou - Profile";
-    const Timeout = setTimeout(() => {
-      setIsLoaded(true);
-    }, 1100);
-
-    return () => clearTimeout(Timeout);
   }, []);
 
   return (
@@ -42,7 +36,13 @@ function Profile() {
           <UserDropDownButton />
         </ul>
       </nav>
-      {isLoaded ? (
+
+      {profileData.status === "loading" || listingsData.status === "loading" ? (
+        <div className="min-h-[80vh] flex items-center justify-center">
+          <DotSpinner color="#222222" size={50} />
+        </div>
+      ) : profileData.status === "success" &&
+        listingsData.status === "success" ? (
         <Suspense fallback={<ProfileLoader />}>
           {profileData.data?.data.username ? (
             <ProfileContent
@@ -54,9 +54,7 @@ function Profile() {
           )}
         </Suspense>
       ) : (
-        <div className="min-h-[80vh] flex items-center justify-center">
-          <DotPulse color="#222222" size={50} />
-        </div>
+        <></>
       )}
     </main>
   );

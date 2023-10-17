@@ -53,7 +53,7 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2] flex flex-col gap-5 justify-center items-center">
+    <div className="relative min-h-screen bg-[#F2F2F2] flex flex-col gap-5 justify-center items-center">
       <Link
         to={"/get-started"}
         className="font-medium absolute top-0 left-0 text-xs p-2 hover:underline"

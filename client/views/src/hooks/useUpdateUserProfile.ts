@@ -15,6 +15,7 @@ type TUserUpdates = {
   emailVerified?: boolean;
   mobilePhone?: string;
   mobileVerified?: boolean;
+  photoUrl?: string;
 };
 
 function useUpdateUserProfile() {

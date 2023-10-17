@@ -20,8 +20,10 @@ import PersonalInfoSheet from "./PersonalInfoSheet";
 import { Button } from "@/components/ui/button";
 import useVerifyEmail from "@/hooks/useVerifyEmail";
 import { auth } from "@/firebase config/config";
-import { lazy, Suspense } from "react";
-import { RiCamera2Fill } from "react-icons/ri";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { MdCameraEnhance } from "react-icons/md";
+import { DotPulse } from "@uiball/loaders";
+import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 
 const Listings = lazy(() => import("./Listings"));
 
@@ -33,7 +35,30 @@ type TProps = {
 };
 
 function ProfileContent({ profileData, listingsData }: TProps) {
-  const { mutate } = useVerifyEmail();
+  const { mutate, isLoading } = useVerifyEmail();
+  const updateUserProfile = useUpdateUserProfile();
+  const [photo, setPhoto] = useState("");
+
+  useEffect(() => {
+    setPhoto(profileData?.data.photoUrl);
+  }, [profileData?.data.photoUrl]);
+
+  const cloudinaryWidget = window.cloudinary.createUploadWidget(
+    {
+      cloudName: "dop5kqpod",
+      uploadPreset: "s6lymwwh",
+      folder: "IGotYou-Avatars",
+      resourceType: "image",
+      cropping: true,
+    },
+    (_, res) => {
+      if (res.event === "success") {
+        updateUserProfile.mutate({ photoUrl: res.info.secure_url });
+        setPhoto(res.info.secure_url);
+      }
+      return;
+    }
+  );
 
   return (
     <>
@@ -42,18 +67,29 @@ function ProfileContent({ profileData, listingsData }: TProps) {
           <Card className="flex flex-col justify-center items-center w-[342px] px-22 py-5 shadow">
             <CardHeader className="p-4 relative">
               <Avatar className="w-[80px] h-[80px]">
-                <AvatarImage
-                  loading="lazy"
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
+                {photo && profileData?.data ? (
+                  <AvatarImage
+                    loading="lazy"
+                    className="max-h-full max-w-full object-cover"
+                    src={photo}
+                    alt={`${profileData.data.username}'s avatar`}
+                  />
+                ) : (
+                  <AvatarImage
+                    loading="lazy"
+                    src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                    alt="no avatar"
+                  />
+                )}
+
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <Button
+                onClick={() => cloudinaryWidget.open()}
                 type="button"
                 className="px-[0.70rem] py-2 rounded-full border absolute z-10 mx-auto bottom-2 right-2 text-center bg-zinc-600 text-zinc-200"
               >
-                <RiCamera2Fill />
+                <MdCameraEnhance />
               </Button>
             </CardHeader>
             <CardFooter className="p-0 flex flex-col">
@@ -155,7 +191,11 @@ function ProfileContent({ profileData, listingsData }: TProps) {
                   size={"sm"}
                   className="font-semibold bg-[#222222]"
                 >
-                  Verify email
+                  {isLoading ? (
+                    <DotPulse size={20} color="#FFF" />
+                  ) : (
+                    "Verify email"
+                  )}
                 </Button>
               )}
             </CardContent>

@@ -1,17 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { useAxiosPrivate } from "./useAxiosPrivate";
+import { axiosRoute } from "@/axios/axiosRoute";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 function useGetListings() {
-  const ID = localStorage.getItem("ID");
-  const axiosPrivate = useAxiosPrivate();
-  return useQuery({
-    queryKey: ["listings", ID && ID],
-    queryFn: async () => {
-      return await axiosPrivate.get(`/api/listings/${ID && ID}`);
+  return useInfiniteQuery({
+    queryKey: ["listings"],
+    queryFn: async ({ pageParam = 1 }) => {
+      return await axiosRoute.get(`/api/listings/`);
     },
-    enabled: ID != null,
-    refetchOnMount: false,
+    getNextPageParam: (_, pages) => {
+      return pages.length + 1;
+    },
+    suspense: true,
     keepPreviousData: true,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
 

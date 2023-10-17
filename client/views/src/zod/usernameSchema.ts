@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ZodPromptUsernameSchema = z.object({
+export const ZodUsernameSchema = z.object({
   username: z
     .string()
     .min(1, { message: "Invalid username" })
@@ -8,4 +8,4 @@ export const ZodPromptUsernameSchema = z.object({
     .max(10, { message: "Username must be at least 10 characters" }),
 });
 
-export type PromptUsernameSchema = z.infer<typeof ZodPromptUsernameSchema>;
+export type UsernameSchema = z.infer<typeof ZodUsernameSchema>;

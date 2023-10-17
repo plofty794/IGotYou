@@ -56,6 +56,7 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
       emailVerified,
       mobileVerified,
       mobilePhone,
+      photoUrl,
     } = user;
     res.status(200).json({
       email,
@@ -68,6 +69,7 @@ export const getUserProfile: RequestHandler = async (req, res, next) => {
       emailVerified,
       mobileVerified,
       mobilePhone,
+      photoUrl,
     });
   } catch (error) {
     next(error);
@@ -122,18 +124,9 @@ export const logInUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-type TUsername = {
-  username?: string;
-};
-
 export const updateUser: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
-  const { username }: TUsername = req.body;
   try {
-    const usernameExist = await Users.findOne({ username });
-    if (usernameExist) {
-      throw createHttpError(400, "Username already exist");
-    }
     const user = await Users.findByIdAndUpdate(id, { ...req.body });
     if (!user) {
       throw createHttpError(400, "Error updating user");

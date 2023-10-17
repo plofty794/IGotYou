@@ -24,6 +24,18 @@ type TListing = {
 };
 
 export const getListings: RequestHandler = async (req, res, next) => {
+  try {
+    const listings = await Listings.find({})
+      .populate("host")
+      .sort({ created_At: "desc" })
+      .exec();
+    res.status(200).json({ listings });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserListings: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
     const listings = await Listings.find({ host: id }).populate({

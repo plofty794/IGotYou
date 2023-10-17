@@ -20,6 +20,7 @@ function useGetUserProfile() {
     keepPreviousData: true,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    suspense: true,
   });
 }
 

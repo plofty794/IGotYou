@@ -1,7 +1,11 @@
 import { Router } from "express";
-import { getListings } from "../controllers/listingsControllers";
+import {
+  getListings,
+  getUserListings,
+} from "../controllers/listingsControllers";
 const router = Router();
 
-router.get("/listings/:id", getListings);
+router.get("/listings/:id", getUserListings);
+router.get("/listings/", getListings);
 
 export { router as listingRoutes };

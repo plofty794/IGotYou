@@ -4,6 +4,7 @@ import { postcodeValidator } from "postcode-validator";
 import Users from "../models/Users";
 
 type TUserUpdates = {
+  username?: string;
   address?: string;
   school?: string;
   work?: string;
@@ -16,7 +17,7 @@ export const verifyUserUpdates = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { address, mobilePhone }: TUserUpdates = req.body;
+  const { username, address, mobilePhone }: TUserUpdates = req.body;
   // const postcode = address?.match(/\d{4}/g)?.join("");
   // const country_code = address?.match(/[A-Z]+$/g)?.join("");
 
@@ -25,9 +26,15 @@ export const verifyUserUpdates = async (
   //   return next(createHttpError(400, "Invalid zip code"));
   // }
 
+  if (username) {
+    const usernameExist = await Users.findOne({ username });
+    if (usernameExist) {
+      return next(createHttpError(400, "Username already exist"));
+    }
+  }
+
   if (mobilePhone) {
     const mobilePhoneTaken = await Users.findOne({ mobilePhone });
-
     if (mobilePhoneTaken) {
       return next(createHttpError(400, "Mobile phone already taken"));
     }

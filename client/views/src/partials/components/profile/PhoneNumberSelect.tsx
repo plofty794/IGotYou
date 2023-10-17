@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { DotPulse } from "@uiball/loaders";
 import { Link } from "react-router-dom";
+import Flag from "react-svg-country-flags";
 
 type TMobilePhone = {
   mobilePhone?: string;
@@ -72,24 +73,21 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
           <ScrollArea className="h-72 w-full">
             {getCountries().map((country) => (
               <SelectItem value={country} key={country}>
-                {country} (+{getPhoneCode(country)})
+                <div className="flex gap-1">
+                  <span>{country}</span>
+                  <span>(+{getPhoneCode(country)})</span>
+                </div>
               </SelectItem>
             ))}
           </ScrollArea>
         </SelectContent>
       </Select>
       <form onSubmit={handleSubmit(mobilePhoneSubmit)}>
-        {!mobilePhone && (
-          <span className="absolute z-10 bottom-[248px] right-[302px]">
-            {"+" + getPhoneCode(countryCode)}
-          </span>
-        )}
+        <div className="flex items-center gap-2 mb-2">
+          {<Flag country={countryCode} className="w-9 h-9" />}
 
-        <Input
-          {...register("mobile_phone")}
-          className={`mb-1 ${mobilePhone ? "p-3" : "pl-12"}`}
-          type="tel"
-        />
+          <Input {...register("mobile_phone")} type="tel" />
+        </div>
         {errors.mobile_phone && (
           <ErrorMessage message={errors.mobile_phone?.message} />
         )}
@@ -103,7 +101,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
               "Add"
             )}
           </Button>
-          {!mobileVerified && (
+          {!mobileVerified && mobilePhone ? (
             <Link
               to={"/account/verify-phone"}
               className={`mt-3 w-max font-semibold bg-[#222222] ${buttonVariants(
@@ -112,6 +110,8 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
             >
               Verify mobile phone
             </Link>
+          ) : (
+            <></>
           )}
         </div>
       </form>
