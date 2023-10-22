@@ -1,21 +1,33 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
-import { AxiosResponse } from "axios";
 
 type TListingProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  listingsData: AxiosResponse<TListingData, any> | undefined;
+  listings: TListings[];
   username: string;
 };
 
-function Listings({ listingsData, username }: TListingProps) {
+type TListings = {
+  _id: string;
+  serviceType: string[];
+  serviceDescription: string;
+  listingPhotos: [
+    {
+      public_id: string;
+      secure_url: string;
+      original_filename: string;
+      _id: string;
+    }
+  ];
+};
+
+function Listings({ listings, username }: TListingProps) {
   return (
-    <section className="w-full rounded-xl bg-white shadow-2xl p-6">
+    <section className="w-full rounded-xl bg-white shadow-xl p-6">
       <h2 className="mb-5 font-semibold text-xl text-[#222222]">
         {username}'s services
       </h2>
       <div className="grid items-center justify-center lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 ">
-        {listingsData?.data.listings?.map((listing, idx) => (
+        {listings?.map((listing, idx) => (
           <div
             key={idx + idx}
             className="flex justify-center items-center flex-col gap-2"
@@ -40,7 +52,7 @@ function Listings({ listingsData, username }: TListingProps) {
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="text-sm w-[200px]">
+            <div className="text-xs w-[200px] h-[50px]">
               <p className="font-semibold">{listing.serviceType}</p>
               <p className="font-medium text-zinc-500">
                 {listing.serviceDescription}
@@ -52,23 +64,5 @@ function Listings({ listingsData, username }: TListingProps) {
     </section>
   );
 }
-
-type TListingData = {
-  listings?: [
-    {
-      _id: string;
-      serviceType: string[];
-      serviceDescription: string;
-      listingPhotos: [
-        {
-          public_id: string;
-          secure_url: string;
-          original_filename: string;
-          _id: string;
-        }
-      ];
-    }
-  ];
-};
 
 export default Listings;

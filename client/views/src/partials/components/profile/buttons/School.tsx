@@ -17,31 +17,29 @@ import { Pencil2Icon } from "@radix-ui/react-icons";
 import { QueryState, useQueryClient } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
 import ErrorMessage from "../../ErrorMessage";
+import { useParams } from "react-router-dom";
 
 type TData = {
-  email: string;
-  username: string;
-  hostStatus: boolean;
-  school?: string;
-  address?: string;
-  work?: string;
-  funFact: string;
+  user: {
+    email: string;
+    username: string;
+    hostStatus: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school: string;
+  };
 };
-
 function School() {
   const queryClient = useQueryClient();
   const { mutate } = useUpdateUserProfile();
   const [school, setSchool] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const ID = localStorage.getItem("ID");
-  const data = queryClient.getQueryData<QueryState<TData>>([
-    "profile",
-    ID && ID,
-  ]);
+  const { id } = useParams();
+  const data = queryClient.getQueryData<QueryState<TData>>(["profile", id]);
 
   function handleSchoolSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(school);
     if (!school) {
       setSchool("");
       return setErrorMessage("Invalid school name");
@@ -62,7 +60,7 @@ function School() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] border w-full font-medium ${
-          data?.data?.school ? "text-xs" : "text-sm"
+          data?.data?.user.school ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
@@ -70,22 +68,24 @@ function School() {
           <Pencil2Icon color="black" width={25} height={25} />
         </span>
         <p className="text-zinc-500">
-          {data?.data?.school
-            ? `Where I go to school: ${data?.data.school}`
+          {data?.data?.user.school
+            ? `Where I go to school: ${data?.data?.user.school}`
             : "Where I you go to school"}
         </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
           <DialogTitle className="text-xl text-[#222222]">
-            {data?.data?.school
+            {data?.data?.user.school
               ? "Current school"
               : "Where do you go to school?"}
           </DialogTitle>
         </DialogHeader>
-        {data?.data?.school ? (
+        {data?.data?.user.school ? (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">{data?.data.school}</p>
+            <p className="text-sm font-medium mb-2">
+              {data?.data?.user.school}
+            </p>
             <div className="flex gap-2 items-center pt-2">
               <Button
                 onClick={() => {

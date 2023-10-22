@@ -18,7 +18,6 @@ import { User } from "firebase/auth";
 import VerifyPhone from "./pages/PhoneVerify";
 import { verifyPhoneLoader } from "./constants/loaders/verifyPhoneLoader";
 import HeroLayout from "./root layouts/HeroLayout";
-import CategoryOne from "./pages/categories/CategoryOne";
 import CategoryTwo from "./pages/categories/CategoryTwo";
 import CategoryThree from "./pages/categories/CategoryThree";
 import CategoryFour from "./pages/categories/CategoryFour";
@@ -29,17 +28,20 @@ import Service from "./pages/become a host/Service";
 import ServiceDescription from "./pages/become a host/ServiceDescription";
 import MakeItStandOut from "./pages/become a host/steps/MakeItStandOut";
 import Photos from "./pages/become a host/steps/Photos";
+import Price from "./pages/become a host/Price";
+import Success from "./pages/become a host/steps/Success";
+import VisitProfile from "./pages/VisitProfile";
 
 function App() {
-  const item = localStorage.getItem("ID");
+  const token = localStorage.getItem("token");
   const [User, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (!user) return setUser(null);
-      user && setUser(user);
+      user && setUser({ ...user });
     });
-  }, [User, item]);
+  }, []);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -55,14 +57,24 @@ function App() {
           <Route
             path="users/show/:id"
             element={
-              User ?? item ? <Profile /> : <Navigate replace to={"/login"} />
+              User ?? token ? <Profile /> : <Navigate replace to={"/login"} />
             }
           />
           <Route
-            path="account/verify-phone"
+            path="users/visit/show/:id"
+            element={
+              User ?? token ? (
+                <VisitProfile />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="account/verify-phone/:id"
             loader={verifyPhoneLoader}
             element={
-              User ?? item ? (
+              User ?? token ? (
                 <VerifyPhone />
               ) : (
                 <Navigate replace to={"/login"} />
@@ -76,10 +88,10 @@ function App() {
           <Route
             index
             element={
-              User ?? item ? <Home /> : <Navigate replace to={"/login"} />
+              User ?? token ? <Home /> : <Navigate replace to={"/login"} />
             }
           />
-          <Route path="/" element={<CategoryOne />} />
+
           <Route
             path="category/photography&videography"
             element={<CategoryTwo />}
@@ -98,7 +110,7 @@ function App() {
         <Route
           path="/become-a-host/:id"
           element={
-            User ?? item ? (
+            User ?? token ? (
               <BecomeAHostLayout />
             ) : (
               <Navigate to={"/login"} replace />
@@ -108,7 +120,7 @@ function App() {
           <Route
             path="overview"
             element={
-              User ?? item ? (
+              User ?? token ? (
                 <BecomeAHostOverview />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -118,7 +130,7 @@ function App() {
           <Route
             path="about-your-service"
             element={
-              User ?? item ? (
+              User ?? token ? (
                 <AboutYourService />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -128,13 +140,13 @@ function App() {
           <Route
             path="service"
             element={
-              User ?? item ? <Service /> : <Navigate to={"/login"} replace />
+              User ?? token ? <Service /> : <Navigate to={"/login"} replace />
             }
           />
           <Route
             path="service-description"
             element={
-              User ?? item ? (
+              User ?? token ? (
                 <ServiceDescription />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -144,7 +156,7 @@ function App() {
           <Route
             path="make-it-standout"
             element={
-              User ?? item ? (
+              User ?? token ? (
                 <MakeItStandOut />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -154,7 +166,19 @@ function App() {
           <Route
             path="photos"
             element={
-              User ?? item ? <Photos /> : <Navigate to={"/login"} replace />
+              User ?? token ? <Photos /> : <Navigate to={"/login"} replace />
+            }
+          />
+          <Route
+            path="price"
+            element={
+              User ?? token ? <Price /> : <Navigate to={"/login"} replace />
+            }
+          />
+          <Route
+            path="success"
+            element={
+              User ?? token ? <Success /> : <Navigate to={"/login"} replace />
             }
           />
         </Route>
@@ -163,7 +187,7 @@ function App() {
         <Route>
           <Route
             path="login"
-            element={User ?? item ? <Navigate replace to={"/"} /> : <Login />}
+            element={User ?? token ? <Navigate replace to={"/"} /> : <Login />}
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>

@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAxiosPrivate } from "./useAxiosPrivate";
-import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
 import { sendEmailVerification } from "firebase/auth";
 import { auth } from "@/firebase config/config";
 import { FirebaseError } from "firebase/app";
+import { useParams } from "react-router-dom";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
 
 type TUserUpdates = {
   address?: string;
@@ -16,14 +16,8 @@ type TUserUpdates = {
 };
 
 function useVerifyEmail() {
-  const axiosPrivate = useAxiosPrivate();
+  const { id } = useParams();
   const queryClient = useQueryClient();
-  const [ID, setID] = useState<string | null>(null);
-
-  useEffect(() => {
-    const ID = localStorage.getItem("ID");
-    ID && setID(ID);
-  }, []);
 
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
@@ -31,7 +25,9 @@ function useVerifyEmail() {
         await sendEmailVerification(auth.currentUser!);
         await auth.currentUser?.reload();
         await auth.updateCurrentUser(auth.currentUser);
-        return axiosPrivate.patch(`/api/users/update/${ID}`, { ...data });
+        axiosPrivateRoute.patch("/api/users/current-user/update/", {
+          ...data,
+        });
       } catch (err) {
         const error = err as FirebaseError;
         const message = (
@@ -50,7 +46,7 @@ function useVerifyEmail() {
     onSuccess: async (_, variables) => {
       console.log("Success");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      queryClient.setQueryData(["profile", ID && ID], (prevData: any) => {
+      queryClient.setQueryData(["profile", id], (prevData: any) => {
         return { data: { ...prevData.data, ...variables } };
       });
       toast({

@@ -63,8 +63,6 @@ function PhotoUploader() {
     }
   );
 
-  console.log(cloudinaryWidget);
-
   return (
     <>
       {service.listingPhotos.length > 0 && (

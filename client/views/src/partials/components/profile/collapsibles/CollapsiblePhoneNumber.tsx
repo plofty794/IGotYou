@@ -8,21 +8,23 @@ import { QueryState } from "@tanstack/react-query";
 import { useState } from "react";
 import PhoneNumberSelect from "../PhoneNumberSelect";
 
-type TData = {
-  email?: string;
-  username?: string;
-  hostStatus?: boolean;
-  work?: string;
-  address?: string;
-  funFact?: string;
-  school?: string;
-  emailVerified?: boolean;
-  mobilePhone?: string;
-  mobileVerified?: boolean;
+type TUserData = {
+  user: {
+    email?: string;
+    username?: string;
+    hostStatus?: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school?: string;
+    emailVerified: boolean;
+    mobilePhone: string;
+    mobileVerified: boolean;
+  };
 };
 
 type TCollapsibleData = {
-  data: QueryState<TData, unknown> | undefined;
+  data: QueryState<TUserData, unknown> | undefined;
 };
 
 function CollapsiblePhoneNumber({ data }: TCollapsibleData) {
@@ -37,14 +39,14 @@ function CollapsiblePhoneNumber({ data }: TCollapsibleData) {
             id="phone-number"
             className={`text-xs mt-2 ${isOpen ? "hidden" : ""}`}
           >
-            {data?.data?.mobilePhone
+            {data?.data?.user.mobilePhone
               ? "Edit your mobile phone"
               : "Add a phone number so confirmed guests and IGotYou can get in touch."}
           </p>
         </div>
         <CollapsibleTrigger>
           <span className="underline font-medium text-sm">
-            {isOpen ? "Cancel" : data?.data?.mobilePhone ? "Edit" : "Add"}
+            {isOpen ? "Cancel" : data?.data?.user.mobilePhone ? "Edit" : "Add"}
           </span>
         </CollapsibleTrigger>
       </div>
@@ -54,8 +56,8 @@ function CollapsiblePhoneNumber({ data }: TCollapsibleData) {
         </span>
         <div className="mt-4 flex gap-2">
           <PhoneNumberSelect
-            mobilePhone={data?.data?.mobilePhone}
-            mobileVerified={data?.data?.mobileVerified}
+            mobilePhone={data?.data?.user.mobilePhone}
+            mobileVerified={data?.data?.user.mobileVerified}
           />
         </div>
       </CollapsibleContent>

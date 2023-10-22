@@ -8,28 +8,31 @@ import { Label } from "@/components/ui/label";
 import { UsernameSchema, ZodUsernameSchema } from "@/zod/usernameSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Collapsible } from "@radix-ui/react-collapsible";
-import { QueryState } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../ErrorMessage";
+import { QueryState } from "@tanstack/react-query";
 
-type TData = {
-  email?: string;
-  username?: string;
-  hostStatus?: boolean;
-  work?: string;
-  address?: string;
-  funFact?: string;
-  school?: string;
-  email_verified: boolean;
-  mobile_phone: string;
+type TUserData = {
+  user: {
+    email?: string;
+    username?: string;
+    hostStatus?: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school?: string;
+    emailVerified: boolean;
+    mobilePhone: string;
+    mobileVerified: boolean;
+  };
 };
 
-type TCollapsibleData = {
-  data: QueryState<TData, unknown> | undefined;
+type TUser = {
+  data: QueryState<TUserData, unknown> | undefined;
 };
 
-function CollapsibleUsername({ data }: TCollapsibleData) {
+function CollapsibleUsername({ data }: TUser) {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
@@ -37,7 +40,7 @@ function CollapsibleUsername({ data }: TCollapsibleData) {
     formState: { errors },
   } = useForm<UsernameSchema>({
     defaultValues: {
-      username: data?.data?.username ?? "",
+      username: data?.data?.user.username ?? "",
     },
     resolver: zodResolver(ZodUsernameSchema),
   });
@@ -52,7 +55,7 @@ function CollapsibleUsername({ data }: TCollapsibleData) {
         <div className="text-sm">
           <Label htmlFor="username">Username</Label>
           <p id="username" className={`mt-2 ${isOpen ? "hidden" : ""}`}>
-            {data?.data?.username}
+            {data?.data?.user.username}
           </p>
         </div>
         <CollapsibleTrigger>

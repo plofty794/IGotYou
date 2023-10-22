@@ -1,19 +1,17 @@
 import { Suspense, lazy, useEffect } from "react";
-import useGetUserProfile from "@/hooks/useGetUserProfile";
+import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 import ProfileLoader from "@/partials/loaders/ProfileLoader";
 import { Link } from "react-router-dom";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import PromptUsername from "@/partials/components/PromptUsername";
 import { DotSpinner } from "@uiball/loaders";
-import useGetUserListings from "@/hooks/useGetUserListings";
 
 const ProfileContent = lazy(
   () => import("@/partials/components/profile/ProfileContent")
 );
 
 function Profile() {
-  const profileData = useGetUserProfile();
-  const listingsData = useGetUserListings();
+  const { data, status } = useGetCurrentUserProfile();
 
   useEffect(() => {
     document.title = "IGotYou - Profile";
@@ -37,18 +35,14 @@ function Profile() {
         </ul>
       </nav>
 
-      {profileData.status === "loading" || listingsData.status === "loading" ? (
+      {status === "loading" ? (
         <div className="min-h-[80vh] flex items-center justify-center">
           <DotSpinner color="#222222" size={50} />
         </div>
-      ) : profileData.status === "success" &&
-        listingsData.status === "success" ? (
+      ) : status === "success" ? (
         <Suspense fallback={<ProfileLoader />}>
-          {profileData.data?.data.username ? (
-            <ProfileContent
-              profileData={profileData.data}
-              listingsData={listingsData.data}
-            />
+          {data.data?.user.username ? (
+            <ProfileContent profileData={data?.data.user} />
           ) : (
             <PromptUsername />
           )}

@@ -15,31 +15,31 @@ import { Separator } from "@/components/ui/separator";
 import CollapsibleUsername from "./collapsibles/CollapsibleUsername";
 import CollapsibleEmail from "./collapsibles/CollapsibleEmail";
 import { Suspense, lazy } from "react";
+import { useParams } from "react-router-dom";
 
 const CollapsiblePhoneNumber = lazy(
   () => import("./collapsibles/CollapsiblePhoneNumber")
 );
 
-type TData = {
-  email?: string;
-  username?: string;
-  hostStatus?: boolean;
-  work?: string;
-  address?: string;
-  funFact?: string;
-  school?: string;
-  email_verified: boolean;
-  mobile_phone: string;
-  mobile_verified: boolean;
+type TUserData = {
+  user: {
+    email?: string;
+    username?: string;
+    hostStatus?: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school?: string;
+    emailVerified: boolean;
+    mobilePhone: string;
+    mobileVerified: boolean;
+  };
 };
 
 function PersonalInfoSheet() {
   const queryClient = useQueryClient();
-  const ID = localStorage.getItem("ID");
-  const data = queryClient.getQueryData<QueryState<TData>>([
-    "profile",
-    ID && ID,
-  ]);
+  const { id } = useParams();
+  const data = queryClient.getQueryData<QueryState<TUserData>>(["profile", id]);
 
   return (
     <Sheet>

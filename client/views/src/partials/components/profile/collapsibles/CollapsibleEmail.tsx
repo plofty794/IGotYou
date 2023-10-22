@@ -9,28 +9,30 @@ import { Collapsible } from "@radix-ui/react-collapsible";
 import { QueryState } from "@tanstack/react-query";
 import { useState } from "react";
 
-type TData = {
-  email?: string;
-  username?: string;
-  hostStatus?: boolean;
-  work?: string;
-  address?: string;
-  funFact?: string;
-  school?: string;
-  emailVerified?: boolean;
-  mobilePhone?: string;
-  mobileVerified?: boolean;
+type TUserData = {
+  user: {
+    email?: string;
+    username?: string;
+    hostStatus?: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school?: string;
+    emailVerified: boolean;
+    mobilePhone: string;
+    mobileVerified: boolean;
+  };
 };
 
 type TCollapsibleData = {
-  data: QueryState<TData, unknown> | undefined;
+  data: QueryState<TUserData, unknown> | undefined;
 };
 
 function CollapsibleEmail({ data }: TCollapsibleData) {
   const [isOpen, setIsOpen] = useState(false);
   const hiddenEmail =
-    data?.data?.email &&
-    data?.data?.email.replace(/^(\w)+/, `${data.data.email[0]}***`);
+    data?.data?.user.email &&
+    data?.data?.user.email.replace(/^(\w)+/, `${data.data.user.email[0]}***`);
 
   return (
     <Collapsible open={isOpen} onOpenChange={(open) => setIsOpen(open)}>

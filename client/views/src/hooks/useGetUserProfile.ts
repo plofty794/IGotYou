@@ -1,22 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAxiosPrivate } from "./useAxiosPrivate";
-import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
 
-function useGetUserProfile() {
-  const axiosPrivate = useAxiosPrivate();
-  const [ID, setID] = useState<string | null>(null);
-
-  useEffect(() => {
-    const ID = localStorage.getItem("ID");
-    ID && setID(ID);
-  }, []);
+function useGetCurrentUserProfile() {
+  const { id } = useParams();
 
   return useQuery({
-    queryKey: ["profile", ID && ID],
-    queryFn: async () => {
-      return await axiosPrivate.get(`/api/users/profile/${ID}`);
-    },
-    enabled: ID != null,
+    queryKey: ["profile", id],
+    queryFn: async () =>
+      await axiosPrivateRoute.get(`/api/users/current-user-profile/`),
+    enabled: id != null,
     keepPreviousData: true,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -24,4 +17,4 @@ function useGetUserProfile() {
   });
 }
 
-export default useGetUserProfile;
+export default useGetCurrentUserProfile;

@@ -17,27 +17,26 @@ import { FormEvent, useState } from "react";
 import ErrorMessage from "../../ErrorMessage";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { useQueryClient, QueryState } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
 type TData = {
-  email: string;
-  username: string;
-  hostStatus: boolean;
-  address?: string;
-  school?: string;
-  work?: string;
-  funFact: string;
+  user: {
+    email: string;
+    username: string;
+    hostStatus: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school: string;
+  };
 };
-
 function Address() {
   const queryClient = useQueryClient();
   const { mutate } = useUpdateUserProfile();
   const [address, setAddress] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const ID = localStorage.getItem("ID");
-  const data = queryClient.getQueryData<QueryState<TData>>([
-    "profile",
-    ID && ID,
-  ]);
+  const { id } = useParams();
+  const data = queryClient.getQueryData<QueryState<TData>>(["profile", id]);
 
   function handleAddressSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,7 +52,7 @@ function Address() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] w-full border font-medium ${
-          data?.data?.address ? "text-xs" : "text-sm"
+          data?.data?.user.address ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
@@ -61,20 +60,24 @@ function Address() {
           <HomeIcon color="black" width={25} height={25} />
         </span>
         <p className="text-zinc-500">
-          {data?.data?.address
-            ? `Where I live: ${data?.data.address}`
+          {data?.data?.user.address
+            ? `Where I live: ${data?.data?.user.address}`
             : "Where I live"}
         </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
           <DialogTitle className="text-xl text-[#222222]">
-            {data?.data?.address ? "Current address" : "Where do you live?"}
+            {data?.data?.user.address
+              ? "Current address"
+              : "Where do you live?"}
           </DialogTitle>
         </DialogHeader>
-        {data?.data?.address ? (
+        {data?.data?.user.address ? (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">{data?.data.address}</p>
+            <p className="text-sm font-medium mb-2">
+              {data?.data?.user.address}
+            </p>
             <div className="flex gap-2 items-center pt-2">
               <Button
                 onClick={() => {

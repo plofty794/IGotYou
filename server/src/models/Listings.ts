@@ -39,10 +39,14 @@ const listingSchema = new Schema(
       type: Types.ObjectId,
       ref: "Users",
     },
+    price: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-export type TUser = InferSchemaType<typeof listingSchema>;
-const Users = model("Listings", listingSchema);
-export default Users;
+export type TListing = InferSchemaType<typeof listingSchema>;
+const Listings = model("Listings", listingSchema);
+export default Listings;

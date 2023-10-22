@@ -18,8 +18,7 @@ import {
   linkWithPhoneNumber,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { toast } from "@/components/ui/use-toast";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useParams } from "react-router-dom";
 import { UseQueryResult } from "@tanstack/react-query";
 import { DotPulse } from "@uiball/loaders";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
@@ -31,6 +30,7 @@ type TLoaderData = {
 };
 
 function VerifyPhone() {
+  const { id } = useParams();
   const { mutate } = useUpdateUserProfile();
   const { data } = useLoaderData() as UseQueryResult<TLoaderData>;
   const mobilePhone = data?.user.mobilePhone;
@@ -68,17 +68,8 @@ function VerifyPhone() {
     try {
       await confirmation?.confirm(OTP);
       mutate({ mobileVerified: true });
-      toast({
-        title: "Success!",
-        description: "Mobile phone has been verified.",
-      });
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Oops! An error occurred.",
-        description: "OTP is expired",
-        variant: "destructive",
-      });
     }
   }
 
@@ -87,7 +78,7 @@ function VerifyPhone() {
       {isLoaded ? (
         <main className="bg-[#F2F2F2] min-h-screen flex flex-col gap-2 items-center justify-center">
           <Link
-            to={"/"}
+            to={`/users/show/${id}`}
             className={`bg-[#222222] text-white font-medium mx-auto ${buttonVariants(
               { size: "sm" }
             )}`}

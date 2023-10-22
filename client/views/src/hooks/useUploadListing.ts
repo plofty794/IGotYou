@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import { useAxiosPrivate } from "./useAxiosPrivate";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
 
 type TFileType = {
   public_id: string;
@@ -14,16 +15,24 @@ type TListing = {
 };
 
 function useUploadListing() {
-  const axiosPrivate = useAxiosPrivate();
-  const ID = localStorage.getItem("ID");
+  const { id } = useParams();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: TListing) => {
-      return await axiosPrivate.post(`/api/users/${ID && ID}/make-a-listing`, {
-        ...data,
-      });
+      return await axiosPrivateRoute.post(
+        `/api/users/current-user/make-a-listing`,
+        {
+          ...data,
+        }
+      );
     },
-    onSuccess(data) {
-      console.log(data.data);
+    onSuccess() {
+      console.log("Success");
+      queryClient.invalidateQueries(["profile", id], { exact: true });
+      queryClient.refetchQueries(["listings"], { exact: true });
+    },
+    onError(error) {
+      console.error(error);
     },
   });
 }

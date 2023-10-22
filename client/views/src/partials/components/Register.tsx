@@ -75,7 +75,7 @@ function Register() {
             <ErrorMessage message={errors.confirmPassword.message} />
           )}
           <div className="mt-1 flex flex-col">
-            <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-1 text-xs font-semibold w-max">
+            <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-1 text-xs font-semibold">
               {isLoading ? (
                 <DotPulse size={30} speed={1} color="white" />
               ) : (

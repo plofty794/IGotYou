@@ -1,7 +1,6 @@
-import { axiosPrivate } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
 import { toast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
-import { useUserStore } from "@/store/userStore";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { FirebaseError } from "firebase/app";
@@ -13,7 +12,6 @@ type TRegister = {
 };
 
 export function useRegister() {
-  const setUser = useUserStore((state) => state.setUser);
   return useMutation({
     mutationFn: async (data: TRegister) => {
       return await createUserWithEmailAndPassword(
@@ -25,11 +23,14 @@ export function useRegister() {
     onSuccess: async (res, variables) => {
       const { user } = res;
       try {
-        const { data } = await axiosPrivate.post("/api/users/register", {
+        await axiosPrivateRoute.post("/api/users/register", {
           ...variables,
+          uid: user.uid,
           providerId: user.providerData[0].providerId,
+          photoUrl: user.photoURL,
         });
-        return setUser({ ...data.user });
+        const token = await res.user.getIdToken();
+        localStorage.setItem("token", token);
       } catch (err) {
         const error = err as AxiosError;
         toast({

@@ -156,7 +156,7 @@ function Login() {
                 </DialogTitle>
               </DialogHeader>
               <Register />
-              <DialogFooter className="text-center text-xs font-medium">
+              <DialogFooter className="text-center py-2 px-4 text-xs font-medium">
                 Sign up and become a part of the conversation. Share your
                 thoughts, ideas, and feedback with us and connect with others
                 who share your interests.

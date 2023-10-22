@@ -1,11 +1,11 @@
-import { axiosRoute } from "@/axios/axiosRoute";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
 
 function useGetListings() {
   return useInfiniteQuery({
     queryKey: ["listings"],
     queryFn: async ({ pageParam = 1 }) => {
-      return await axiosRoute.get(`/api/listings/`);
+      return await axiosPrivateRoute.get(`/api/users/`);
     },
     getNextPageParam: (_, pages) => {
       return pages.length + 1;

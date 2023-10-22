@@ -15,15 +15,18 @@ import { Label } from "@radix-ui/react-label";
 import { QueryState, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../ErrorMessage";
+import { useParams } from "react-router-dom";
 
 type TData = {
-  email: string;
-  username: string;
-  hostStatus: boolean;
-  funFact?: string;
-  address?: string;
-  work?: string;
-  school: string;
+  user: {
+    email: string;
+    username: string;
+    hostStatus: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school: string;
+  };
 };
 
 function FunFact() {
@@ -39,11 +42,8 @@ function FunFact() {
   });
   const queryClient = useQueryClient();
   const { mutate } = useUpdateUserProfile();
-  const ID = localStorage.getItem("ID");
-  const data = queryClient.getQueryData<QueryState<TData>>([
-    "profile",
-    ID && ID,
-  ]);
+  const { id } = useParams();
+  const data = queryClient.getQueryData<QueryState<TData>>(["profile", id]);
 
   function handleFunFactSubmit(data: FunFactSchema) {
     mutate({ funFact: data.funFact });
@@ -53,7 +53,7 @@ function FunFact() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] w-full border font-medium ${
-          data?.data?.funFact ? "text-xs" : "text-sm"
+          data?.data?.user.funFact ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
@@ -61,20 +61,24 @@ function FunFact() {
           <RocketIcon color="black" width={25} height={25} />
         </span>
         <p className="text-zinc-500">
-          {data?.data?.funFact
-            ? `Fun Fact about you: ${data?.data.funFact}`
+          {data?.data?.user.funFact
+            ? `Fun Fact about you: ${data?.data?.user.funFact}`
             : "My Fun Fact"}
         </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
           <DialogTitle className="text-xl text-[#222222]">
-            {data?.data?.funFact ? "Fun fact:" : "What's a fun fact about you?"}
+            {data?.data?.user.funFact
+              ? "Fun fact about you"
+              : "What's a fun fact about you?"}
           </DialogTitle>
         </DialogHeader>
-        {data?.data?.funFact ? (
+        {data?.data?.user.funFact ? (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">{data?.data.funFact}</p>
+            <p className="text-sm font-medium mb-2">
+              {data?.data?.user.funFact}
+            </p>
             <div className="flex gap-2 items-center pt-2">
               <Button
                 onClick={() => mutate({ funFact: "" })}

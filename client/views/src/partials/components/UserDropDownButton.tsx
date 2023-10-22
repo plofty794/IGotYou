@@ -8,17 +8,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { useUserStore } from "@/store/userStore";
 import { Link } from "react-router-dom";
 import { auth } from "../../firebase config/config";
+import logOutUser from "@/hooks/useLogout";
 
 export function UserDropDownButton() {
-  const logOut = useUserStore((state) => state.logOutUser);
   const User = auth.currentUser;
-
-  function handleSignOut() {
-    logOut();
-  }
 
   return (
     <DropdownMenu>
@@ -40,14 +35,21 @@ export function UserDropDownButton() {
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-3">Manage bookings</DropdownMenuItem>
           <DropdownMenuItem className="p-3">
-            <Link to={`/users/show/${User && User?.uid}`} className="w-full">
+            <Link
+              replace
+              to={`/users/show/${User && User?.uid}`}
+              className="w-full"
+            >
               Profile
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuItem className="p-3">
-          <span className="w-full cursor-pointer" onClick={handleSignOut}>
+          <span
+            className="w-full cursor-pointer"
+            onClick={async () => await logOutUser()}
+          >
             Sign out
           </span>
         </DropdownMenuItem>

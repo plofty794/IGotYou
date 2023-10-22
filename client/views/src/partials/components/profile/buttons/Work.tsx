@@ -15,15 +15,18 @@ import { BackpackIcon } from "@radix-ui/react-icons";
 import { QueryState, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../ErrorMessage";
+import { useParams } from "react-router-dom";
 
 type TData = {
-  email: string;
-  username: string;
-  hostStatus: boolean;
-  work?: string;
-  address?: string;
-  funFact?: string;
-  school: string;
+  user: {
+    email: string;
+    username: string;
+    hostStatus: boolean;
+    work?: string;
+    address?: string;
+    funFact?: string;
+    school: string;
+  };
 };
 
 function Work() {
@@ -39,11 +42,8 @@ function Work() {
   });
   const queryClient = useQueryClient();
   const { mutate } = useUpdateUserProfile();
-  const ID = localStorage.getItem("ID");
-  const data = queryClient.getQueryData<QueryState<TData>>([
-    "profile",
-    ID && ID,
-  ]);
+  const { id } = useParams();
+  const data = queryClient.getQueryData<QueryState<TData>>(["profile", id]);
 
   function handleWorkSubmit(data: WorkSchema) {
     mutate({ work: data.work });
@@ -53,7 +53,7 @@ function Work() {
     <Dialog>
       <DialogTrigger
         className={`hover:bg-[#e9e9e9] border w-full font-medium ${
-          data?.data?.work ? "text-xs" : "text-sm"
+          data?.data?.user.work ? "text-xs" : "text-sm"
         }
            shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
       >
@@ -61,18 +61,20 @@ function Work() {
           <BackpackIcon color="black" width={25} height={25} />
         </span>
         <p className="text-zinc-500">
-          {data?.data?.work ? `My work: ${data?.data.work}` : "My work"}
+          {data?.data?.user.work
+            ? `My work: ${data?.data?.user.work}`
+            : "My work"}
         </p>
       </DialogTrigger>
       <DialogContent className="p-8">
         <DialogHeader>
           <DialogTitle className="text-xl text-[#222222]">
-            {data?.data?.work ? "My work" : "What's your work?"}
+            {data?.data?.user.work ? "Your current work" : "What's your work?"}
           </DialogTitle>
         </DialogHeader>
-        {data?.data?.work ? (
+        {data?.data?.user.work ? (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">{data?.data.work}</p>
+            <p className="text-sm font-medium mb-2">{data?.data?.user.work}</p>
             <div className="flex gap-2 items-center pt-2">
               <Button
                 onClick={() => mutate({ work: "" })}

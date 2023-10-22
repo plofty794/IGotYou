@@ -1,7 +1,6 @@
-import { axiosRoute } from "@/axios/axiosRoute";
-import { toast } from "@/components/ui/use-toast";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
-import { useUserStore } from "@/store/userStore";
 import { LoginSchema } from "@/zod/loginSchema";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
@@ -9,7 +8,7 @@ import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 function useLogin() {
-  const setUser = useUserStore((state) => state.setUser);
+  const { toast } = useToast();
   return useMutation({
     mutationFn: async (data: LoginSchema) => {
       return await signInWithEmailAndPassword(auth, data.email, data.password);
@@ -17,7 +16,7 @@ function useLogin() {
     onSuccess: async (res, variables) => {
       const { user } = res;
       try {
-        const { data } = await axiosRoute.post("/api/users/login", {
+        const { data } = await axiosPrivateRoute.post("/api/users/login", {
           ...variables,
           providerId: user.providerData[0].providerId,
         });
@@ -26,7 +25,8 @@ function useLogin() {
             title: `Welcome, ${data.user.username} 👋`,
             className: "bg-[#FFF] text-[#222222]",
           });
-        return setUser({ ...data.user });
+        const token = await res.user.getIdToken();
+        localStorage.setItem("token", token);
       } catch (err) {
         const error = err as AxiosError;
         toast({

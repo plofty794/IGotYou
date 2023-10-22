@@ -3,9 +3,10 @@ import { Button } from "../components/ui/button";
 import useMultistepForm from "@/hooks/useMultistepForm";
 import { DotPulse } from "@uiball/loaders";
 import { auth } from "@/firebase config/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import useUploadListing from "@/hooks/useUploadListing";
+import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
 
 type TFileType = {
   public_id: string;
@@ -20,14 +21,16 @@ type TListing = {
   serviceType: string;
   serviceDescription?: string;
   listingPhotos: TFileType[];
+  price: number;
 };
 
 function BecomeAHostLayout() {
-  const { mutate, isLoading } = useUploadListing();
+  const { mutate, isLoading, status } = useUploadListing();
   const [service, setService] = useState<TListing>({
     serviceType: "Events and Entertainment",
     serviceDescription: "",
     listingPhotos: [],
+    price: 0,
   });
   const User = auth.currentUser;
   const {
@@ -45,7 +48,15 @@ function BecomeAHostLayout() {
     "service-description",
     "make-it-standout",
     "photos",
+    "price",
+    "success",
   ]);
+
+  useEffect(() => {
+    if (status === "success") {
+      next();
+    }
+  }, [next, status]);
 
   return (
     <main>
@@ -72,7 +83,6 @@ function BecomeAHostLayout() {
             service.listingPhotos.length < 5
           )
             return console.log("Invalid");
-          next();
           mutate(service);
         }}
       >
@@ -88,27 +98,31 @@ function BecomeAHostLayout() {
               {isFetching ? <DotPulse size={40} color="#FFF" /> : "Get started"}
             </Button>
           )}
-          {currentStepIndex > 0 && currentStepIndex !== 3 && !isLastPage && (
-            <>
-              <Button
-                type="button"
-                onClick={previous}
-                size={"lg"}
-                variant={"link"}
-                className="text-sm font-medium p-6"
-              >
-                Back
-              </Button>
-              <Button
-                type="button"
-                onClick={next}
-                size={"lg"}
-                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-              >
-                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
-              </Button>
-            </>
-          )}
+          {currentStepIndex > 0 &&
+            currentStepIndex !== 3 &&
+            currentStepIndex !== 5 &&
+            currentStepIndex !== 6 &&
+            !isLastPage && (
+              <>
+                <Button
+                  type="button"
+                  onClick={previous}
+                  size={"lg"}
+                  variant={"link"}
+                  className="text-sm font-medium p-6"
+                >
+                  Back
+                </Button>
+                <Button
+                  type="button"
+                  onClick={next}
+                  size={"lg"}
+                  className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                >
+                  {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+                </Button>
+              </>
+            )}
           {currentStepIndex === 3 && (
             <>
               <Button
@@ -131,7 +145,7 @@ function BecomeAHostLayout() {
               </Button>
             </>
           )}
-          {isLastPage && (
+          {currentStepIndex === 5 && (
             <>
               <Button
                 disabled={service.listingPhotos.length > 0}
@@ -144,11 +158,51 @@ function BecomeAHostLayout() {
                 Back
               </Button>
               <Button
+                type="button"
+                onClick={next}
                 disabled={service.listingPhotos.length < 5}
                 size={"lg"}
                 className="bg-[#222222] rounded-full text-lg font-semibold p-6"
               >
-                {isLoading ? <DotPulse size={40} color="#FFF" /> : "Done"}
+                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+              </Button>
+            </>
+          )}
+          {currentStepIndex === 6 && (
+            <>
+              <Button
+                disabled={service.price != null}
+                type="button"
+                onClick={previous}
+                size={"lg"}
+                variant={"link"}
+                className="text-sm font-medium p-6"
+              >
+                Back
+              </Button>
+              <Button
+                disabled={
+                  service.price < BASE_PRICE || service.price > PRICE_CAP
+                }
+                size={"lg"}
+                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+              >
+                {isLoading ? <DotPulse size={40} color="#FFF" /> : "Finish"}
+              </Button>
+            </>
+          )}
+          {isLastPage && (
+            <>
+              <Button
+                type="button"
+                size={"lg"}
+                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+              >
+                {isLoading ? (
+                  <DotPulse size={40} color="#FFF" />
+                ) : (
+                  "Check your listing"
+                )}
               </Button>
             </>
           )}

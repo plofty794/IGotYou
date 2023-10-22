@@ -1,27 +1,30 @@
 import { useMutation } from "@tanstack/react-query";
-import { useAxiosPrivate } from "./useAxiosPrivate";
 import { signInWithPopup } from "firebase/auth";
 import { GoogleAuth, auth } from "@/firebase config/config";
 import { FirebaseError } from "firebase/app";
 import { toast } from "@/components/ui/use-toast";
-import { useUserStore } from "@/store/userStore";
+import { axiosPrivateRoute } from "@/axios/axiosRoute";
 
 function useGoogleSignin() {
-  const setUser = useUserStore((state) => state.setUser);
-  const axiosPrivate = useAxiosPrivate();
   return useMutation({
     mutationFn: async () => {
       return await signInWithPopup(auth, GoogleAuth);
     },
     onSuccess: async (res) => {
       const { user } = res;
-      const { data } = await axiosPrivate.post("/api/users/login/google", {
-        username: user.displayName,
-        email: user.email,
-        providerId: user.providerData[0].providerId,
-        emailVerified: user.emailVerified,
-      });
-      return setUser({ ...data.user });
+      try {
+        await axiosPrivateRoute.post("/api/users/login/google", {
+          username: user.displayName,
+          email: user.email,
+          providerId: user.providerData[0].providerId,
+          emailVerified: user.emailVerified,
+          uid: res.user.uid,
+        });
+        const token = await res.user.getIdToken();
+        localStorage.setItem("token", token);
+      } catch (error) {
+        console.error(error);
+      }
     },
     onError(err) {
       const error = err as FirebaseError;

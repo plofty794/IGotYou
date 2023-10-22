@@ -6,28 +6,43 @@ import bcrypt from "bcrypt";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
   try {
-    const users = await Users.find({});
+    const users = await Users.find({
+      hostStatus: true,
+      $where: function () {
+        return this.listings.length > 0;
+      },
+    })
+      .populate("listings")
+      .exec();
+
     if (!users.length) {
-      throw createHttpError(400, "No accounts found.");
+      return res.status(200).json({ hosts: [] });
     }
-    const accounts = users.map((user) => ({
+    const hosts = users.map((user) => ({
+      _id: user._id,
       username: user.username,
       email: { email: user.email, isVerified: user.emailVerified },
       isHost: user.hostStatus,
+      photoUrl: user.photoUrl,
       mobilePhone: {
         contact: user.mobilePhone,
         isVerified: user.mobileVerified,
       },
+      listings: user.listings.length > 0 ? user.listings : null,
+      uid: user.uid,
     }));
-    res.status(200).json({ accounts });
+    res.status(200).json({ hosts });
   } catch (error) {
     next(error);
   }
 };
 
 export const getUserPhone: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.headers.cookie?.split("_id=")[1];
   try {
+    if (!id) {
+      throw createHttpError(401, "Unauthorized");
+    }
     const user = await Users.findById(id);
     if (!user) {
       throw createHttpError(400, "No account with that id");
@@ -38,38 +53,33 @@ export const getUserPhone: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getUserProfile: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
+export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
+  const id = req.headers.cookie?.split("_id=")[1];
   try {
-    const user = await Users.findById(id);
+    if (!id) {
+      throw createHttpError(401, "Unauthorized");
+    }
+    const user = await Users.findById(id).populate("listings");
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
-    const {
-      email,
-      username,
-      hostStatus,
-      address,
-      funFact,
-      school,
-      work,
-      emailVerified,
-      mobileVerified,
-      mobilePhone,
-      photoUrl,
-    } = user;
     res.status(200).json({
-      email,
-      username,
-      hostStatus,
-      address,
-      funFact,
-      school,
-      work,
-      emailVerified,
-      mobileVerified,
-      mobilePhone,
-      photoUrl,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const visitUserProfile: RequestHandler = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const user = await Users.findOne({ uid: id }).populate("listings");
+    if (!user) {
+      throw createHttpError(400, "No account with that id");
+    }
+    res.status(200).json({
+      user,
     });
   } catch (error) {
     next(error);
@@ -91,8 +101,9 @@ export const createUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Username/Email already exist");
     }
     const newUser = await Users.create({ ...req.body });
-    const { _id, username } = newUser;
-    res.status(201).json({ user: { _id, username } });
+    const { _id, username, uid } = newUser;
+    res.cookie("_id", newUser._id.toString(), { httpOnly: true });
+    res.status(201).json({ user: { _id, username, uid } });
   } catch (error) {
     next(error);
   }
@@ -117,16 +128,19 @@ export const logInUser: RequestHandler = async (req, res, next) => {
         throw createHttpError(400, "Incorrect password");
       }
     }
-    const { _id, username } = user;
-    res.status(200).json({ user: { _id, username } });
+    res.cookie("_id", user._id.toString(), { httpOnly: true });
+    res.status(200).json({ user });
   } catch (error) {
     next(error);
   }
 };
 
 export const updateUser: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.headers.cookie?.split("_id=")[1];
   try {
+    if (!id) {
+      throw createHttpError(401, "Unauthorized");
+    }
     const user = await Users.findByIdAndUpdate(id, { ...req.body });
     if (!user) {
       throw createHttpError(400, "Error updating user");
@@ -149,11 +163,17 @@ export const googleSignIn: RequestHandler = async (req, res, next) => {
   try {
     const userExist = await Users.findOne({ email });
     if (userExist) {
-      return res
-        .status(200)
-        .json({ user: { _id: userExist._id, username: userExist.username } });
+      res.cookie("_id", userExist._id.toString(), { httpOnly: true });
+      return res.status(200).json({
+        user: {
+          _id: userExist._id,
+          username: userExist.username,
+          uid: userExist.uid,
+        },
+      });
     }
     const newUser = await Users.create({ ...req.body });
+    res.cookie("_id", newUser._id.toString());
     res
       .status(201)
       .json({ user: { _id: newUser._id, username: newUser.username } });
@@ -163,7 +183,16 @@ export const googleSignIn: RequestHandler = async (req, res, next) => {
 };
 
 export const logOutUser: RequestHandler = async (req, res, next) => {
+  const id = req.headers.cookie?.split("_id=")[1];
   try {
+    if (!id) {
+      throw createHttpError(400, "No user to be logged out");
+    }
+    const userExist = await Users.findById(id);
+    if (!userExist) {
+      throw createHttpError(400, "No user with that id");
+    }
+    res.clearCookie("_id", { httpOnly: true });
     res.status(200).json({ message: "User has been logged out" });
   } catch (error) {
     next(error);
@@ -172,6 +201,7 @@ export const logOutUser: RequestHandler = async (req, res, next) => {
 
 export const deleteUser: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
+  console.log(req.cookies);
   try {
     if (!isValidObjectId(id)) {
       throw createHttpError(401, "Invalid userID");

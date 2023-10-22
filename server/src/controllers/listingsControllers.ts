@@ -1,4 +1,4 @@
-import cloudinary, { UploadApiResponse } from "cloudinary";
+import cloudinary from "cloudinary";
 import env from "../utils/envalid";
 import { RequestHandler } from "express";
 import Listings from "../models/Listings";
@@ -50,7 +50,7 @@ export const getUserListings: RequestHandler = async (req, res, next) => {
 
 export const addListing: RequestHandler = async (req, res, next) => {
   const { serviceType, serviceDescription, listingPhotos }: TListing = req.body;
-  const { id } = req.params;
+  const id = req.headers.cookie?.split("_id=")[1];
   try {
     const newListing = await (
       await Listings.create({ ...req.body, host: id })
@@ -59,12 +59,29 @@ export const addListing: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Error creating a listing");
     }
     const user = await Users.findById(id);
-    if (!user?.hostStatus) {
-      await Users.findByIdAndUpdate(id, {
-        hostStatus: true,
-      });
+    if (!user?.hostStatus && user != null) {
+      await Users.findByIdAndUpdate(
+        id,
+        {
+          hostStatus: true,
+          $push: {
+            listings: newListing._id,
+          },
+        },
+        { new: true }
+      );
+      return res.status(200).json({ newListing });
     }
-    res.json({ newListing });
+    await Users.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          listings: newListing._id,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json({ newListing });
   } catch (error) {
     next(error);
   }

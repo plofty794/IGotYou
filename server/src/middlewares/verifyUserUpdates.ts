@@ -29,14 +29,14 @@ export const verifyUserUpdates = async (
   if (username) {
     const usernameExist = await Users.findOne({ username });
     if (usernameExist) {
-      return next(createHttpError(400, "Username already exist"));
+      return res.status(400).json({ message: "Username already exist" });
     }
   }
 
   if (mobilePhone) {
     const mobilePhoneTaken = await Users.findOne({ mobilePhone });
     if (mobilePhoneTaken) {
-      return next(createHttpError(400, "Mobile phone already taken"));
+      return res.status(400).json({ message: "Mobile phone already taken" });
     }
   }
   next();

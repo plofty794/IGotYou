@@ -20,7 +20,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { DotPulse } from "@uiball/loaders";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Flag from "react-svg-country-flags";
 
 type TMobilePhone = {
@@ -29,8 +29,10 @@ type TMobilePhone = {
 };
 
 function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
+  const { id } = useParams();
   const [countryCode, setCountryCode] = useState<CountryCode>("PH");
   const { mutate, isLoading } = useUpdateUserProfile();
+
   const {
     formState: { errors },
     register,
@@ -86,24 +88,20 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
         <div className="flex items-center gap-2 mb-2">
           {<Flag country={countryCode} className="w-9 h-9" />}
 
-          <Input {...register("mobile_phone")} type="tel" />
+          <Input autoFocus {...register("mobile_phone")} type="tel" />
         </div>
         {errors.mobile_phone && (
           <ErrorMessage message={errors.mobile_phone?.message} />
         )}
         <div className="flex gap-2">
           <Button size={"sm"} className="mt-3 w-max font-semibold bg-[#222222]">
-            {mobilePhone ? (
-              "Edit"
-            ) : isLoading ? (
-              <DotPulse size={15} speed={1} color="white" />
-            ) : (
-              "Add"
-            )}
+            {mobilePhone && !isLoading && "Edit"}
+            {isLoading && <DotPulse size={20} speed={1} color="#FFF" />}
+            {!mobilePhone && "Add"}
           </Button>
           {!mobileVerified && mobilePhone ? (
             <Link
-              to={"/account/verify-phone"}
+              to={`/account/verify-phone/${id}`}
               className={`mt-3 w-max font-semibold bg-[#222222] ${buttonVariants(
                 { size: "sm" }
               )}`}

@@ -47,7 +47,15 @@ const usersSchema = new Schema(
       type: String,
     },
     // Host details
+    uid: {
+      type: String,
+      required: true,
+    },
     hostStatus: { type: Boolean, default: false },
+    listings: {
+      type: [Types.ObjectId],
+      ref: "Listings",
+    },
   },
   { timestamps: true }
 );
