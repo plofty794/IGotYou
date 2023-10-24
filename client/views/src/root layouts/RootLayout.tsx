@@ -35,13 +35,10 @@ function RootLayout() {
               />
             </span>
           </Link>
-          <span className="border rounded-lg w-[400px] border-zinc-500 text-center">
-            Search Navigation
-          </span>
-          <span className="text-sm font-medium flex justify-center items-center gap-5">
+          <span className="flex justify-center items-center gap-5">
             {User && User?.emailVerified ? (
               <Button
-                className="font-medium text-xs"
+                className="text-xs text-[#222222] font-medium hover:bg-zinc-100 p-4 rounded-full"
                 variant={"ghost"}
                 onClick={() =>
                   navigate(`/become-a-host/${User && User.uid}/overview`)
@@ -51,7 +48,7 @@ function RootLayout() {
               </Button>
             ) : (
               <AlertDialog>
-                <AlertDialogTrigger className="text-xs font-medium hover:bg-zinc-100 p-2 rounded">
+                <AlertDialogTrigger className="text-xs text-[#222222] font-medium hover:bg-zinc-100 p-4 rounded-full">
                   Want to host?
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -69,8 +66,8 @@ function RootLayout() {
                         Verifying your email is a crucial step for several
                         reasons:
                       </span>
-                      <span className="text-xs text-zinc-700">
-                        <ul className="pt-2 px-6 list-disc">
+                      <span className="text-xs text-zinc-900">
+                        <ul className="flex flex-col gap-1 pt-2 px-6 list-disc">
                           <li>
                             Security: Verifying your email helps us ensure that
                             you are the rightful owner of the account. It adds

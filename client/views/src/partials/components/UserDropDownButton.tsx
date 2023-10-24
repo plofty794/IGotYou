@@ -10,19 +10,29 @@ import {
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import { auth } from "../../firebase config/config";
-import logOutUser from "@/hooks/useLogout";
+import useLogOutUser from "@/hooks/useLogout";
 
 export function UserDropDownButton() {
   const User = auth.currentUser;
+  const logOutUser = useLogOutUser();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="rounded-2xl bg-[#F2F2F2] border border-neutral-300"
+          className="flex items-center justify-between w-max h-max gap-3 rounded-full bg-white border"
           variant="secondary"
         >
-          <HamburgerMenuIcon width={15} height={15} />
+          <HamburgerMenuIcon width={16} height={16} />
+          <img
+            className="w-[32px] h-[32px] max-h-full max-w-full object-cover rounded-full"
+            src={
+              auth.currentUser?.photoURL ??
+              "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+            }
+            alt="user-avatar"
+            loading="lazy"
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 absolute left-[-200px] font-medium">

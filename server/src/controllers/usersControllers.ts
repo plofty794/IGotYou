@@ -21,15 +21,16 @@ export const getUsers: RequestHandler = async (req, res, next) => {
     const hosts = users.map((user) => ({
       _id: user._id,
       username: user.username,
-      email: { email: user.email, isVerified: user.emailVerified },
-      isHost: user.hostStatus,
-      photoUrl: user.photoUrl,
-      mobilePhone: {
-        contact: user.mobilePhone,
-        isVerified: user.mobileVerified,
-      },
+      email: user.email,
+      emailVerified: user.emailVerified,
+      hostStatus: user.hostStatus,
+      photoUrl: user.photoUrl ?? null,
+      mobilePhone: user.mobilePhone,
+      mobileVerified: user.mobileVerified,
       listings: user.listings.length > 0 ? user.listings : null,
       uid: user.uid,
+      rating: user.rating,
+      reviews: user.reviews.length > 0 ? user.reviews : null,
     }));
     res.status(200).json({ hosts });
   } catch (error) {
@@ -57,6 +58,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
   const id = req.headers.cookie?.split("_id=")[1];
   try {
     if (!id) {
+      res.clearCookie("_id");
       throw createHttpError(401, "Unauthorized");
     }
     const user = await Users.findById(id).populate("listings");
@@ -64,7 +66,24 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "No account with that id");
     }
     res.status(200).json({
-      user,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        hostStatus: user.hostStatus,
+        photoUrl: user.photoUrl ?? null,
+        mobilePhone: user.mobilePhone,
+        mobileVerified: user.mobileVerified,
+        listings: user.listings.length > 0 ? user.listings : null,
+        uid: user.uid,
+        rating: user.rating,
+        reviews: user.reviews.length > 0 ? user.reviews : null,
+        work: user.work,
+        funFact: user.funFact,
+        school: user.school,
+        address: user.address,
+      },
     });
   } catch (error) {
     next(error);
@@ -79,7 +98,24 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "No account with that id");
     }
     res.status(200).json({
-      user,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        hostStatus: user.hostStatus,
+        photoUrl: user.photoUrl ?? null,
+        mobilePhone: user.mobilePhone,
+        mobileVerified: user.mobileVerified,
+        listings: user.listings.length > 0 ? user.listings : null,
+        uid: user.uid,
+        rating: user.rating,
+        reviews: user.reviews.length > 0 ? user.reviews : null,
+        work: user.work,
+        funFact: user.funFact,
+        school: user.school,
+        address: user.address,
+      },
     });
   } catch (error) {
     next(error);

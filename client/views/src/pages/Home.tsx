@@ -47,7 +47,7 @@ function Home() {
                     {host.username}
                   </span>
                   <span className="flex items-center justify-center text-xs font-medium text-[#222222]">
-                    @{host.email.email}
+                    @{host.email}
                   </span>
                 </div>
               </CardHeader>
@@ -84,17 +84,16 @@ function Home() {
 type THosts = {
   _id: string;
   username: string;
-  email: {
-    email: string;
-    isVerified: boolean;
-  };
+  email: string;
+  emailVerified: boolean;
   isHost: boolean;
-  mobilePhone: {
-    isVerified: boolean;
-  };
-  photoUrl?: string;
+  photoUrl: string;
+  mobilePhone: string;
+  mobileVerified: boolean;
   listings: TListing[];
   uid: string;
+  rating: string;
+  reviews: string[];
 };
 
 type TListing = {

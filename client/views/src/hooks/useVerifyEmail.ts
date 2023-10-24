@@ -23,8 +23,6 @@ function useVerifyEmail() {
     mutationFn: async (data: TUserUpdates) => {
       try {
         await sendEmailVerification(auth.currentUser!);
-        await auth.currentUser?.reload();
-        await auth.updateCurrentUser(auth.currentUser);
         axiosPrivateRoute.patch("/api/users/current-user/update/", {
           ...data,
         });
@@ -43,12 +41,9 @@ function useVerifyEmail() {
         });
       }
     },
-    onSuccess: async (_, variables) => {
+    onSuccess: async () => {
       console.log("Success");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      queryClient.setQueryData(["profile", id], (prevData: any) => {
-        return { data: { ...prevData.data, ...variables } };
-      });
+      queryClient.invalidateQueries(["profile", id]);
       toast({
         title: "Verification email has been sent",
         description: "Click the verify button again after verifying your email",
@@ -62,6 +57,10 @@ function useVerifyEmail() {
         description: (error.response as AxiosResponse).data.error,
         variant: "destructive",
       });
+    },
+    onSettled: async () => {
+      await auth.currentUser?.reload();
+      await auth.updateCurrentUser(auth.currentUser);
     },
   });
 }

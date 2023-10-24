@@ -31,6 +31,7 @@ import Photos from "./pages/become a host/steps/Photos";
 import Price from "./pages/become a host/Price";
 import Success from "./pages/become a host/steps/Success";
 import VisitProfile from "./pages/VisitProfile";
+import ProfileLayout from "./root layouts/ProfileLayout";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -53,15 +54,15 @@ function App() {
         </Route>
 
         {/* USER PROFILE & PHONE VERIFICATION Routes */}
-        <Route path="/">
+        <Route path="/users" element={<ProfileLayout />}>
           <Route
-            path="users/show/:id"
+            path="show/:id"
             element={
               User ?? token ? <Profile /> : <Navigate replace to={"/login"} />
             }
           />
           <Route
-            path="users/visit/show/:id"
+            path="visit/show/:id"
             element={
               User ?? token ? (
                 <VisitProfile />

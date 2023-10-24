@@ -24,6 +24,7 @@ import { MdCameraEnhance } from "react-icons/md";
 import { DotPulse } from "@uiball/loaders";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { useQueryClient } from "@tanstack/react-query";
+import { updateProfile } from "firebase/auth";
 
 const Listings = lazy(() => import("./Listings"));
 
@@ -79,10 +80,11 @@ function ProfileContent({ profileData }: TProps) {
       resourceType: "image",
       cropping: true,
     },
-    (_, res) => {
+    async (_, res) => {
       if (res.event === "success") {
         updateUserProfile.mutate({ photoUrl: res.info.secure_url });
         setPhoto(res.info.secure_url);
+        updateProfile(auth.currentUser!, { photoURL: res.info.secure_url });
       }
       return;
     }
@@ -91,7 +93,7 @@ function ProfileContent({ profileData }: TProps) {
   return (
     <>
       <section className="flex gap-16 px-32 mt-14">
-        <div className="flex flex-col justify-between h-[650px]">
+        <div className="flex flex-col justify-between w-[340px] h-[650px]">
           <Card className="flex flex-col justify-center items-center w-[342px] px-22 py-5 shadow">
             <CardHeader className="p-4 relative">
               <Avatar className="w-[80px] h-[80px]">
@@ -188,7 +190,7 @@ function ProfileContent({ profileData }: TProps) {
               )}
             </CardContent>
           </Card>
-          <Card className="w-[342px]">
+          <Card className="w-full">
             <CardHeader className="text-[#222222] px-6 pt-6 pb-2">
               <span className="text-lg font-semibold">
                 <IdCardIcon width={35} height={35} />
@@ -223,8 +225,8 @@ function ProfileContent({ profileData }: TProps) {
             </CardContent>
           </Card>
         </div>
-        <div className="flex flex-col gap-4">
-          <Card className="w-[700px] shadow-lg">
+        <div className="w-max flex flex-col gap-4">
+          <Card className="shadow-lg">
             <CardHeader className="text-[#222222] text-4xl font-semibold">
               <h2>Your profile</h2>
             </CardHeader>

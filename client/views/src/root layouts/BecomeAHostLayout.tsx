@@ -59,7 +59,7 @@ function BecomeAHostLayout() {
   }, [next, status]);
 
   return (
-    <main>
+    <main className="overflow-hidden h-screen">
       {<Navigate to={`/become-a-host/${User && User.uid}/${step}`} replace />}
       <nav className="bg-white sticky top-0 z-10 py-8 px-16 flex justify-between items-center">
         <Link to={"/"}>
@@ -74,7 +74,6 @@ function BecomeAHostLayout() {
         </Link>
         <UserDropDownButton />
       </nav>
-
       <form
         onSubmit={(e) => {
           e.preventDefault();

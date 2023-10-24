@@ -28,7 +28,7 @@ function useUploadListing() {
     },
     onSuccess() {
       console.log("Success");
-      queryClient.invalidateQueries(["profile", id], { exact: true });
+      queryClient.refetchQueries(["profile", id], { exact: true });
       queryClient.refetchQueries(["listings"], { exact: true });
     },
     onError(error) {

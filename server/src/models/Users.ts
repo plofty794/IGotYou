@@ -51,10 +51,20 @@ const usersSchema = new Schema(
       type: String,
       required: true,
     },
-    hostStatus: { type: Boolean, default: false },
+    hostStatus: {
+      type: Boolean,
+      default: false,
+    },
     listings: {
       type: [Types.ObjectId],
       ref: "Listings",
+    },
+    rating: {
+      type: String,
+    },
+    reviews: {
+      type: [Types.ObjectId],
+      ref: "Reviews",
     },
   },
   { timestamps: true }

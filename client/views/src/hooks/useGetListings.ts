@@ -4,7 +4,7 @@ import { axiosPrivateRoute } from "@/axios/axiosRoute";
 function useGetListings() {
   return useInfiniteQuery({
     queryKey: ["listings"],
-    queryFn: async ({ pageParam = 1 }) => {
+    queryFn: async () => {
       return await axiosPrivateRoute.get(`/api/users/`);
     },
     getNextPageParam: (_, pages) => {
