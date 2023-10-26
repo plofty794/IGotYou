@@ -66,6 +66,13 @@ const usersSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Reviews",
     },
+    isSubscribed: {
+      type: Boolean,
+      default: false,
+    },
+    subscriptionExpiresAt: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

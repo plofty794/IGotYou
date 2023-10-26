@@ -81,7 +81,7 @@ function Login() {
           </Label>
           <Input
             id="email"
-            className="border-slate-700 text-xs font-medium"
+            className="text-xs font-medium rounded border-slate-700"
             autoFocus
             autoComplete="email"
             type="text"
@@ -93,7 +93,7 @@ function Login() {
           </Label>
           <Input
             id="password"
-            className="border-slate-700 text-xs font-medium"
+            className="text-xs font-medium rounded border-slate-700"
             type="password"
             {...register("password")}
           />
@@ -102,7 +102,7 @@ function Login() {
           )}
           <Link
             to={"/forgot-password"}
-            className="text-xs text-end underline text-[#222222] font-medium"
+            className="text-xs text-end hover:underline underline-offset-2 text-[#222222] font-medium"
           >
             Forgot password?
           </Link>

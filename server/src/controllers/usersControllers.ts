@@ -7,9 +7,8 @@ import bcrypt from "bcrypt";
 export const getUsers: RequestHandler = async (req, res, next) => {
   try {
     const users = await Users.find({
-      hostStatus: true,
       $where: function () {
-        return this.listings.length > 0;
+        return this.listings.length > 0 && this.hostStatus === true;
       },
     })
       .populate("listings")
@@ -18,20 +17,10 @@ export const getUsers: RequestHandler = async (req, res, next) => {
     if (!users.length) {
       return res.status(200).json({ hosts: [] });
     }
-    const hosts = users.map((user) => ({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      emailVerified: user.emailVerified,
-      hostStatus: user.hostStatus,
-      photoUrl: user.photoUrl ?? null,
-      mobilePhone: user.mobilePhone,
-      mobileVerified: user.mobileVerified,
-      listings: user.listings.length > 0 ? user.listings : null,
-      uid: user.uid,
-      rating: user.rating,
-      reviews: user.reviews.length > 0 ? user.reviews : null,
-    }));
+    const hosts = users.filter(
+      (user) => user.listings.length > 0 && user.hostStatus === true
+    );
+
     res.status(200).json({ hosts });
   } catch (error) {
     next(error);
@@ -83,6 +72,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         funFact: user.funFact,
         school: user.school,
         address: user.address,
+        isSubscribed: user.isSubscribed,
       },
     });
   } catch (error) {

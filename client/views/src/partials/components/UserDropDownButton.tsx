@@ -46,9 +46,9 @@ export function UserDropDownButton() {
           <DropdownMenuItem className="p-3">Manage bookings</DropdownMenuItem>
           <DropdownMenuItem className="p-3">
             <Link
-              replace
               to={`/users/show/${User && User?.uid}`}
               className="w-full"
+              replace
             >
               Profile
             </Link>

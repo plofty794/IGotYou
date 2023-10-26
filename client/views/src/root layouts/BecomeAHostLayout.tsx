@@ -1,4 +1,4 @@
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import useMultistepForm from "@/hooks/useMultistepForm";
 import { DotPulse } from "@uiball/loaders";
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import useUploadListing from "@/hooks/useUploadListing";
 import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
+import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 
 type TFileType = {
   public_id: string;
@@ -25,6 +26,8 @@ type TListing = {
 };
 
 function BecomeAHostLayout() {
+  const { id } = useParams();
+  const { data } = useGetCurrentUserProfile();
   const { mutate, isLoading, status } = useUploadListing();
   const [service, setService] = useState<TListing>({
     serviceType: "Events and Entertainment",
@@ -59,155 +62,174 @@ function BecomeAHostLayout() {
   }, [next, status]);
 
   return (
-    <main className="overflow-hidden h-screen">
-      {<Navigate to={`/become-a-host/${User && User.uid}/${step}`} replace />}
-      <nav className="bg-white sticky top-0 z-10 py-8 px-16 flex justify-between items-center">
-        <Link to={"/"}>
-          <span>
-            <img
-              className="w-[30px] h-[30px]"
-              loading="lazy"
-              src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
-              alt="logo"
+    <>
+      {data?.data.user.isSubscribed ? (
+        <main className="relative overflow-hidden h-screen">
+          {
+            <Navigate
+              to={`/become-a-host/${User && User.uid}/${step}`}
+              replace
             />
-          </span>
-        </Link>
-        <UserDropDownButton />
-      </nav>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (
-            service.serviceDescription == null &&
-            service.listingPhotos.length < 5
-          )
-            return console.log("Invalid");
-          mutate(service);
-        }}
-      >
-        {<Outlet context={{ setService, service }} />}
-        <div className="w-full flex justify-between items-center px-8 py-6">
-          {isFirstPage && (
-            <Button
-              type="button"
-              onClick={next}
-              size={"lg"}
-              className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-            >
-              {isFetching ? <DotPulse size={40} color="#FFF" /> : "Get started"}
-            </Button>
-          )}
-          {currentStepIndex > 0 &&
-            currentStepIndex !== 3 &&
-            currentStepIndex !== 5 &&
-            currentStepIndex !== 6 &&
-            !isLastPage && (
-              <>
-                <Button
-                  type="button"
-                  onClick={previous}
-                  size={"lg"}
-                  variant={"link"}
-                  className="text-sm font-medium p-6"
-                >
-                  Back
-                </Button>
+          }
+          <nav className="bg-white sticky top-0 z-10 py-8 px-16 flex justify-between items-center">
+            <Link to={"/"}>
+              <span>
+                <img
+                  className="w-[30px] h-[30px]"
+                  loading="lazy"
+                  src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
+                  alt="logo"
+                />
+              </span>
+            </Link>
+            <UserDropDownButton />
+          </nav>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (
+                service.serviceDescription == null &&
+                service.listingPhotos.length < 5
+              )
+                return console.log("Invalid");
+              mutate(service);
+            }}
+          >
+            {<Outlet context={{ setService, service }} />}
+            <div className="absolute bottom-0 w-full flex justify-between items-center px-8 py-6">
+              {isFirstPage && (
                 <Button
                   type="button"
                   onClick={next}
                   size={"lg"}
                   className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                 >
-                  {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+                  {isFetching ? (
+                    <DotPulse size={40} color="#FFF" />
+                  ) : (
+                    "Get started"
+                  )}
                 </Button>
-              </>
-            )}
-          {currentStepIndex === 3 && (
-            <>
-              <Button
-                type="button"
-                onClick={previous}
-                size={"lg"}
-                variant={"link"}
-                className="text-sm font-medium p-6"
-              >
-                Back
-              </Button>
-              <Button
-                disabled={!service.serviceDescription}
-                type="button"
-                onClick={next}
-                size={"lg"}
-                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-              >
-                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
-              </Button>
-            </>
-          )}
-          {currentStepIndex === 5 && (
-            <>
-              <Button
-                disabled={service.listingPhotos.length > 0}
-                type="button"
-                onClick={previous}
-                size={"lg"}
-                variant={"link"}
-                className="text-sm font-medium p-6"
-              >
-                Back
-              </Button>
-              <Button
-                type="button"
-                onClick={next}
-                disabled={service.listingPhotos.length < 5}
-                size={"lg"}
-                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-              >
-                {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
-              </Button>
-            </>
-          )}
-          {currentStepIndex === 6 && (
-            <>
-              <Button
-                disabled={service.price != null}
-                type="button"
-                onClick={previous}
-                size={"lg"}
-                variant={"link"}
-                className="text-sm font-medium p-6"
-              >
-                Back
-              </Button>
-              <Button
-                disabled={
-                  service.price < BASE_PRICE || service.price > PRICE_CAP
-                }
-                size={"lg"}
-                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-              >
-                {isLoading ? <DotPulse size={40} color="#FFF" /> : "Finish"}
-              </Button>
-            </>
-          )}
-          {isLastPage && (
-            <>
-              <Button
-                type="button"
-                size={"lg"}
-                className="bg-[#222222] rounded-full text-lg font-semibold p-6"
-              >
-                {isLoading ? (
-                  <DotPulse size={40} color="#FFF" />
-                ) : (
-                  "Check your listing"
+              )}
+              {currentStepIndex > 0 &&
+                currentStepIndex !== 3 &&
+                currentStepIndex !== 5 &&
+                currentStepIndex !== 6 &&
+                !isLastPage && (
+                  <>
+                    <Button
+                      type="button"
+                      onClick={previous}
+                      size={"lg"}
+                      variant={"link"}
+                      className="text-sm font-medium p-6"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={next}
+                      size={"lg"}
+                      className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                    >
+                      {isFetching ? (
+                        <DotPulse size={40} color="#FFF" />
+                      ) : (
+                        "Next"
+                      )}
+                    </Button>
+                  </>
                 )}
-              </Button>
-            </>
-          )}
-        </div>
-      </form>
-    </main>
+              {currentStepIndex === 3 && (
+                <>
+                  <Button
+                    type="button"
+                    onClick={previous}
+                    size={"lg"}
+                    variant={"link"}
+                    className="text-sm font-medium p-6"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    disabled={!service.serviceDescription}
+                    type="button"
+                    onClick={next}
+                    size={"lg"}
+                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                  >
+                    {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+                  </Button>
+                </>
+              )}
+              {currentStepIndex === 5 && (
+                <>
+                  <Button
+                    disabled={service.listingPhotos.length > 0}
+                    type="button"
+                    onClick={previous}
+                    size={"lg"}
+                    variant={"link"}
+                    className="text-sm font-medium p-6"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={next}
+                    disabled={service.listingPhotos.length < 5}
+                    size={"lg"}
+                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                  >
+                    {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+                  </Button>
+                </>
+              )}
+              {currentStepIndex === 6 && (
+                <>
+                  <Button
+                    disabled={service.price != null}
+                    type="button"
+                    onClick={previous}
+                    size={"lg"}
+                    variant={"link"}
+                    className="text-sm font-medium p-6"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    disabled={
+                      service.price < BASE_PRICE || service.price > PRICE_CAP
+                    }
+                    size={"lg"}
+                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                  >
+                    {isLoading ? <DotPulse size={40} color="#FFF" /> : "Finish"}
+                  </Button>
+                </>
+              )}
+              {isLastPage && (
+                <>
+                  <Button
+                    type="button"
+                    size={"lg"}
+                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                  >
+                    {isLoading ? (
+                      <DotPulse size={40} color="#FFF" />
+                    ) : (
+                      "Check your listing"
+                    )}
+                  </Button>
+                </>
+              )}
+            </div>
+          </form>
+        </main>
+      ) : (
+        <Navigate to={`/subscription/${id}`} replace />
+      )}
+    </>
   );
 }
 

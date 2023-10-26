@@ -32,6 +32,8 @@ import Price from "./pages/become a host/Price";
 import Success from "./pages/become a host/steps/Success";
 import VisitProfile from "./pages/VisitProfile";
 import ProfileLayout from "./root layouts/ProfileLayout";
+import SubscriptionLayout from "./root layouts/SubscriptionLayout";
+import SubscriptionWelcome from "./pages/subscription/SubscriptionWelcome";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -71,18 +73,15 @@ function App() {
               )
             }
           />
-          <Route
-            path="account/verify-phone/:id"
-            loader={verifyPhoneLoader}
-            element={
-              User ?? token ? (
-                <VerifyPhone />
-              ) : (
-                <Navigate replace to={"/login"} />
-              )
-            }
-          />
         </Route>
+
+        <Route
+          path="account/verify-phone/:id"
+          loader={verifyPhoneLoader}
+          element={
+            User ?? token ? <VerifyPhone /> : <Navigate replace to={"/login"} />
+          }
+        />
 
         {/* HOME & CATEGORIES Routes */}
         <Route path="/" element={<RootLayout />}>
@@ -92,7 +91,6 @@ function App() {
               User ?? token ? <Home /> : <Navigate replace to={"/login"} />
             }
           />
-
           <Route
             path="category/photography&videography"
             element={<CategoryTwo />}
@@ -182,6 +180,11 @@ function App() {
               User ?? token ? <Success /> : <Navigate to={"/login"} replace />
             }
           />
+        </Route>
+
+        {/* MAKE PAYMENT Routes */}
+        <Route path="/subscription/:id" element={<SubscriptionLayout />}>
+          <Route path="welcome" element={<SubscriptionWelcome />} />
         </Route>
 
         {/* LOGIN & 404 Routes */}

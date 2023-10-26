@@ -95,7 +95,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
         )}
         <div className="flex gap-2">
           <Button size={"sm"} className="mt-3 w-max font-semibold bg-[#222222]">
-            {mobilePhone && !isLoading && "Edit"}
+            {mobilePhone != null && !isLoading && "Edit"}
             {isLoading && <DotPulse size={20} speed={1} color="#FFF" />}
             {!mobilePhone && "Add"}
           </Button>

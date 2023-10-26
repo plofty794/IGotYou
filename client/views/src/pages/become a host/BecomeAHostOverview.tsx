@@ -7,7 +7,8 @@ function BecomeAHostOverview() {
 
   useEffect(() => {
     document.title = "IGotYou - Overview";
-    setTimeout(() => setIsFadingIn(false), 400);
+    const Timeout = setTimeout(() => setIsFadingIn(false), 400);
+    return () => clearTimeout(Timeout);
   }, []);
 
   return (
