@@ -81,7 +81,7 @@ function Login() {
           </Label>
           <Input
             id="email"
-            className="text-xs font-medium rounded border-slate-700"
+            className="text-xs font-medium border-slate-700"
             autoFocus
             autoComplete="email"
             type="text"
@@ -93,7 +93,7 @@ function Login() {
           </Label>
           <Input
             id="password"
-            className="text-xs font-medium rounded border-slate-700"
+            className="text-xs font-medium border-slate-700"
             type="password"
             {...register("password")}
           />
