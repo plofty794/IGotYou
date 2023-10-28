@@ -17,7 +17,7 @@ import { authToken } from "../middlewares/authToken";
 import { addListing } from "../controllers/listingsControllers";
 
 router.get("/users", getUsers);
-router.get("/users/current-user-profile/", getCurrentUserProfile);
+router.get("/users/current-user-profile/", authToken, getCurrentUserProfile);
 router.get("/users/profile/visit/:id", visitUserProfile);
 router.get("/users/current-user/phone/", getUserPhone);
 router.post("/users/login", logInUser);

@@ -48,10 +48,14 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
   try {
     if (!id) {
       res.clearCookie("_id");
-      throw createHttpError(401, "Unauthorized");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
     }
     const user = await Users.findById(id).populate("listings");
     if (!user) {
+      res.clearCookie("_id");
       throw createHttpError(400, "No account with that id");
     }
     res.status(200).json({
@@ -165,7 +169,11 @@ export const updateUser: RequestHandler = async (req, res, next) => {
   const id = req.headers.cookie?.split("_id=")[1];
   try {
     if (!id) {
-      throw createHttpError(401, "Unauthorized");
+      res.clearCookie("_id");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
     }
     const user = await Users.findByIdAndUpdate(id, { ...req.body });
     if (!user) {
@@ -212,7 +220,11 @@ export const logOutUser: RequestHandler = async (req, res, next) => {
   const id = req.headers.cookie?.split("_id=")[1];
   try {
     if (!id) {
-      throw createHttpError(400, "No user to be logged out");
+      res.clearCookie("_id");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
     }
     const userExist = await Users.findById(id);
     if (!userExist) {

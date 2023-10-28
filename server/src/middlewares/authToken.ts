@@ -9,7 +9,7 @@ export const authToken = async (
 ) => {
   const accessToken = req.headers["authorization"]?.split(" ")[1];
   if (!accessToken) {
-    return next(createHttpError(400, "Token is required"));
+    return next(createHttpError(401, "Token is required"));
   }
   const decodedToken = await verifyAccessToken(accessToken);
   if (typeof decodedToken == "string") {

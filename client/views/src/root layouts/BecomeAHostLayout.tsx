@@ -35,6 +35,7 @@ function BecomeAHostLayout() {
     listingPhotos: [],
     price: 0,
   });
+
   const User = auth.currentUser;
   const {
     step,

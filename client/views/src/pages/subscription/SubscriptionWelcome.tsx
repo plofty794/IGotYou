@@ -20,7 +20,7 @@ function SubscriptionWelcome() {
     <div
       className={`${
         isFadingIn ? "opacity-0" : "opacity-100"
-      } transition-opacity w-full flex lg:flex-row max-md:flex-col items-center justify-evenly gap-8 p-12`}
+      } transition-opacity w-full flex lg:flex-row max-md:flex-col items-center justify-evenly gap-8 p-12 pb-20`}
     >
       <div className="w-full text-center text-5xl font-semibold text-[#222222]">
         <h1>Welcome to IGotYou Subscription</h1>
@@ -31,21 +31,22 @@ function SubscriptionWelcome() {
             To pay online, please consider every steps on the payment process.
           </Label>
         </div>
-        <Accordion type="multiple" className="w-full flex flex-col">
-          <AccordionItem value="item-2">
+        <Accordion type="single" collapsible className="w-full flex flex-col">
+          <AccordionItem value="item-1">
             <AccordionTrigger>Step 1 - Subscription Payment</AccordionTrigger>
             <AccordionContent>
-              The amount of your subscription will be shown. Proceed to step 2.
+              You will be prompted how much our monthly subscription costs. You
+              can go back if you don't want to continue.
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-1">
+          <AccordionItem value="item-2">
             <AccordionTrigger>
               Step 2 - Send your payment through our GCash account.
             </AccordionTrigger>
             <AccordionContent>
               Our GCash number will be shown. You can send your payment through
               Express Send or through scanning our QR code.
-              <div className="mt-4 text-end">
+              <div className="mt-4 text-[#5551FF] font-medium">
                 <Link
                   className="text-xs hover:underline underline-offset-2"
                   to={"https://www.gcash.com/"}
@@ -57,12 +58,21 @@ function SubscriptionWelcome() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
+            <AccordionTrigger>Step 3 - Confirm your payment</AccordionTrigger>
+            <AccordionContent>
+              Once you've sent your payment you'll need to upload a screenshot
+              of your payment transaction for checking. This process will ensure
+              that you've sent the right amount and also verifies if the Ref no.
+              transaction has been made by you.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-4">
             <AccordionTrigger>
-              Step 3 - Complete your subscription
+              Step 4 - Complete your subscription
             </AccordionTrigger>
             <AccordionContent>
               Once your payment is confirmed, your subscription will be
-              processed (2-4 minutes). You will receive a confirmation email
+              processed (5-10 minutes). You will receive a confirmation email
               with your subscription details.
             </AccordionContent>
           </AccordionItem>

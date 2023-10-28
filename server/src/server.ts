@@ -28,7 +28,6 @@ app.use(
 app.use("/api", userRoutes);
 app.use("/api", listingRoutes);
 app.use(errorHandler);
-
 mongoose.connect(env.MONGO_COMPASS_URI).then(() => {
   console.log("Connected to database");
   app.listen(env.PORT, () => console.log("Listening to port", env.PORT));

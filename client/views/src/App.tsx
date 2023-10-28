@@ -34,6 +34,8 @@ import VisitProfile from "./pages/VisitProfile";
 import ProfileLayout from "./root layouts/ProfileLayout";
 import SubscriptionLayout from "./root layouts/SubscriptionLayout";
 import SubscriptionWelcome from "./pages/subscription/SubscriptionWelcome";
+import SubscriptionPayment from "./pages/subscription/SubscriptionPayment";
+import ConfirmPayment from "./pages/subscription/ConfirmPayment";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -182,9 +184,11 @@ function App() {
           />
         </Route>
 
-        {/* MAKE PAYMENT Routes */}
+        {/* MAKE SUBSCRIPTION PAYMENT Routes */}
         <Route path="/subscription/:id" element={<SubscriptionLayout />}>
           <Route path="welcome" element={<SubscriptionWelcome />} />
+          <Route path="send-payment" element={<SubscriptionPayment />} />
+          <Route path="confirm-payment" element={<ConfirmPayment />} />
         </Route>
 
         {/* LOGIN & 404 Routes */}

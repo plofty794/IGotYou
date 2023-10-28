@@ -41,6 +41,10 @@ function useVerifyEmail() {
         });
       }
     },
+    onMutate: async () => {
+      await auth.updateCurrentUser(auth.currentUser);
+      await auth.currentUser?.reload();
+    },
     onSuccess: async () => {
       console.log("Success");
       queryClient.invalidateQueries(["profile", id]);
@@ -57,10 +61,6 @@ function useVerifyEmail() {
         description: (error.response as AxiosResponse).data.error,
         variant: "destructive",
       });
-    },
-    onSettled: async () => {
-      await auth.currentUser?.reload();
-      await auth.updateCurrentUser(auth.currentUser);
     },
   });
 }
