@@ -36,6 +36,7 @@ import SubscriptionLayout from "./root layouts/SubscriptionLayout";
 import SubscriptionWelcome from "./pages/subscription/SubscriptionWelcome";
 import SubscriptionPayment from "./pages/subscription/SubscriptionPayment";
 import ConfirmPayment from "./pages/subscription/ConfirmPayment";
+import PaymentSuccessful from "./pages/subscription/PaymentSuccess";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -189,6 +190,7 @@ function App() {
           <Route path="welcome" element={<SubscriptionWelcome />} />
           <Route path="send-payment" element={<SubscriptionPayment />} />
           <Route path="confirm-payment" element={<ConfirmPayment />} />
+          <Route path="payment-success" element={<PaymentSuccessful />} />
         </Route>
 
         {/* LOGIN & 404 Routes */}

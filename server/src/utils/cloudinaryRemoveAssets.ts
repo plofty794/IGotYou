@@ -3,11 +3,9 @@ import cloudinary from "cloudinary";
 
 config();
 
-export const removeAsset = () =>
-  cloudinary.v2.api.delete_resources(
-    ["IGotYou-Listings/b3zfetdgcirdceljondm"],
-    {
-      invalidate: true,
-      resource_type: "image",
-    }
-  );
+export const removeAsset = (folder?: string, assetName?: string) => {
+  return cloudinary.v2.api.delete_resources([`${folder}/${assetName}`], {
+    invalidate: true,
+    resource_type: "image",
+  });
+};

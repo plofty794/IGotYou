@@ -5,9 +5,21 @@ import { Button } from "@/components/ui/button";
 import { DotPulse } from "@uiball/loaders";
 import { CheckIcon } from "@radix-ui/react-icons";
 
+type TPaymentProofPhoto = {
+  public_id?: string;
+  secure_url?: string;
+};
+
 function SubscriptionLayout() {
   const { id } = useParams();
-  const [paymentProofPhoto, setPaymentProofPhoto] = useState<string[]>([]);
+  const [paymentProofPhoto, setPaymentProofPhoto] = useState<
+    TPaymentProofPhoto[]
+  >([
+    {
+      public_id: "",
+      secure_url: "",
+    },
+  ]);
   const {
     step,
     isFirstPage,
@@ -16,7 +28,12 @@ function SubscriptionLayout() {
     next,
     previous,
     currentStepIndex,
-  } = useMultistepForm(["welcome", "send-payment", "confirm-payment"]);
+  } = useMultistepForm([
+    "welcome",
+    "send-payment",
+    "confirm-payment",
+    "payment-success",
+  ]);
 
   useEffect(() => {
     document.title = "IGotYou - Subscription";
@@ -57,7 +74,7 @@ function SubscriptionLayout() {
                 </Button>
               </>
             )}{" "}
-            {currentStepIndex != 2 && !isFirstPage && (
+            {!isFirstPage && currentStepIndex != 2 && !isLastPage && (
               <>
                 {" "}
                 <Button
@@ -77,9 +94,8 @@ function SubscriptionLayout() {
                 </Button>
               </>
             )}
-            {isLastPage && (
+            {currentStepIndex === 2 && (
               <>
-                {" "}
                 <Button
                   variant={"link"}
                   type="button"
@@ -89,15 +105,35 @@ function SubscriptionLayout() {
                   Back
                 </Button>
                 <Button
+                  disabled={!paymentProofPhoto[0].public_id}
                   type="button"
                   onClick={() => next()}
                   className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
                 >
                   {isFetching ? (
-                    <DotPulse size={30} color="#FFF" />
+                    <DotPulse size={35} color="#FFF" />
                   ) : (
                     <CheckIcon className="w-[25px] h-[25px]" />
                   )}
+                </Button>
+              </>
+            )}
+            {isLastPage && (
+              <>
+                <Button
+                  variant={"link"}
+                  type="button"
+                  onClick={() => previous()}
+                  className="p-6 font-medium text-sm w-max"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => next()}
+                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                >
+                  {isFetching ? <DotPulse size={35} color="#FFF" /> : "Done"}
                 </Button>
               </>
             )}

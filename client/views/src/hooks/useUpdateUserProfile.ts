@@ -24,7 +24,7 @@ function useUpdateUserProfile() {
   const { id } = useParams();
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
-      return axiosPrivateRoute.patch(`/api/users/current-user/update`, {
+      return await axiosPrivateRoute.patch(`/api/users/current-user/update`, {
         ...data,
       });
     },
