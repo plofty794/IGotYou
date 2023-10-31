@@ -138,6 +138,22 @@ export const updateUser: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const checkUserEmail: RequestHandler = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    if (!email) {
+      throw createHttpError(400, "No data to be processed");
+    }
+    const user = await Users.findOne({ email: email });
+    if (!user) {
+      throw createHttpError(400, "No user with that email");
+    }
+    res.status(200).json({ email: user.email });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const userSubscription: RequestHandler = async (req, res, next) => {
   const id = req.headers.cookie?.split("_&!d=")[1];
   try {

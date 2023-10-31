@@ -37,6 +37,7 @@ import SubscriptionWelcome from "./pages/subscription/SubscriptionWelcome";
 import SubscriptionPayment from "./pages/subscription/SubscriptionPayment";
 import ConfirmPayment from "./pages/subscription/ConfirmPayment";
 import PaymentSuccessful from "./pages/subscription/PaymentSuccess";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -193,11 +194,17 @@ function App() {
           <Route path="payment-success" element={<PaymentSuccessful />} />
         </Route>
 
-        {/* LOGIN & 404 Routes */}
+        {/* LOGIN & PASSWORD RESET & 404 Routes */}
         <Route>
           <Route
             path="login"
             element={User ?? token ? <Navigate replace to={"/"} /> : <Login />}
+          />
+          <Route
+            path="forgot-password"
+            element={
+              User ?? token ? <Navigate replace to={"/"} /> : <ForgotPassword />
+            }
           />
           <Route path="*" element={<PageNotFound />} />
         </Route>

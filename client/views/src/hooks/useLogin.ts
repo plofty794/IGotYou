@@ -22,8 +22,9 @@ function useLogin() {
         });
         data.user.username &&
           toast({
-            title: `Welcome, ${data.user.username} 👋`,
-            className: "bg-[#FFF] text-[#222222]",
+            title: `Ahoy there, ${data.user.username}!`,
+            description: "We're so glad to have you back. 👋",
+            className: "font-medium bg-[#FFF] text-[#222222]",
           });
         const token = await res.user.getIdToken();
         localStorage.setItem("token", token);

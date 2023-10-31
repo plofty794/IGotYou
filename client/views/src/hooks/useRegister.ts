@@ -1,5 +1,5 @@
 import { axiosPrivateRoute } from "@/axios/axiosRoute";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
@@ -12,6 +12,7 @@ type TRegister = {
 };
 
 export function useRegister() {
+  const { toast } = useToast();
   return useMutation({
     mutationFn: async (data: TRegister) => {
       return await createUserWithEmailAndPassword(
@@ -31,6 +32,11 @@ export function useRegister() {
         });
         const token = await res.user.getIdToken();
         localStorage.setItem("token", token);
+        toast({
+          title: "Welcome to IGotYou",
+          description: "We're so excited to have you on board.",
+          className: "font-medium bg-[#FFF] text-[#222222]",
+        });
       } catch (err) {
         const error = err as AxiosError;
         toast({

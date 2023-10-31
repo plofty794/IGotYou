@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { LoginSchema, ZodLoginSchema } from "@/zod/loginSchema";
@@ -74,25 +73,21 @@ function Login() {
       <div className="flex flex-col gap-4">
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="bg-white flex flex-col gap-2 border border-slate-300 rounded-md shadow px-4 py-5 w-80 mx-auto"
+          className="bg-white flex flex-col gap-2 border border-slate-300 rounded-md shadow px-4 py-8 w-80 mx-auto"
         >
-          <Label className="text-xs font-semibold" htmlFor="email">
-            Email
-          </Label>
           <Input
             id="email"
-            className="text-xs font-medium border-slate-700"
+            placeholder="Email"
+            className="text-xs font-medium border-slate-700 "
             autoFocus
             autoComplete="email"
             type="text"
             {...register("email")}
           />
           {errors.email && <ErrorMessage message={errors.email.message} />}
-          <Label className="text-xs font-semibold" htmlFor="password">
-            Password
-          </Label>
           <Input
             id="password"
+            placeholder="Password"
             className="text-xs font-medium border-slate-700"
             type="password"
             {...register("password")}
@@ -100,13 +95,7 @@ function Login() {
           {errors.password && (
             <ErrorMessage message={errors.password.message} />
           )}
-          <Link
-            to={"/forgot-password"}
-            className="text-xs text-end hover:underline underline-offset-2 text-[#222222] font-medium"
-          >
-            Forgot password?
-          </Link>
-          <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold">
+          <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold rounded-full">
             {isLoading ? (
               <DotPulse size={25} speed={1} color="white" />
             ) : (
@@ -116,7 +105,7 @@ function Login() {
           <Button
             type="button"
             onClick={handleGoogleSignIn}
-            className="text-[#222222] hover:bg-[#F2F2F2] border mt-2 text-xs font-semibold"
+            className="text-[#222222] hover:bg-[#F2F2F2] border mt-2 text-xs font-semibold rounded-full"
           >
             <img
               width={20}
@@ -128,6 +117,12 @@ function Login() {
             />{" "}
             Continue with Google
           </Button>
+          <Link
+            to={"/forgot-password"}
+            className="mt-2 text-xs text-end hover:underline underline-offset-2 text-[#222222] font-medium"
+          >
+            Forgot password?
+          </Link>
         </form>
         <div className="bg-white flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
           <p className="font-semibold">New to IGotYou? </p>
