@@ -18,7 +18,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
       return res.status(200).json({ hosts: [] });
     }
     const hosts = users.filter(
-      (user) => user.listings.length > 0 && user.hostStatus === true
+      (user) => user.listings.length > 0 && user.subscriptionStatus === "active"
     );
 
     res.status(200).json({ hosts });
@@ -28,10 +28,11 @@ export const getUsers: RequestHandler = async (req, res, next) => {
 };
 
 export const getUserPhone: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_id=")[1];
+  const id = req.headers.cookie?.split("_&!d=")[1];
   try {
     if (!id) {
-      throw createHttpError(401, "Unauthorized");
+      res.clearCookie("_&!d");
+      throw createHttpError(400, "Unauthorized");
     }
     const user = await Users.findById(id);
     if (!user) {
@@ -44,10 +45,10 @@ export const getUserPhone: RequestHandler = async (req, res, next) => {
 };
 
 export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_id=")[1];
+  const id = req.headers.cookie?.split("_&!d=")[1];
   try {
     if (!id) {
-      res.clearCookie("_id");
+      res.clearCookie("_&!d");
       throw createHttpError(
         400,
         "A _id cookie is required to access this resource."
@@ -55,7 +56,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
     }
     const user = await Users.findById(id).populate("listings");
     if (!user) {
-      res.clearCookie("_id");
+      res.clearCookie("_&!d");
       throw createHttpError(400, "No account with that id");
     }
     res.status(200).json({
@@ -76,7 +77,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         funFact: user.funFact,
         school: user.school,
         address: user.address,
-        isSubscribed: user.isSubscribed,
+        subscriptionStatus: user.subscriptionStatus,
       },
     });
   } catch (error) {
@@ -109,8 +110,52 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
         funFact: user.funFact,
         school: user.school,
         address: user.address,
+        subscriptionStatus: user.subscriptionStatus,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUser: RequestHandler = async (req, res, next) => {
+  const id = req.headers.cookie?.split("_&!d=")[1];
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const user = await Users.findByIdAndUpdate(id, { ...req.body });
+    if (!user) {
+      throw createHttpError(400, "Error updating user");
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const userSubscription: RequestHandler = async (req, res, next) => {
+  const id = req.headers.cookie?.split("_&!d=")[1];
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const user = await Users.findByIdAndUpdate(id, {
+      ...req.body,
+    });
+    if (!user) {
+      res.clearCookie("_&!d");
+      throw createHttpError(400, "No user to mutate");
+    }
+    res.status(201).json({ user });
   } catch (error) {
     next(error);
   }
@@ -132,7 +177,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
     }
     const newUser = await Users.create({ ...req.body });
     const { _id, username, uid } = newUser;
-    res.cookie("_id", newUser._id.toString(), { httpOnly: true });
+    res.cookie("_&!d", newUser._id.toString(), { httpOnly: true });
     res.status(201).json({ user: { _id, username, uid } });
   } catch (error) {
     next(error);
@@ -158,27 +203,7 @@ export const logInUser: RequestHandler = async (req, res, next) => {
         throw createHttpError(400, "Incorrect password");
       }
     }
-    res.cookie("_id", user._id.toString(), { httpOnly: true });
-    res.status(200).json({ user });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateUser: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_id=")[1];
-  try {
-    if (!id) {
-      res.clearCookie("_id");
-      throw createHttpError(
-        400,
-        "A _id cookie is required to access this resource."
-      );
-    }
-    const user = await Users.findByIdAndUpdate(id, { ...req.body });
-    if (!user) {
-      throw createHttpError(400, "Error updating user");
-    }
+    res.cookie("_&!d", user._id.toString(), { httpOnly: true });
     res.status(200).json({ user });
   } catch (error) {
     next(error);
@@ -197,7 +222,7 @@ export const googleSignIn: RequestHandler = async (req, res, next) => {
   try {
     const userExist = await Users.findOne({ email });
     if (userExist) {
-      res.cookie("_id", userExist._id.toString(), { httpOnly: true });
+      res.cookie("_&!d", userExist._id.toString(), { httpOnly: true });
       return res.status(200).json({
         user: {
           _id: userExist._id,
@@ -207,7 +232,8 @@ export const googleSignIn: RequestHandler = async (req, res, next) => {
       });
     }
     const newUser = await Users.create({ ...req.body });
-    res.cookie("_id", newUser._id.toString());
+
+    res.cookie("_&!d", newUser._id.toString(), { httpOnly: true });
     res
       .status(201)
       .json({ user: { _id: newUser._id, username: newUser.username } });
@@ -217,10 +243,10 @@ export const googleSignIn: RequestHandler = async (req, res, next) => {
 };
 
 export const logOutUser: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_id=")[1];
+  const id = req.headers.cookie?.split("_&!d=")[1];
   try {
     if (!id) {
-      res.clearCookie("_id");
+      res.clearCookie("_&!d");
       throw createHttpError(
         400,
         "A _id cookie is required to access this resource."
@@ -230,7 +256,7 @@ export const logOutUser: RequestHandler = async (req, res, next) => {
     if (!userExist) {
       throw createHttpError(400, "No user with that id");
     }
-    res.clearCookie("_id", { httpOnly: true });
+    res.clearCookie("_&!d", { httpOnly: true });
     res.status(200).json({ message: "User has been logged out" });
   } catch (error) {
     next(error);

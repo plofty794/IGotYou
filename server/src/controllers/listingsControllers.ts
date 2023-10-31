@@ -50,7 +50,7 @@ export const getUserListings: RequestHandler = async (req, res, next) => {
 
 export const addListing: RequestHandler = async (req, res, next) => {
   const { serviceType, serviceDescription, listingPhotos }: TListing = req.body;
-  const id = req.headers.cookie?.split("_id=")[1];
+  const id = req.headers.cookie?.split("_&!d=")[1];
   try {
     const newListing = await (
       await Listings.create({ ...req.body, host: id })

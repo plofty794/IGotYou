@@ -19,12 +19,9 @@ function useUploadListing() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: TListing) => {
-      return await axiosPrivateRoute.post(
-        `/api/users/current-user/make-a-listing`,
-        {
-          ...data,
-        }
-      );
+      return await axiosPrivateRoute.post("/api/listings/make-a-listing", {
+        ...data,
+      });
     },
     onSuccess() {
       queryClient.invalidateQueries(["profile", id], { exact: true });

@@ -23,7 +23,7 @@ function Profile() {
         </div>
       ) : status === "success" ? (
         <Suspense fallback={<ProfileLoader />}>
-          {data.data?.user.username ? (
+          {data?.data?.user.username ? (
             <ProfileContent profileData={data?.data.user} />
           ) : (
             <PromptUsername />

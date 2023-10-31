@@ -1,4 +1,4 @@
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 function PageNotFound() {
@@ -13,15 +13,11 @@ function PageNotFound() {
           </h2>
           <h3 className="text-sm font-semibold">Error code: 404</h3>
         </div>
-        <Link
-          to={"/"}
-          className={`${buttonVariants({
-            variant: "secondary",
-            size: "sm",
-          })} text-xs font-medium bg-[#222222] text-white`}
-        >
-          Go back to Homepage
-        </Link>
+        <Button className="text-sm font-medium bg-[#222222] text-white rounded-full px-6 py-5">
+          <Link to={"/"} replace>
+            Go back
+          </Link>
+        </Button>
       </section>
     </main>
   );

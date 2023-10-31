@@ -8,14 +8,13 @@ import { useToast } from "@/components/ui/use-toast";
 function useGetCurrentUserProfile() {
   const { toast } = useToast();
   const { id } = useParams();
+
   const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["profile", id],
     queryFn: async () => {
       try {
-        return await axiosPrivateRoute.get(`/api/users/current-user-profile/`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        return await axiosPrivateRoute.get("/api/users/current-user/profile");
       } catch (err) {
         const error = err as AxiosError;
         if (error.response?.status === 400) {

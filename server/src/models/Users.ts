@@ -66,9 +66,9 @@ const usersSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Reviews",
     },
-    isSubscribed: {
-      type: Boolean,
-      default: false,
+    subscriptionStatus: {
+      type: String,
+      enum: ["pending", "active", "expired"],
     },
     subscriptionExpiresAt: {
       type: Date,
