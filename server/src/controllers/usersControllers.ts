@@ -2,7 +2,6 @@ import { isValidObjectId } from "mongoose";
 import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
-import bcrypt from "bcrypt";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
   try {
@@ -148,6 +147,7 @@ export const checkUserEmail: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw createHttpError(400, "No user with that email");
     }
+
     res.status(200).json({ email: user.email });
   } catch (error) {
     next(error);
@@ -203,21 +203,18 @@ export const createUser: RequestHandler = async (req, res, next) => {
 type TUserLogIn = {
   email?: string;
   password?: string;
-  providerID: string;
 };
 
 export const logInUser: RequestHandler = async (req, res, next) => {
-  const { email, password, providerID }: TUserLogIn = req.body;
+  const { email, password }: TUserLogIn = req.body;
   try {
     const user = await Users.findOne({ email });
     if (!user) {
       throw createHttpError(400, "Email doesn't exist");
     }
-    if (providerID === "password" && password != null) {
-      const correctPassword = await bcrypt.compare(password, user.password!);
-      if (!correctPassword) {
-        throw createHttpError(400, "Incorrect password");
-      }
+    if (user.providerId === "password") {
+      user.password = password;
+      await user.save();
     }
     res.cookie("_&!d", user._id.toString(), { httpOnly: true });
     res.status(200).json({ user });

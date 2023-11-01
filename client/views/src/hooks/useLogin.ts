@@ -18,7 +18,6 @@ function useLogin() {
       try {
         const { data } = await axiosPrivateRoute.post("/api/users/login", {
           ...variables,
-          providerId: user.providerData[0].providerId,
         });
         data.user.username &&
           toast({
@@ -26,7 +25,7 @@ function useLogin() {
             description: "We're so glad to have you back. 👋",
             className: "font-medium bg-[#FFF] text-[#222222]",
           });
-        const token = await res.user.getIdToken();
+        const token = await user.getIdToken();
         localStorage.setItem("token", token);
       } catch (err) {
         const error = err as AxiosError;

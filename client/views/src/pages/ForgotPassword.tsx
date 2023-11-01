@@ -11,9 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import usePasswordReset from "@/hooks/usePasswordReset";
 import { DotPulse } from "@uiball/loaders";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 function ForgotPassword() {
-  const { mutate, isLoading } = usePasswordReset();
+  const { mutate, isLoading, isSuccess } = usePasswordReset();
   const {
     handleSubmit,
     register,
@@ -71,6 +72,17 @@ function ForgotPassword() {
                 "Reset your password"
               )}
             </Button>
+            {isSuccess && (
+              <Alert>
+                <AlertTitle className="text-xs font-semibold">
+                  Heads up!
+                </AlertTitle>
+                <AlertDescription className="text-xs font-medium text-zinc-700">
+                  After changing your password you can now proceed to the login
+                  page.
+                </AlertDescription>
+              </Alert>
+            )}
           </CardContent>
         </form>
       </Card>
