@@ -99,7 +99,7 @@ function ProfileContent({ profileData }: TProps) {
               <Avatar className="w-[80px] h-[80px]">
                 <AvatarImage
                   loading="lazy"
-                  className="max-h-full max-w-full object-cover"
+                  className="max-h-full max-w-full object-cover hover:scale-105 transition-all"
                   src={
                     photo ??
                     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
@@ -212,8 +212,7 @@ function ProfileContent({ profileData }: TProps) {
                   onClick={() =>
                     mutate({ emailVerified: auth.currentUser?.emailVerified })
                   }
-                  size={"sm"}
-                  className="font-semibold bg-[#222222]"
+                  className="mt-2 text-xs font-semibold bg-[#222222] rounded-full"
                 >
                   {isLoading ? (
                     <DotPulse size={20} color="#FFF" />

@@ -53,7 +53,7 @@ function ForgotPassword() {
         </CardHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <CardContent className="flex flex-col items-center gap-4 h-full p-8">
-            <div className="flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-3">
               <span className="text-2xl font-bold text-[#222222]">
                 Forgot your password?
               </span>
@@ -64,17 +64,17 @@ function ForgotPassword() {
                 className="border-black text-xs font-medium"
               />
               {errors.email && <ErrorMessage message={errors.email?.message} />}
+              <Button className="px-8 w-max text-xs font-semibold bg-[#222222] text-white rounded-full">
+                {isLoading ? (
+                  <DotPulse size={25} color="#FFF" />
+                ) : (
+                  "Reset your password"
+                )}
+              </Button>
             </div>
-            <Button className="w-full text-xs font-semibold bg-[#222222] text-white rounded-full ">
-              {isLoading ? (
-                <DotPulse size={15} color="#FFF" />
-              ) : (
-                "Reset your password"
-              )}
-            </Button>
             {isSuccess && (
-              <Alert>
-                <AlertTitle className="text-xs font-semibold">
+              <Alert className="shadow-xl">
+                <AlertTitle className="text-sm font-bold text-[#00B6AC]">
                   Heads up!
                 </AlertTitle>
                 <AlertDescription className="text-xs font-medium text-zinc-700">

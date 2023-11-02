@@ -92,7 +92,7 @@ function School() {
                   setSchool("");
                   mutate({ school: "" });
                 }}
-                className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
+                className="bg-[#222222] text-white font-medium rounded-full"
                 size={"lg"}
                 variant={"secondary"}
               >
@@ -126,7 +126,7 @@ function School() {
             </GeoapifyContext>
             <div className="flex gap-2 items-center pt-2">
               <Button
-                className="bg-[#222222] text-white font-medium disabled:cursor-not-allowed"
+                className="bg-[#222222] text-white font-medium rounded-full"
                 size={"lg"}
                 variant={"secondary"}
               >

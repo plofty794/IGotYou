@@ -94,7 +94,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
           <ErrorMessage message={errors.mobile_phone?.message} />
         )}
         <div className="flex gap-2">
-          <Button size={"sm"} className="mt-3 w-max font-semibold bg-[#222222]">
+          <Button className="mt-3 w-max font-semibold bg-[#222222] rounded-full text-xs">
             {mobilePhone != null && !isLoading && "Edit"}
             {isLoading && <DotPulse size={20} speed={1} color="#FFF" />}
             {!mobilePhone && "Add"}

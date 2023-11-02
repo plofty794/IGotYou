@@ -44,7 +44,10 @@ function PersonalInfoSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="font-semibold" variant="outline">
+        <Button
+          className="mt-2 font-semibold rounded-full text-sm bg-white text-[#222222] shadow-md"
+          variant="outline"
+        >
           Edit info
         </Button>
       </SheetTrigger>
@@ -72,7 +75,7 @@ function PersonalInfoSheet() {
           <SheetClose asChild>
             <Button
               size={"lg"}
-              className="bg-[#222222] font-semibold text-md mt-4"
+              className="bg-[#222222] font-semibold text-md mt-4 rounded-full"
               type="submit"
             >
               Close

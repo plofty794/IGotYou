@@ -58,7 +58,7 @@ function CollapsibleEmail({ data }: TCollapsibleData) {
             <Input placeholder="Email address" />
           </div>
         </div>
-        <Button size={"sm"} className="mt-3 w-max font-semibold bg-[#222222]">
+        <Button className="text-xs mt-3 w-max font-semibold bg-[#222222] rounded-full">
           Save
         </Button>
       </CollapsibleContent>

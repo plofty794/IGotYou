@@ -97,7 +97,7 @@ function Login() {
           )}
           <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold rounded-full">
             {isLoading ? (
-              <DotPulse size={25} speed={1} color="white" />
+              <DotPulse size={20} speed={1} color="white" />
             ) : (
               "Sign in"
             )}
@@ -129,7 +129,7 @@ function Login() {
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                className="text-[#9D54FC] p-0 ml-1 font-semibold"
+                className="text-[#00B6AC] p-0 ml-1 font-semibold text-xs"
                 variant={"link"}
                 size={"sm"}
               >

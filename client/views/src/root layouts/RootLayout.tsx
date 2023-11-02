@@ -99,16 +99,16 @@ function RootLayout() {
                       </span>
                     </div>
                   </AlertDialogHeader>
-                  <AlertDialogFooter>
+                  <AlertDialogFooter className="pt-2">
                     <AlertDialogAction
                       onClick={() =>
                         navigate(`/users/show/${User && User.uid}`)
                       }
-                      className="font-medium text-sm bg-[#222222] text-white "
+                      className="font-medium text-xs bg-[#222222] text-white rounded-full"
                     >
                       Go to your profile
                     </AlertDialogAction>
-                    <AlertDialogCancel className="font-medium text-sm bg-red-500 hover:bg-red-600 hover:text-white text-white ">
+                    <AlertDialogCancel className="font-medium text-xs bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-full">
                       Close
                     </AlertDialogCancel>
                   </AlertDialogFooter>
