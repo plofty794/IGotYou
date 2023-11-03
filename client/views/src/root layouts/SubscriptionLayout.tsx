@@ -2,11 +2,13 @@ import useMultistepForm from "@/hooks/useMultistepForm";
 import { FormEvent, Suspense, lazy, useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { DotPulse } from "@uiball/loaders";
 import { CheckIcon } from "@radix-ui/react-icons";
 import useSubscription from "@/hooks/useSubscription";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 const Pending = lazy(() => import("@/pages/subscription/Pending"));
 
@@ -87,7 +89,12 @@ function SubscriptionLayout() {
                     className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
                   >
                     {isFetching ? (
-                      <DotPulse size={35} color="#FFF" />
+                      // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
                     ) : (
                       "Get started"
                     )}
@@ -111,7 +118,12 @@ function SubscriptionLayout() {
                     className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
                   >
                     {isFetching ? (
-                      <DotPulse size={35} color="#FFF" />
+                      // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
                     ) : (
                       "Proceed"
                     )}
@@ -135,7 +147,12 @@ function SubscriptionLayout() {
                     className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
                   >
                     {isFetching ? (
-                      <DotPulse size={35} color="#FFF" />
+                      // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
                     ) : (
                       <CheckIcon className="w-[25px] h-[25px]" />
                     )}

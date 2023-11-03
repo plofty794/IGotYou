@@ -17,8 +17,10 @@ import {
 import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
-import { DotPulse } from "@uiball/loaders";
+import { dotPulse } from "ldrs";
 import useGoogleSignin from "@/hooks/useGoogleSignin";
+import { Label } from "@/components/ui/label";
+dotPulse.register();
 
 // import { signInWithEmailAndPassword } from "firebase/auth";
 // import { auth } from "@/firebase config/config";
@@ -29,7 +31,7 @@ function Login() {
     document.title = "IGotYou - Sign in";
   }, []);
 
-  const { mutate, isLoading } = useLogin();
+  const { mutate, isPending } = useLogin();
   const {
     register,
     formState: { errors },
@@ -52,115 +54,128 @@ function Login() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#F2F2F2] flex flex-col gap-5 justify-center items-center">
-      <Link
-        to={"/get-started"}
-        className="font-medium absolute top-0 left-0 text-xs p-2 hover:underline"
-      >
-        Go to Hero page
-      </Link>
-      <div className="flex items-center gap-2 font-medium">
-        <h1 className="text-base text-center">Sign in to </h1>
-        <span>
-          <img
-            className="w-[30px] h-[30px]"
-            loading="lazy"
-            src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
-            alt="logo"
-          />
-        </span>
-      </div>
-      <div className="flex flex-col gap-4">
-        <form
-          onSubmit={handleSubmit(handleLogin)}
-          className="bg-white flex flex-col gap-2 border border-slate-300 rounded-md shadow px-4 py-8 w-80 mx-auto"
-        >
-          <Input
-            id="email"
-            placeholder="Email"
-            className="text-xs font-medium border-slate-700 "
-            autoFocus
-            autoComplete="email"
-            type="text"
-            {...register("email")}
-          />
-          {errors.email && <ErrorMessage message={errors.email.message} />}
-          <Input
-            id="password"
-            placeholder="Password"
-            className="text-xs font-medium border-slate-700"
-            type="password"
-            {...register("password")}
-          />
-          {errors.password && (
-            <ErrorMessage message={errors.password.message} />
-          )}
-          <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-3 text-xs font-semibold rounded-full">
-            {isLoading ? (
-              <DotPulse size={20} speed={1} color="white" />
-            ) : (
-              "Sign in"
-            )}
-          </Button>
-          <Button
-            type="button"
-            onClick={handleGoogleSignIn}
-            className="text-[#222222] hover:bg-[#F2F2F2] border mt-2 text-xs font-semibold rounded-full"
-          >
+    <main className="min-h-screen flex justify-center items-center">
+      <section className="flex flex-col gap-5 justify-center items-center w-1/3 max-lg:w-2/3 max-sm:w-3/4">
+        <div className="flex flex-col items-center justify-center gap-5">
+          <span>
             <img
-              width={20}
-              height={20}
-              className="mr-2"
+              className="w-[40px] h-[40px]"
               loading="lazy"
-              src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
-              alt="Google logo"
-            />{" "}
-            Continue with Google
-          </Button>
-          <Link
-            to={"/forgot-password"}
-            className="mt-2 text-xs text-end hover:underline underline-offset-2 text-[#222222] font-medium"
-          >
-            Forgot password?
-          </Link>
-        </form>
-        <div className="bg-white flex items-center justify-center border border-slate-300 shadow text-xs rounded py-4 px-8">
-          <p className="font-semibold">New to IGotYou? </p>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                className="text-[#00B6AC] p-0 ml-1 font-semibold text-xs"
-                variant={"link"}
-                size={"sm"}
-              >
-                Create an account
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="border border-slate-300 sm:max-w-[390px]">
-              <DialogHeader>
-                <DialogTitle className="flex gap-2 items-center justify-center text-base font-medium">
-                  Sign up to{" "}
-                  <span>
-                    <img
-                      className="w-[30px] h-[30px]"
-                      loading="lazy"
-                      src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
-                      alt="logo"
-                    />
-                  </span>
-                </DialogTitle>
-              </DialogHeader>
-              <Register />
-              <DialogFooter className="text-center py-2 px-4 text-xs font-medium">
-                Sign up and become a part of the conversation. Share your
-                thoughts, ideas, and feedback with us and connect with others
-                who share your interests.
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
+              alt="logo"
+            />
+          </span>
+          <h1 className="text-gray-900 font-medium text-2xl">
+            Sign in to IGotYou
+          </h1>
         </div>
-      </div>
-    </div>
+        <div className="w-full flex flex-col items-center justify-center gap-5">
+          <form
+            onSubmit={handleSubmit(handleLogin)}
+            className="w-full bg-white flex flex-col gap-2"
+          >
+            <Label className="text-gray-600 text-xs font-semibold">
+              Email address
+            </Label>
+            <Input
+              id="email"
+              className="text-xs font-medium border-gray-300"
+              autoFocus
+              autoComplete="email"
+              type="text"
+              {...register("email")}
+            />
+            {errors.email && <ErrorMessage message={errors.email.message} />}
+            <Label className="text-gray-600 text-xs font-semibold">
+              Password
+            </Label>
+            <Input
+              id="password"
+              className="text-xs font-medium border-gray-300"
+              type="password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <ErrorMessage message={errors.password.message} />
+            )}
+            <Button
+              disabled={
+                isPending ||
+                !!errors.email?.message ||
+                !!errors.password?.message
+              }
+              size={"lg"}
+              className="bg-gray-950 hover:bg-[#2d2d2d] mt-3 text-xs font-semibold rounded-full"
+            >
+              {isPending ? (
+                <l-dot-pulse size="35" speed="1.3" color="white"></l-dot-pulse>
+              ) : (
+                "Sign in"
+              )}
+            </Button>
+            <Button
+              size={"lg"}
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="text-[#222222] hover:bg-[#F2F2F2] border border-gray-300 mt-2 text-xs font-semibold rounded-full"
+            >
+              <img
+                width={20}
+                height={20}
+                className="mr-2"
+                loading="lazy"
+                src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+                alt="Google logo"
+              />{" "}
+              Continue with Google
+            </Button>
+            <Link
+              to={"/forgot-password"}
+              className="text-center mt-2 underline underline-offset-2 text-xs text-gray-900 font-semibold"
+            >
+              Forgot your password?
+            </Link>
+          </form>
+          <div className="flex items-center justify-center text-xs">
+            <span className="text-gray-600 font-medium">New to IGotYou? </span>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  className="text-gray-900 underline underline-offset-2 p-0 ml-1 font-semibold text-xs"
+                  variant={"link"}
+                  size={"sm"}
+                >
+                  Sign up
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="p-8 border border-slate-300 sm:max-w-[390px]">
+                <DialogHeader>
+                  <DialogTitle className="flex flex-col gap-4 items-center justify-center">
+                    <span>
+                      <img
+                        className="w-[30px] h-[30px]"
+                        loading="lazy"
+                        src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
+                        alt="logo"
+                      />
+                    </span>
+                    <span className="text-lg font-medium">
+                      Sign up to IGotYou
+                    </span>
+                  </DialogTitle>
+                </DialogHeader>
+                <Register />
+                <DialogFooter className="text-center py-2 px-4 text-xs font-medium">
+                  Sign up and become a part of the conversation. Share your
+                  thoughts, ideas, and feedback with us and connect with others
+                  who share your interests.
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
 

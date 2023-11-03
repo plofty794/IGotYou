@@ -20,8 +20,10 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useLoaderData, useParams } from "react-router-dom";
 import { UseQueryResult } from "@tanstack/react-query";
-import { DotPulse } from "@uiball/loaders";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 type TLoaderData = {
   user: {
@@ -168,7 +170,8 @@ function VerifyPhone() {
         </main>
       ) : (
         <div className="min-h-screen flex items-center justify-center">
-          <DotPulse color="#222222" size={50} />
+          // Default values shown
+          <l-dot-pulse size="40" speed="1.3" color="white"></l-dot-pulse>
         </div>
       )}
     </>

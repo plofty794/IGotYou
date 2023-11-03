@@ -20,10 +20,12 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "./ErrorMessage";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
-import { DotPulse } from "@uiball/loaders";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 function PromptUsername() {
-  const { mutate, isLoading } = useUpdateUserProfile();
+  const { mutate, isPending } = useUpdateUserProfile();
   const {
     handleSubmit,
     register,
@@ -78,8 +80,13 @@ function PromptUsername() {
                 className="text-xs font-medium bg-[#222222] text-white"
                 type="submit"
               >
-                {isLoading ? (
-                  <DotPulse size={35} speed={1} color="white" />
+                {isPending ? (
+                  // Default values shown
+                  <l-dot-pulse
+                    size="43"
+                    speed="1.3"
+                    color="black"
+                  ></l-dot-pulse>
                 ) : (
                   "Save changes"
                 )}

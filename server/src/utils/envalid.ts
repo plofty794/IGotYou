@@ -1,4 +1,4 @@
-import { cleanEnv, num, port, str } from "envalid";
+import { cleanEnv, num, port, str, url } from "envalid";
 import { config } from "dotenv";
 
 config();
@@ -13,4 +13,6 @@ export default cleanEnv(process.env, {
   CLOUDINARY_CLOUD_NAME: str(),
   CLOUDINARY_API_KEY: str(),
   CLOUDINARY_API_SECRET: str(),
+  CLIENT_URL: url(),
+  ADMIN_URL: url(),
 });

@@ -1,4 +1,4 @@
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ function useSubscription() {
       });
     },
     onSuccess() {
-      queryClient.refetchQueries(["profile", id]);
+      queryClient.invalidateQueries({ queryKey: ["profile", id] });
       console.log("Success");
     },
     onError: async (err) => {
@@ -24,8 +24,8 @@ function useSubscription() {
       if (error.response?.status === 400) {
         await auth.signOut();
         localStorage.clear();
-        queryClient.removeQueries(["profile"]);
-        queryClient.removeQueries(["listings"]);
+        queryClient.removeQueries({ queryKey: ["profile"] });
+        queryClient.removeQueries({ queryKey: ["listings"] });
         toast({
           title: "Oops! An error occurred.",
           description: "This resource requires an identifier.",

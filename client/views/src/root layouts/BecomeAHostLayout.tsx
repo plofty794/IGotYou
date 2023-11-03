@@ -1,13 +1,15 @@
 import { Link, Navigate, Outlet, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import useMultistepForm from "@/hooks/useMultistepForm";
-import { DotPulse } from "@uiball/loaders";
 import { auth } from "@/firebase config/config";
 import { useEffect, useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import useUploadListing from "@/hooks/useUploadListing";
 import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
 import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 type TFileType = {
   public_id: string;
@@ -28,7 +30,7 @@ type TListing = {
 function BecomeAHostLayout() {
   const { id } = useParams();
   const { data } = useGetCurrentUserProfile();
-  const { mutate, isLoading, status } = useUploadListing();
+  const { mutate, isPending, status } = useUploadListing();
   const [service, setService] = useState<TListing>({
     serviceType: "Events and Entertainment",
     serviceDescription: "",
@@ -106,7 +108,12 @@ function BecomeAHostLayout() {
                   className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                 >
                   {isFetching ? (
-                    <DotPulse size={40} color="#FFF" />
+                    // Default values shown
+                    <l-dot-pulse
+                      size="43"
+                      speed="1.3"
+                      color="black"
+                    ></l-dot-pulse>
                   ) : (
                     "Get started"
                   )}
@@ -134,7 +141,12 @@ function BecomeAHostLayout() {
                       className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                     >
                       {isFetching ? (
-                        <DotPulse size={40} color="#FFF" />
+                        // Default values shown
+                        <l-dot-pulse
+                          size="43"
+                          speed="1.3"
+                          color="black"
+                        ></l-dot-pulse>
                       ) : (
                         "Next"
                       )}
@@ -159,7 +171,15 @@ function BecomeAHostLayout() {
                     size={"lg"}
                     className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                   >
-                    {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+                    {isFetching ? ( // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
+                    ) : (
+                      "Next"
+                    )}
                   </Button>
                 </>
               )}
@@ -182,7 +202,15 @@ function BecomeAHostLayout() {
                     size={"lg"}
                     className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                   >
-                    {isFetching ? <DotPulse size={40} color="#FFF" /> : "Next"}
+                    {isFetching ? ( // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
+                    ) : (
+                      "Next"
+                    )}
                   </Button>
                 </>
               )}
@@ -205,7 +233,15 @@ function BecomeAHostLayout() {
                     size={"lg"}
                     className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                   >
-                    {isLoading ? <DotPulse size={40} color="#FFF" /> : "Finish"}
+                    {isPending ? ( // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
+                    ) : (
+                      "Finish"
+                    )}
                   </Button>
                 </>
               )}
@@ -216,8 +252,13 @@ function BecomeAHostLayout() {
                     size={"lg"}
                     className="bg-[#222222] rounded-full text-lg font-semibold p-6"
                   >
-                    {isLoading ? (
-                      <DotPulse size={40} color="#FFF" />
+                    {isPending ? (
+                      // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="black"
+                      ></l-dot-pulse>
                     ) : (
                       "Check your listing"
                     )}

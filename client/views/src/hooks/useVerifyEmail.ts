@@ -5,7 +5,7 @@ import { sendEmailVerification } from "firebase/auth";
 import { auth } from "@/firebase config/config";
 import { FirebaseError } from "firebase/app";
 import { useParams } from "react-router-dom";
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 
 type TUserUpdates = {
   address?: string;
@@ -47,7 +47,7 @@ function useVerifyEmail() {
     },
     onSuccess: async () => {
       console.log("Success");
-      queryClient.invalidateQueries(["profile", id]);
+      queryClient.invalidateQueries({ queryKey: ["profile", id] });
       toast({
         title: "Verification email has been sent",
         description: "Click the verify button again after verifying your email",

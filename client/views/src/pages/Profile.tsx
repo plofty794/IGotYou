@@ -2,7 +2,8 @@ import { Suspense, lazy, useEffect } from "react";
 import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 import ProfileLoader from "@/partials/loaders/ProfileLoader";
 import PromptUsername from "@/partials/components/PromptUsername";
-import { DotSpinner } from "@uiball/loaders";
+import { lineSpinner } from "ldrs";
+lineSpinner.register();
 
 const ProfileContent = lazy(
   () => import("@/partials/components/profile/ProfileContent")
@@ -17,9 +18,14 @@ function Profile() {
 
   return (
     <>
-      {status === "loading" ? (
+      {status === "pending" ? (
         <div className="min-h-[80vh] flex items-center justify-center">
-          <DotSpinner color="#222222" size={50} />
+          <l-line-spinner
+            size="55"
+            stroke="3"
+            speed="1"
+            color="black"
+          ></l-line-spinner>
         </div>
       ) : status === "success" ? (
         <Suspense fallback={<ProfileLoader />}>

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 
 type TFileType = {
   public_id: string;
@@ -24,8 +24,8 @@ function useUploadListing() {
       });
     },
     onSuccess() {
-      queryClient.invalidateQueries(["profile", id], { exact: true });
-      queryClient.invalidateQueries(["listings"]);
+      queryClient.invalidateQueries({ queryKey: ["profile", id], exact: true });
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
     },
     onError(error) {
       console.error(error);

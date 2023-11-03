@@ -19,9 +19,11 @@ import {
 } from "@/zod/mobilePhoneSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
-import { DotPulse } from "@uiball/loaders";
 import { Link, useParams } from "react-router-dom";
 import Flag from "react-svg-country-flags";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 type TMobilePhone = {
   mobilePhone?: string;
@@ -31,7 +33,7 @@ type TMobilePhone = {
 function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
   const { id } = useParams();
   const [countryCode, setCountryCode] = useState<CountryCode>("PH");
-  const { mutate, isLoading } = useUpdateUserProfile();
+  const { mutate, isPending } = useUpdateUserProfile();
 
   const {
     formState: { errors },
@@ -95,8 +97,11 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
         )}
         <div className="flex gap-2">
           <Button className="mt-3 w-max font-semibold bg-[#222222] rounded-full text-xs">
-            {mobilePhone != null && !isLoading && "Edit"}
-            {isLoading && <DotPulse size={20} speed={1} color="#FFF" />}
+            {mobilePhone != null && !isPending && "Edit"}
+            {isPending && (
+              // Default values shown
+              <l-dot-pulse size="43" speed="1.3" color="black"></l-dot-pulse>
+            )}
             {!mobilePhone && "Add"}
           </Button>
           {!mobileVerified && mobilePhone ? (

@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 
 function useGetListings() {
   return useInfiniteQuery({

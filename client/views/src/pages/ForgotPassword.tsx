@@ -10,11 +10,13 @@ import { EmailSchema, ZodEmailSchema } from "@/zod/emailSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import usePasswordReset from "@/hooks/usePasswordReset";
-import { DotPulse } from "@uiball/loaders";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 function ForgotPassword() {
-  const { mutate, isLoading, isSuccess } = usePasswordReset();
+  const { mutate, isPending, isSuccess } = usePasswordReset();
   const {
     handleSubmit,
     register,
@@ -36,14 +38,7 @@ function ForgotPassword() {
   }
 
   return (
-    <div className="bg-[#F2F2F2] min-h-screen flex items-center justify-center">
-      <Link
-        className="absolute top-0 left-0 text-xs font-medium hover:underline underline-offset-2 m-2"
-        to={"/login"}
-        replace
-      >
-        Back to Login
-      </Link>
+    <div className="bg-[#F2F2F2] min-h-screen flex flex-col gap-4 items-center justify-center">
       <Card className="flex items-center justify-center p-8">
         <CardHeader>
           <Lottie
@@ -64,9 +59,18 @@ function ForgotPassword() {
                 className="border-black text-xs font-medium"
               />
               {errors.email && <ErrorMessage message={errors.email?.message} />}
-              <Button className="px-8 w-max text-xs font-semibold bg-[#222222] text-white rounded-full">
-                {isLoading ? (
-                  <DotPulse size={25} color="#FFF" />
+              <Button
+                disabled={isPending || !!errors.email?.message}
+                size={"lg"}
+                className="px-8 w-full text-xs font-semibold bg-gray-950 text-white rounded-full"
+              >
+                {isPending ? (
+                  // Default values shown
+                  <l-dot-pulse
+                    size="35"
+                    speed="1.3"
+                    color="white"
+                  ></l-dot-pulse>
                 ) : (
                   "Reset your password"
                 )}
@@ -77,15 +81,24 @@ function ForgotPassword() {
                 <AlertTitle className="text-sm font-bold text-[#00B6AC]">
                   Heads up!
                 </AlertTitle>
-                <AlertDescription className="text-xs font-medium text-zinc-700">
-                  After changing your password you can now proceed to the login
-                  page.
+                <AlertDescription className="w-[400px] text-xs font-medium text-zinc-700">
+                  After changing your password from the provided password reset
+                  link, you can now proceed to the login page.
                 </AlertDescription>
               </Alert>
             )}
           </CardContent>
         </form>
       </Card>
+      <Button
+        size={"lg"}
+        variant={"link"}
+        className="text-[#222222] font-semibold"
+      >
+        <Link to={"/login"} replace>
+          Go back
+        </Link>
+      </Button>
     </div>
   );
 }

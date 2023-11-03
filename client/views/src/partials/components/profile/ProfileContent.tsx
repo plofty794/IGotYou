@@ -21,10 +21,12 @@ import useVerifyEmail from "@/hooks/useVerifyEmail";
 import { auth } from "@/firebase config/config";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { MdCameraEnhance } from "react-icons/md";
-import { DotPulse } from "@uiball/loaders";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "firebase/auth";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 const Listings = lazy(() => import("./Listings"));
 
@@ -61,14 +63,14 @@ type TListings = {
 
 function ProfileContent({ profileData }: TProps) {
   const queryClient = useQueryClient();
-  const { mutate, isLoading } = useVerifyEmail();
+  const { mutate, isPending } = useVerifyEmail();
   const updateUserProfile = useUpdateUserProfile();
   const [photo, setPhoto] = useState("");
 
   useEffect(() => {
     setPhoto(profileData?.photoUrl);
     if (updateUserProfile.isSuccess) {
-      queryClient.refetchQueries(["listings"]);
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
     }
   }, [profileData?.photoUrl, queryClient, updateUserProfile.isSuccess]);
 
@@ -214,8 +216,13 @@ function ProfileContent({ profileData }: TProps) {
                   }
                   className="mt-2 text-xs font-semibold bg-[#222222] rounded-full"
                 >
-                  {isLoading ? (
-                    <DotPulse size={20} color="#FFF" />
+                  {isPending ? (
+                    // Default values shown
+                    <l-dot-pulse
+                      size="43"
+                      speed="1.3"
+                      color="black"
+                    ></l-dot-pulse>
                   ) : (
                     "Verify email"
                   )}

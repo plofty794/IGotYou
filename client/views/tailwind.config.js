@@ -32,7 +32,7 @@ module.exports = {
       },
       backgroundImage: {
         "hero-image":
-          "url(https://tailwindcss.com/_next/static/media/hero-dark@90.dba36cdf.jpg)",
+          "url(https://img.freepik.com/free-photo/top-view-cinema-elements-yellow-background-with-copy-space_23-2148457818.jpg?w=900&t=st=1698988846~exp=1698989446~hmac=85784c3ed07f6acc175b1f57bb454ffa49dfa314d382e1b9254952ac3f2fb5e5)",
       },
       fontFamily: {
         pacifico: "'Pacifico', cursive",

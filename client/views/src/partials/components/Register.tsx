@@ -6,10 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useRegister } from "@/hooks/useRegister";
-import { DotPulse } from "@uiball/loaders";
+import { dotPulse } from "ldrs";
+
+dotPulse.register();
 
 function Register() {
-  const { mutate, isLoading } = useRegister();
+  const { mutate, isPending } = useRegister();
   const {
     handleSubmit,
     formState: { errors },
@@ -39,35 +41,44 @@ function Register() {
           onSubmit={handleSubmit(handleRegister)}
           className="flex flex-col gap-2 py-5 w-full mx-auto"
         >
-          <Label className="text-xs font-semibold" htmlFor="email">
+          <Label
+            className="text-xs font-semibold text-gray-600"
+            htmlFor="email"
+          >
             Email
           </Label>
           <Input
             id="email"
-            className="border-slate-700 text-xs font-medium"
+            className="border-slate-300 text-xs font-medium"
             autoComplete="email"
             type="text"
             {...register("email")}
           />
           {errors.email && <ErrorMessage message={errors.email.message} />}
-          <Label className="text-xs font-semibold" htmlFor="password">
+          <Label
+            className="text-xs font-semibold text-gray-600"
+            htmlFor="password"
+          >
             Password
           </Label>
           <Input
             id="password"
-            className="border-slate-700 text-xs font-medium"
+            className="border-slate-300 text-xs font-medium"
             type="password"
             {...register("password")}
           />
           {errors.password && (
             <ErrorMessage message={errors.password.message} />
           )}
-          <Label className="text-xs font-semibold" htmlFor="confirmPassword">
+          <Label
+            className="text-xs font-semibold text-gray-600"
+            htmlFor="confirmPassword"
+          >
             Confirm password
           </Label>
           <Input
             id="confirmPassword"
-            className="border-slate-700 text-xs font-medium"
+            className="border-slate-300 text-xs font-medium"
             type="password"
             {...register("confirmPassword")}
           />
@@ -75,9 +86,18 @@ function Register() {
             <ErrorMessage message={errors.confirmPassword.message} />
           )}
           <div className="mt-1 flex flex-col">
-            <Button className="bg-[#222222] hover:bg-[#2d2d2d] mt-1 text-xs font-semibold rounded-full">
-              {isLoading ? (
-                <DotPulse size={20} speed={1} color="white" />
+            <Button
+              disabled={
+                isPending ||
+                !!errors.email?.message ||
+                !!errors.password?.message ||
+                !!errors.confirmPassword?.message
+              }
+              className="bg-gray-950 mt-1 text-xs font-semibold rounded-full"
+            >
+              {isPending ? (
+                // Default values shown
+                <l-dot-pulse size="35" speed="1.3" color="black"></l-dot-pulse>
               ) : (
                 "Sign up"
               )}

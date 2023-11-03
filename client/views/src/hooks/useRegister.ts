@@ -1,4 +1,4 @@
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
 import { useMutation } from "@tanstack/react-query";

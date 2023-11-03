@@ -3,7 +3,7 @@ import { signInWithPopup } from "firebase/auth";
 import { GoogleAuth, auth } from "@/firebase config/config";
 import { FirebaseError } from "firebase/app";
 import { toast } from "@/components/ui/use-toast";
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 
 function useGoogleSignin() {
   return useMutation({

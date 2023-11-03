@@ -6,13 +6,13 @@ type TProps = {
 
 const ErrorMessage: FC<TProps> = ({ message }) => {
   return (
-    <span className="w-full flex items-center">
+    <div className="w-full flex items-center gap-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        fill="#F04444"
+        fill="none"
         viewBox="0 0 24 24"
-        strokeWidth="2.5"
-        stroke="white"
+        strokeWidth={2}
+        stroke="#F24444"
         className="w-5 h-5"
       >
         <path
@@ -21,8 +21,8 @@ const ErrorMessage: FC<TProps> = ({ message }) => {
           d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
         />
       </svg>
-      <p className="text-red-500 text-xs font-semibold">{message}</p>
-    </span>
+      <span className="text-red-500 text-xs font-semibold">{message}</span>
+    </div>
   );
 };
 export default ErrorMessage;

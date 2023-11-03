@@ -1,4 +1,4 @@
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { auth } from "@/firebase config/config";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -10,8 +10,8 @@ function useLogOutUser() {
       await axiosPrivateRoute.delete("/api/users/current-user/logout");
       auth.signOut();
       localStorage.clear();
-      queryClient.removeQueries(["profile"]);
-      queryClient.removeQueries(["listings"]);
+      queryClient.removeQueries({ queryKey: ["profile"] });
+      queryClient.removeQueries({ queryKey: ["listings"] });
     } catch (err) {
       const error = err as AxiosError;
       if (error.response?.status === 400) {

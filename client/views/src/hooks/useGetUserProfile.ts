@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { AxiosError } from "axios";
 import { auth } from "@/firebase config/config";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,8 +20,8 @@ function useGetCurrentUserProfile() {
         if (error.response?.status === 400) {
           await auth.signOut();
           localStorage.clear();
-          queryClient.removeQueries(["profile"]);
-          queryClient.removeQueries(["listings"]);
+          queryClient.removeQueries({ queryKey: ["profile"] });
+          queryClient.removeQueries({ queryKey: ["listings"] });
           toast({
             title: "Oops! An error occurred.",
             description: "This resource requires an identifier.",
@@ -36,10 +36,8 @@ function useGetCurrentUserProfile() {
       }
     },
     enabled: id != null,
-    keepPreviousData: true,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    suspense: true,
     retry: 2,
   });
 }

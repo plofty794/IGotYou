@@ -1,4 +1,4 @@
-import { axiosPrivateRoute } from "@/axios/axiosRoute";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useMutation } from "@tanstack/react-query";
 
 type TParams = {
