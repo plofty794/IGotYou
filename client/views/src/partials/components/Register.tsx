@@ -41,29 +41,23 @@ function Register() {
           onSubmit={handleSubmit(handleRegister)}
           className="flex flex-col gap-2 py-5 w-full mx-auto"
         >
-          <Label
-            className="text-xs font-semibold text-gray-600"
-            htmlFor="email"
-          >
+          <Label className="font-semibold text-gray-600" htmlFor="email">
             Email
           </Label>
           <Input
             id="email"
-            className="border-slate-300 text-xs font-medium"
+            className="border-slate-300 font-medium"
             autoComplete="email"
             type="text"
             {...register("email")}
           />
           {errors.email && <ErrorMessage message={errors.email.message} />}
-          <Label
-            className="text-xs font-semibold text-gray-600"
-            htmlFor="password"
-          >
+          <Label className="font-semibold text-gray-600" htmlFor="password">
             Password
           </Label>
           <Input
             id="password"
-            className="border-slate-300 text-xs font-medium"
+            className="border-slate-300 font-medium"
             type="password"
             {...register("password")}
           />
@@ -71,14 +65,14 @@ function Register() {
             <ErrorMessage message={errors.password.message} />
           )}
           <Label
-            className="text-xs font-semibold text-gray-600"
+            className="font-semibold text-gray-600"
             htmlFor="confirmPassword"
           >
             Confirm password
           </Label>
           <Input
             id="confirmPassword"
-            className="border-slate-300 text-xs font-medium"
+            className="border-slate-300 font-medium"
             type="password"
             {...register("confirmPassword")}
           />
@@ -93,11 +87,10 @@ function Register() {
                 !!errors.password?.message ||
                 !!errors.confirmPassword?.message
               }
-              className="bg-gray-950 mt-1 text-xs font-semibold rounded-full"
+              className="bg-gray-950 mt-1 font-semibold rounded-full"
             >
               {isPending ? (
-                // Default values shown
-                <l-dot-pulse size="35" speed="1.3" color="black"></l-dot-pulse>
+                <l-dot-pulse size="30" speed="1.3" color="white"></l-dot-pulse>
               ) : (
                 "Sign up"
               )}

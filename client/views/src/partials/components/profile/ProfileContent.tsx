@@ -34,7 +34,7 @@ type TProps = {
   profileData: {
     email: string;
     username: string;
-    hostStatus: boolean;
+    hostStatus: string;
     address: string;
     funFact: string;
     school: string;
@@ -125,7 +125,7 @@ function ProfileContent({ profileData }: TProps) {
                 )}
               </span>
               <span className="text-zinc-500 text-sm font-semibold">
-                {profileData?.hostStatus ? "Host" : "Guest"}
+                {profileData?.hostStatus === "host" ? "Host" : "Guest"}
               </span>
             </CardFooter>
           </Card>
@@ -219,9 +219,9 @@ function ProfileContent({ profileData }: TProps) {
                   {isPending ? (
                     // Default values shown
                     <l-dot-pulse
-                      size="43"
+                      size="30"
                       speed="1.3"
-                      color="black"
+                      color="white"
                     ></l-dot-pulse>
                   ) : (
                     "Verify email"

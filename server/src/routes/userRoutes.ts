@@ -5,7 +5,7 @@ import {
   deleteUser,
   getCurrentUserProfile,
   getUserPhone,
-  getUsers,
+  getHosts,
   googleSignIn,
   logInUser,
   logOutUser,
@@ -17,7 +17,7 @@ import {
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
 
-router.get("/users", getUsers);
+router.get("/users", getHosts);
 router.get("/users/current-user/phone", authToken, getUserPhone);
 router.get("/users/profile/visit/:id", authToken, visitUserProfile);
 router.get("/users/current-user/profile", authToken, getCurrentUserProfile);

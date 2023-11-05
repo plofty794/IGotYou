@@ -8,14 +8,14 @@ function useLogOutUser() {
   return async () => {
     try {
       await axiosPrivateRoute.delete("/api/users/current-user/logout");
-      auth.signOut();
+      await auth.signOut();
       localStorage.clear();
       queryClient.removeQueries({ queryKey: ["profile"] });
       queryClient.removeQueries({ queryKey: ["listings"] });
     } catch (err) {
       const error = err as AxiosError;
       if (error.response?.status === 400) {
-        auth.signOut();
+        await auth.signOut();
       }
     }
   };

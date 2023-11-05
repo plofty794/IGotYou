@@ -2,15 +2,26 @@ import { RequestHandler } from "express";
 import Admin from "../models/Admin";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
+import Users from "../models/Users";
 
-export const getAdmin: RequestHandler = async (req, res, next) => {
+export const getActiveUsers: RequestHandler = async (req, res, next) => {
   const admin_id = req.headers.cookie?.split("admin_id=")[1];
   try {
     if (!admin_id) {
       throw createHttpError(401, "This action requires an identifier");
     }
-    const admin = await Admin.findById(admin_id);
-    res.status(200).json({ admin });
+    const activeUsers = await Users.find({
+      $where: function () {
+        return (
+          this.subscriptionStatus === "active" ||
+          this.subscriptionStatus === "pending"
+        );
+      },
+    });
+    if (!activeUsers) {
+      return res.status(200).json({ activeUsers: [] });
+    }
+    res.status(200).json({ activeUsers });
   } catch (error) {
     next(error);
   }

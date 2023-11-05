@@ -52,8 +52,9 @@ const usersSchema = new Schema(
       required: true,
     },
     hostStatus: {
-      type: Boolean,
-      default: false,
+      type: String,
+      enum: ["host", "guest"],
+      default: "guest",
     },
     listings: {
       type: [Types.ObjectId],

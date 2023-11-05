@@ -21,7 +21,7 @@ type TData = {
   user: {
     email: string;
     username: string;
-    hostStatus: boolean;
+    hostStatus: string;
     work?: string;
     address?: string;
     funFact?: string;

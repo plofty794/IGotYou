@@ -26,6 +26,8 @@ function useVerifyEmail() {
         axiosPrivateRoute.patch("/api/users/current-user/update/", {
           ...data,
         });
+        await auth.currentUser?.reload();
+        await auth.updateCurrentUser(auth.currentUser);
       } catch (err) {
         const error = err as FirebaseError;
         const message = (
@@ -40,10 +42,6 @@ function useVerifyEmail() {
           variant: "destructive",
         });
       }
-    },
-    onMutate: async () => {
-      await auth.updateCurrentUser(auth.currentUser);
-      await auth.currentUser?.reload();
     },
     onSuccess: async () => {
       console.log("Success");

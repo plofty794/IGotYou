@@ -43,6 +43,8 @@ function App() {
   const token = localStorage.getItem("token");
   const [User, setUser] = useState<User | null>(null);
 
+  console.log(User);
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (!user) return setUser(null);

@@ -1,9 +1,16 @@
-import { Waveform } from "@uiball/loaders";
+import { lineSpinner } from "ldrs";
+
+lineSpinner.register();
 
 function Loader() {
   return (
-    <div className="bg-hero-image bg-cover min-h-screen flex items-center justify-center">
-      <Waveform size={65} color="white" />
+    <div className="min-h-screen flex items-center justify-center">
+      <l-line-spinner
+        size="50"
+        stroke="3"
+        speed="1"
+        color="black"
+      ></l-line-spinner>
     </div>
   );
 }

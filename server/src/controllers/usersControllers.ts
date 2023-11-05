@@ -3,24 +3,31 @@ import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 
-export const getUsers: RequestHandler = async (req, res, next) => {
+export const getHosts: RequestHandler = async (req, res, next) => {
   try {
-    const users = await Users.find({
+    const hosts = await Users.find({
       $where: function () {
-        return this.listings.length > 0 && this.hostStatus === true;
+        return (
+          this.listings.length > 0 &&
+          this.hostStatus === "host" &&
+          this.subscriptionStatus === "active"
+        );
       },
     })
       .populate("listings")
       .exec();
 
-    if (!users.length) {
+    if (!hosts.length) {
       return res.status(200).json({ hosts: [] });
     }
-    const hosts = users.filter(
-      (user) => user.listings.length > 0 && user.subscriptionStatus === "active"
+    const _hosts = hosts.filter(
+      (user) =>
+        user.listings.length > 0 &&
+        user.subscriptionStatus === "active" &&
+        user.hostStatus === "host"
     );
 
-    res.status(200).json({ hosts });
+    res.status(200).json({ hosts: _hosts });
   } catch (error) {
     next(error);
   }

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getAdmin, loginAdmin } from "../controllers/adminControllers";
+import { getActiveUsers, loginAdmin } from "../controllers/adminControllers";
 const router = Router();
 
-router.get("/admin", getAdmin);
+router.get("/admin/active-users", getActiveUsers);
 router.post("/admin/login", loginAdmin);
 
 export { router as adminRoutes };

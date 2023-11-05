@@ -83,9 +83,9 @@ function PromptUsername() {
                 {isPending ? (
                   // Default values shown
                   <l-dot-pulse
-                    size="43"
+                    size="30"
                     speed="1.3"
-                    color="black"
+                    color="white"
                   ></l-dot-pulse>
                 ) : (
                   "Save changes"
