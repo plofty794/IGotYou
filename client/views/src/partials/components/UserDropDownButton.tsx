@@ -35,16 +35,16 @@ export function UserDropDownButton() {
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 absolute left-[-200px] font-medium">
+      <DropdownMenuContent className="w-56 font-medium" align="end">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="p-3">Messages</DropdownMenuItem>
-          <DropdownMenuItem className="p-3">Wishlists</DropdownMenuItem>
-          <DropdownMenuItem className="p-3">Bookings</DropdownMenuItem>
+          <DropdownMenuItem className="p-2">Messages</DropdownMenuItem>
+          <DropdownMenuItem className="p-2">Wishlists</DropdownMenuItem>
+          <DropdownMenuItem className="p-2">Bookings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="p-3">Manage bookings</DropdownMenuItem>
-          <DropdownMenuItem className="p-3">
+          <DropdownMenuItem className="p-2">Manage bookings</DropdownMenuItem>
+          <DropdownMenuItem className="p-2">
             <Link
               to={`/users/show/${User && User?.uid}`}
               className="w-full"
@@ -55,12 +55,12 @@ export function UserDropDownButton() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
-        <DropdownMenuItem className="p-3">
+        <DropdownMenuItem className="p-2">
           <span
             className="w-full cursor-pointer"
             onClick={async () => await logOutUser()}
           >
-            Sign out
+            Log out
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>

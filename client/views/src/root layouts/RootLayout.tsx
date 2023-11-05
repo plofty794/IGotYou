@@ -104,18 +104,17 @@ function RootLayout() {
                       onClick={() =>
                         navigate(`/users/show/${User && User.uid}`)
                       }
-                      className="font-medium text-xs bg-[#222222] text-white rounded-full"
+                      className="font-semibold text-xs bg-[#222222] text-white rounded-full px-4 py-5"
                     >
                       Go to your profile
                     </AlertDialogAction>
-                    <AlertDialogCancel className="font-medium text-xs bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-full">
+                    <AlertDialogCancel className="font-semibold px-4 py-5 text-xs bg-red-500 hover:bg-red-600 hover:text-white text-white rounded-full">
                       Close
                     </AlertDialogCancel>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
             )}
-
             <UserDropDownButton />
           </span>
         </nav>
