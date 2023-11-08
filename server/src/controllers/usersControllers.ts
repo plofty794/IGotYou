@@ -2,9 +2,19 @@ import { isValidObjectId } from "mongoose";
 import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
+import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 
 export const getHosts: RequestHandler = async (req, res, next) => {
+  const id = req.headers.cookie?.split("_&!d=")[1];
   try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
     const hosts = await Users.find({
       $where: function () {
         return (
@@ -20,14 +30,14 @@ export const getHosts: RequestHandler = async (req, res, next) => {
     if (!hosts.length) {
       return res.status(200).json({ hosts: [] });
     }
-    const _hosts = hosts.filter(
-      (user) =>
-        user.listings.length > 0 &&
-        user.subscriptionStatus === "active" &&
-        user.hostStatus === "host"
-    );
+    // const _hosts = hosts.filter(
+    //   (user) =>
+    //     user.listings.length > 0 &&
+    //     user.subscriptionStatus === "active" &&
+    //     user.hostStatus === "host"
+    // );
 
-    res.status(200).json({ hosts: _hosts });
+    res.status(200).json({ hosts });
   } catch (error) {
     next(error);
   }
@@ -37,8 +47,12 @@ export const getUserPhone: RequestHandler = async (req, res, next) => {
   const id = req.headers.cookie?.split("_&!d=")[1];
   try {
     if (!id) {
-      res.clearCookie("_&!d");
-      throw createHttpError(400, "Unauthorized");
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
     }
     const user = await Users.findById(id);
     if (!user) {
@@ -71,7 +85,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         username: user.username,
         email: user.email,
         emailVerified: user.emailVerified,
-        hostStatus: user.hostStatus,
+        userStatus: user.userStatus,
         photoUrl: user.photoUrl ?? null,
         mobilePhone: user.mobilePhone,
         mobileVerified: user.mobileVerified,
@@ -104,7 +118,7 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
         username: user.username,
         email: user.email,
         emailVerified: user.emailVerified,
-        hostStatus: user.hostStatus,
+        userStatus: user.userStatus,
         photoUrl: user.photoUrl ?? null,
         mobilePhone: user.mobilePhone,
         mobileVerified: user.mobileVerified,
@@ -161,28 +175,28 @@ export const checkUserEmail: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const userSubscription: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
-  try {
-    if (!id) {
-      res.clearCookie("_&!d");
-      throw createHttpError(
-        400,
-        "A _id cookie is required to access this resource."
-      );
-    }
-    const user = await Users.findByIdAndUpdate(id, {
-      ...req.body,
-    });
-    if (!user) {
-      res.clearCookie("_&!d");
-      throw createHttpError(400, "No user to mutate");
-    }
-    res.status(201).json({ user });
-  } catch (error) {
-    next(error);
-  }
-};
+// export const userSubscription: RequestHandler = async (req, res, next) => {
+//   const id = req.headers.cookie?.split("_&!d=")[1];
+//   try {
+//     if (!id) {
+//       res.clearCookie("_&!d");
+//       throw createHttpError(
+//         400,
+//         "A _id cookie is required to access this resource."
+//       );
+//     }
+//     const user = await Users.findByIdAndUpdate(id, {
+//       ...req.body,
+//     });
+//     if (!user) {
+//       res.clearCookie("_&!d");
+//       throw createHttpError(400, "No user to mutate");
+//     }
+//     res.status(201).json({ user });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 type TCreateUser = {
   username?: string;

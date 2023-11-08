@@ -77,11 +77,11 @@ function ForgotPassword() {
               </Button>
             </div>
             {isSuccess && (
-              <Alert className="shadow-xl">
+              <Alert className="w-[400px] shadow-xl">
                 <AlertTitle className="text-sm font-bold text-[#00B6AC]">
                   Heads up!
                 </AlertTitle>
-                <AlertDescription className="w-[400px] text-xs font-medium text-zinc-700">
+                <AlertDescription className="w-full text-xs font-semibold text-gray-600">
                   After changing your password from the provided password reset
                   link, you can now proceed to the login page.
                 </AlertDescription>
@@ -90,11 +90,7 @@ function ForgotPassword() {
           </CardContent>
         </form>
       </Card>
-      <Button
-        size={"lg"}
-        variant={"link"}
-        className="text-[#222222] font-semibold"
-      >
+      <Button size={"lg"} variant={"link"} className="text-gray-950 font-bold">
         <Link to={"/login"} replace>
           Go back
         </Link>

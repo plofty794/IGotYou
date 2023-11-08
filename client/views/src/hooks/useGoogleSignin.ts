@@ -4,8 +4,11 @@ import { GoogleAuth, auth } from "@/firebase config/config";
 import { FirebaseError } from "firebase/app";
 import { toast } from "@/components/ui/use-toast";
 import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { useContext } from "react";
+import { UserStateContextProvider } from "@/context/UserStateContext";
 
 function useGoogleSignin() {
+  const { dispatch } = useContext(UserStateContextProvider);
   return useMutation({
     mutationFn: async () => {
       return await signInWithPopup(auth, GoogleAuth);
@@ -21,7 +24,7 @@ function useGoogleSignin() {
           uid: res.user.uid,
         });
         const token = await res.user.getIdToken();
-        localStorage.setItem("token", token);
+        dispatch({ type: "USER_LOGIN", payload: token });
       } catch (error) {
         console.error(error);
       }

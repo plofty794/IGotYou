@@ -1,13 +1,16 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
+import { UserStateContextProvider } from "@/context/UserStateContext";
 import { auth } from "@/firebase config/config";
 import { LoginSchema } from "@/zod/loginSchema";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useContext } from "react";
 
 function useLogin() {
+  const { dispatch } = useContext(UserStateContextProvider);
   const { toast } = useToast();
   return useMutation({
     mutationFn: async (data: LoginSchema) => {
@@ -26,7 +29,7 @@ function useLogin() {
             className: "font-medium bg-[#FFF] text-[#222222]",
           });
         const token = await user.getIdToken();
-        localStorage.setItem("token", token);
+        dispatch({ type: "USER_LOGIN", payload: token });
       } catch (err) {
         const error = err as AxiosError;
         toast({

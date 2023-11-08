@@ -1,13 +1,21 @@
-import { Link, Navigate, Outlet, useParams } from "react-router-dom";
+import { Link, Navigate, Outlet } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import useMultistepForm from "@/hooks/useMultistepForm";
 import { auth } from "@/firebase config/config";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import useUploadListing from "@/hooks/useUploadListing";
 import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
 import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 import { dotPulse } from "ldrs";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Pending from "@/pages/subscription/Pending";
 
 dotPulse.register();
 
@@ -28,9 +36,8 @@ type TListing = {
 };
 
 function BecomeAHostLayout() {
-  const { id } = useParams();
-  const { data } = useGetCurrentUserProfile();
   const { mutate, isPending, status } = useUploadListing();
+  const userProfile = useGetCurrentUserProfile();
   const [service, setService] = useState<TListing>({
     serviceType: "Events and Entertainment",
     serviceDescription: "",
@@ -66,7 +73,7 @@ function BecomeAHostLayout() {
 
   return (
     <>
-      {data?.data.user.isSubscribed ? (
+      {userProfile.data?.data.user.userStatus === "host" ? (
         <main className="relative overflow-hidden h-screen">
           {
             <Navigate
@@ -268,8 +275,50 @@ function BecomeAHostLayout() {
             </div>
           </form>
         </main>
+      ) : userProfile.data?.data.user.subscriptionStatus === "pending" ? (
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <Pending user={userProfile.data.data.user} />
+        </Suspense>
       ) : (
-        <Navigate to={`/subscription/${id}`} replace />
+        <section className="bg-[#F5F5F5] min-h-screen flex flex-col items-center justify-center gap-4">
+          <Card className="w-2/4">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold ">
+                Unlock your potential!
+                <span className="block text-base text-gray-700">
+                  Subscribe now and unlock the ability to create and share your
+                  listings with the world.
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <span className="text-base font-bold text-gray-700">
+                Hello {userProfile.data?.data.user.username},
+              </span>
+              <span className="text-sm font-semibold text-gray-600">
+                Hey there! We've noticed you haven't subscribed yet. Don't miss
+                out on all the fantastic listing opportunities waiting for you.
+                Subscribe now and start showcasing your listings to the world!
+                <br /> Subscribe today to create, share, and shine!
+              </span>
+            </CardContent>
+            <CardFooter className="w-max mx-auto">
+              <Button className="text-sm font-bold bg-gray-950 text-white rounded-full py-5 px-6">
+                <Link
+                  to={`/subscription/${
+                    auth.currentUser && auth.currentUser.uid
+                  }`}
+                  replace
+                >
+                  Click to subscribe
+                </Link>
+              </Button>
+            </CardFooter>
+          </Card>
+          <Button variant={"link"} className="text-base font-bold">
+            <Link to={"/"}>Go back</Link>
+          </Button>
+        </section>
       )}
     </>
   );

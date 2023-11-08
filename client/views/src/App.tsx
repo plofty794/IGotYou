@@ -11,10 +11,8 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import { auth } from "./firebase config/config";
 import PageNotFound from "./pages/PageNotFound";
-import { useEffect, useState } from "react";
-import { User } from "firebase/auth";
+import { useContext, useState } from "react";
 import VerifyPhone from "./pages/PhoneVerify";
 import { verifyPhoneLoader } from "./constants/loaders/verifyPhoneLoader";
 import HeroLayout from "./root layouts/HeroLayout";
@@ -38,19 +36,21 @@ import SubscriptionPayment from "./pages/subscription/SubscriptionPayment";
 import ConfirmPayment from "./pages/subscription/ConfirmPayment";
 import PaymentSuccessful from "./pages/subscription/PaymentSuccess";
 import ForgotPassword from "./pages/ForgotPassword";
+import { UserStateContextProvider } from "./context/UserStateContext";
+import { User, onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase config/config";
 
 function App() {
-  const token = localStorage.getItem("token");
-  const [User, setUser] = useState<User | null>(null);
+  const [User, setUser] = useState<User | null>();
+  const identifier = localStorage.getItem("token");
+  const {
+    state: { token },
+  } = useContext(UserStateContextProvider);
 
-  console.log(User);
-
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (!user) return setUser(null);
-      user && setUser({ ...user });
-    });
-  }, []);
+  onAuthStateChanged(auth, (user) => {
+    if (!user) return setUser(null);
+    setUser(user);
+  });
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -66,13 +66,17 @@ function App() {
           <Route
             path="show/:id"
             element={
-              User ?? token ? <Profile /> : <Navigate replace to={"/login"} />
+              User ?? token ?? identifier ? (
+                <Profile />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
             }
           />
           <Route
             path="visit/show/:id"
             element={
-              User ?? token ? (
+              User ?? token ?? identifier ? (
                 <VisitProfile />
               ) : (
                 <Navigate replace to={"/login"} />
@@ -85,7 +89,11 @@ function App() {
           path="account/verify-phone/:id"
           loader={verifyPhoneLoader}
           element={
-            User ?? token ? <VerifyPhone /> : <Navigate replace to={"/login"} />
+            User ?? token ?? identifier ? (
+              <VerifyPhone />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
           }
         />
 
@@ -94,12 +102,22 @@ function App() {
           <Route
             index
             element={
-              User ?? token ? <Home /> : <Navigate replace to={"/login"} />
+              User ?? token ?? identifier ? (
+                <Home />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
             }
           />
           <Route
             path="category/photography&videography"
-            element={<CategoryTwo />}
+            element={
+              User ?? token ?? identifier ? (
+                <CategoryTwo />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="category/audio&sound_services"
@@ -115,7 +133,7 @@ function App() {
         <Route
           path="/become-a-host/:id"
           element={
-            User ?? token ? (
+            User ?? token ?? identifier ? (
               <BecomeAHostLayout />
             ) : (
               <Navigate to={"/login"} replace />
@@ -125,7 +143,7 @@ function App() {
           <Route
             path="overview"
             element={
-              User ?? token ? (
+              User ?? token ?? identifier ? (
                 <BecomeAHostOverview />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -135,7 +153,7 @@ function App() {
           <Route
             path="about-your-service"
             element={
-              User ?? token ? (
+              User ?? token ?? identifier ? (
                 <AboutYourService />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -145,13 +163,17 @@ function App() {
           <Route
             path="service"
             element={
-              User ?? token ? <Service /> : <Navigate to={"/login"} replace />
+              User ?? token ?? identifier ? (
+                <Service />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
             }
           />
           <Route
             path="service-description"
             element={
-              User ?? token ? (
+              User ?? token ?? identifier ? (
                 <ServiceDescription />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -161,7 +183,7 @@ function App() {
           <Route
             path="make-it-standout"
             element={
-              User ?? token ? (
+              User ?? token ?? identifier ? (
                 <MakeItStandOut />
               ) : (
                 <Navigate to={"/login"} replace />
@@ -171,19 +193,31 @@ function App() {
           <Route
             path="photos"
             element={
-              User ?? token ? <Photos /> : <Navigate to={"/login"} replace />
+              User ?? token ?? identifier ? (
+                <Photos />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
             }
           />
           <Route
             path="price"
             element={
-              User ?? token ? <Price /> : <Navigate to={"/login"} replace />
+              User ?? token ?? identifier ? (
+                <Price />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
             }
           />
           <Route
             path="success"
             element={
-              User ?? token ? <Success /> : <Navigate to={"/login"} replace />
+              User ?? token ?? identifier ? (
+                <Success />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
             }
           />
         </Route>
@@ -200,12 +234,22 @@ function App() {
         <Route>
           <Route
             path="login"
-            element={User ?? token ? <Navigate replace to={"/"} /> : <Login />}
+            element={
+              User ?? token ?? identifier ? (
+                <Navigate replace to={"/"} />
+              ) : (
+                <Login />
+              )
+            }
           />
           <Route
             path="forgot-password"
             element={
-              User ?? token ? <Navigate replace to={"/"} /> : <ForgotPassword />
+              User ?? token ?? identifier ? (
+                <Navigate replace to={"/"} />
+              ) : (
+                <ForgotPassword />
+              )
             }
           />
           <Route path="*" element={<PageNotFound />} />

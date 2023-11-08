@@ -10,15 +10,17 @@ import RootLayout from "./root layout/RootLayout";
 import Dashboard from "./pages/Dashboard";
 import { useContext } from "react";
 import { UserStateContextProvider } from "./context/UserStateContext";
+import Users from "./pages/Users";
+import Payments from "./pages/Payments";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
   const { state } = useContext(UserStateContextProvider);
 
-  console.log(isAdmin, state);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        {/* ADMIN DASHBOARD Routes */}
         <Route element={<RootLayout />}>
           <Route index path="/" element={<Navigate to={"/dashboard"} />} />
           <Route
@@ -31,6 +33,30 @@ function App() {
               )
             }
           />
+          <Route
+            path="users"
+            element={
+              state.state ?? isAdmin ? (
+                <Users />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="payments"
+            element={
+              state.state ?? isAdmin ? (
+                <Payments />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+        </Route>
+
+        {/* ADMIN LOGIN Route */}
+        <Route>
           <Route
             path="login"
             element={

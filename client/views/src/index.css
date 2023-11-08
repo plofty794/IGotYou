@@ -40,7 +40,8 @@
 }
 
 .active {
-  color: #882efe;
+  color: black;
+  opacity: 1;
 }
 
 .profile-sheet {

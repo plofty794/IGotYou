@@ -8,7 +8,6 @@ import { useToast } from "@/components/ui/use-toast";
 function useGetCurrentUserProfile() {
   const { toast } = useToast();
   const { id } = useParams();
-
   const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["profile", id],
@@ -23,8 +22,8 @@ function useGetCurrentUserProfile() {
           queryClient.removeQueries({ queryKey: ["profile"] });
           queryClient.removeQueries({ queryKey: ["listings"] });
           toast({
-            title: "Oops! An error occurred.",
-            description: "This resource requires an identifier.",
+            title: "Oops! It looks like your session has expired.",
+            description: "Please log in again.",
             variant: "destructive",
           });
         }
@@ -36,8 +35,6 @@ function useGetCurrentUserProfile() {
       }
     },
     enabled: id != null,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
     retry: 2,
   });
 }

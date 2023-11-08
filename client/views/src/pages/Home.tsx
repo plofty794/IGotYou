@@ -18,6 +18,8 @@ function Home() {
   useEffect(() => {
     document.title = "IGotYou";
     if (status === "success") {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       const hosts = data.pages.flatMap((page) => page.data.hosts);
       setHosts(hosts);
     }

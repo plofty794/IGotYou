@@ -27,7 +27,7 @@ function SubscriptionWelcome() {
       </div>
       <div className="w-full flex flex-col gap-4">
         <div className="w-max mx-auto">
-          <Label>
+          <Label className="text-lg font-semibold">
             To pay online, please consider every steps on the payment process.
           </Label>
         </div>

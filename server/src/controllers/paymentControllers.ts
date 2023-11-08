@@ -1,0 +1,108 @@
+import { RequestHandler } from "express";
+import Payments from "../models/Payments";
+import createHttpError from "http-errors";
+import Users from "../models/Users";
+import { addDays } from "date-fns";
+import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
+
+export const getPaymentProofs: RequestHandler = async (req, res, next) => {
+  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      res.clearCookie("admin_id");
+      throw createHttpError(
+        401,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const totalPayments = await Payments.countDocuments();
+    const totalPages = Math.ceil(totalPayments / limit);
+    const paymentProofs = await Payments.find({
+      $where: function () {
+        return (
+          this.paymentStatus === "success" || this.paymentStatus === "pending"
+        );
+      },
+    })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate("user")
+      .exec();
+    res.status(200).json({ paymentProofs, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendPaymentProof: RequestHandler = async (req, res, next) => {
+  const id = req.headers.cookie?.split("_&!d=")[1];
+  try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const paymentProof = await (
+      await Payments.create({ ...req.body, paymentStatus: "pending", user: id })
+    ).populate("user");
+    const updatedUserSubscription = await Users.findByIdAndUpdate(id, {
+      ...req.body,
+    });
+    res.status(201).json({ paymentProof, updatedUserSubscription });
+  } catch (error) {
+    next(error);
+  }
+};
+
+type TPaymentStatus = {
+  paymentStatus: "success" | "pending" | "reject";
+  _id: string;
+};
+
+export const updatePaymentProofStatus: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+  const { paymentStatus, _id }: TPaymentStatus = req.body;
+  try {
+    if (!admin_id) {
+      res.clearCookie("admin_id");
+      throw createHttpError(
+        401,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    if (paymentStatus === "success") {
+      const paymentSuccess = await Payments.findByIdAndUpdate(_id, {
+        paymentStatus: "success",
+      });
+      const updatedUserSubscription = await Users.findByIdAndUpdate(
+        paymentSuccess?.user,
+        {
+          subscriptionStatus: "active",
+          subscriptionExpiresAt: addDays(paymentSuccess?.updatedAt as Date, 30),
+        }
+      );
+      return res.status(200).json({ paymentSuccess, updatedUserSubscription });
+    }
+    if (paymentStatus === "reject") {
+      const paymentReject = await Payments.findByIdAndUpdate(_id, {
+        paymentStatus: "reject",
+      });
+      const updatedUserSubscription = await Users.findByIdAndUpdate(
+        paymentReject?.user,
+        {
+          subscriptionStatus: "reject",
+        }
+      );
+      return res.status(200).json({ paymentReject, updatedUserSubscription });
+    }
+  } catch (error) {
+    next(error);
+  }
+};

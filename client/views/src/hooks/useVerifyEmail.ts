@@ -26,8 +26,6 @@ function useVerifyEmail() {
         axiosPrivateRoute.patch("/api/users/current-user/update/", {
           ...data,
         });
-        await auth.currentUser?.reload();
-        await auth.updateCurrentUser(auth.currentUser);
       } catch (err) {
         const error = err as FirebaseError;
         const message = (
@@ -45,10 +43,10 @@ function useVerifyEmail() {
     },
     onSuccess: async () => {
       console.log("Success");
-      queryClient.invalidateQueries({ queryKey: ["profile", id] });
       toast({
         title: "Verification email has been sent",
-        description: "Click the verify button again after verifying your email",
+        description:
+          "Refresh this page then click the verify button again after verifying your email",
         className: "bg-[#FFF] text-[#222222]",
       });
     },
@@ -59,6 +57,11 @@ function useVerifyEmail() {
         description: (error.response as AxiosResponse).data.error,
         variant: "destructive",
       });
+    },
+    onSettled: async () => {
+      await auth.currentUser?.reload();
+      await auth.updateCurrentUser(auth.currentUser);
+      queryClient.invalidateQueries({ queryKey: ["profile", id] });
     },
   });
 }

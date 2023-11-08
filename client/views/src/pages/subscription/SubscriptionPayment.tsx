@@ -30,7 +30,7 @@ function SubscriptionPayment() {
       <Card className="w-2/4 border-0 shadow-none">
         <CardHeader className="text-center w-full">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-2xl font-semibold text-[#222222]">
+            <span className="text-2xl font-semibold">
               Send your payment to{" "}
             </span>
             <img
@@ -40,7 +40,7 @@ function SubscriptionPayment() {
               alt=""
             />
           </div>
-          <CardDescription className="text-zinc-600">
+          <CardDescription className="text-sm text-gray-600 font-semibold">
             You can send your payment through Express Send or through scanning
             our QR code via GCash.
           </CardDescription>

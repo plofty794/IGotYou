@@ -34,10 +34,15 @@ function AlertVerifyEmail({ User }: { User: User }) {
           <div className="flex flex-col justify-center gap-2">
             <span className="text-sm text-zinc-900">
               We hope this message finds you well. In order to enhance the{" "}
-              <span className="font-bold">security</span> and{" "}
-              <span className="font-bold">trustworthiness</span> of our
-              platform, we kindly request your assistance in verifying your
-              email address. This verification is necessary before you can
+              <span className="font-bold text-red-500 underline underline-offset-2">
+                security
+              </span>{" "}
+              and{" "}
+              <span className="font-bold text-red-500 underline underline-offset-2">
+                trustworthiness
+              </span>{" "}
+              of our platform, we kindly request your assistance in verifying
+              your email address. This verification is necessary before you can
               proceed to create a listing on our website.
             </span>
             <span className="text-sm text-zinc-900 ">

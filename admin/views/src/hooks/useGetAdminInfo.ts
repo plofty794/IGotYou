@@ -20,7 +20,7 @@ function useGetAdminInfo() {
             variant: "destructive",
           });
           localStorage.clear();
-          queryClient.removeQueries({ queryKey: ["admin"] });
+          queryClient.removeQueries();
         }
       }
     },

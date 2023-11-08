@@ -1,14 +1,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DatePicker from "./DatePicker";
+import useGetActiveUsers from "@/hooks/useGetActiveUsers";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
 
 function Overview() {
+  useGetActiveUsers();
+  const [activeUsers, setActiveUsers] = useState<unknown[] | undefined>(
+    undefined
+  );
+  const queryClient = useQueryClient();
+  const response = queryClient.getQueryData<InfiniteData<AxiosResponse>>([
+    "active-users",
+  ]);
+
+  useEffect(() => {
+    const _activeUsers = response?.pages.flatMap(
+      (page) => page.data.activeUsers
+    );
+    setActiveUsers(_activeUsers);
+  }, [response]);
+
   return (
-    <section className="py-4 px-8">
+    <section className="py-4 px-8 w-full">
       <div className="w-full flex items-center justify-between">
-        <h1 className="font-semibold text-3xl">Dashboard</h1>
+        <h1 className="font-bold text-3xl">Dashboard</h1>
         <DatePicker />
       </div>
-      <div className="my-4 w-full grid grid-cols-4 gap-4 max-lg:grid-cols-2">
+      <div className="my-4 w-full grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
         <Card>
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Total Revenue</CardTitle>
@@ -98,7 +118,9 @@ function Overview() {
             </svg>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
+            <div className="text-2xl font-bold">
+              {activeUsers?.length ? activeUsers.length : "None"}
+            </div>
             <p className="text-xs text-muted-foreground">
               +180.1% from last month
             </p>

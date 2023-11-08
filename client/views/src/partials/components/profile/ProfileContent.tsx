@@ -6,6 +6,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
   CheckCircledIcon,
@@ -34,7 +35,7 @@ type TProps = {
   profileData: {
     email: string;
     username: string;
-    hostStatus: string;
+    userStatus: string;
     address: string;
     funFact: string;
     school: string;
@@ -124,8 +125,8 @@ function ProfileContent({ profileData }: TProps) {
                   <Skeleton className="h-4 w-[100px]" />
                 )}
               </span>
-              <span className="text-zinc-500 text-sm font-semibold">
-                {profileData?.hostStatus === "host" ? "Host" : "Guest"}
+              <span className="text-gray-500 text-sm font-semibold">
+                {profileData?.userStatus === "host" ? "Host" : "Guest"}
               </span>
             </CardFooter>
           </Card>
@@ -148,7 +149,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#39c152] rounded-full"
                   />{" "}
-                  <span className="text-zinc-500 ml-2 text-xs">
+                  <span className="text-gray-600 ml-2 text-sm font-medium">
                     Email address (verified)
                   </span>
                 </div>
@@ -160,7 +161,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#e94242] rounded-full"
                   />{" "}
-                  <span className="text-zinc-500 ml-2 text-xs">
+                  <span className="text-gray-600 ml-2 text-sm">
                     Email address (not verified)
                   </span>
                 </div>
@@ -173,7 +174,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#39c152] rounded-full"
                   />{" "}
-                  <span className="text-zinc-500 ml-2 text-xs">
+                  <span className="text-gray-600 ml-2 text-sm">
                     Mobile phone (verified)
                   </span>
                 </div>
@@ -185,7 +186,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#e94242] rounded-full"
                   />{" "}
-                  <span className="text-zinc-500 ml-2 text-xs">
+                  <span className="text-gray-600  ml-2 text-sm">
                     Mobile phone (not verified)
                   </span>
                 </div>
@@ -202,7 +203,7 @@ function ProfileContent({ profileData }: TProps) {
                   ? "Personal info"
                   : "Verify your email to edit your personal info"}
               </p>
-              <p className="text-xs font-medium text-zinc-500">
+              <p className="text-sm font-medium text-gray-600">
                 Provide personal details and how we can reach you
               </p>
             </CardHeader>
@@ -233,14 +234,16 @@ function ProfileContent({ profileData }: TProps) {
         </div>
         <div className="w-max flex flex-col gap-4">
           <Card className="shadow-lg">
-            <CardHeader className="text-[#222222] text-4xl font-semibold">
-              <h2>Your profile</h2>
+            <CardHeader className="p-6">
+              <CardTitle className="text-gray-950 text-4xl font-semibold">
+                Your profile
+              </CardTitle>
             </CardHeader>
-            <div className="text-zinc-500 text-sm font-medium px-6 py-2">
-              <h3>
+            <div className="px-6 py-2">
+              <span className="text-gray-600 text-base font-semibold">
                 The information you share will be used across IGotYou to help
                 other guests and hosts get to know you.
-              </h3>
+              </span>
             </div>
             <CardFooter className="mt-2 text-[#3c3b3b]">
               <div className="w-full grid lg:grid-cols-2 md:grid-cols-1 gap-2 ">

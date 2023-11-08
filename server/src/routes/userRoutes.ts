@@ -11,7 +11,7 @@ import {
   logOutUser,
   updateUser,
   visitUserProfile,
-  userSubscription,
+  // userSubscription,
   checkUserEmail,
 } from "../controllers/usersControllers";
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
@@ -23,7 +23,6 @@ router.get("/users/profile/visit/:id", authToken, visitUserProfile);
 router.get("/users/current-user/profile", authToken, getCurrentUserProfile);
 router.post("/users/login", logInUser);
 router.post("/users/email-check", authToken, checkUserEmail);
-router.post("/users/subscription", authToken, userSubscription);
 router.post("/users/login/google", googleSignIn);
 router.post("/users/register", createUser);
 router.patch(

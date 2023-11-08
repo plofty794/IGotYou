@@ -10,9 +10,9 @@ type TPaymentProofPhoto = {
 };
 
 type TOutletContext = {
-  paymentProofPhoto: TPaymentProofPhoto[];
+  paymentProofPhoto: TPaymentProofPhoto;
   setPaymentProofPhoto: React.Dispatch<
-    React.SetStateAction<TPaymentProofPhoto[]>
+    React.SetStateAction<TPaymentProofPhoto>
   >;
 };
 
@@ -38,12 +38,10 @@ function ConfirmPayment() {
     },
     (_, res) => {
       if (res.event === "success") {
-        setPaymentProofPhoto([
-          {
-            public_id: res.info.public_id,
-            secure_url: res.info.secure_url,
-          },
-        ]);
+        setPaymentProofPhoto({
+          public_id: res.info.public_id,
+          secure_url: res.info.secure_url,
+        });
       }
     }
   );
@@ -60,26 +58,29 @@ function ConfirmPayment() {
             <h1 className="text-3xl font-semibold text-[#222222]">
               Confirm your payment
             </h1>
-            <p className="text-sm font-medium text-zinc-500">
+            <p className="text-sm font-semibold text-gray-600">
               Take a screenshot or download the photo of the proof of payment
               from GCash containing the amount and the Ref no. and upload it
-              here.
+              here.{" "}
+              <span className="block font-bold text-amber-600">
+                Note: Make sure you include the Ref no. on the screenshot
+              </span>
             </p>
           </div>
           <div className="overflow-hidden w-3/4 rounded-lg border-dashed border border-zinc-600">
-            {paymentProofPhoto[0].secure_url ? (
+            {paymentProofPhoto.secure_url ? (
               <div className="relative bg-[#222222d6]">
                 <CrossCircledIcon
                   onClick={() => {
                     mutate({
-                      publicId: paymentProofPhoto[0].public_id,
+                      publicId: paymentProofPhoto.public_id,
                     });
-                    setPaymentProofPhoto([{ public_id: "", secure_url: "" }]);
+                    setPaymentProofPhoto({ public_id: "", secure_url: "" });
                   }}
                   className="absolute right-0 w-[25px] h-[25px] text-zinc-300 hover:text-zinc-100 m-1 cursor-pointer"
                 />
                 <img
-                  src={paymentProofPhoto[0].secure_url}
+                  src={paymentProofPhoto.secure_url}
                   className="w-full h-[150px] object-contain max-h-full max-w-full block"
                   alt="proof_of_payment"
                   loading="lazy"
@@ -87,7 +88,7 @@ function ConfirmPayment() {
               </div>
             ) : (
               <div className="p-12 flex flex-col items-center justify-center gap-2">
-                <span className="text-center text-xs font-medium text-[#222222]">
+                <span className="text-center text-sm font-medium text-gray-600">
                   Your photo will be shown here
                 </span>
                 <svg
@@ -108,10 +109,10 @@ function ConfirmPayment() {
             )}
           </div>
           <Button
-            disabled={!!paymentProofPhoto[0].public_id}
+            disabled={!!paymentProofPhoto.public_id}
             type="button"
             onClick={() => cloudinaryWidget.open()}
-            className="bg-[#222222] text-white rounded-full font-medium flex gap-2"
+            className="bg-gray-950 text-white rounded-full font-medium flex gap-2"
             size={"lg"}
           >
             Upload <UploadIcon />

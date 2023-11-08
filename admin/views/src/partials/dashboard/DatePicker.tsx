@@ -41,7 +41,9 @@ function DatePicker() {
                 <span className="font-normal text-gray-500">Pick a date</span>
               )}
             </Button>
-            <Button className="bg-gray-950">Set date</Button>
+            <Button disabled={!date?.from && !date?.to} className="bg-gray-950">
+              Set date
+            </Button>
           </form>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">

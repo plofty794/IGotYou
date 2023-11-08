@@ -5,13 +5,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 
-function useSubscription() {
+type TData = {
+  subscriptionStatus: "pending";
+  paymentProofPhoto: string;
+};
+
+function usePaymentProof() {
   const { toast } = useToast();
   const { id } = useParams();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { subscriptionStatus: string }) => {
-      return await axiosPrivateRoute.post("/api/users/subscription", {
+    mutationFn: async (data: TData) => {
+      return await axiosPrivateRoute.post("/api/payments/send-payment-proof", {
         ...data,
       });
     },
@@ -41,4 +46,4 @@ function useSubscription() {
   });
 }
 
-export default useSubscription;
+export default usePaymentProof;

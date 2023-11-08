@@ -1,10 +1,12 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
+import { UserStateContextProvider } from "@/context/UserStateContext";
 import { auth } from "@/firebase config/config";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useContext } from "react";
 
 type TRegister = {
   email: string;
@@ -12,6 +14,7 @@ type TRegister = {
 };
 
 export function useRegister() {
+  const { dispatch } = useContext(UserStateContextProvider);
   const { toast } = useToast();
   return useMutation({
     mutationFn: async (data: TRegister) => {
@@ -31,7 +34,7 @@ export function useRegister() {
           photoUrl: user.photoURL,
         });
         const token = await res.user.getIdToken();
-        localStorage.setItem("token", token);
+        dispatch({ type: "USER_LOGIN", payload: token });
         toast({
           title: "Welcome to IGotYou",
           description: "We're so excited to have you on board.",

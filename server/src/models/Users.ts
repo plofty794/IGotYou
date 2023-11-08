@@ -51,7 +51,7 @@ const usersSchema = new Schema(
       type: String,
       required: true,
     },
-    hostStatus: {
+    userStatus: {
       type: String,
       enum: ["host", "guest"],
       default: "guest",
@@ -69,7 +69,7 @@ const usersSchema = new Schema(
     },
     subscriptionStatus: {
       type: String,
-      enum: ["pending", "active", "expired"],
+      enum: ["pending", "active", "expired", "reject"],
     },
     subscriptionExpiresAt: {
       type: Date,

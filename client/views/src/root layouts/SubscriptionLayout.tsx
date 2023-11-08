@@ -1,35 +1,29 @@
 import useMultistepForm from "@/hooks/useMultistepForm";
-import { FormEvent, Suspense, lazy, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckIcon } from "@radix-ui/react-icons";
-import useSubscription from "@/hooks/useSubscription";
+import usePaymentProof from "@/hooks/useSendPaymentProof";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { dotPulse } from "ldrs";
-
 dotPulse.register();
 
-const Pending = lazy(() => import("@/pages/subscription/Pending"));
-
 type TPaymentProofPhoto = {
-  public_id?: string;
-  secure_url?: string;
+  public_id: string;
+  secure_url: string;
 };
 
 function SubscriptionLayout() {
   const queryClient = useQueryClient();
-  const { mutate, status } = useSubscription();
+  const { mutate, status } = usePaymentProof();
   const { id } = useParams();
   const data = queryClient.getQueryData<AxiosResponse>(["profile", id]);
-  const [paymentProofPhoto, setPaymentProofPhoto] = useState<
-    TPaymentProofPhoto[]
-  >([
-    {
+  const [paymentProofPhoto, setPaymentProofPhoto] =
+    useState<TPaymentProofPhoto>({
       public_id: "",
       secure_url: "",
-    },
-  ]);
+    });
   const {
     step,
     isFirstPage,
@@ -45,7 +39,7 @@ function SubscriptionLayout() {
     "payment-success",
   ]);
 
-  console.log(data?.data.user.subscriptionStatus);
+  console.log(data?.data.user);
 
   useEffect(() => {
     document.title = "IGotYou - Subscription";
@@ -53,131 +47,127 @@ function SubscriptionLayout() {
 
   function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    mutate({ subscriptionStatus: "pending" });
+
+    mutate({
+      subscriptionStatus: "pending",
+      paymentProofPhoto: paymentProofPhoto.secure_url,
+    });
   }
 
   return (
     <>
       {status === "success" && <Navigate to={`/users/show/${id}`} replace />}
       {<Navigate to={`/subscription/${id}/${step}`} replace />}
-      {data?.data.user.subscriptionStatus === "pending" ? (
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <Pending user={data.data.user} />
-        </Suspense>
-      ) : (
-        <section className="relative min-h-screen">
-          <form
-            className="absolute bottom-0 w-full"
-            onSubmit={handleFormSubmit}
-          >
-            {<Outlet context={{ paymentProofPhoto, setPaymentProofPhoto }} />}
-            <div className="border-t-2 flex justify-between gap-4 p-8">
-              {isFirstPage && (
-                <>
-                  {" "}
-                  <Link to={"/"} replace>
-                    <Button
-                      type="button"
-                      className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
-                    >
-                      Go back
-                    </Button>
-                  </Link>
+
+      <section className="relative min-h-screen">
+        <form className="absolute bottom-0 w-full" onSubmit={handleFormSubmit}>
+          {<Outlet context={{ paymentProofPhoto, setPaymentProofPhoto }} />}
+          <div className="border-t-2 flex justify-between gap-4 p-8">
+            {isFirstPage && (
+              <>
+                {" "}
+                <Link to={"/"} replace>
                   <Button
                     type="button"
-                    onClick={() => next()}
                     className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
                   >
-                    {isFetching ? (
-                      // Default values shown
-                      <l-dot-pulse
-                        size="43"
-                        speed="1.3"
-                        color="black"
-                      ></l-dot-pulse>
-                    ) : (
-                      "Get started"
-                    )}
+                    Go back
                   </Button>
-                </>
-              )}{" "}
-              {!isFirstPage && currentStepIndex != 2 && !isLastPage && (
-                <>
-                  {" "}
-                  <Button
-                    variant={"link"}
-                    type="button"
-                    onClick={() => previous()}
-                    className="p-6 font-medium text-sm w-max"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => next()}
-                    className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
-                  >
-                    {isFetching ? (
-                      // Default values shown
-                      <l-dot-pulse
-                        size="43"
-                        speed="1.3"
-                        color="black"
-                      ></l-dot-pulse>
-                    ) : (
-                      "Proceed"
-                    )}
-                  </Button>
-                </>
-              )}
-              {currentStepIndex === 2 && (
-                <>
-                  <Button
-                    variant={"link"}
-                    type="button"
-                    onClick={() => previous()}
-                    className="p-6 font-medium text-sm w-max"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    disabled={!paymentProofPhoto[0].public_id}
-                    type="button"
-                    onClick={() => next()}
-                    className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
-                  >
-                    {isFetching ? (
-                      // Default values shown
-                      <l-dot-pulse
-                        size="43"
-                        speed="1.3"
-                        color="black"
-                      ></l-dot-pulse>
-                    ) : (
-                      <CheckIcon className="w-[25px] h-[25px]" />
-                    )}
-                  </Button>
-                </>
-              )}
-              {isLastPage && (
-                <>
-                  <Button
-                    variant={"link"}
-                    type="button"
-                    onClick={() => previous()}
-                    className="p-6 font-medium text-sm w-max"
-                  >
-                    Cancel
-                  </Button>
-                  <Button className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white">
-                    Done
-                  </Button>
-                </>
-              )}
-            </div>
-          </form>
-        </section>
-      )}
+                </Link>
+                <Button
+                  type="button"
+                  onClick={() => next()}
+                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                >
+                  {isFetching ? (
+                    // Default values shown
+                    <l-dot-pulse
+                      size="43"
+                      speed="1.3"
+                      color="white"
+                    ></l-dot-pulse>
+                  ) : (
+                    "Get started"
+                  )}
+                </Button>
+              </>
+            )}{" "}
+            {!isFirstPage && currentStepIndex != 2 && !isLastPage && (
+              <>
+                {" "}
+                <Button
+                  variant={"link"}
+                  type="button"
+                  onClick={() => previous()}
+                  className="p-6 font-medium text-sm w-max"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => next()}
+                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                >
+                  {isFetching ? (
+                    // Default values shown
+                    <l-dot-pulse
+                      size="43"
+                      speed="1.3"
+                      color="white"
+                    ></l-dot-pulse>
+                  ) : (
+                    "Proceed"
+                  )}
+                </Button>
+              </>
+            )}
+            {currentStepIndex === 2 && (
+              <>
+                <Button
+                  variant={"link"}
+                  type="button"
+                  onClick={() => previous()}
+                  className="p-6 font-medium text-sm w-max"
+                >
+                  Back
+                </Button>
+                <Button
+                  disabled={!paymentProofPhoto.public_id}
+                  type="button"
+                  onClick={() => next()}
+                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                >
+                  {isFetching ? (
+                    // Default values shown
+                    <l-dot-pulse
+                      size="43"
+                      speed="1.3"
+                      color="white"
+                    ></l-dot-pulse>
+                  ) : (
+                    <CheckIcon className="w-[25px] h-[25px]" />
+                  )}
+                </Button>
+              </>
+            )}
+            {isLastPage && (
+              <>
+                <Button
+                  variant={"link"}
+                  type="button"
+                  onClick={() => previous()}
+                  className="p-6 font-medium text-sm w-max"
+                >
+                  Cancel
+                </Button>
+                <Button className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white">
+                  Done
+                </Button>
+              </>
+            )}
+          </div>
+        </form>
+      </section>
     </>
   );
 }

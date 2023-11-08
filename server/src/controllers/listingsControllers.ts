@@ -4,6 +4,7 @@ import { RequestHandler } from "express";
 import Listings from "../models/Listings";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
+import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 
 cloudinary.v2.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -38,6 +39,12 @@ export const getListings: RequestHandler = async (req, res, next) => {
 export const getUserListings: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
     const listings = await Listings.find({ host: id }).populate({
       path: "host",
       select: "email",
@@ -49,21 +56,27 @@ export const getUserListings: RequestHandler = async (req, res, next) => {
 };
 
 export const addListing: RequestHandler = async (req, res, next) => {
-  const { serviceType, serviceDescription, listingPhotos }: TListing = req.body;
   const id = req.headers.cookie?.split("_&!d=")[1];
   try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
     const newListing = await (
       await Listings.create({ ...req.body, host: id })
     ).populate({ path: "host", select: "email" });
+
     if (!newListing) {
       throw createHttpError(400, "Error creating a listing");
     }
     const user = await Users.findById(id);
-    if (!user?.hostStatus && user != null) {
+    if (!user?.userStatus && user != null) {
       await Users.findByIdAndUpdate(
         id,
         {
-          hostStatus: true,
+          hostStatus: "host",
           $push: {
             listings: newListing._id,
           },

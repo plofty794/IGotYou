@@ -7,6 +7,7 @@ import { userRoutes } from "./routes/userRoutes";
 import { listingRoutes } from "./routes/listingRoutes";
 import { assetRoutes } from "./routes/assetRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
+import { paymentRoutes } from "./routes/paymentRoutes";
 // import ipinfoMiddleware, { defaultIPSelector } from "ipinfo-express";
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api", userRoutes);
 app.use("/api", listingRoutes);
 app.use("/api", assetRoutes);
 app.use("/api", adminRoutes);
+app.use("/api", paymentRoutes);
 app.use(errorHandler);
 
 mongoose.connect(env.MONGO_COMPASS_URI).then(() => {

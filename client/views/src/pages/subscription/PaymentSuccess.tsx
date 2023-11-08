@@ -34,15 +34,17 @@ function PaymentSuccessful() {
             Payment Successful!
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-12 pb-8 text-center text-sm font-bold text-[#535252]">
-          Thank you for your subscription payment. We are processing your
-          payment and it will be activated within 5-10 minutes.
+        <CardContent className="px-12 pb-8 ">
+          <span className="text-center text-sm font-bold text-gray-600">
+            Thank you for your subscription payment. We are processing your
+            payment and it will be activated within 5-10 minutes.
+          </span>
         </CardContent>
         <Alert className="w-max text-center p-4">
           <AlertTitle>
             <InfoCircledIcon className="w-[25px] h-[25px] mx-auto" />
           </AlertTitle>
-          <AlertDescription className="text-xs font-semibold text-zinc-600">
+          <AlertDescription className="text-xs font-semibold text-gray-600">
             In the meantime, you can continue browsing our website or using our
             app.
             <br /> Once your subscription is activated, you will receive a

@@ -21,13 +21,13 @@ import { useParams } from "react-router-dom";
 
 type TData = {
   user: {
-    email: string;
-    username: string;
-    hostStatus: string;
+    email?: string;
+    username?: string;
+    userStatus?: string;
     work?: string;
     address?: string;
     funFact?: string;
-    school: string;
+    school?: string;
   };
 };
 function Address() {
@@ -59,7 +59,7 @@ function Address() {
         <span className="mr-2">
           <HomeIcon color="black" width={25} height={25} />
         </span>
-        <p className="text-zinc-500">
+        <p className="text-gray-600">
           {data?.data?.user.address
             ? `Where I live: ${data?.data?.user.address}`
             : "Where I live"}
