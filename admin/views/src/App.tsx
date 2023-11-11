@@ -12,6 +12,7 @@ import { useContext } from "react";
 import { UserStateContextProvider } from "./context/UserStateContext";
 import Users from "./pages/Users";
 import Payments from "./pages/Payments";
+import VerifiedPayments from "./pages/VerifiedPayments";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
@@ -48,6 +49,19 @@ function App() {
             element={
               state.state ?? isAdmin ? (
                 <Payments />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+        </Route>
+
+        <Route>
+          <Route
+            path="/verified-payments"
+            element={
+              state.state ?? isAdmin ? (
+                <VerifiedPayments />
               ) : (
                 <Navigate to={"/login"} replace />
               )

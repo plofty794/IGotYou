@@ -52,9 +52,9 @@ function Listings({ listings, username }: TListingProps) {
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="text-xs w-[200px] h-[50px]">
+            <div className="text-sm w-full h-full">
               <p className="font-semibold">{listing.serviceType}</p>
-              <p className="font-medium text-zinc-500">
+              <p className="font-medium text-gray-600">
                 {listing.serviceDescription}
               </p>
             </div>

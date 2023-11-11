@@ -26,9 +26,8 @@ function useGetListings() {
           });
         }
         if (error.response?.status === 401) {
-          const token = await auth.currentUser?.getIdToken();
+          await auth.signOut();
           localStorage.clear();
-          token && localStorage.setItem("token", token);
         }
       }
     },

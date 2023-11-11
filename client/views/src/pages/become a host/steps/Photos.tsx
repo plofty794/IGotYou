@@ -24,7 +24,7 @@ function Photos() {
             <h1 className="text-3xl font-semibold">
               Add some photos of your service
             </h1>
-            <p className="text-zinc-500 font-medium text-sm">
+            <p className="text-gray-600 font-semibold text-sm">
               You'll need 5 images to start. You can add more and make changes
               later.
             </p>

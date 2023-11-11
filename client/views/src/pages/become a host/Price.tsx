@@ -3,7 +3,6 @@ import { Dispatch, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import CurrencyInput from "react-currency-input-field";
 import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
-import { useToast } from "@/components/ui/use-toast";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 
 type TServiceProps = {
@@ -31,7 +30,7 @@ function Price() {
   const { setService, service } = useOutletContext<TSetServiceType>();
   const [isFadingIn, setIsFadingIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const { toast } = useToast();
+
   useEffect(() => {
     document.title = "IGotYou - Price";
     setTimeout(() => setIsFadingIn(false), 400);
@@ -40,12 +39,12 @@ function Price() {
   useEffect(() => {
     if (service.price > PRICE_CAP || service.price < BASE_PRICE) {
       setErrorMessage(
-        `Please enter a base price between ₱${BASE_PRICE} and ₱${PRICE_CAP}.`
+        `Please enter a price between ₱${BASE_PRICE} and ₱${PRICE_CAP}.`
       );
     } else {
       setErrorMessage("");
     }
-  }, [service.price, toast]);
+  }, [service.price]);
 
   return (
     <>
@@ -56,14 +55,14 @@ function Price() {
       >
         <section className="my-8 h-[400px] flex flex-wrap flex-col items-center justify-center gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="text-4xl font-semibold">Now, set your price</h1>
-            <span className="text-base font-medium text-zinc-500">
+            <h1 className="text-6xl font-bold">Now, set your price.</h1>
+            <span className="text-lg font-medium text-gray-600">
               You can change it anytime.
             </span>
           </div>
           <CurrencyInput
             autoFocus
-            className="text-[#222222] w-[400px] p-2 rounded border-none focus:outline-none text-6xl font-semibold"
+            className="w-1/3 rounded border-none focus:outline-none text-6xl font-semibold"
             prefix="₱"
             allowNegativeValue={false}
             decimalsLimit={2}
@@ -75,7 +74,11 @@ function Price() {
               }))
             }
           />
-          {errorMessage && <ErrorMessage message={errorMessage} />}
+          {errorMessage && (
+            <div className="w-max mx-auto">
+              <ErrorMessage message={errorMessage} />
+            </div>
+          )}
         </section>
       </ScrollArea>
     </>

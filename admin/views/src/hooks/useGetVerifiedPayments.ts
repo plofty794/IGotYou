@@ -1,11 +1,11 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-function useGetPayments() {
+function useGetVerifiedPayments() {
   return useInfiniteQuery({
-    queryKey: ["payments"],
+    queryKey: ["verified-payments"],
     queryFn: async ({ pageParam }) => {
-      return await axiosPrivateRoute.get(`/api/payments/${pageParam}`);
+      return await axiosPrivateRoute.get(`/api/payments/verified/${pageParam}`);
     },
     getNextPageParam: (_, page) => page.length + 1,
     getPreviousPageParam: (_, page) => page.length - 1,
@@ -13,4 +13,4 @@ function useGetPayments() {
   });
 }
 
-export default useGetPayments;
+export default useGetVerifiedPayments;

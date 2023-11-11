@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import Users from "../models/Users";
 
 export const getActiveUsers: RequestHandler = async (req, res, next) => {
-  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+  const admin_id = req.cookies.admin_id;
   const limit = 10;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
@@ -17,7 +17,7 @@ export const getActiveUsers: RequestHandler = async (req, res, next) => {
     const activeUsers = await Users.find({
       $where: function () {
         return (
-          this.subscriptionStatus === "active" && this.hostStatus == "host"
+          this.subscriptionStatus === "active" && this.userStatus == "host"
         );
       },
     })
@@ -36,7 +36,7 @@ export const getActiveUsers: RequestHandler = async (req, res, next) => {
 };
 
 export const getUsers: RequestHandler = async (req, res, next) => {
-  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+  const admin_id = req.cookies.admin_id;
   const limit = 10;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
@@ -76,7 +76,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
 };
 
 export const getAdminInfo: RequestHandler = async (req, res, next) => {
-  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+  const admin_id = req.cookies.admin_id;
   try {
     if (!admin_id) {
       throw createHttpError(401, "This action requires an identifier");

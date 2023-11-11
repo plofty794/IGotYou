@@ -39,6 +39,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import { UserStateContextProvider } from "./context/UserStateContext";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase config/config";
+import ListingDate from "./pages/become a host/ListingDate";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -205,6 +206,16 @@ function App() {
             element={
               User ?? token ?? identifier ? (
                 <Price />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="listing-date"
+            element={
+              User ?? token ?? identifier ? (
+                <ListingDate />
               ) : (
                 <Navigate to={"/login"} replace />
               )

@@ -1,5 +1,5 @@
 import useGetUsers from "@/hooks/useGetUsers";
-import UsersTable from "@/partials/users/UsersTable";
+import UsersTable from "@/partials/UsersTable";
 import { ColumnDef } from "@tanstack/react-table";
 
 type User = {

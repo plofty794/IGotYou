@@ -5,21 +5,19 @@ import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 
 export const getHosts: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
-      if (!id) {
-        clearCookieAndThrowError(
-          res,
-          "A _id cookie is required to access this resource."
-        );
-      }
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
     }
     const hosts = await Users.find({
       $where: function () {
         return (
           this.listings.length > 0 &&
-          this.hostStatus === "host" &&
+          this.userStatus === "host" &&
           this.subscriptionStatus === "active"
         );
       },
@@ -44,7 +42,7 @@ export const getHosts: RequestHandler = async (req, res, next) => {
 };
 
 export const getUserPhone: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
       if (!id) {
@@ -65,7 +63,7 @@ export const getUserPhone: RequestHandler = async (req, res, next) => {
 };
 
 export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
       res.clearCookie("_&!d");
@@ -98,6 +96,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         school: user.school,
         address: user.address,
         subscriptionStatus: user.subscriptionStatus,
+        subscriptionExpiresAt: user.subscriptionExpiresAt,
       },
     });
   } catch (error) {
@@ -139,7 +138,7 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
 };
 
 export const updateUser: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
       res.clearCookie("_&!d");

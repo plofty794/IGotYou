@@ -1,5 +1,3 @@
-import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +19,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "./ErrorMessage";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { dotPulse } from "ldrs";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Lottie from "lottie-react";
+import wait from "../../assets/wait.json";
 
 dotPulse.register();
 
@@ -42,19 +43,22 @@ function PromptUsername() {
   }
 
   return (
-    <section className="pt-52 flex flex-col items-center justify-center gap-4">
-      <Alert className="w-max font-medium shadow border">
-        <InfoCircledIcon className="mt-2 h-5 w-5" />
-        <div className="ml-2 p-2 pb-0">
-          <AlertTitle>Oops!</AlertTitle>
-          <AlertDescription className="text-xs text-zinc-500">
-            We've noticed you don't have a username.
-          </AlertDescription>
-        </div>
-      </Alert>
+    <section className="mt-12 flex flex-col items-center justify-center gap-4">
+      <Card className="flex flex-col items-center">
+        <CardHeader>
+          <Lottie animationData={wait} className="w-40 h-40" />
+        </CardHeader>
+        <CardContent>
+          <h1 className="text-base font-semibold text-gray-500">
+            Oops! We noticed you don't have a username yet.
+          </h1>
+        </CardContent>
+      </Card>
       <Dialog>
-        <DialogTrigger className="text-xs py-2 px-3 font-medium rounded-md bg-[#222222] text-white">
-          Click here to proceed
+        <DialogTrigger asChild>
+          <Button className="text-xs font-semibold bg-gray-950 text-white">
+            Click here to proceed
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[475px]">
           <DialogHeader>

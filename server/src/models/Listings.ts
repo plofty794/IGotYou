@@ -44,6 +44,14 @@ const listingSchema = new Schema(
       type: Number,
       required: true,
     },
+    availableAt: {
+      type: Date,
+      required: true,
+    },
+    endsAt: {
+      type: Date,
+      required: true,
+    },
   },
   { timestamps: true }
 );

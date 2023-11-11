@@ -34,7 +34,6 @@ type TSetServiceProps = {
 
 function PhotoUploader() {
   const { setService, service } = useOutletContext<TSetServiceProps>();
-
   const cloudinaryWidget = window.cloudinary.createUploadWidget(
     {
       cloudName: "dop5kqpod",
@@ -79,7 +78,7 @@ function PhotoUploader() {
         {service.listingPhotos.length > 0 ? (
           <>
             <Table>
-              <TableHeader className="bg-zinc-200">
+              <TableHeader className="bg-gray-200">
                 <TableRow className="uppercase">
                   <TableHead className="font-semibold">Preview</TableHead>
                   <TableHead className="font-semibold w-[220px]">
@@ -125,7 +124,7 @@ function PhotoUploader() {
               onClick={() => cloudinaryWidget.open()}
             >
               <LiaCloudUploadAltSolid />
-              <span className="text-xs font-medium text-zinc-600 w-[195px]">
+              <span className="text-sm font-semibold text-gray-600 w-[195px]">
                 Click to upload images
               </span>
             </Button>

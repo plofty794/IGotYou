@@ -16,6 +16,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Pending from "@/pages/subscription/Pending";
+import Loader from "@/partials/loaders/Loader";
+import { DateRange } from "react-day-picker";
 
 dotPulse.register();
 
@@ -33,6 +35,7 @@ type TListing = {
   serviceDescription?: string;
   listingPhotos: TFileType[];
   price: number;
+  date: DateRange;
 };
 
 function BecomeAHostLayout() {
@@ -43,6 +46,10 @@ function BecomeAHostLayout() {
     serviceDescription: "",
     listingPhotos: [],
     price: 0,
+    date: {
+      from: undefined,
+      to: undefined,
+    },
   });
 
   const User = auth.currentUser;
@@ -62,6 +69,7 @@ function BecomeAHostLayout() {
     "make-it-standout",
     "photos",
     "price",
+    "listing-date",
     "success",
   ]);
 
@@ -71,9 +79,13 @@ function BecomeAHostLayout() {
     }
   }, [next, status]);
 
+  console.log(service);
+
   return (
     <>
-      {userProfile.data?.data.user.userStatus === "host" ? (
+      {userProfile.isPending ? (
+        <Loader />
+      ) : userProfile.data?.data.user.userStatus === "host" ? (
         <main className="relative overflow-hidden h-screen">
           {
             <Navigate
@@ -112,14 +124,14 @@ function BecomeAHostLayout() {
                   type="button"
                   onClick={next}
                   size={"lg"}
-                  className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                  className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                 >
                   {isFetching ? (
                     // Default values shown
                     <l-dot-pulse
                       size="43"
                       speed="1.3"
-                      color="black"
+                      color="white"
                     ></l-dot-pulse>
                   ) : (
                     "Get started"
@@ -130,6 +142,7 @@ function BecomeAHostLayout() {
                 currentStepIndex !== 3 &&
                 currentStepIndex !== 5 &&
                 currentStepIndex !== 6 &&
+                currentStepIndex !== 7 &&
                 !isLastPage && (
                   <>
                     <Button
@@ -145,14 +158,14 @@ function BecomeAHostLayout() {
                       type="button"
                       onClick={next}
                       size={"lg"}
-                      className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                      className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                     >
                       {isFetching ? (
                         // Default values shown
                         <l-dot-pulse
                           size="43"
                           speed="1.3"
-                          color="black"
+                          color="white"
                         ></l-dot-pulse>
                       ) : (
                         "Next"
@@ -176,13 +189,13 @@ function BecomeAHostLayout() {
                     type="button"
                     onClick={next}
                     size={"lg"}
-                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                   >
                     {isFetching ? ( // Default values shown
                       <l-dot-pulse
                         size="43"
                         speed="1.3"
-                        color="black"
+                        color="white"
                       ></l-dot-pulse>
                     ) : (
                       "Next"
@@ -207,13 +220,13 @@ function BecomeAHostLayout() {
                     onClick={next}
                     disabled={service.listingPhotos.length < 5}
                     size={"lg"}
-                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                   >
                     {isFetching ? ( // Default values shown
                       <l-dot-pulse
                         size="43"
                         speed="1.3"
-                        color="black"
+                        color="white"
                       ></l-dot-pulse>
                     ) : (
                       "Next"
@@ -234,17 +247,49 @@ function BecomeAHostLayout() {
                     Back
                   </Button>
                   <Button
+                    type="button"
+                    onClick={next}
                     disabled={
                       service.price < BASE_PRICE || service.price > PRICE_CAP
                     }
                     size={"lg"}
-                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
+                  >
+                    {isFetching ? ( // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="white"
+                      ></l-dot-pulse>
+                    ) : (
+                      "Next"
+                    )}
+                  </Button>
+                </>
+              )}
+              {currentStepIndex === 7 && (
+                <>
+                  <Button
+                    type="button"
+                    onClick={previous}
+                    size={"lg"}
+                    variant={"link"}
+                    className="text-sm font-medium p-6"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    disabled={
+                      service.price < BASE_PRICE || service.price > PRICE_CAP
+                    }
+                    size={"lg"}
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                   >
                     {isPending ? ( // Default values shown
                       <l-dot-pulse
                         size="43"
                         speed="1.3"
-                        color="black"
+                        color="white"
                       ></l-dot-pulse>
                     ) : (
                       "Finish"
@@ -257,14 +302,14 @@ function BecomeAHostLayout() {
                   <Button
                     type="button"
                     size={"lg"}
-                    className="bg-[#222222] rounded-full text-lg font-semibold p-6"
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                   >
                     {isPending ? (
                       // Default values shown
                       <l-dot-pulse
                         size="43"
                         speed="1.3"
-                        color="black"
+                        color="white"
                       ></l-dot-pulse>
                     ) : (
                       "Check your listing"

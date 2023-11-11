@@ -8,6 +8,7 @@ import { listingRoutes } from "./routes/listingRoutes";
 import { assetRoutes } from "./routes/assetRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { paymentRoutes } from "./routes/paymentRoutes";
+import cookieParser from "cookie-parser";
 // import ipinfoMiddleware, { defaultIPSelector } from "ipinfo-express";
 const app = express();
 
@@ -19,6 +20,7 @@ const app = express();
 //     timeout: 5000,
 //   })
 // );
+app.use(cookieParser());
 app.use(cors({ origin: [env.CLIENT_URL, env.ADMIN_URL], credentials: true }));
 app.use(express.json({ limit: "25mb" }));
 app.use(

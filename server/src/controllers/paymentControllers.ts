@@ -5,8 +5,8 @@ import Users from "../models/Users";
 import { addDays } from "date-fns";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 
-export const getPaymentProofs: RequestHandler = async (req, res, next) => {
-  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+export const getVerifiedPayments: RequestHandler = async (req, res, next) => {
+  const admin_id = req.cookies.admin_id;
   const limit = 10;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
@@ -19,25 +19,56 @@ export const getPaymentProofs: RequestHandler = async (req, res, next) => {
     }
     const totalPayments = await Payments.countDocuments();
     const totalPages = Math.ceil(totalPayments / limit);
-    const paymentProofs = await Payments.find({
-      $where: function () {
-        return (
-          this.paymentStatus === "success" || this.paymentStatus === "pending"
-        );
-      },
+    const verifiedPayments = await Payments.find({
+      paymentStatus: "success",
     })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate("user")
       .exec();
-    res.status(200).json({ paymentProofs, totalPages });
+
+    if (!verifiedPayments.length) {
+      return res.status(200).json({ verifiedPayments: null, totalPages: 0 });
+    }
+    res.status(200).json({ verifiedPayments, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPendingPayments: RequestHandler = async (req, res, next) => {
+  const admin_id = req.cookies.admin_id;
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      res.clearCookie("admin_id");
+      throw createHttpError(
+        401,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const totalPayments = await Payments.countDocuments();
+    const totalPages = Math.ceil(totalPayments / limit);
+    const pendingPayments = await Payments.find({
+      paymentStatus: "pending",
+    })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate("user")
+      .exec();
+
+    if (!pendingPayments.length) {
+      return res.status(200).json({ pendingPayments: null, totalPages: 0 });
+    }
+    res.status(200).json({ pendingPayments, totalPages });
   } catch (error) {
     next(error);
   }
 };
 
 export const sendPaymentProof: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
       clearCookieAndThrowError(
@@ -67,7 +98,7 @@ export const updatePaymentProofStatus: RequestHandler = async (
   res,
   next
 ) => {
-  const admin_id = req.headers.cookie?.split("admin_id=")[1]?.split(";")[0];
+  const admin_id = req.cookies.admin_id;
   const { paymentStatus, _id }: TPaymentStatus = req.body;
   try {
     if (!admin_id) {
@@ -79,13 +110,14 @@ export const updatePaymentProofStatus: RequestHandler = async (
     }
     if (paymentStatus === "success") {
       const paymentSuccess = await Payments.findByIdAndUpdate(_id, {
-        paymentStatus: "success",
+        ...req.body,
       });
       const updatedUserSubscription = await Users.findByIdAndUpdate(
         paymentSuccess?.user,
         {
           subscriptionStatus: "active",
-          subscriptionExpiresAt: addDays(paymentSuccess?.updatedAt as Date, 30),
+          subscriptionExpiresAt: addDays(Date.now(), 30),
+          userStatus: "host",
         }
       );
       return res.status(200).json({ paymentSuccess, updatedUserSubscription });

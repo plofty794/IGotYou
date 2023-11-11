@@ -56,7 +56,7 @@ export const getUserListings: RequestHandler = async (req, res, next) => {
 };
 
 export const addListing: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
       clearCookieAndThrowError(
@@ -64,9 +64,17 @@ export const addListing: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
-    const newListing = await (
-      await Listings.create({ ...req.body, host: id })
-    ).populate({ path: "host", select: "email" });
+    console.log(req.body);
+    // const host = await Users.findById(id)
+    // host?.subscriptionExpiresAt
+    const newListing = await Listings.create({
+      ...req.body,
+      availableAt: new Date(req.body.date.from).toISOString(),
+      endsAt: new Date(req.body.date.to).toISOString(),
+      host: id,
+    });
+
+    await newListing.populate({ path: "host", select: "email" });
 
     if (!newListing) {
       throw createHttpError(400, "Error creating a listing");
