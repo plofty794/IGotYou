@@ -19,13 +19,6 @@ const listingSchema = new Schema(
   {
     serviceType: {
       type: String,
-      enum: [
-        "Events and Entertainment",
-        "Audio and Sound Services",
-        "Photography and Videography",
-        "Content and Marketing",
-      ],
-      default: "Events and Entertainment",
       required: true,
     },
     serviceDescription: {

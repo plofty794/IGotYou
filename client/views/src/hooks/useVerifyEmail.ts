@@ -1,10 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
 import { sendEmailVerification } from "firebase/auth";
 import { auth } from "@/firebase config/config";
 import { FirebaseError } from "firebase/app";
-import { useParams } from "react-router-dom";
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 
 type TUserUpdates = {
@@ -16,9 +15,6 @@ type TUserUpdates = {
 };
 
 function useVerifyEmail() {
-  const { id } = useParams();
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
       try {
@@ -58,10 +54,9 @@ function useVerifyEmail() {
         variant: "destructive",
       });
     },
-    onSettled: async () => {
+    onMutate: async () => {
       await auth.currentUser?.reload();
       await auth.updateCurrentUser(auth.currentUser);
-      queryClient.invalidateQueries({ queryKey: ["profile", id] });
     },
   });
 }

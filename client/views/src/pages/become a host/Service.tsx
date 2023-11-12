@@ -1,5 +1,4 @@
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dispatch, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
@@ -14,13 +13,26 @@ type TSetServiceType = {
   service: TServiceType;
 };
 
+const CATEGORIES = [
+  "Digital Audio Services",
+  "Digital Video Services",
+  "Graphic Design and Visual Arts",
+  "Photography Services",
+  "Animation and 3D Modeling",
+  "Live Events and Concerts",
+  "Digital Advertising and Marketing",
+];
+
 function Service() {
   const { setService, service } = useOutletContext<TSetServiceType>();
+  const [selected, setSelected] = useState("");
   const [isFadingIn, setIsFadingIn] = useState(true);
   useEffect(() => {
     document.title = "IGotYou - Service";
     setTimeout(() => setIsFadingIn(false), 400);
   }, []);
+
+  console.log(service);
 
   return (
     <>
@@ -29,39 +41,31 @@ function Service() {
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-8 h-[400px] flex flex-col items-center justify-center gap-8">
-          <div className="text-center w-[1024px]">
+        <section className="my-16 flex flex-col items-center justify-center gap-8">
+          <div className="text-center w-3/4">
             <h1 className="text-3xl font-semibold">
-              "Which of these best describes your service?"
+              Which of these best categories describes your service?
             </h1>
           </div>
-
-          <RadioGroup
-            onValueChange={(value) =>
-              setService((prev) => ({
-                ...prev,
-                serviceType: value,
-              }))
-            }
-            defaultValue={service.serviceType}
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Events and Entertainment" id="r1" />
-              <Label htmlFor="r1">Events and Entertainment</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Audio and Sound Services" id="r2" />
-              <Label htmlFor="r2">Audio and Sound Services</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Photography and Videography" id="r3" />
-              <Label htmlFor="r3">Photography and Videography</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Content and Marketing" id="r3" />
-              <Label htmlFor="r3">Content and Marketing</Label>
-            </div>
-          </RadioGroup>
+          <div className="flex items-center justify-center flex-wrap w-3/5 max-md:w-full gap-4 px-8">
+            {CATEGORIES.map((category) => (
+              <Button
+                onClick={() => {
+                  setSelected(category);
+                  setService((prev) => ({
+                    ...prev,
+                    serviceType: category,
+                  }));
+                }}
+                type="button"
+                className={`h-max flex flex-col gap-2 border text-950 bg-white p-6 hover:outline-gray-950 hover:outline hover:bg-white ${
+                  selected === category ? "outline-gray-950 outline" : ""
+                }`}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
         </section>
       </ScrollArea>
     </>

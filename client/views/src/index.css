@@ -68,6 +68,17 @@
   border-radius: 10px;
 }
 
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-pagination {
+  position: static !important;
+  width: max-content !important;
+  margin-inline: auto;
+}
+
 .swiper-pagination-bullet {
-  background-color: rgb(221, 221, 221) !important;
+  background-color: rgb(42, 41, 41) !important;
 }

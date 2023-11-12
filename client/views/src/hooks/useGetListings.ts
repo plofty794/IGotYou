@@ -3,8 +3,11 @@ import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { AxiosError } from "axios";
 import { auth } from "@/firebase config/config";
 import { useToast } from "@/components/ui/use-toast";
+import { UserStateContextProvider } from "@/context/UserStateContext";
+import { useContext } from "react";
 
 function useGetListings() {
+  const { dispatch } = useContext(UserStateContextProvider);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   return useInfiniteQuery({
@@ -28,6 +31,7 @@ function useGetListings() {
         if (error.response?.status === 401) {
           await auth.signOut();
           localStorage.clear();
+          dispatch({ type: "USER_LOGOUT", payload: null });
         }
       }
     },

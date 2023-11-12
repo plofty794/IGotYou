@@ -42,7 +42,7 @@ function BecomeAHostLayout() {
   const { mutate, isPending, status } = useUploadListing();
   const userProfile = useGetCurrentUserProfile();
   const [service, setService] = useState<TListing>({
-    serviceType: "Events and Entertainment",
+    serviceType: "",
     serviceDescription: "",
     listingPhotos: [],
     price: 0,
@@ -79,13 +79,12 @@ function BecomeAHostLayout() {
     }
   }, [next, status]);
 
-  console.log(service);
-
   return (
     <>
       {userProfile.isPending ? (
         <Loader />
-      ) : userProfile.data?.data.user.userStatus === "host" ? (
+      ) : userProfile.data?.data.user.userStatus === "host" &&
+        !userProfile.data.data.user.listings.length ? (
         <main className="relative overflow-hidden h-screen">
           {
             <Navigate
@@ -109,11 +108,6 @@ function BecomeAHostLayout() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (
-                service.serviceDescription == null &&
-                service.listingPhotos.length < 5
-              )
-                return console.log("Invalid");
               mutate(service);
             }}
           >
@@ -139,6 +133,7 @@ function BecomeAHostLayout() {
                 </Button>
               )}
               {currentStepIndex > 0 &&
+                currentStepIndex !== 2 &&
                 currentStepIndex !== 3 &&
                 currentStepIndex !== 5 &&
                 currentStepIndex !== 6 &&
@@ -173,6 +168,36 @@ function BecomeAHostLayout() {
                     </Button>
                   </>
                 )}
+              {currentStepIndex === 2 && (
+                <>
+                  <Button
+                    type="button"
+                    onClick={previous}
+                    size={"lg"}
+                    variant={"link"}
+                    className="text-sm font-medium p-6"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    disabled={!service.serviceType}
+                    type="button"
+                    onClick={next}
+                    size={"lg"}
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
+                  >
+                    {isFetching ? ( // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="white"
+                      ></l-dot-pulse>
+                    ) : (
+                      "Next"
+                    )}
+                  </Button>
+                </>
+              )}
               {currentStepIndex === 3 && (
                 <>
                   <Button
@@ -324,6 +349,8 @@ function BecomeAHostLayout() {
         <Suspense fallback={<h1>Loading...</h1>}>
           <Pending user={userProfile.data.data.user} />
         </Suspense>
+      ) : userProfile.data?.data.user.listings.length > 0 ? (
+        <Navigate to={"/hosting"} replace />
       ) : (
         <section className="bg-[#F5F5F5] min-h-screen flex flex-col items-center justify-center gap-4">
           <Card className="w-2/4">
@@ -360,7 +387,7 @@ function BecomeAHostLayout() {
               </Button>
             </CardFooter>
           </Card>
-          <Button variant={"link"} className="text-base font-bold">
+          <Button variant={"link"} className="text-sm font-bold text-gray-600">
             <Link to={"/"}>Go back</Link>
           </Button>
         </section>

@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
+import Listings from "../models/Listings";
 
 export const getHosts: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
@@ -13,17 +14,15 @@ export const getHosts: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
-    const hosts = await Users.find({
+
+    const hosts = await Listings.find({
       $where: function () {
         return (
-          this.listings.length > 0 &&
-          this.userStatus === "host" &&
-          this.subscriptionStatus === "active"
+          new Date(this.availableAt).getTime() <= Date.now() &&
+          new Date(this.endsAt).getTime() >= Date.now()
         );
       },
-    })
-      .populate("listings")
-      .exec();
+    }).populate("host");
 
     if (!hosts.length) {
       return res.status(200).json({ hosts: [] });
@@ -276,7 +275,7 @@ export const googleSignIn: RequestHandler = async (req, res, next) => {
 };
 
 export const logOutUser: RequestHandler = async (req, res, next) => {
-  const id = req.headers.cookie?.split("_&!d=")[1];
+  const id = req.cookies["_&!d"];
   try {
     if (!id) {
       res.clearCookie("_&!d");

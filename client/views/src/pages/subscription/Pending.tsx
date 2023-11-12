@@ -29,21 +29,21 @@ type TUser = {
 function Pending({ user }: TUser) {
   return (
     <div className="bg-[#F5F5F5] min-h-screen flex items-center justify-center">
-      <Card className="p-4 flex flex-col justify-center shadow-lg border">
+      <Card className="w-2/4 p-4 flex flex-col justify-center shadow-lg border">
         <CardHeader className="p-0 w-max mx-auto">
           <Lottie
             animationData={pending}
             className="w-full h-[220px] mx-auto"
           />
         </CardHeader>
-        <CardDescription className="px-6 pb-4 text-base font-bold text-gray-700">
+        <CardDescription className="px-6 pb-4 text-xl font-bold text-gray-950">
           Hello {user.username}!
         </CardDescription>
-        <CardContent className="flex flex-col gap-2 pb-4 text-sm text-gray-600 w-[500px] font-semibold">
+        <CardContent className="flex flex-col gap-2 pb-4 text-sm text-gray-600 font-semibold">
           <span>
             We wanted to inform you that your subscription status is currently{" "}
-            <span className="text-amber-600 font-extrabold">pending</span>. Our
-            team is working diligently to process your subscription, and we
+            <span className="text-amber-700 font-bold">pending</span>. Our team
+            is working diligently to process your subscription, and we
             appreciate your patience.
           </span>
           <span>
@@ -54,7 +54,7 @@ function Pending({ user }: TUser) {
           </span>
         </CardContent>
 
-        <Button className="ml-auto w-max px-6 font-bold text-sm rounded-full bg-[#222222] text-white mb-2 mr-4">
+        <Button className="ml-auto w-max px-6 font-bold text-sm rounded-full bg-gray-950 text-white mb-2 mr-4">
           <Link to={"/"} replace>
             {" "}
             Go back

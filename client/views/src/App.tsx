@@ -5,15 +5,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Hero from "./pages/Hero";
 import RootLayout from "./root layouts/RootLayout";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import Home from "./pages/Home";
-import About from "./pages/About";
 import PageNotFound from "./pages/PageNotFound";
-import { useContext, useState } from "react";
-import VerifyPhone from "./pages/PhoneVerify";
+import { Suspense, lazy, useContext, useState } from "react";
 import { verifyPhoneLoader } from "./constants/loaders/verifyPhoneLoader";
 import HeroLayout from "./root layouts/HeroLayout";
 import CategoryTwo from "./pages/categories/CategoryTwo";
@@ -40,6 +36,13 @@ import { UserStateContextProvider } from "./context/UserStateContext";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase config/config";
 import ListingDate from "./pages/become a host/ListingDate";
+import ListingsLoader from "./partials/loaders/ListingsLoader";
+import Hosting from "./pages/Hosting";
+
+const About = lazy(() => import("./pages/About"));
+const Hero = lazy(() => import("./pages/Hero"));
+const VerifyPhone = lazy(() => import("./pages/PhoneVerify"));
+const Home = lazy(() => import("./pages/Home"));
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -99,12 +102,14 @@ function App() {
         />
 
         {/* HOME & CATEGORIES Routes */}
-        <Route path="/" element={<RootLayout />}>
+        <Route element={<RootLayout />}>
           <Route
             index
             element={
               User ?? token ?? identifier ? (
-                <Home />
+                <Suspense fallback={<ListingsLoader />}>
+                  <Home />
+                </Suspense>
               ) : (
                 <Navigate replace to={"/login"} />
               )
@@ -231,6 +236,12 @@ function App() {
               )
             }
           />
+        </Route>
+
+        {/* HOSTING Route */}
+
+        <Route>
+          <Route path="/hosting" element={<Hosting />} />
         </Route>
 
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}

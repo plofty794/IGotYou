@@ -1,17 +1,8 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import ErrorMessage from "../ErrorMessage";
 import ParsePhoneNumber from "libphonenumber-js/mobile"; // isPossiblePhoneNumber, // isValidPhoneNumber,
-import { CountryCode, getCountries, getPhoneCode } from "libphonenumber-js";
-import { useState } from "react";
+
 import { useForm } from "react-hook-form";
 import {
   MobilePhoneSchema,
@@ -32,7 +23,6 @@ type TMobilePhone = {
 
 function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
   const { id } = useParams();
-  const [countryCode, setCountryCode] = useState<CountryCode>("PH");
   const { mutate, isPending } = useUpdateUserProfile();
 
   const {
@@ -48,13 +38,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
   });
 
   function mobilePhoneSubmit(data: MobilePhoneSchema) {
-    // if (
-    //   !isValidPhoneNumber(data.mobile_phone, countryCode) &&
-    //   !isPossiblePhoneNumber(data.mobile_phone)
-    // ) {
-    //   return setError("mobile_phone", { message: "Invalid mobile phone" });
-    // }
-    const phoneNumber = ParsePhoneNumber(data.mobile_phone, countryCode);
+    const phoneNumber = ParsePhoneNumber(data.mobile_phone, "PH");
     if (!phoneNumber?.isValid()) {
       return setError("mobile_phone", { message: "Invalid mobile phone" });
     }
@@ -63,33 +47,9 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
 
   return (
     <div className="w-full flex flex-col gap-1">
-      <Select
-        defaultValue={countryCode}
-        onValueChange={(value: CountryCode) => setCountryCode(value)}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue
-            className="placeholder:text-xs"
-            placeholder="Country/Region"
-          />
-        </SelectTrigger>
-        <SelectContent>
-          <ScrollArea className="h-72 w-full">
-            {getCountries().map((country) => (
-              <SelectItem value={country} key={country}>
-                <div className="flex gap-1">
-                  <span>{country}</span>
-                  <span>(+{getPhoneCode(country)})</span>
-                </div>
-              </SelectItem>
-            ))}
-          </ScrollArea>
-        </SelectContent>
-      </Select>
       <form onSubmit={handleSubmit(mobilePhoneSubmit)}>
         <div className="flex items-center gap-2 mb-2">
-          {<Flag country={countryCode} className="w-9 h-9" />}
-
+          {<Flag country={"PH"} className="w-9 h-9" />}
           <Input autoFocus {...register("mobile_phone")} type="tel" />
         </div>
         {errors.mobile_phone && (

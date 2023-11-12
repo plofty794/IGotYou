@@ -26,6 +26,17 @@ import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "firebase/auth";
 import { dotPulse } from "ldrs";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Link } from "react-router-dom";
 
 dotPulse.register();
 
@@ -95,9 +106,9 @@ function ProfileContent({ profileData }: TProps) {
 
   return (
     <>
-      <section className="flex gap-16 px-32 mt-14">
-        <div className="flex flex-col justify-between w-[340px] h-[650px]">
-          <Card className="flex flex-col justify-center items-center w-[342px] px-22 py-5 shadow">
+      <section className="flex gap-16 px-32 mt-14 max-lg:flex-col max-lg:w-100vw">
+        <div className="flex flex-col justify-between w-[340px] h-[650px] max-lg:w-full">
+          <Card className="flex flex-col justify-center items-center w-[342px] max-lg:w-full px-22 py-5 shadow">
             <CardHeader className="p-4 relative">
               <Avatar className="w-[80px] h-[80px]">
                 <AvatarImage
@@ -120,19 +131,19 @@ function ProfileContent({ profileData }: TProps) {
               </Button>
             </CardHeader>
             <CardFooter className="p-0 flex flex-col">
-              <span className="text-[#222222] text-2xl font-semibold">
+              <span className="text-2xl font-bold">
                 {profileData?.username ?? (
                   <Skeleton className="h-4 w-[100px]" />
                 )}
               </span>
-              <span className="text-gray-500 text-sm font-semibold">
+              <span className="text-gray-600 text-sm font-bold">
                 {profileData?.userStatus === "host" ? "Host" : "Guest"}
               </span>
             </CardFooter>
           </Card>
-          <Card className="w-[342px]">
+          <Card className="w-[342px] max-lg:w-full">
             <CardHeader>
-              <span className="text-[#222222] text-xl font-semibold">
+              <span className="text-xl font-semibold">
                 {profileData?.username ? (
                   profileData?.username + "'s confirmed information"
                 ) : (
@@ -149,7 +160,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#39c152] rounded-full"
                   />{" "}
-                  <span className="text-gray-600 ml-2 text-sm font-medium">
+                  <span className="text-gray-600 ml-2 text-sm font-semibold">
                     Email address (verified)
                   </span>
                 </div>
@@ -161,7 +172,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#e94242] rounded-full"
                   />{" "}
-                  <span className="text-gray-600 ml-2 text-sm">
+                  <span className="text-gray-600 ml-2 text-sm font-semibold">
                     Email address (not verified)
                   </span>
                 </div>
@@ -174,7 +185,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#39c152] rounded-full"
                   />{" "}
-                  <span className="text-gray-600 ml-2 text-sm">
+                  <span className="text-gray-600 ml-2 text-sm font-semibold">
                     Mobile phone (verified)
                   </span>
                 </div>
@@ -186,7 +197,7 @@ function ProfileContent({ profileData }: TProps) {
                     height={22}
                     className="inline-block bg-[#e94242] rounded-full"
                   />{" "}
-                  <span className="text-gray-600  ml-2 text-sm">
+                  <span className="text-gray-600  ml-2 text-sm font-semibold">
                     Mobile phone (not verified)
                   </span>
                 </div>
@@ -194,16 +205,16 @@ function ProfileContent({ profileData }: TProps) {
             </CardContent>
           </Card>
           <Card className="w-full">
-            <CardHeader className="text-[#222222] px-6 pt-6 pb-2">
+            <CardHeader className="text-gray-950 px-6 pt-6 pb-2">
               <span className="text-lg font-semibold">
                 <IdCardIcon width={35} height={35} />
               </span>
-              <p className="font-semibold text-md">
+              <p className="font-bold text-lg">
                 {profileData?.emailVerified
                   ? "Personal info"
                   : "Verify your email to edit your personal info"}
               </p>
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-semibold text-gray-600">
                 Provide personal details and how we can reach you
               </p>
             </CardHeader>
@@ -215,7 +226,7 @@ function ProfileContent({ profileData }: TProps) {
                   onClick={() =>
                     mutate({ emailVerified: auth.currentUser?.emailVerified })
                   }
-                  className="mt-2 text-xs font-semibold bg-[#222222] rounded-full"
+                  className="mt-2 text-xs font-bold bg-gray-950 rounded-full"
                 >
                   {isPending ? (
                     // Default values shown
@@ -232,7 +243,7 @@ function ProfileContent({ profileData }: TProps) {
             </CardContent>
           </Card>
         </div>
-        <div className="w-max flex flex-col gap-4">
+        <div className="w-full flex flex-col gap-4">
           <Card className="shadow-lg">
             <CardHeader className="p-6">
               <CardTitle className="text-gray-950 text-4xl font-semibold">
@@ -258,8 +269,63 @@ function ProfileContent({ profileData }: TProps) {
                 listings={profileData.listings}
               />
             </Suspense>
+          ) : profileData.emailVerified ? (
+            <>
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle className="text-center font-semibold text-lg text-gray-600">
+                    You have no listings to show
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="mx-auto w-max">
+                  <Button className="bg-gray-950 rounded-full">
+                    <Link
+                      to={`/become-a-host/${
+                        auth.currentUser && auth.currentUser.uid
+                      }`}
+                    >
+                      Create a listing
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </>
           ) : (
-            <></>
+            <>
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle className="text-center font-semibold text-lg text-gray-600">
+                    You have no listings to show
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="mx-auto w-max">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="bg-gray-950 rounded-full">
+                        Subscribe to create
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="font-bold">
+                          You're email is not verified yet
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-gray-600 font-medium text-sm">
+                          To create a listing, users are required to have a
+                          verified email. Attempting this action without a
+                          verified email is useless.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="rounded-full">
+                          Close
+                        </AlertDialogCancel>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </CardContent>
+              </Card>
+            </>
           )}
         </div>
       </section>

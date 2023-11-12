@@ -29,19 +29,20 @@ function ServiceDescription() {
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-8 h-[400px] flex flex-col items-center justify-center gap-4">
-          <div className="text-center w-[1024px]">
-            <h1 className="text-3xl font-semibold">
-              "What will you call your service?"{" "}
+        <section className="my-28 flex flex-col items-center justify-center gap-4">
+          <div className="text-center w-2/4">
+            <h1 className="text-4xl font-bold">
+              What will you call your service?{" "}
             </h1>
-            <span className="text-sm font-medium">(Service name)</span>
+            <span className="text-lg font-medium text-gray-600">
+              (Service name)
+            </span>
           </div>
-
           <Input
             autoFocus
             spellCheck
             placeholder={"Ex. Mang Juan's Photography Service"}
-            className="w-[400px] mb-2"
+            className="w-2/5 mb-2 text-xl font-medium py-8 px-6"
             value={service.serviceDescription}
             onChange={(e) =>
               setService((prev) => ({
