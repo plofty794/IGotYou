@@ -69,6 +69,7 @@ function App() {
 
         {/* USER PROFILE & PHONE VERIFICATION Routes */}
         <Route path="/users" element={<ProfileLayout />}>
+          <Route path="wishlists" element={<Wishlists />} />
           <Route
             path="show/:id"
             element={
@@ -244,11 +245,6 @@ function App() {
 
         <Route>
           <Route path="/hosting" element={<Hosting />} />
-        </Route>
-
-        {/* WISHLISTS Route */}
-        <Route>
-          <Route path="/wishlists" element={<Wishlists />} />
         </Route>
 
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}

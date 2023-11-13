@@ -36,7 +36,7 @@ function Login() {
   return (
     <>
       <main className="bg-hero-image min-h-screen flex items-center justify-center p-8">
-        <section className="flex w-2/5 max-md:w-2/3 max-sm:w-full">
+        <section className="flex w-2/6 max-md:w-2/4 max-sm:w-full">
           <Card className="flex flex-col gap-12 py-12 w-full">
             <div className="flex flex-col items-center justify-center gap-6 px-4">
               <span>

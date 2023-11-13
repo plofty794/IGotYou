@@ -8,11 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CheckCircledIcon,
-  CrossCircledIcon,
-  IdCardIcon,
-} from "@radix-ui/react-icons";
+import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileButtonGroup from "./ProfileButtonGroup";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,7 +33,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Link } from "react-router-dom";
-
 dotPulse.register();
 
 const Listings = lazy(() => import("./Listings"));
@@ -206,9 +201,20 @@ function ProfileContent({ profileData }: TProps) {
           </Card>
           <Card className="w-full">
             <CardHeader className="text-gray-950 px-6 pt-6 pb-2">
-              <span className="text-lg font-semibold">
-                <IdCardIcon width={35} height={35} />
-              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-10 h-10"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z"
+                />
+              </svg>
               <p className="font-bold text-lg">
                 {profileData?.emailVerified
                   ? "Personal info"
@@ -307,15 +313,29 @@ function ProfileContent({ profileData }: TProps) {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="font-bold">
-                          You're email is not verified yet
+                        <AlertDialogTitle className="flex items-center gap-1 font-semibold">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="red"
+                            className="w-7 h-7"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                            />
+                          </svg>
+                          You're email is not verified yet.
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-gray-600 font-medium text-sm">
-                          To create a listing, users are required to have a
-                          verified email. Attempting this action without a
-                          verified email is useless.
-                        </AlertDialogDescription>
                       </AlertDialogHeader>
+                      <AlertDialogDescription className="text-gray-600 font-medium text-sm">
+                        To create a listing, users are required to have a
+                        verified email. Attempting this action without a
+                        verified email is useless.
+                      </AlertDialogDescription>
                       <AlertDialogFooter>
                         <AlertDialogCancel className="rounded-full">
                           Close

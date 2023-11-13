@@ -25,7 +25,7 @@ function RootLayout() {
             <Link to={"/"}>
               <span className="w-full h-full">
                 <img
-                  className="object-cover h-full w-[30px] max-h-full max-w-full"
+                  className="object-cover w-[30px] max-h-full max-w-full"
                   loading="lazy"
                   src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
                   alt="logo"

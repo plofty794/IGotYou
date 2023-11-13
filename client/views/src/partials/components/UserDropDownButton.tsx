@@ -39,7 +39,7 @@ export function UserDropDownButton() {
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-2">Messages</DropdownMenuItem>
           <DropdownMenuItem className="p-2">
-            <Link to={"/wishlists"} className="w-full" replace>
+            <Link to={"/users/wishlists"} className="w-full" replace>
               Wishlists
             </Link>
           </DropdownMenuItem>

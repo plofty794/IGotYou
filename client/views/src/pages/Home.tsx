@@ -29,14 +29,14 @@ function Home() {
       <section className="px-8 pb-8">
         {_listings.length > 0 ? (
           <>
-            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
+            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-8">
               {_listings.map((v, i) => (
                 <Card
                   key={v._id}
                   className="border-none shadow-none overflow-hidden w-full"
                 >
                   <Link to={`/users/visit/show/${v.host.uid}`}>
-                    <CardHeader className=" p-0 flex flex-col gap-1">
+                    <CardHeader className="p-0 flex flex-col gap-1">
                       <Swiper
                         key={i}
                         spaceBetween={10}
@@ -54,7 +54,7 @@ function Home() {
                             <img
                               key={photo._id}
                               loading="lazy"
-                              className="rounded-lg max-h-full max-w-full h-[250px] mx-auto object-cover"
+                              className="rounded-lg max-h-full max-w-full h-72 mx-auto object-cover"
                               src={photo.secure_url}
                             />
                           </SwiperSlide>

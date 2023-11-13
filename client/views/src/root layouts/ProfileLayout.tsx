@@ -8,7 +8,7 @@ function ProfileLayout() {
         <Link to={"/"}>
           <span>
             <img
-              className="w-[30px] h-[30px]"
+              className="object-cover w-[30px] max-h-full max-w-full"
               loading="lazy"
               src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
               alt="logo"
