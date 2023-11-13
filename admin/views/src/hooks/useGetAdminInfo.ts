@@ -1,11 +1,15 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
+import { UserStateContextProvider } from "@/context/UserStateContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
+import { useContext } from "react";
 
 function useGetAdminInfo() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { dispatch } = useContext(UserStateContextProvider);
+
   return useQuery({
     queryKey: ["admin"],
     queryFn: async () => {
@@ -21,11 +25,12 @@ function useGetAdminInfo() {
           });
           localStorage.clear();
           queryClient.removeQueries();
+          dispatch({ type: "ADMIN_LOGOUT", payload: null });
+          document.location.reload();
         }
       }
     },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+
     retry: 2,
     enabled: !!localStorage.getItem("isAdmin"),
   });

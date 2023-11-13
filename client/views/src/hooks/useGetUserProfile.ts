@@ -26,6 +26,7 @@ function useGetCurrentUserProfile() {
             description: "Please log in again.",
             variant: "destructive",
           });
+          document.location.reload();
         }
         if (error.response?.status === 401) {
           const token = await auth.currentUser?.getIdToken();

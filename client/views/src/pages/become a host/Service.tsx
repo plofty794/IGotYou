@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dispatch, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { CATEGORIES } from "@/constants/categories";
 
 type TServiceType = {
   serviceType: string;
@@ -13,26 +14,14 @@ type TSetServiceType = {
   service: TServiceType;
 };
 
-const CATEGORIES = [
-  "Digital Audio Services",
-  "Digital Video Services",
-  "Graphic Design and Visual Arts",
-  "Photography Services",
-  "Animation and 3D Modeling",
-  "Live Events and Concerts",
-  "Digital Advertising and Marketing",
-];
-
 function Service() {
-  const { setService, service } = useOutletContext<TSetServiceType>();
+  const { setService } = useOutletContext<TSetServiceType>();
   const [selected, setSelected] = useState("");
   const [isFadingIn, setIsFadingIn] = useState(true);
   useEffect(() => {
     document.title = "IGotYou - Service";
     setTimeout(() => setIsFadingIn(false), 400);
   }, []);
-
-  console.log(service);
 
   return (
     <>

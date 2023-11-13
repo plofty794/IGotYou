@@ -4,7 +4,7 @@ zoomies.register();
 function ListingsLoader() {
   return (
     <>
-      <div className="min-h-[70vh] flex items-center justify-center">
+      <div className="min-h-[50vh] flex items-center justify-center">
         <l-zoomies
           size="80"
           stroke="5"

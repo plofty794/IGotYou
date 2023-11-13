@@ -32,6 +32,7 @@ function useGetListings() {
           await auth.signOut();
           localStorage.clear();
           dispatch({ type: "USER_LOGOUT", payload: null });
+          document.location.reload();
         }
       }
     },

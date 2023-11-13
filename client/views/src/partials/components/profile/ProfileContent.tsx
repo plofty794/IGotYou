@@ -106,7 +106,7 @@ function ProfileContent({ profileData }: TProps) {
 
   return (
     <>
-      <section className="flex gap-16 px-32 mt-14 max-lg:flex-col max-lg:w-100vw">
+      <section className="flex gap-16 px-24 mt-14 max-lg:flex-col max-w-7xl mx-auto">
         <div className="flex flex-col justify-between w-[340px] h-[650px] max-lg:w-full">
           <Card className="flex flex-col justify-center items-center w-[342px] max-lg:w-full px-22 py-5 shadow">
             <CardHeader className="p-4 relative">

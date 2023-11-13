@@ -38,7 +38,11 @@ export function UserDropDownButton() {
       <DropdownMenuContent className="w-56 font-medium" align="end">
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-2">Messages</DropdownMenuItem>
-          <DropdownMenuItem className="p-2">Wishlists</DropdownMenuItem>
+          <DropdownMenuItem className="p-2">
+            <Link to={"/wishlists"} className="w-full" replace>
+              Wishlists
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem className="p-2">Bookings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />

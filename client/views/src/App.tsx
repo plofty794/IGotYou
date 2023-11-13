@@ -1,3 +1,4 @@
+import "swiper/swiper-bundle.css";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -43,6 +44,7 @@ const About = lazy(() => import("./pages/About"));
 const Hero = lazy(() => import("./pages/Hero"));
 const VerifyPhone = lazy(() => import("./pages/PhoneVerify"));
 const Home = lazy(() => import("./pages/Home"));
+const Wishlists = lazy(() => import("./pages/Wishlists"));
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -242,6 +244,11 @@ function App() {
 
         <Route>
           <Route path="/hosting" element={<Hosting />} />
+        </Route>
+
+        {/* WISHLISTS Route */}
+        <Route>
+          <Route path="/wishlists" element={<Wishlists />} />
         </Route>
 
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}
