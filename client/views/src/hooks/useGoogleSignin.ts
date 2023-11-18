@@ -22,6 +22,7 @@ function useGoogleSignin() {
           providerId: user.providerData[0].providerId,
           emailVerified: user.emailVerified,
           uid: res.user.uid,
+          photoUrl: res.user.photoURL,
         });
         const token = await res.user.getIdToken();
         dispatch({ type: "USER_LOGIN", payload: token });

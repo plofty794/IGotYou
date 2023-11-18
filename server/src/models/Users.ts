@@ -2,6 +2,42 @@ import { Schema, InferSchemaType, model, Types } from "mongoose";
 import env from "../utils/envalid";
 import bcrypt from "bcrypt";
 
+const wishlistsSchema = new Schema(
+  {
+    wishlistTitle: {
+      type: String,
+      required: true,
+    },
+    wishlistContent: {
+      type: [Types.ObjectId],
+      ref: "Listings",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+const ratingSchema = new Schema(
+  {
+    userRating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    ratedBy: {
+      type: Types.ObjectId,
+      ref: "Users",
+      required: true,
+    },
+    feedback: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 const usersSchema = new Schema(
   {
     providerId: {
@@ -61,11 +97,7 @@ const usersSchema = new Schema(
       ref: "Listings",
     },
     rating: {
-      type: String,
-    },
-    reviews: {
-      type: [Types.ObjectId],
-      ref: "Reviews",
+      type: [ratingSchema],
     },
     subscriptionStatus: {
       type: String,
@@ -73,6 +105,10 @@ const usersSchema = new Schema(
     },
     subscriptionExpiresAt: {
       type: Date,
+    },
+    // Guest details
+    wishlists: {
+      type: [wishlistsSchema],
     },
   },
   { timestamps: true }

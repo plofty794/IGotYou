@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { AxiosError } from "axios";
 import { auth } from "@/firebase config/config";
@@ -7,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 function useGetCurrentUserProfile() {
   const { toast } = useToast();
-  const { id } = useParams();
+  const id = auth.currentUser?.uid;
   const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["profile", id],
@@ -17,6 +16,7 @@ function useGetCurrentUserProfile() {
       } catch (err) {
         const error = err as AxiosError;
         if (error.response?.status === 400) {
+          document.location.reload();
           await auth.signOut();
           localStorage.clear();
           queryClient.removeQueries({ queryKey: ["profile"] });
@@ -26,7 +26,6 @@ function useGetCurrentUserProfile() {
             description: "Please log in again.",
             variant: "destructive",
           });
-          document.location.reload();
         }
         if (error.response?.status === 401) {
           const token = await auth.currentUser?.getIdToken();
@@ -37,6 +36,7 @@ function useGetCurrentUserProfile() {
     },
     enabled: id != null,
     retry: 2,
+    refetchOnWindowFocus: false,
   });
 }
 

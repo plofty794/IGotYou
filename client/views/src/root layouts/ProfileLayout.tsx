@@ -3,8 +3,8 @@ import { Link, Outlet } from "react-router-dom";
 
 function ProfileLayout() {
   return (
-    <main className="min-h-screen bg-[#f5f5f5] pb-10">
-      <nav className="bg-white shadow py-5 px-20 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
+    <main className="min-h-screen pb-10">
+      <nav className="shadow py-5 px-28 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
         <Link to={"/"}>
           <span>
             <img
@@ -15,9 +15,7 @@ function ProfileLayout() {
             />
           </span>
         </Link>
-        <ul className="text-sm font-medium flex justify-center items-center gap-5">
-          <UserDropDownButton />
-        </ul>
+        <UserDropDownButton />
       </nav>
       {<Outlet />}
     </main>

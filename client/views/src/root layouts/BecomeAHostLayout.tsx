@@ -30,12 +30,13 @@ type TFileType = {
   format: string;
 };
 
-type TListing = {
+export type TListing = {
   serviceType: string;
   serviceDescription?: string;
   listingPhotos: TFileType[];
   price: number;
   date: DateRange;
+  serviceLocation: string;
 };
 
 function BecomeAHostLayout() {
@@ -50,9 +51,9 @@ function BecomeAHostLayout() {
       from: undefined,
       to: undefined,
     },
+    serviceLocation: "",
   });
 
-  const User = auth.currentUser;
   const {
     step,
     next,
@@ -66,6 +67,7 @@ function BecomeAHostLayout() {
     "about-your-service",
     "service",
     "service-description",
+    "service-location",
     "make-it-standout",
     "photos",
     "price",
@@ -83,12 +85,13 @@ function BecomeAHostLayout() {
     <>
       {userProfile.isPending ? (
         <Loader />
-      ) : userProfile.data?.data.user.userStatus === "host" &&
-        !userProfile.data.data.user.listings.length ? (
+      ) : userProfile.data?.data.user.userStatus === "host" ? (
         <main className="relative overflow-hidden h-screen">
           {
             <Navigate
-              to={`/become-a-host/${User && User.uid}/${step}`}
+              to={`/become-a-host/${
+                auth.currentUser && auth.currentUser.uid
+              }/${step}`}
               replace
             />
           }
@@ -135,9 +138,10 @@ function BecomeAHostLayout() {
               {currentStepIndex > 0 &&
                 currentStepIndex !== 2 &&
                 currentStepIndex !== 3 &&
-                currentStepIndex !== 5 &&
+                currentStepIndex !== 4 &&
                 currentStepIndex !== 6 &&
                 currentStepIndex !== 7 &&
+                currentStepIndex !== 8 &&
                 !isLastPage && (
                   <>
                     <Button
@@ -228,7 +232,37 @@ function BecomeAHostLayout() {
                   </Button>
                 </>
               )}
-              {currentStepIndex === 5 && (
+              {currentStepIndex === 4 && (
+                <>
+                  <Button
+                    type="button"
+                    onClick={previous}
+                    size={"lg"}
+                    variant={"link"}
+                    className="text-sm font-medium p-6"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    disabled={!service.serviceLocation}
+                    type="button"
+                    onClick={next}
+                    size={"lg"}
+                    className="bg-gray-950 rounded-full text-lg font-semibold p-6"
+                  >
+                    {isFetching ? ( // Default values shown
+                      <l-dot-pulse
+                        size="43"
+                        speed="1.3"
+                        color="white"
+                      ></l-dot-pulse>
+                    ) : (
+                      "Next"
+                    )}
+                  </Button>
+                </>
+              )}
+              {currentStepIndex === 6 && (
                 <>
                   <Button
                     disabled={service.listingPhotos.length > 0}
@@ -259,7 +293,7 @@ function BecomeAHostLayout() {
                   </Button>
                 </>
               )}
-              {currentStepIndex === 6 && (
+              {currentStepIndex === 7 && (
                 <>
                   <Button
                     disabled={service.price != null}
@@ -292,7 +326,7 @@ function BecomeAHostLayout() {
                   </Button>
                 </>
               )}
-              {currentStepIndex === 7 && (
+              {currentStepIndex === 8 && (
                 <>
                   <Button
                     type="button"
@@ -346,11 +380,9 @@ function BecomeAHostLayout() {
           </form>
         </main>
       ) : userProfile.data?.data.user.subscriptionStatus === "pending" ? (
-        <Suspense fallback={<h1>Loading...</h1>}>
+        <Suspense fallback={<Loader />}>
           <Pending user={userProfile.data.data.user} />
         </Suspense>
-      ) : userProfile.data?.data.user.listings.length > 0 ? (
-        <Navigate to={"/hosting"} replace />
       ) : (
         <section className="bg-[#F5F5F5] min-h-screen flex flex-col items-center justify-center gap-4">
           <Card className="w-2/4">

@@ -59,7 +59,7 @@ function AlertVerifyEmail({ User }: { User: User }) {
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={() => navigate(`/users/show/${User && User.uid}`)}
-            className="font-medium text-sm bg-[#222222] text-white rounded-full"
+            className="font-medium text-sm bg-gray-950 text-white rounded-full"
           >
             Go to your profile
           </AlertDialogAction>

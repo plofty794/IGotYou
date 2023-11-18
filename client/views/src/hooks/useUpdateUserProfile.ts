@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
-import { useParams } from "react-router-dom";
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { auth } from "@/firebase config/config";
 
@@ -22,7 +21,7 @@ type TUserUpdates = {
 function useUpdateUserProfile() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { id } = useParams();
+  const id = auth.currentUser?.uid;
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
       return await axiosPrivateRoute.patch(`/api/users/current-user/update`, {
@@ -35,7 +34,7 @@ function useUpdateUserProfile() {
         return { data: { user: { ...prevData.data.user, ...variables } } };
       });
       toast({
-        description: "Profile has been updated",
+        title: "Your profile has been updated successfully",
         className: "bg-[#FFF] text-[#222222]",
         color: "#FFF",
       });

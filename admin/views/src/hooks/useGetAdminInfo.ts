@@ -23,10 +23,10 @@ function useGetAdminInfo() {
             description: (error.response as AxiosResponse).data.error,
             variant: "destructive",
           });
+          document.location.reload();
           localStorage.clear();
           queryClient.removeQueries();
           dispatch({ type: "ADMIN_LOGOUT", payload: null });
-          document.location.reload();
         }
       }
     },

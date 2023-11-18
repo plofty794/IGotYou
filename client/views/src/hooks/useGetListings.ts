@@ -42,6 +42,7 @@ function useGetListings() {
     initialPageParam: 1,
     enabled: !!localStorage.getItem("token"),
     retry: 2,
+    refetchOnWindowFocus: false,
   });
 }
 

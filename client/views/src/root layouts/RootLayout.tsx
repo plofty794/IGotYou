@@ -1,4 +1,4 @@
-import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, Outlet } from "react-router-dom";
 import UserDropDownButton from "../partials/components/UserDropDownButton";
 import { Button } from "../components/ui/button";
 import { auth } from "@/firebase config/config";
@@ -15,7 +15,6 @@ function RootLayout() {
   const listings = useGetListings();
   const token = localStorage.getItem("token");
   const User = auth.currentUser;
-  const navigate = useNavigate();
 
   return (
     <>
@@ -35,13 +34,13 @@ function RootLayout() {
             <span className="flex justify-center items-center gap-5">
               {User?.emailVerified ? (
                 <Button
-                  className="text-sm text-[#222222] font-medium hover:bg-zinc-100 p-4 rounded-full"
+                  className="text-sm font-semibold text-gray-600 hover:bg-zinc-100 p-4 rounded-full"
                   variant={"ghost"}
-                  onClick={() =>
-                    navigate(`/become-a-host/${User && User.uid}/overview`)
-                  }
                 >
-                  Switch to hosting
+                  <Link to={"/hosting"} reloadDocument replace>
+                    {" "}
+                    Switch to hosting
+                  </Link>
                 </Button>
               ) : (
                 <Suspense>

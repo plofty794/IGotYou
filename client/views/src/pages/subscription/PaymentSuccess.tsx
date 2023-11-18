@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import success from "../../assets/success.json";
 import Lottie from "lottie-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 function PaymentSuccessful() {
   const [isFadingIn, setIsFadingIn] = useState(true);
@@ -26,25 +25,35 @@ function PaymentSuccessful() {
     >
       <Card className="w-full mx-auto flex flex-col items-center justify-center shadow-none border-0 mb-12">
         <CardHeader>
-          <Lottie
-            animationData={success}
-            className="w-[130px] h-[130px] mx-auto"
-          />
-          <CardDescription className="text-center text-3xl font-bold text-[#3ABC5E]">
+          <Lottie animationData={success} className="w-2/3 h-[130px] mx-auto" />
+          <CardDescription className="text-center text-4xl font-bold text-[#3ABC5E]">
             Payment Successful!
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-12 pb-8 ">
-          <span className="text-center text-sm font-bold text-gray-600">
+        <CardContent className="w-2/3 px-12 text-center">
+          <span className="text-lg font-semibold text-gray-600">
             Thank you for your subscription payment. We are processing your
             payment and it will be activated within 5-10 minutes.
           </span>
         </CardContent>
-        <Alert className="w-max text-center p-4">
+        <Alert className="w-max text-center border-0">
           <AlertTitle>
-            <InfoCircledIcon className="w-[25px] h-[25px] mx-auto" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8 mx-auto"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+              />
+            </svg>
           </AlertTitle>
-          <AlertDescription className="text-xs font-semibold text-gray-600">
+          <AlertDescription className="text-sm font-semibold text-gray-600">
             In the meantime, you can continue browsing our website or using our
             app.
             <br /> Once your subscription is activated, you will receive a

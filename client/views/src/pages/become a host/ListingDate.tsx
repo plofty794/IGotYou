@@ -16,22 +16,7 @@ import { useOutletContext } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { auth } from "@/firebase config/config";
 import { AxiosResponse } from "axios";
-
-type TFileType = {
-  public_id: string;
-  secure_url: string;
-  original_filename?: string;
-  bytes: number;
-  thumbnail_url: string;
-  format: string;
-};
-
-type TListing = {
-  serviceType: string;
-  serviceDescription?: string;
-  listingPhotos: TFileType[];
-  date: DateRange;
-};
+import { TListing } from "@/root layouts/BecomeAHostLayout";
 
 type TSetServiceProps = {
   setService: Dispatch<React.SetStateAction<TListing>>;

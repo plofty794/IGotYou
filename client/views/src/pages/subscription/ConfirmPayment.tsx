@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useOutletContext } from "react-router-dom";
-import { CrossCircledIcon, UploadIcon } from "@radix-ui/react-icons";
+import { CrossCircledIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import useRemoveAsset from "@/hooks/useRemoveAsset";
 
@@ -53,7 +53,7 @@ function ConfirmPayment() {
           isFadingIn ? "opacity-0" : "opacity-100"
         } transition-opacity flex justify-center items-center gap-12 h-full pb-12`}
       >
-        <div className="w-[650px] flex flex-col items-center justify-center gap-4 p-8 shadow-xl rounded-xl">
+        <div className="w-2/4 border flex flex-col items-center justify-center gap-2 p-8 shadow-xl rounded-xl">
           <div className="text-center flex flex-col gap-4 p-2">
             <h1 className="text-3xl font-semibold text-[#222222]">
               Confirm your payment
@@ -62,7 +62,7 @@ function ConfirmPayment() {
               Take a screenshot or download the photo of the proof of payment
               from GCash containing the amount and the Ref no. and upload it
               here.{" "}
-              <span className="block font-bold text-amber-600">
+              <span className="mt-1 block font-bold text-amber-600">
                 Note: Make sure you include the Ref no. on the screenshot
               </span>
             </p>
@@ -88,7 +88,7 @@ function ConfirmPayment() {
               </div>
             ) : (
               <div className="p-12 flex flex-col items-center justify-center gap-2">
-                <span className="text-center text-sm font-medium text-gray-600">
+                <span className="text-center text-xs font-semibold text-gray-600">
                   Your photo will be shown here
                 </span>
                 <svg
@@ -112,10 +112,24 @@ function ConfirmPayment() {
             disabled={!!paymentProofPhoto.public_id}
             type="button"
             onClick={() => cloudinaryWidget.open()}
-            className="bg-gray-950 text-white rounded-full font-medium flex gap-2"
+            className="bg-gray-950  rounded-full font-medium flex gap-2"
             size={"lg"}
           >
-            Upload <UploadIcon />
+            <span className="text-sm font-semibold">Upload</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+              />
+            </svg>
           </Button>
         </div>
       </div>

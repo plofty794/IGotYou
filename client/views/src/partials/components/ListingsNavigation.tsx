@@ -46,12 +46,10 @@ function ListingsNavigation() {
             <SwiperSlide key={i}>
               <NavLink
                 to={`${v.path}`}
-                className="flex flex-col items-center justify-center gap-1 opacity-70"
+                className="flex flex-col items-center justify-center gap-1 opacity-70 text-xs font-semibold text-gray-600"
               >
                 {v.icon}
-                <span className="active text-xs font-semibold text-gray-600">
-                  {v.name}
-                </span>
+                {v.name}
               </NavLink>
             </SwiperSlide>
           ))}

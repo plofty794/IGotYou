@@ -36,10 +36,10 @@ function Pending({ user }: TUser) {
             className="w-full h-[220px] mx-auto"
           />
         </CardHeader>
-        <CardDescription className="px-6 pb-4 text-xl font-bold text-gray-950">
+        <CardDescription className="px-6 pb-4 text-2xl font-bold text-gray-950">
           Hello {user.username}!
         </CardDescription>
-        <CardContent className="flex flex-col gap-2 pb-4 text-sm text-gray-600 font-semibold">
+        <CardContent className="flex flex-col gap-2 pb-4 text-base text-gray-600 font-semibold">
           <span>
             We wanted to inform you that your subscription status is currently{" "}
             <span className="text-amber-700 font-bold">pending</span>. Our team
@@ -54,7 +54,7 @@ function Pending({ user }: TUser) {
           </span>
         </CardContent>
 
-        <Button className="ml-auto w-max px-6 font-bold text-sm rounded-full bg-gray-950 text-white mb-2 mr-4">
+        <Button className="ml-auto w-max p-6 font-semibold text-base rounded-full bg-gray-950 text-white mb-2 mr-4">
           <Link to={"/"} replace>
             {" "}
             Go back

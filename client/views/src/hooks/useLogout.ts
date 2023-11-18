@@ -12,8 +12,8 @@ function useLogOutUser() {
     try {
       await axiosPrivateRoute.delete("/api/users/current-user/logout");
       await auth.signOut();
+      queryClient.clear();
       dispatch({ type: "USER_LOGOUT", payload: null });
-      queryClient.removeQueries();
     } catch (err) {
       const error = err as AxiosError;
       if (error.response?.status === 400) {

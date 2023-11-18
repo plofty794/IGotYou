@@ -45,6 +45,10 @@ const listingSchema = new Schema(
       type: Date,
       required: true,
     },
+    serviceLocation: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

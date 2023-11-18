@@ -4,26 +4,11 @@ import { useOutletContext } from "react-router-dom";
 import CurrencyInput from "react-currency-input-field";
 import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
 import ErrorMessage from "@/partials/components/ErrorMessage";
-
-type TServiceProps = {
-  serviceType?: string;
-  serviceDescription?: string;
-  listingPhotos?: TFileType[];
-  price: number;
-};
-
-type TFileType = {
-  public_id: string;
-  secure_url: string;
-  original_filename: string;
-  bytes: number;
-  thumbnail_url: string;
-  format: string;
-};
+import { TListing } from "@/root layouts/BecomeAHostLayout";
 
 type TSetServiceType = {
-  setService: Dispatch<React.SetStateAction<TServiceProps | undefined>>;
-  service: TServiceProps;
+  setService: Dispatch<React.SetStateAction<TListing>>;
+  service: TListing;
 };
 
 function Price() {

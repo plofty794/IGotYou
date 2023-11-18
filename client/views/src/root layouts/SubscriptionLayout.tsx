@@ -58,7 +58,6 @@ function SubscriptionLayout() {
     <>
       {status === "success" && <Navigate to={`/users/show/${id}`} replace />}
       {<Navigate to={`/subscription/${id}/${step}`} replace />}
-
       <section className="relative min-h-screen">
         <form className="absolute bottom-0 w-full" onSubmit={handleFormSubmit}>
           {<Outlet context={{ paymentProofPhoto, setPaymentProofPhoto }} />}
@@ -152,15 +151,7 @@ function SubscriptionLayout() {
             )}
             {isLastPage && (
               <>
-                <Button
-                  variant={"link"}
-                  type="button"
-                  onClick={() => previous()}
-                  className="p-6 font-medium text-sm w-max"
-                >
-                  Cancel
-                </Button>
-                <Button className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white">
+                <Button className="rounded-full p-6 font-medium text-lg w-max bg-gray-950 ">
                   Done
                 </Button>
               </>

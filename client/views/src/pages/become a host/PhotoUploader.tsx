@@ -11,21 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MdOutlineAddAPhoto } from "react-icons/md";
-
-type TFileType = {
-  public_id: string;
-  secure_url: string;
-  original_filename?: string;
-  bytes: number;
-  thumbnail_url: string;
-  format: string;
-};
-
-type TListing = {
-  serviceType: string;
-  serviceDescription?: string;
-  listingPhotos: TFileType[];
-};
+import { TListing } from "@/root layouts/BecomeAHostLayout";
 
 type TSetServiceProps = {
   setService: Dispatch<React.SetStateAction<TListing>>;

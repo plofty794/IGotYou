@@ -43,33 +43,35 @@ function PromptUsername() {
   }
 
   return (
-    <section className="mt-12 flex flex-col items-center justify-center gap-4">
-      <Card className="flex flex-col items-center">
+    <section className="mt-16 flex flex-col items-center justify-center gap-4">
+      <Card className="flex flex-col items-center border-0 shadow-none">
         <CardHeader>
-          <Lottie animationData={wait} className="w-40 h-40" />
+          <Lottie animationData={wait} className="w-48 h-48" />
         </CardHeader>
         <CardContent>
-          <h1 className="text-base font-semibold text-gray-500">
+          <h1 className="text-xl font-bold">
             Oops! We noticed you don't have a username yet.
           </h1>
         </CardContent>
       </Card>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="text-xs font-semibold bg-gray-950 text-white">
+          <Button className="text-sm font-semibold bg-gray-950 rounded-full">
             Click here to proceed
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[475px]">
           <DialogHeader>
-            <DialogTitle>Add Username</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-xl">Add Username</DialogTitle>
+            <DialogDescription className="text-gray-600">
               Make your username here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(usernameSubmit)}>
             <div className="mt-4 flex flex-col gap-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="text-gray-600 font-semibold">
+                Username
+              </Label>
               <Input
                 {...register("username")}
                 id="username"
@@ -81,7 +83,7 @@ function PromptUsername() {
             </div>
             <DialogFooter className="mt-4">
               <Button
-                className="text-xs font-medium bg-[#222222] text-white"
+                className="text-sm font-medium bg-gray-950 rounded-full"
                 type="submit"
               >
                 {isPending ? (

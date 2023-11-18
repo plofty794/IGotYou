@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import ErrorMessage from "../ErrorMessage";
 import ParsePhoneNumber from "libphonenumber-js/mobile"; // isPossiblePhoneNumber, // isValidPhoneNumber,
 
@@ -55,24 +55,21 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
         {errors.mobile_phone && (
           <ErrorMessage message={errors.mobile_phone?.message} />
         )}
-        <div className="flex gap-2">
-          <Button className="mt-3 w-max font-semibold bg-[#222222] rounded-full text-xs">
+        <div className="mt-4 flex items-center gap-2">
+          <Button className="w-max font-semibold bg-gray-950 rounded-full text-xs">
             {mobilePhone != null && !isPending && "Edit"}
             {isPending && (
               // Default values shown
-              <l-dot-pulse size="43" speed="1.3" color="black"></l-dot-pulse>
+              <l-dot-pulse size="43" speed="1.3" color="white"></l-dot-pulse>
             )}
             {!mobilePhone && "Add"}
           </Button>
           {!mobileVerified && mobilePhone ? (
-            <Link
-              to={`/account/verify-phone/${id}`}
-              className={`mt-3 w-max font-semibold bg-[#222222] ${buttonVariants(
-                { size: "sm" }
-              )}`}
-            >
-              Verify mobile phone
-            </Link>
+            <Button className="bg-gray-950 rounded-full text-xs">
+              <Link to={`/account/verify-phone/${id}`}>
+                Verify mobile phone
+              </Link>
+            </Button>
           ) : (
             <></>
           )}

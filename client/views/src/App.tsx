@@ -39,12 +39,16 @@ import { auth } from "./firebase config/config";
 import ListingDate from "./pages/become a host/ListingDate";
 import ListingsLoader from "./partials/loaders/ListingsLoader";
 import Hosting from "./pages/Hosting";
+import HostingLayout from "./root layouts/HostingLayout";
+import VisitListing from "./pages/VisitListing";
+import ServiceLocation from "./pages/become a host/ServiceLocation";
 
 const About = lazy(() => import("./pages/About"));
 const Hero = lazy(() => import("./pages/Hero"));
 const VerifyPhone = lazy(() => import("./pages/PhoneVerify"));
 const Home = lazy(() => import("./pages/Home"));
 const Wishlists = lazy(() => import("./pages/Wishlists"));
+const Inbox = lazy(() => import("./pages/Inbox"));
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -90,6 +94,16 @@ function App() {
               )
             }
           />
+          <Route
+            path="listings/:id"
+            element={
+              User ?? token ?? identifier ? (
+                <VisitListing />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
         </Route>
 
         <Route
@@ -119,7 +133,7 @@ function App() {
             }
           />
           <Route
-            path="category/photography&videography"
+            path="/photography&videography"
             element={
               User ?? token ?? identifier ? (
                 <CategoryTwo />
@@ -128,10 +142,7 @@ function App() {
               )
             }
           />
-          <Route
-            path="category/audio&sound_services"
-            element={<CategoryThree />}
-          />
+          <Route path="/digital&audio-services" element={<CategoryThree />} />
           <Route
             path="category/events&entertainment"
             element={<CategoryFour />}
@@ -184,6 +195,16 @@ function App() {
             element={
               User ?? token ?? identifier ? (
                 <ServiceDescription />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="service-location"
+            element={
+              User ?? token ?? identifier ? (
+                <ServiceLocation />
               ) : (
                 <Navigate to={"/login"} replace />
               )
@@ -243,8 +264,11 @@ function App() {
 
         {/* HOSTING Route */}
 
-        <Route>
-          <Route path="/hosting" element={<Hosting />} />
+        <Route path="/" element={<HostingLayout />}>
+          <Route path="hosting" element={<Hosting />} />
+          <Route path="inbox" element={<Inbox />} />
+          <Route path="hosting" element={<Hosting />} />
+          <Route path="hosting" element={<Hosting />} />
         </Route>
 
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}

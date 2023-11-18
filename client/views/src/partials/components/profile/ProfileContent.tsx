@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import useVerifyEmail from "@/hooks/useVerifyEmail";
 import { auth } from "@/firebase config/config";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { MdCameraEnhance } from "react-icons/md";
 import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "firebase/auth";
@@ -33,6 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Link } from "react-router-dom";
+import Loader from "@/partials/loaders/Loader";
 dotPulse.register();
 
 const Listings = lazy(() => import("./Listings"));
@@ -50,7 +50,8 @@ type TProps = {
     mobileVerified: boolean;
     mobilePhone: string;
     photoUrl: string;
-    listings: TListings[];
+    listings: number;
+    activeListings: TListings[];
   };
 };
 
@@ -101,15 +102,16 @@ function ProfileContent({ profileData }: TProps) {
 
   return (
     <>
-      <section className="flex gap-16 px-24 mt-14 max-lg:flex-col max-w-7xl mx-auto">
-        <div className="flex flex-col justify-between w-[340px] h-[650px] max-lg:w-full">
-          <Card className="flex flex-col justify-center items-center w-[342px] max-lg:w-full px-22 py-5 shadow">
+      <section className="flex gap-16 mt-14 max-lg:flex-col w-5/6 mx-auto">
+        <div className="flex flex-col justify-between w-2/4 h-[650px] gap-4 max-lg:w-full">
+          <Card className="flex flex-col justify-center items-center w-full max-lg:w-full px-22 py-5 shadow-lg">
             <CardHeader className="p-4 relative">
               <Avatar className="w-[80px] h-[80px]">
                 <AvatarImage
                   loading="lazy"
                   className="max-h-full max-w-full object-cover hover:scale-105 transition-all"
                   src={
+                    auth.currentUser?.photoURL ??
                     photo ??
                     "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
                   }
@@ -122,7 +124,25 @@ function ProfileContent({ profileData }: TProps) {
                 type="button"
                 className="px-[0.70rem] py-2 rounded-full border absolute z-10 mx-auto bottom-2 right-2 text-center bg-zinc-600 text-zinc-200"
               >
-                <MdCameraEnhance />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
+                  />
+                </svg>
               </Button>
             </CardHeader>
             <CardFooter className="p-0 flex flex-col">
@@ -136,7 +156,7 @@ function ProfileContent({ profileData }: TProps) {
               </span>
             </CardFooter>
           </Card>
-          <Card className="w-[342px] max-lg:w-full">
+          <Card className="w-full max-lg:w-full shadow-lg">
             <CardHeader>
               <span className="text-xl font-semibold">
                 {profileData?.username ? (
@@ -199,7 +219,7 @@ function ProfileContent({ profileData }: TProps) {
               )}
             </CardContent>
           </Card>
-          <Card className="w-full">
+          <Card className="w-full shadow-lg">
             <CardHeader className="text-gray-950 px-6 pt-6 pb-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -268,16 +288,17 @@ function ProfileContent({ profileData }: TProps) {
               </div>
             </CardFooter>
           </Card>
-          {profileData.listings?.length ? (
-            <Suspense fallback={<h1>Loading...</h1>}>
+          {profileData.activeListings.length > 0 || profileData.listings > 0 ? (
+            <Suspense fallback={<Loader />}>
               <Listings
                 username={profileData?.username}
-                listings={profileData.listings}
+                listings={profileData.activeListings}
+                listingsCount={profileData.listings}
               />
             </Suspense>
           ) : profileData.emailVerified ? (
             <>
-              <Card className="w-full">
+              <Card className="w-full shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-center font-semibold text-lg text-gray-600">
                     You have no listings to show
@@ -298,7 +319,7 @@ function ProfileContent({ profileData }: TProps) {
             </>
           ) : (
             <>
-              <Card className="w-full">
+              <Card className="w-full shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-center font-semibold text-lg text-gray-600">
                     You have no listings to show

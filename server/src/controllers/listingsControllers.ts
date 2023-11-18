@@ -36,20 +36,14 @@ export const getListings: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getUserListings: RequestHandler = async (req, res, next) => {
+export const getUserListing: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
     if (!id) {
-      clearCookieAndThrowError(
-        res,
-        "A _id cookie is required to access this resource."
-      );
+      throw createHttpError(400, "Invalid listing id");
     }
-    const listings = await Listings.find({ host: id }).populate({
-      path: "host",
-      select: "email",
-    });
-    res.status(200).json({ listings });
+    const listing = await Listings.findById(id).populate("host");
+    res.status(200).json({ listing });
   } catch (error) {
     next(error);
   }
@@ -64,9 +58,6 @@ export const addListing: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
-    console.log(req.body);
-    // const host = await Users.findById(id)
-    // host?.subscriptionExpiresAt
     const newListing = await Listings.create({
       ...req.body,
       availableAt: new Date(req.body.date.from).toISOString(),

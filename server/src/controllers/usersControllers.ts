@@ -72,10 +72,19 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       );
     }
     const user = await Users.findById(id).populate("listings");
+
     if (!user) {
       res.clearCookie("_&!d");
       throw createHttpError(400, "No account with that id");
     }
+
+    const activeListings = await Listings.find({
+      host: user._id,
+      $where: function () {
+        return new Date(this.endsAt).getTime() >= Date.now();
+      },
+    });
+
     res.status(200).json({
       user: {
         _id: user._id,
@@ -86,16 +95,17 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         photoUrl: user.photoUrl ?? null,
         mobilePhone: user.mobilePhone,
         mobileVerified: user.mobileVerified,
-        listings: user.listings.length > 0 ? user.listings : null,
+        listings: user.listings.length,
         uid: user.uid,
         rating: user.rating,
-        reviews: user.reviews.length > 0 ? user.reviews : null,
         work: user.work,
         funFact: user.funFact,
         school: user.school,
         address: user.address,
         subscriptionStatus: user.subscriptionStatus,
         subscriptionExpiresAt: user.subscriptionExpiresAt,
+        wishlists: user.wishlists,
+        activeListings: activeListings,
       },
     });
   } catch (error) {
@@ -120,15 +130,16 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
         photoUrl: user.photoUrl ?? null,
         mobilePhone: user.mobilePhone,
         mobileVerified: user.mobileVerified,
-        listings: user.listings.length > 0 ? user.listings : null,
+        listings: user.listings,
         uid: user.uid,
         rating: user.rating,
-        reviews: user.reviews.length > 0 ? user.reviews : null,
         work: user.work,
         funFact: user.funFact,
         school: user.school,
         address: user.address,
         subscriptionStatus: user.subscriptionStatus,
+        subscriptionExpiresAt: user.subscriptionExpiresAt,
+        wishlists: user.wishlists,
       },
     });
   } catch (error) {
