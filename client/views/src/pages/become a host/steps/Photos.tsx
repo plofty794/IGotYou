@@ -21,10 +21,10 @@ function Photos() {
       >
         <section className="my-14 h-max flex flex-col items-center justify-center gap-4">
           <div className="text-center w-[1024px]">
-            <h1 className="text-3xl font-semibold">
+            <h1 className="text-4xl font-semibold">
               Add some photos of your service
             </h1>
-            <p className="text-gray-600 font-semibold text-sm">
+            <p className="text-gray-600 font-semibold text-lg">
               You'll need 5 images to start. You can add more and make changes
               later.
             </p>

@@ -41,28 +41,23 @@ function ForgotPassword() {
     <div className="bg-[#F2F2F2] min-h-screen flex flex-col gap-4 items-center justify-center">
       <Card className="flex items-center justify-center p-8">
         <CardHeader>
-          <Lottie
-            animationData={forgotPassword}
-            className="w-[300px] h-[300px]"
-          />
+          <Lottie animationData={forgotPassword} className="w-[300px] h-2/6" />
         </CardHeader>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <CardContent className="flex flex-col items-center gap-4 h-full p-8">
             <div className="flex flex-col items-center justify-center gap-3">
-              <span className="text-2xl font-bold text-[#222222]">
-                Forgot your password?
-              </span>
+              <span className="text-3xl font-bold">Forgot your password?</span>
               <Input
                 {...register("email")}
                 autoFocus
                 placeholder="Enter your email"
-                className="border-black text-xs font-medium"
+                className="text-sm font-medium"
               />
               {errors.email && <ErrorMessage message={errors.email?.message} />}
               <Button
                 disabled={isPending || !!errors.email?.message}
                 size={"lg"}
-                className="px-8 w-full text-xs font-semibold bg-gray-950 text-white rounded-full"
+                className="px-8 w-full text-sm font-semibold bg-gray-950 rounded-full"
               >
                 {isPending ? (
                   // Default values shown

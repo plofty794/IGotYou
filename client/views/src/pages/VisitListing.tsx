@@ -30,9 +30,23 @@ function VisitListing() {
       ) : (
         <section className="mx-auto w-5/6">
           <div className="pt-6 w-full flex justify-between items-center">
-            <h1 className="text-3xl font-semibold">
+            <span className="flex items-center gap-1 text-2xl font-semibold">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5"
+                />
+              </svg>
               {data?.data.listing.serviceDescription}
-            </h1>
+            </span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger
@@ -85,7 +99,26 @@ function VisitListing() {
           <div className="mt-7 w-full flex gap-4">
             <div className="flex flex-col gap-4 w-full">
               <div className="flex flex-col gap-1">
-                <span className="text-xl font-semibold">
+                <span className="text-lg font-semibold flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                    />
+                  </svg>
                   {data?.data.listing.serviceLocation}
                 </span>
                 <span className="font-medium">
@@ -124,9 +157,7 @@ function VisitListing() {
                       currency: "php",
                     },
                   })}{" "}
-                  <span className="text-sm font-semibold text-gray-600">
-                    service
-                  </span>
+                  <span className="uppercase text-sm">service</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>

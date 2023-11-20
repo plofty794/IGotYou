@@ -40,7 +40,7 @@ function SubscriptionPayment() {
               alt=""
             />
           </div>
-          <CardDescription className="text-sm text-gray-600 font-semibold">
+          <CardDescription className="text-lg text-gray-600 font-semibold">
             You can send your payment through Express Send or through scanning
             our QR code via GCash.
           </CardDescription>
@@ -57,9 +57,7 @@ function SubscriptionPayment() {
             <div className="flex flex-col gap-4 items-center justify-center">
               <div className="flex items-center justify-center gap-2">
                 <PaperPlaneIcon width={25} height={25} color="#005FE7" />
-                <span className="text-xl font-medium text-[#222222]">
-                  +639079251189
-                </span>
+                <span className="text-xl font-semibold">+639079251189</span>
               </div>
             </div>
           </div>

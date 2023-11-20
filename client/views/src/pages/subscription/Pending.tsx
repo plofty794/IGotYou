@@ -41,9 +41,9 @@ function Pending({ user }: TUser) {
         </CardDescription>
         <CardContent className="flex flex-col gap-2 pb-4 text-base text-gray-600 font-semibold">
           <span>
-            We wanted to inform you that your subscription status is currently{" "}
-            <span className="text-amber-700 font-bold">pending</span>. Our team
-            is working diligently to process your subscription, and we
+            We wanted to inform you that your subscription status is{" "}
+            <span className="text-amber-600 font-bold">currently pending</span>.
+            Our team is working diligently to process your subscription, and we
             appreciate your patience.
           </span>
           <span>

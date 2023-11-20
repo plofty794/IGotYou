@@ -102,8 +102,8 @@ function ProfileContent({ profileData }: TProps) {
 
   return (
     <>
-      <section className="flex gap-16 mt-14 max-lg:flex-col w-5/6 mx-auto">
-        <div className="flex flex-col justify-between w-2/4 h-[650px] gap-4 max-lg:w-full">
+      <section className="flex gap-16 my-14 max-lg:flex-col w-5/6 mx-auto">
+        <div className="flex flex-col justify-between w-2/4 h-max gap-4 max-lg:w-full">
           <Card className="flex flex-col justify-center items-center w-full max-lg:w-full px-22 py-5 shadow-lg">
             <CardHeader className="p-4 relative">
               <Avatar className="w-[80px] h-[80px]">

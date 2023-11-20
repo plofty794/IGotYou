@@ -5,6 +5,7 @@ import Listings from "../models/Listings";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
+import { add } from "date-fns";
 
 cloudinary.v2.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -51,6 +52,7 @@ export const getUserListing: RequestHandler = async (req, res, next) => {
 
 export const addListing: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
+
   try {
     if (!id) {
       clearCookieAndThrowError(
@@ -58,14 +60,21 @@ export const addListing: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
+
     const newListing = await Listings.create({
       ...req.body,
-      availableAt: new Date(req.body.date.from).toISOString(),
-      endsAt: new Date(req.body.date.to).toISOString(),
+      availableAt: new Date(req.body.date.from),
+      endsAt: add(new Date(req.body.date.to), {
+        hours: new Date(req.body.date.from).getHours(),
+        minutes: new Date(req.body.date.from).getMinutes(),
+        seconds: new Date(req.body.date.from).getSeconds(),
+      }),
       host: id,
     });
 
     await newListing.populate({ path: "host", select: "email" });
+
+    console.log(newListing.availableAt, newListing.endsAt);
 
     if (!newListing) {
       throw createHttpError(400, "Error creating a listing");

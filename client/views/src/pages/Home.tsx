@@ -14,22 +14,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { auth } from "@/firebase config/config";
 
 type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
+  uid: string;
 };
 
 function Home() {
-  const { listings } = useOutletContext<TOutletContext>();
+  const { listings, uid } = useOutletContext<TOutletContext>();
   const [wishlist, setWishlist] = useState(false);
 
   return (
     <>
-      <section className="px-8">
+      <section className="px-8 mt-2">
         {listings.pages[0].data.hosts.length > 0 ? (
           <>
-            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-8">
+            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-2">
               {listings.pages.map((page) =>
                 page.data.hosts.map((v, i) => (
                   <Card
@@ -38,7 +38,7 @@ function Home() {
                   >
                     <Link
                       to={`${
-                        auth.currentUser?.uid === v.host.uid
+                        uid === v.host.uid
                           ? `/users/show/${v.host.uid}`
                           : `/users/listings/${v._id}`
                       } `}
@@ -161,8 +161,8 @@ function Home() {
               animationData={noListing}
               className="w-64 h-64"
             />
-            <span className="text-gray-600 font-semibold text-lg">
-              No listings to show.
+            <span className="text-gray-600 font-bold text-xl">
+              No listings to show
             </span>
           </div>
         )}

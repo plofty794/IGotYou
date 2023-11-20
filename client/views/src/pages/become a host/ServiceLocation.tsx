@@ -43,10 +43,9 @@ function ServiceLocation() {
             <div className="geo service-location mb-1 w-2/5">
               <GeoapifyGeocoderAutocomplete
                 addDetails
-                type="postcode"
                 limit={10}
                 filterByCountryCode={["ph"]}
-                debounceDelay={500}
+                debounceDelay={700}
                 value={service.serviceLocation}
                 allowNonVerifiedHouseNumber={false}
                 skipIcons={true}

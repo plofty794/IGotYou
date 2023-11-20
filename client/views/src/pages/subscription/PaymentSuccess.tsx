@@ -31,7 +31,7 @@ function PaymentSuccessful() {
           </CardDescription>
         </CardHeader>
         <CardContent className="w-2/3 px-12 text-center">
-          <span className="text-lg font-semibold text-gray-600">
+          <span className="text-lg font-bold text-gray-600">
             Thank you for your subscription payment. We are processing your
             payment and it will be activated within 5-10 minutes.
           </span>

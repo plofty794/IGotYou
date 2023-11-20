@@ -68,7 +68,7 @@ function SubscriptionLayout() {
                 <Link to={"/"} replace>
                   <Button
                     type="button"
-                    className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                    className="rounded-full p-6 font-medium text-lg w-max bg-gray-950"
                   >
                     Go back
                   </Button>
@@ -76,7 +76,7 @@ function SubscriptionLayout() {
                 <Button
                   type="button"
                   onClick={() => next()}
-                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                  className="rounded-full p-6 font-medium text-lg w-max bg-gray-950"
                 >
                   {isFetching ? (
                     // Default values shown
@@ -105,7 +105,7 @@ function SubscriptionLayout() {
                 <Button
                   type="button"
                   onClick={() => next()}
-                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                  className="rounded-full p-6 font-medium text-lg w-max bg-gray-950"
                 >
                   {isFetching ? (
                     // Default values shown
@@ -134,7 +134,7 @@ function SubscriptionLayout() {
                   disabled={!paymentProofPhoto.public_id}
                   type="button"
                   onClick={() => next()}
-                  className="rounded-full p-6 font-medium text-lg w-max bg-[#222222] text-white"
+                  className="rounded-full p-6 font-medium text-lg w-max bg-gray-950"
                 >
                   {isFetching ? (
                     // Default values shown

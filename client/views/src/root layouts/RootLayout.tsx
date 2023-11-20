@@ -6,6 +6,12 @@ import Loader from "@/partials/loaders/Loader";
 import { Suspense, lazy } from "react";
 import ListingsNavigation from "@/partials/components/ListingsNavigation";
 import useGetListings from "@/hooks/useGetListings";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const AlertVerifyEmail = lazy(
   () => import("@/partials/components/AlertVerifyEmail")
@@ -14,11 +20,10 @@ const AlertVerifyEmail = lazy(
 function RootLayout() {
   const listings = useGetListings();
   const token = localStorage.getItem("token");
-  const User = auth.currentUser;
 
   return (
     <>
-      {listings.status === "success" && User ? (
+      {listings.status === "success" && auth.currentUser ? (
         <main className="min-h-screen">
           <nav className="bg-white shadow py-5 px-20 flex justify-between items-center">
             <Link to={"/"}>
@@ -31,10 +36,10 @@ function RootLayout() {
                 />
               </span>
             </Link>
-            <span className="flex justify-center items-center gap-5">
-              {User?.emailVerified ? (
+            <span className="flex justify-center items-center gap-4">
+              {auth.currentUser?.emailVerified ? (
                 <Button
-                  className="text-sm font-semibold text-gray-600 hover:bg-zinc-100 p-4 rounded-full"
+                  className="text-sm font-semibold hover:bg-zinc-100 rounded-full"
                   variant={"ghost"}
                 >
                   <Link to={"/hosting"} reloadDocument replace>
@@ -44,18 +49,45 @@ function RootLayout() {
                 </Button>
               ) : (
                 <Suspense>
-                  <AlertVerifyEmail User={User} />
+                  <AlertVerifyEmail User={auth.currentUser} />
                 </Suspense>
               )}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <span className="cursor-pointer">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                        />
+                      </svg>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Notifications</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <UserDropDownButton />
             </span>
           </nav>
           {listings.data?.pages[0]?.data.hosts.length > 0 && (
             <ListingsNavigation />
           )}
-          {<Outlet context={{ listings: listings.data }} />}
+          {
+            <Outlet
+              context={{ listings: listings.data, uid: auth.currentUser.uid }}
+            />
+          }
         </main>
-      ) : User == null && token == null ? (
+      ) : auth.currentUser == null && token == null ? (
         <Navigate to={"/login"} replace />
       ) : (
         <Loader />

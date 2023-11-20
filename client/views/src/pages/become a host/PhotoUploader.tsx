@@ -75,13 +75,13 @@ function PhotoUploader() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {service.listingPhotos.map((photo) => (
+                {service.listingPhotos.map((photo, i) => (
                   <>
                     <TableRow
                       className="text-xs text-zinc-500 font-medium hover:bg-zinc-100"
                       key={photo.public_id}
                     >
-                      <TableCell>
+                      <TableCell key={i}>
                         <img
                           className="rounded max-h-full max-w-full object-contain"
                           src={photo.thumbnail_url}
@@ -110,7 +110,7 @@ function PhotoUploader() {
               onClick={() => cloudinaryWidget.open()}
             >
               <LiaCloudUploadAltSolid />
-              <span className="text-sm font-semibold text-gray-600 w-[195px]">
+              <span className="text-base font-semibold text-gray-600 w-[195px]">
                 Click to upload images
               </span>
             </Button>

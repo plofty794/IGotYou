@@ -37,6 +37,7 @@ function Service() {
             {CATEGORIES().map((category, i) =>
               i != CATEGORIES().length - 1 ? (
                 <Button
+                  key={i}
                   onClick={() => {
                     setSelected(category.name);
                     setService((prev) => ({

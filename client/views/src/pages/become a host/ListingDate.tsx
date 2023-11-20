@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Dispatch, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { addDays, format, parseISO, subDays } from "date-fns";
+import { addDays, format, parseISO } from "date-fns";
 import pickADate from "../../assets/pick-a-date.json";
 import Lottie from "lottie-react";
 import { useOutletContext } from "react-router-dom";
@@ -32,7 +32,7 @@ function ListingDate() {
   const { setService } = useOutletContext<TSetServiceProps>();
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
-    to: addDays(new Date(), 20),
+    to: addDays(new Date(), 10),
   });
   const [isFadingIn, setIsFadingIn] = useState(true);
 
@@ -48,6 +48,8 @@ function ListingDate() {
     setTimeout(() => setIsFadingIn(false), 400);
   }, []);
 
+  console.log(date?.to);
+
   return (
     <ScrollArea
       className={`w-full h-[450px] rounded-md border transition-opacity ${
@@ -55,7 +57,7 @@ function ListingDate() {
       }`}
     >
       <section className="h-[400px] flex flex-col items-center justify-center gap-4">
-        <Lottie loop={false} animationData={pickADate} className="w-56 h-56" />
+        <Lottie loop={false} animationData={pickADate} className="w-52 h-52" />
         <span className="text-center w-3/4 font-bold text-5xl">
           It's time to set the availability dates for your fantastic listing.
         </span>
@@ -90,10 +92,7 @@ function ListingDate() {
               initialFocus
               mode="range"
               disabled={{
-                before: subDays(
-                  parseISO(userData?.data.user.subscriptionExpiresAt),
-                  30
-                ),
+                before: new Date(),
                 after: parseISO(userData?.data.user.subscriptionExpiresAt),
               }}
               fromYear={new Date().getFullYear()}

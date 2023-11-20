@@ -58,11 +58,11 @@ function ConfirmPayment() {
             <h1 className="text-3xl font-semibold text-[#222222]">
               Confirm your payment
             </h1>
-            <p className="text-sm font-semibold text-gray-600">
+            <p className="text-base font-semibold text-gray-600">
               Take a screenshot or download the photo of the proof of payment
               from GCash containing the amount and the Ref no. and upload it
               here.{" "}
-              <span className="mt-1 block font-bold text-amber-600">
+              <span className="text-sm mt-1 block font-bold text-amber-600">
                 Note: Make sure you include the Ref no. on the screenshot
               </span>
             </p>
@@ -88,7 +88,7 @@ function ConfirmPayment() {
               </div>
             ) : (
               <div className="p-12 flex flex-col items-center justify-center gap-2">
-                <span className="text-center text-xs font-semibold text-gray-600">
+                <span className="text-center text-sm font-semibold text-gray-600">
                   Your photo will be shown here
                 </span>
                 <svg
@@ -112,7 +112,7 @@ function ConfirmPayment() {
             disabled={!!paymentProofPhoto.public_id}
             type="button"
             onClick={() => cloudinaryWidget.open()}
-            className="bg-gray-950  rounded-full font-medium flex gap-2"
+            className="bg-gray-950 rounded-full font-medium flex gap-2"
             size={"lg"}
           >
             <span className="text-sm font-semibold">Upload</span>
