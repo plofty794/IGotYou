@@ -72,7 +72,6 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       );
     }
     const user = await Users.findById(id).populate("listings");
-
     if (!user) {
       res.clearCookie("_&!d");
       throw createHttpError(400, "No account with that id");

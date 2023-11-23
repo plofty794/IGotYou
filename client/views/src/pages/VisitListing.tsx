@@ -12,16 +12,21 @@ import useVisitListing from "@/hooks/useVisitListing";
 import Loader from "@/partials/loaders/Loader";
 import { useEffect, useState } from "react";
 import { formatValue } from "react-currency-input-field";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:4030");
 
 function VisitListing() {
   const [wishlist, setWishlist] = useState(false);
   const { data, isPending } = useVisitListing();
 
-  console.log(data?.data.listing);
-
   useEffect(() => {
     document.title = "View Listing - IGotYou";
   }, []);
+
+  function sendEmitter() {
+    socket.emit("send-emitter", `Hello from ${socket.id} MIRAS`);
+  }
 
   return (
     <>
@@ -76,20 +81,20 @@ function VisitListing() {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden">
+          <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden h-72">
             <img
               src={data?.data.listing.listingPhotos[0].secure_url}
               className="object-cover max-h-full max-w-full h-full w-full"
               loading="lazy"
             />
-            <div className="grid grid-cols-2 gap-1 h-full">
+            <div className="grid grid-cols-2 gap-1 h-max">
               {data?.data.listing.listingPhotos.map(
                 (photo: TListingPhoto, i: number) =>
                   i != 0 && (
                     <img
                       key={photo._id}
                       src={photo.secure_url}
-                      className="object-cover max-h-full max-w-full h-full w-full"
+                      className="object-cover max-w-full h-36 w-full"
                       loading="lazy"
                     />
                   )
@@ -180,13 +185,56 @@ function VisitListing() {
                       ).toDateString()}
                     </span>
                   </div>
-                  <div className="p-2 border-t border-gray-400  col-span-full">
-                    Guest
-                  </div>
                 </div>
-                <Button className="mt-6 w-full p-6 bg-gray-950 text-base font-semibold">
-                  Book
+                <Button
+                  onClick={sendEmitter}
+                  className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full"
+                >
+                  Continue
                 </Button>
+                {/* <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
+                      Continue
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl">
+                        Request to book
+                      </DialogTitle>
+                      <DialogDescription>
+                        Make changes to your profile here. Click save when
+                        you're done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                          Name
+                        </Label>
+                        <Input
+                          id="name"
+                          value="Pedro Duarte"
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="username" className="text-right">
+                          Username
+                        </Label>
+                        <Input
+                          id="username"
+                          value="@peduarte"
+                          className="col-span-3"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit">Save changes</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog> */}
               </CardContent>
             </Card>
           </div>

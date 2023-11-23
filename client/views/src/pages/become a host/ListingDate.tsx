@@ -48,8 +48,6 @@ function ListingDate() {
     setTimeout(() => setIsFadingIn(false), 400);
   }, []);
 
-  console.log(date?.to);
-
   return (
     <ScrollArea
       className={`w-full h-[450px] rounded-md border transition-opacity ${

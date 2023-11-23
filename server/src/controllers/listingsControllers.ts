@@ -74,25 +74,10 @@ export const addListing: RequestHandler = async (req, res, next) => {
 
     await newListing.populate({ path: "host", select: "email" });
 
-    console.log(newListing.availableAt, newListing.endsAt);
-
     if (!newListing) {
       throw createHttpError(400, "Error creating a listing");
     }
-    const user = await Users.findById(id);
-    if (!user?.userStatus && user != null) {
-      await Users.findByIdAndUpdate(
-        id,
-        {
-          hostStatus: "host",
-          $push: {
-            listings: newListing._id,
-          },
-        },
-        { new: true }
-      );
-      return res.status(200).json({ newListing });
-    }
+
     await Users.findByIdAndUpdate(
       id,
       {

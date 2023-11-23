@@ -42,7 +42,6 @@ import Hosting from "./pages/Hosting";
 import HostingLayout from "./root layouts/HostingLayout";
 import VisitListing from "./pages/VisitListing";
 import ServiceLocation from "./pages/become a host/ServiceLocation";
-
 const About = lazy(() => import("./pages/About"));
 const Hero = lazy(() => import("./pages/Hero"));
 const VerifyPhone = lazy(() => import("./pages/PhoneVerify"));

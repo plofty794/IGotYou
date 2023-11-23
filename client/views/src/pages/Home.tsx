@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Mousewheel, Navigation, Pagination } from "swiper/modules";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Lottie from "lottie-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import noListing from "../assets/no-listings.json";
 import { InfiniteData } from "@tanstack/react-query";
@@ -19,10 +19,22 @@ type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
   uid: string;
 };
+import { io } from "socket.io-client";
+const socket = io("http://localhost:4030");
+
+socket.on("connect", () =>
+  console.log("You're connected with the socket ID of ", socket.id)
+);
 
 function Home() {
   const { listings, uid } = useOutletContext<TOutletContext>();
   const [wishlist, setWishlist] = useState(false);
+
+  useEffect(() => {
+    document.title = "IGotYou";
+
+    socket.on("connect", () => console.log(socket.id));
+  }, []);
 
   return (
     <>
