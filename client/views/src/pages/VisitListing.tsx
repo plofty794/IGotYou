@@ -1,14 +1,26 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { auth } from "@/firebase config/config";
 import useVisitListing from "@/hooks/useVisitListing";
+import DatePicker from "@/partials/components/DatePicker";
 import Loader from "@/partials/loaders/Loader";
 import { useEffect, useState } from "react";
 import { formatValue } from "react-currency-input-field";
@@ -17,6 +29,7 @@ import { io } from "socket.io-client";
 const socket = io("http://localhost:4030");
 
 function VisitListing() {
+  const [message, setMessage] = useState("");
   const [wishlist, setWishlist] = useState(false);
   const { data, isPending } = useVisitListing();
 
@@ -24,9 +37,16 @@ function VisitListing() {
     document.title = "View Listing - IGotYou";
   }, []);
 
-  function sendEmitter() {
-    socket.emit("send-emitter", `Hello from ${socket.id} MIRAS`);
+  function sendEmitter({ guest, host }: { guest?: string; host: string }) {
+    socket.emit("send-bookingRequest", {
+      guestName: guest,
+      host: host,
+    });
   }
+
+  console.log(
+    new Date(data?.data.listing.host.subscriptionExpiresAt).toDateString()
+  );
 
   return (
     <>
@@ -81,7 +101,7 @@ function VisitListing() {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden h-72">
+          <div className="shadow-md border mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden h-72">
             <img
               src={data?.data.listing.listingPhotos[0].secure_url}
               className="object-cover max-h-full max-w-full h-full w-full"
@@ -126,8 +146,8 @@ function VisitListing() {
                   </svg>
                   {data?.data.listing.serviceLocation}
                 </span>
-                <span className="font-medium">
-                  {data?.data.listing.serviceType}
+                <span className="font-medium text-sm">
+                  Category: {data?.data.listing.serviceType}
                 </span>
                 <div className="flex items-center">
                   <span>{data?.data.listing.host.rating}</span>
@@ -186,55 +206,60 @@ function VisitListing() {
                     </span>
                   </div>
                 </div>
-                <Button
-                  onClick={sendEmitter}
-                  className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full"
-                >
-                  Continue
-                </Button>
-                {/* <Dialog>
+                <Dialog>
                   <DialogTrigger asChild>
                     <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
-                      Continue
+                      Request a booking
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle className="text-2xl">
-                        Request to book
+                      <DialogTitle className="text-xl font-semibold">
+                        Choose a date
                       </DialogTitle>
-                      <DialogDescription>
-                        Make changes to your profile here. Click save when
-                        you're done.
-                      </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                          Name
-                        </Label>
-                        <Input
-                          id="name"
-                          value="Pedro Duarte"
-                          className="col-span-3"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="username" className="text-right">
-                          Username
-                        </Label>
-                        <Input
-                          id="username"
-                          value="@peduarte"
-                          className="col-span-3"
+                    <div className="mt-4 flex flex-col gap-8 items-center justify-center">
+                      <DatePicker
+                        subscriptionExpiresAt={
+                          data?.data.listing.host.subscriptionExpiresAt
+                        }
+                      />
+                      <div className="w-full">
+                        <div className="w-full flex justify-between items-center mb-1">
+                          <Label htmlFor="message" className="font-semibold">
+                            Write a message to the host
+                          </Label>
+                          <span className="text-gray-600 text-xs font-bold">
+                            {message.length} / 100
+                          </span>
+                        </div>
+                        <Textarea
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          maxLength={100}
+                          placeholder="Type your message here."
+                          id="message"
                         />
                       </div>
                     </div>
-                    <DialogFooter>
-                      <Button type="submit">Save changes</Button>
+                    <DialogFooter className="mt-4">
+                      <Button
+                        className="bg-gray-950 rounded-full p-5"
+                        onClick={() =>
+                          sendEmitter({
+                            guest: auth.currentUser?.displayName as
+                              | string
+                              | undefined,
+                            host: data?.data.listing.host.username,
+                          })
+                        }
+                        disabled={message.length < 1}
+                      >
+                        Send request
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
-                </Dialog> */}
+                </Dialog>
               </CardContent>
             </Card>
           </div>

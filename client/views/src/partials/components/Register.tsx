@@ -46,7 +46,7 @@ function Register() {
           </Label>
           <Input
             id="email"
-            className="border-slate-300 font-medium"
+            className="border-slate-400 font-medium"
             autoComplete="email"
             type="text"
             {...register("email")}
@@ -57,7 +57,7 @@ function Register() {
           </Label>
           <Input
             id="password"
-            className="border-slate-300 font-medium"
+            className="border-slate-400 font-medium"
             type="password"
             {...register("password")}
           />
@@ -72,7 +72,7 @@ function Register() {
           </Label>
           <Input
             id="confirmPassword"
-            className="border-slate-300 font-medium"
+            className="border-slate-400 font-medium"
             type="password"
             {...register("confirmPassword")}
           />

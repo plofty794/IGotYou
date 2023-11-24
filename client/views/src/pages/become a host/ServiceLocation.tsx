@@ -30,7 +30,7 @@ function ServiceLocation() {
         }`}
       >
         <section className="my-28 flex flex-col items-center justify-center gap-4">
-          <div className="text-center w-2/4">
+          <div className="flex flex-col gap-2 text-center w-2/4">
             <h1 className="text-4xl font-semibold">
               Where's your place located?
             </h1>

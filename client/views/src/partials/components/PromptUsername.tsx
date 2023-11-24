@@ -22,6 +22,8 @@ import { dotPulse } from "ldrs";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Lottie from "lottie-react";
 import wait from "../../assets/wait.json";
+import { updateProfile } from "firebase/auth";
+import { auth } from "@/firebase config/config";
 
 dotPulse.register();
 
@@ -38,8 +40,14 @@ function PromptUsername() {
     resolver: zodResolver(ZodPromptUsernameSchema),
   });
 
-  function usernameSubmit(data: PromptUsernameSchema) {
-    mutate({ ...data });
+  async function usernameSubmit(data: PromptUsernameSchema) {
+    try {
+      auth.currentUser &&
+        (await updateProfile(auth.currentUser, { displayName: data.username }));
+      mutate({ ...data });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (

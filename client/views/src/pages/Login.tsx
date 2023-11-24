@@ -80,7 +80,7 @@ function Login() {
               </Label>
               <Input
                 id="email"
-                className="font-medium border-gray-300"
+                className="font-medium border-gray-400"
                 autoFocus
                 autoComplete="email"
                 type="text"
@@ -90,7 +90,7 @@ function Login() {
               <Label className="text-gray-600 font-semibold">Password</Label>
               <Input
                 id="password"
-                className="font-medium border-gray-300"
+                className="font-medium border-gray-400"
                 type="password"
                 {...register("password")}
               />

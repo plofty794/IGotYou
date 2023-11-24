@@ -19,12 +19,6 @@ type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
   uid: string;
 };
-import { io } from "socket.io-client";
-const socket = io("http://localhost:4030");
-
-socket.on("connect", () =>
-  console.log("You're connected with the socket ID of ", socket.id)
-);
 
 function Home() {
   const { listings, uid } = useOutletContext<TOutletContext>();
@@ -32,8 +26,6 @@ function Home() {
 
   useEffect(() => {
     document.title = "IGotYou";
-
-    socket.on("connect", () => console.log(socket.id));
   }, []);
 
   return (

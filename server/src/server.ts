@@ -27,17 +27,59 @@ const io = new Server(server, {
   },
 });
 
-type TUsers = {
+type TActiveUsers = {
   name: string;
-  id: string;
+  uid: string;
+  socketId: string;
 };
 
-const users: TUsers[] = [];
+let onlineUsers: TActiveUsers[] = [];
+
+function getActiveUsers({ name, uid, socketId }: TActiveUsers) {
+  !onlineUsers.some((user) => user.name === name) &&
+    onlineUsers.push({ name, uid, socketId });
+}
+
+function removeActiveUser(name: string) {
+  onlineUsers = onlineUsers.filter((user) => user.name != name);
+}
+
+function findActiveUser(host: string) {
+  return onlineUsers.find((user) => host === user.name);
+}
+
+function removeUser(socketId: string) {
+  onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
+}
 
 io.on("connection", (socket) => {
-  console.log(`A user has been connected ${socket.id}`);
-  socket.on("send-emitter", (data) => console.log(data));
-  socket.on("disconnect", () => console.log("user disconnected"));
+  socket.on("user-connect", (data) => {
+    getActiveUsers({
+      name: data.name,
+      uid: data.uid,
+      socketId: socket.id,
+    });
+    console.log(onlineUsers);
+  });
+
+  socket.on("send-bookingRequest", (data) => {
+    const activeUser = findActiveUser(data.host);
+    console.log(activeUser);
+    if (activeUser) {
+      console.log(activeUser.socketId);
+      io.to(activeUser.socketId).emit("pong", "notification");
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    removeUser(socket.id);
+    socket.on("user-logout", (name) => {
+      removeActiveUser(name);
+      socket.disconnect();
+      console.log(onlineUsers);
+    });
+  });
 });
 
 // import ipinfoMiddleware, { defaultIPSelector } from "ipinfo-express";

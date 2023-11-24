@@ -24,39 +24,6 @@ const notificationSchema = new Schema(
   { timestamps: true }
 );
 
-const bookingRequestSchema = new Schema(
-  {
-    guest: {
-      type: Types.ObjectId,
-      ref: "Users",
-      required: true,
-    },
-    host: {
-      type: Types.ObjectId,
-      ref: "Users",
-      required: true,
-    },
-    startDate: {
-      type: Date,
-      required: true,
-    },
-    endDate: {
-      type: Date,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["pending", "confirmed", "rejected"],
-      default: "pending",
-    },
-  },
-  { timestamps: true }
-);
-
 const wishlistsSchema = new Schema(
   {
     wishlistTitle: {
@@ -158,8 +125,9 @@ const usersSchema = new Schema(
       type: String,
       enum: ["pending", "active", "expired", "reject"],
     },
-    bookingRequests: {
-      type: [bookingRequestSchema],
+    bookings: {
+      type: [Types.ObjectId],
+      ref: "Bookings",
     },
     subscriptionExpiresAt: {
       type: Date,

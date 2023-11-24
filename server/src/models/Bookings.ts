@@ -1,6 +1,6 @@
-import { Schema, InferSchemaType, model, Types } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
-const acceptedBookingRequests = new Schema(
+const bookingSchema = new Schema(
   {
     guest: {
       type: Types.ObjectId,
@@ -18,39 +18,10 @@ const acceptedBookingRequests = new Schema(
       type: String,
       required: true,
     },
-  },
-  { timestamps: true }
-);
-
-const rejectBookingRequests = new Schema(
-  {
-    guest: {
-      type: Types.ObjectId,
-      ref: "Users",
-    },
-    bookingTime: {
-      type: Number,
-      required: true,
-    },
-    bookingDate: {
-      type: Date,
-      required: true,
-    },
-    message: {
+    status: {
       type: String,
-      required: true,
-    },
-  },
-  { timestamps: true }
-);
-
-const bookingSchema = new Schema(
-  {
-    acceptedBookingRequests: {
-      type: [acceptedBookingRequests],
-    },
-    rejectBookingRequests: {
-      type: [rejectBookingRequests],
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
   },
   { timestamps: true }

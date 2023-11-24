@@ -10,7 +10,7 @@ import RootLayout from "./root layouts/RootLayout";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import PageNotFound from "./pages/PageNotFound";
-import { Suspense, lazy, useContext, useState } from "react";
+import { Suspense, lazy, useContext, useEffect, useState } from "react";
 import { verifyPhoneLoader } from "./constants/loaders/verifyPhoneLoader";
 import HeroLayout from "./root layouts/HeroLayout";
 import CategoryTwo from "./pages/categories/CategoryTwo";
@@ -48,18 +48,30 @@ const VerifyPhone = lazy(() => import("./pages/PhoneVerify"));
 const Home = lazy(() => import("./pages/Home"));
 const Wishlists = lazy(() => import("./pages/Wishlists"));
 const Inbox = lazy(() => import("./pages/Inbox"));
+import { SocketContextProvider } from "./context/SocketContext";
 
 function App() {
   const [User, setUser] = useState<User | null>();
+  const { socket } = useContext(SocketContextProvider);
   const identifier = localStorage.getItem("token");
   const {
     state: { token },
   } = useContext(UserStateContextProvider);
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) return setUser(null);
-    setUser(user);
-  });
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        return setUser(null);
+      } else {
+        setUser(user);
+        socket &&
+          socket.emit("user-connect", {
+            name: user.displayName,
+            uid: user.uid,
+          });
+      }
+    });
+  }, [User, socket]);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
