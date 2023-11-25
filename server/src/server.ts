@@ -10,6 +10,7 @@ import { assetRoutes } from "./routes/assetRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { paymentRoutes } from "./routes/paymentRoutes";
 import { Server } from "socket.io";
+import { sendBookingRequest } from "./controllers/bookingsControllers";
 
 const app = express();
 const server = app
@@ -59,15 +60,16 @@ io.on("connection", (socket) => {
       uid: data.uid,
       socketId: socket.id,
     });
-    console.log(onlineUsers);
   });
 
-  socket.on("send-bookingRequest", (data) => {
+  socket.on("send-bookingRequest", async (data) => {
     const activeUser = findActiveUser(data.host);
-    console.log(activeUser);
     if (activeUser) {
-      console.log(activeUser.socketId);
-      io.to(activeUser.socketId).emit("pong", "notification");
+      await sendBookingRequest(data);
+      io.to(activeUser.socketId).emit("pong", {
+        ...data,
+        time: new Date().toLocaleTimeString(),
+      });
     }
   });
 
@@ -77,7 +79,6 @@ io.on("connection", (socket) => {
     socket.on("user-logout", (name) => {
       removeActiveUser(name);
       socket.disconnect();
-      console.log(onlineUsers);
     });
   });
 });

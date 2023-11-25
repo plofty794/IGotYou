@@ -49,6 +49,8 @@ const Home = lazy(() => import("./pages/Home"));
 const Wishlists = lazy(() => import("./pages/Wishlists"));
 const Inbox = lazy(() => import("./pages/Inbox"));
 import { SocketContextProvider } from "./context/SocketContext";
+import BookingLayout from "./root layouts/BookingLayout";
+import MakeABooking from "./pages/MakeABooking";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -100,16 +102,6 @@ function App() {
             element={
               User ?? token ?? identifier ? (
                 <VisitProfile />
-              ) : (
-                <Navigate replace to={"/login"} />
-              )
-            }
-          />
-          <Route
-            path="listings/:id"
-            element={
-              User ?? token ?? identifier ? (
-                <VisitListing />
               ) : (
                 <Navigate replace to={"/login"} />
               )
@@ -273,8 +265,13 @@ function App() {
           />
         </Route>
 
-        {/* HOSTING Route */}
+        {/* BOOKING Route */}
+        <Route path="/booking" element={<BookingLayout />}>
+          <Route path="show/:id" element={<VisitListing />} />
+          <Route path="create/:id" element={<MakeABooking />} />
+        </Route>
 
+        {/* HOSTING Route */}
         <Route path="/" element={<HostingLayout />}>
           <Route path="hosting" element={<Hosting />} />
           <Route path="inbox" element={<Inbox />} />

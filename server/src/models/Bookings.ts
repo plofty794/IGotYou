@@ -6,11 +6,11 @@ const bookingSchema = new Schema(
       type: Types.ObjectId,
       ref: "Users",
     },
-    bookingStartsAt: {
-      type: DataView,
+    requestedBookingDateStartsAt: {
+      type: Date,
       required: true,
     },
-    bookingEndsAt: {
+    requestedBookingDateEndsAt: {
       type: Date,
       required: true,
     },
@@ -26,7 +26,6 @@ const bookingSchema = new Schema(
   },
   { timestamps: true }
 );
-
 const Booking = model("Bookings", bookingSchema);
 
 export default Booking;

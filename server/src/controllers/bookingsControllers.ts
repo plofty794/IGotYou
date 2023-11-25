@@ -1,12 +1,44 @@
-import { RequestHandler } from "express";
 import Booking from "../models/Bookings";
+import Users from "../models/Users";
 
-export const sendBookingRequest: RequestHandler = async (req, res, next) => {
-  const id = req.cookies["_&!d"];
-  const { _id } = req.body;
+type TData = {
+  guestName: string;
+  host?: string;
+  date: { from: string; to: string };
+  message: string;
+  type: string;
+};
+
+export const sendBookingRequest = async (data: TData) => {
+  console.log(data);
   try {
-    const booking = await Booking.findOne({ _id });
+    const guest = await Users.findOne({ username: data.guestName }).exec();
+
+    if (!guest) {
+      throw new Error("User didn't exist");
+    }
+
+    const newBooking = await Booking.create({
+      ...data,
+      guest: guest._id,
+      requestedBookingDateStartsAt: data.date.from,
+      requestedBookingDateEndsAt: data.date.to,
+    });
+
+    const userNotifications = await Users.findOneAndUpdate(
+      { username: data.host },
+      {
+        $push: {
+          notifications: {
+            type: data.type,
+            message: data.message,
+            senderName: data.guestName,
+          },
+        },
+      }
+    );
+    return { newBooking, userNotifications };
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };

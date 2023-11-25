@@ -4,21 +4,48 @@ import bcrypt from "bcrypt";
 
 const notificationSchema = new Schema(
   {
-    title: {
+    type: {
       type: String,
       required: true,
     },
-    content: {
+    message: {
       type: String,
       required: true,
     },
-    sender: {
-      type: Types.ObjectId,
-      ref: "Users",
+    senderName: {
+      type: String,
+      required: true,
     },
     read: {
       type: Boolean,
       default: false,
+    },
+  },
+  { timestamps: true, expires: 3000 }
+);
+
+const bookingRequests = new Schema(
+  {
+    host: {
+      type: Types.ObjectId,
+      ref: "Users",
+    },
+    bookingStartsAt: {
+      type: Date,
+      required: true,
+    },
+    bookingEndsAt: {
+      type: Date,
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
   },
   { timestamps: true }
@@ -124,6 +151,9 @@ const usersSchema = new Schema(
     subscriptionStatus: {
       type: String,
       enum: ["pending", "active", "expired", "reject"],
+    },
+    bookingRequests: {
+      type: [bookingRequests],
     },
     bookings: {
       type: [Types.ObjectId],

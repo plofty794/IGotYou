@@ -1,20 +1,14 @@
-import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
-import { addDays } from "date-fns";
+import { Dispatch, SetStateAction } from "react";
+import { DateRange } from "react-day-picker";
 
 type TProps = {
   subscriptionExpiresAt: string;
+  date: DateRange | undefined;
+  setDate: Dispatch<SetStateAction<DateRange | undefined>>;
 };
 
-function DatePicker({ subscriptionExpiresAt }: TProps) {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(Date.now(), 2),
-  });
-
-  console.log(date);
-
+function DatePicker({ subscriptionExpiresAt, date, setDate }: TProps) {
   return (
     <Calendar
       className="w-max mx-auto p-0"

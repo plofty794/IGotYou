@@ -27,13 +27,6 @@ export const getHosts: RequestHandler = async (req, res, next) => {
     if (!hosts.length) {
       return res.status(200).json({ hosts: [] });
     }
-    // const _hosts = hosts.filter(
-    //   (user) =>
-    //     user.listings.length > 0 &&
-    //     user.subscriptionStatus === "active" &&
-    //     user.hostStatus === "host"
-    // );
-
     res.status(200).json({ hosts });
   } catch (error) {
     next(error);
@@ -115,7 +108,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
 export const visitUserProfile: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await Users.findOne({ uid: id }).populate("listings");
+    const user = await Users.findById(id).populate("listings");
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
