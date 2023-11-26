@@ -274,7 +274,7 @@ function App() {
         {/* HOSTING Route */}
         <Route path="/" element={<HostingLayout />}>
           <Route path="hosting" element={<Hosting />} />
-          <Route path="inbox" element={<Inbox />} />
+          <Route path="hosting-inbox" element={<Inbox />} />
           <Route path="hosting" element={<Hosting />} />
           <Route path="hosting" element={<Hosting />} />
         </Route>

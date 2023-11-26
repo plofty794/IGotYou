@@ -63,13 +63,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send-bookingRequest", async (data) => {
-    const activeUser = findActiveUser(data.host);
-    if (activeUser) {
-      await sendBookingRequest(data);
-      io.to(activeUser.socketId).emit("pong", {
-        ...data,
-        time: new Date().toLocaleTimeString(),
-      });
+    try {
+      const activeUser = findActiveUser(data.host);
+      if (activeUser) {
+        const res = await sendBookingRequest(data);
+        io.to(activeUser.socketId).emit("pong", {
+          notifications: res?.newNotification,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   });
 

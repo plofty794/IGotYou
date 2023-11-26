@@ -33,15 +33,24 @@ function MakeABooking() {
     to: addDays(Date.now(), 2),
   });
 
-  function sendEmitter({ guest, host }: { guest?: string; host: string }) {
+  function sendEmitter({
+    guest,
+    host,
+    listingID,
+  }: {
+    guest?: string;
+    host: string;
+    listingID: string;
+  }) {
     setTimeout(
       () =>
         socket?.emit("send-bookingRequest", {
           guestName: guest,
-          host: host,
-          date: date,
-          message: message,
+          host,
+          date,
+          message,
           type: "booking-request",
+          listingID,
         }),
       1000
     );
@@ -154,6 +163,7 @@ function MakeABooking() {
                   sendEmitter({
                     guest: auth.currentUser?.displayName as string | undefined,
                     host: listing.host.username,
+                    listingID: listing._id,
                   });
                 }, 1000);
               }}

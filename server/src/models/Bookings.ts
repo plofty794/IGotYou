@@ -2,15 +2,19 @@ import { Schema, model, Types } from "mongoose";
 
 const bookingSchema = new Schema(
   {
+    host: {
+      type: Types.ObjectId,
+      ref: "Users",
+    },
     guest: {
       type: Types.ObjectId,
       ref: "Users",
     },
-    requestedBookingDateStartsAt: {
+    bookingStartsAt: {
       type: Date,
       required: true,
     },
-    requestedBookingDateEndsAt: {
+    bookingEndsAt: {
       type: Date,
       required: true,
     },
@@ -18,10 +22,13 @@ const bookingSchema = new Schema(
       type: String,
       required: true,
     },
+    listingID: {
+      type: Types.ObjectId,
+      ref: "Listings",
+    },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["approved", "rejected"],
     },
   },
   { timestamps: true }

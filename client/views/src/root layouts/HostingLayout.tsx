@@ -40,7 +40,10 @@ function HostingLayout() {
               <NavLink to={"/hosting"} className="font-medium text-gray-600">
                 Today
               </NavLink>
-              <NavLink to={"/inbox"} className="font-medium text-gray-600">
+              <NavLink
+                to={"/hosting-inbox"}
+                className="font-medium text-gray-600"
+              >
                 Inbox
               </NavLink>
               <NavLink to={"/calendar"} className="font-medium text-gray-600">

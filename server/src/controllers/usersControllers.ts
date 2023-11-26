@@ -4,6 +4,7 @@ import Users from "../models/Users";
 import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
+import Notifications from "../models/Notifications";
 
 export const getHosts: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
@@ -49,6 +50,39 @@ export const getUserPhone: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "No account with that id");
     }
     res.status(200).json({ user: { mobilePhone: user.mobilePhone } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCurrentUserNotifications: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const userNotifications = await Notifications.find({ receiverID: id })
+      .populate([
+        { select: ["username", "photoUrl"], path: "senderID" },
+        { select: ["username", "photoUrl"], path: "receiverID" },
+      ])
+      .sort({ createdAt: "desc" })
+      .exec();
+
+    if (!userNotifications) {
+      return res.status(200).json({ notifications: [] });
+    }
+
+    res.status(200).json({ notifications: userNotifications });
   } catch (error) {
     next(error);
   }

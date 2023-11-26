@@ -2,39 +2,17 @@ import { Schema, InferSchemaType, model, Types } from "mongoose";
 import env from "../utils/envalid";
 import bcrypt from "bcrypt";
 
-const notificationSchema = new Schema(
-  {
-    type: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    senderName: {
-      type: String,
-      required: true,
-    },
-    read: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  { timestamps: true, expires: 3000 }
-);
-
 const bookingRequests = new Schema(
   {
     host: {
       type: Types.ObjectId,
       ref: "Users",
     },
-    bookingStartsAt: {
+    requestedBookingDateStartsAt: {
       type: Date,
       required: true,
     },
-    bookingEndsAt: {
+    requestedBookingDateEndsAt: {
       type: Date,
       required: true,
     },
@@ -46,6 +24,10 @@ const bookingRequests = new Schema(
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
+    },
+    listingID: {
+      type: Types.ObjectId,
+      ref: "Listings",
     },
   },
   { timestamps: true }
@@ -152,9 +134,6 @@ const usersSchema = new Schema(
       type: String,
       enum: ["pending", "active", "expired", "reject"],
     },
-    bookingRequests: {
-      type: [bookingRequests],
-    },
     bookings: {
       type: [Types.ObjectId],
       ref: "Bookings",
@@ -162,12 +141,16 @@ const usersSchema = new Schema(
     subscriptionExpiresAt: {
       type: Date,
     },
-    // Guest details
+    // Other details
     wishlists: {
       type: [wishlistsSchema],
     },
     notifications: {
-      type: [notificationSchema],
+      type: [Types.ObjectId],
+      ref: "Notifications",
+    },
+    bookingRequests: {
+      type: [bookingRequests],
     },
   },
   { timestamps: true }

@@ -17,7 +17,7 @@ function AlertVerifyEmail({ User }: { User: User }) {
   const navigate = useNavigate();
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="text-sm text-[#222222] font-medium hover:bg-zinc-100 p-4 rounded-full">
+      <AlertDialogTrigger className="text-sm font-semibold hover:bg-zinc-100 p-4 rounded-full">
         Want to host?
       </AlertDialogTrigger>
       <AlertDialogContent className="p-0 gap-0">

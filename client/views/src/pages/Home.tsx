@@ -70,7 +70,7 @@ function Home() {
                               <img
                                 key={photo._id}
                                 loading="lazy"
-                                className="rounded-lg max-h-full max-w-full h-72 mx-auto object-cover"
+                                className="rounded-lg max-h-full max-w-full h-72 w-full mx-auto object-cover"
                                 src={photo.secure_url}
                               />
                             </SwiperSlide>

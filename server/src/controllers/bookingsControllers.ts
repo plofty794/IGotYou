@@ -1,4 +1,5 @@
 import Booking from "../models/Bookings";
+import Notifications from "../models/Notifications";
 import Users from "../models/Users";
 
 type TData = {
@@ -7,37 +8,59 @@ type TData = {
   date: { from: string; to: string };
   message: string;
   type: string;
+  listingID: string;
 };
 
 export const sendBookingRequest = async (data: TData) => {
-  console.log(data);
   try {
     const guest = await Users.findOne({ username: data.guestName }).exec();
+    const host = await Users.findOne({ username: data.host }).exec();
 
-    if (!guest) {
+    if (!guest || !host) {
       throw new Error("User didn't exist");
     }
 
-    const newBooking = await Booking.create({
-      ...data,
-      guest: guest._id,
-      requestedBookingDateStartsAt: data.date.from,
-      requestedBookingDateEndsAt: data.date.to,
+    const newNotification = await Notifications.create({
+      content: {
+        message: data.message,
+        requestedBookingDateStartsAt: data.date.from,
+        requestedBookingDateEndsAt: data.date.to,
+        listingID: data.listingID,
+      },
+      senderID: guest._id,
+      receiverID: host._id,
+      notificationType: "Booking-Request",
     });
 
-    const userNotifications = await Users.findOneAndUpdate(
+    await newNotification.populate([
+      { select: ["username", "photoUrl"], path: "senderID" },
+      { select: ["username", "photoUrl"], path: "receiverID" },
+    ]);
+
+    const updateUserNotification = await Users.findOneAndUpdate(
       { username: data.host },
       {
-        $push: {
-          notifications: {
-            type: data.type,
-            message: data.message,
-            senderName: data.guestName,
-          },
-        },
+        $push: { notifications: newNotification._id },
       }
     );
-    return { newBooking, userNotifications };
+
+    if (!updateUserNotification) {
+      throw new Error("User didn't exist");
+    }
+
+    await guest.updateOne({
+      $push: {
+        bookingRequests: {
+          host: updateUserNotification._id,
+          requestedBookingDateStartsAt: data.date.from,
+          requestedBookingDateEndsAt: data.date.to,
+          message: data.message,
+          listingID: data.listingID,
+        },
+      },
+    });
+
+    return { newNotification };
   } catch (error) {
     console.log(error);
   }
