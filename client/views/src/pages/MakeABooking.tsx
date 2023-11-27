@@ -42,18 +42,14 @@ function MakeABooking() {
     host: string;
     listingID: string;
   }) {
-    setTimeout(
-      () =>
-        socket?.emit("send-bookingRequest", {
-          guestName: guest,
-          host,
-          date,
-          message,
-          type: "booking-request",
-          listingID,
-        }),
-      1000
-    );
+    socket?.emit("send-bookingRequest", {
+      guestName: guest,
+      host,
+      date,
+      message,
+      type: "booking-request",
+      listingID,
+    });
   }
 
   return (

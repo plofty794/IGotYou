@@ -22,7 +22,7 @@ const bookingRequests = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "accepted", "declined"],
       default: "pending",
     },
     listingID: {
@@ -134,9 +134,9 @@ const usersSchema = new Schema(
       type: String,
       enum: ["pending", "active", "expired", "reject"],
     },
-    bookings: {
+    reservations: {
       type: [Types.ObjectId],
-      ref: "Bookings",
+      ref: "Reservations",
     },
     subscriptionExpiresAt: {
       type: Date,

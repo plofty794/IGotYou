@@ -62,12 +62,19 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("host-update-notification", ({ status, senderName }) => {
+    const activeUser = findActiveUser(senderName);
+    if (activeUser) {
+      io.to(activeUser.socketId).emit("res", { status, activeUser });
+    }
+  });
+
   socket.on("send-bookingRequest", async (data) => {
     try {
       const activeUser = findActiveUser(data.host);
       if (activeUser) {
         const res = await sendBookingRequest(data);
-        io.to(activeUser.socketId).emit("pong", {
+        io.timeout(1000).to(activeUser.socketId).emit("pong", {
           notifications: res?.newNotification,
         });
       }

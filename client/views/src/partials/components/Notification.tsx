@@ -30,8 +30,6 @@ function Notification() {
     setNotifications(userNotifications.data?.data.notifications);
   }, [userNotifications.data?.data.notifications]);
 
-  console.log(notifications);
-
   useMemo(() => {
     socket &&
       socket.on("pong", (data) => {

@@ -1,11 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 
-const bookingSchema = new Schema(
+const reservationsSchema = new Schema(
   {
-    host: {
-      type: Types.ObjectId,
-      ref: "Users",
-    },
     guest: {
       type: Types.ObjectId,
       ref: "Users",
@@ -28,11 +24,11 @@ const bookingSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["approved", "rejected"],
+      enum: ["accepted", "declined"],
     },
   },
   { timestamps: true }
 );
-const Booking = model("Bookings", bookingSchema);
+const Reservations = model("Reservations", reservationsSchema);
 
-export default Booking;
+export default Reservations;

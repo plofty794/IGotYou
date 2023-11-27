@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatDistanceToNow, subDays } from "date-fns";
 import { useEffect, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { Link, useOutletContext } from "react-router-dom";
@@ -119,18 +120,33 @@ function VisitListing() {
                 </svg>
                 {listing.serviceLocation}
               </span>
-              <span className="font-medium text-sm">
-                Category: {listing.serviceType}
+              <span className="flex items-center font-semibold text-base underline underline-offset-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {listing.host.rating.length
+                  ? listing.host.rating
+                  : "No ratings yet "}
               </span>
               <div className="flex items-center">
                 <span>{listing.host.rating}</span>
               </div>
             </div>
-            <Separator />
             <Card className="border-0 shadow-none">
-              <CardHeader className="items-center w-max">
-                <Avatar className="w-20 h-20">
+              <Separator />
+              <CardHeader className="flex-row gap-6 items-start w-max">
+                <Avatar className="w-12 h-12">
                   <AvatarImage
+                    className="max-w-full object-cover"
                     src={
                       listing.host.photoUrl ??
                       "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
@@ -138,11 +154,20 @@ function VisitListing() {
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <CardTitle>Host name</CardTitle>
+                <div className="flex flex-col">
+                  <span className="text-lg font-semibold">
+                    Hosted by {listing.host.username}
+                  </span>
+                  <span className="text-sm font-medium text-gray-600">
+                    {formatDistanceToNow(
+                      subDays(new Date(listing.host.subscriptionExpiresAt), 30)
+                    )}{" "}
+                    hosting
+                  </span>
+                </div>
               </CardHeader>
-              <CardContent>Host name</CardContent>
+              <Separator />
             </Card>
-            <Separator />
           </div>
           <Card className="w-3/6 border-gray-300 shadow-xl">
             <CardHeader>

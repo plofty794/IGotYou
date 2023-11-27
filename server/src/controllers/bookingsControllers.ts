@@ -1,4 +1,3 @@
-import Booking from "../models/Bookings";
 import Notifications from "../models/Notifications";
 import Users from "../models/Users";
 
