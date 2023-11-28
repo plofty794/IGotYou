@@ -51,8 +51,8 @@ type TProps = {
     mobilePhone: string;
     photoUrl: string;
     listings: number;
-    activeListings: TListings[];
   };
+  activeListings: TListings[];
 };
 
 type TListings = {
@@ -69,7 +69,7 @@ type TListings = {
   ];
 };
 
-function ProfileContent({ profileData }: TProps) {
+function ProfileContent({ profileData, activeListings }: TProps) {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useVerifyEmail();
   const updateUserProfile = useUpdateUserProfile();
@@ -288,11 +288,11 @@ function ProfileContent({ profileData }: TProps) {
               </div>
             </CardFooter>
           </Card>
-          {profileData.activeListings.length > 0 || profileData.listings > 0 ? (
+          {activeListings.length > 0 || profileData.listings > 0 ? (
             <Suspense fallback={<Loader />}>
               <Listings
                 username={profileData?.username}
-                listings={profileData.activeListings}
+                listings={activeListings}
                 listingsCount={profileData.listings}
               />
             </Suspense>

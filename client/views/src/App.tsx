@@ -14,7 +14,6 @@ import { Suspense, lazy, useContext, useEffect, useState } from "react";
 import { verifyPhoneLoader } from "./constants/loaders/verifyPhoneLoader";
 import HeroLayout from "./root layouts/HeroLayout";
 import CategoryTwo from "./pages/categories/CategoryTwo";
-import CategoryThree from "./pages/categories/CategoryThree";
 import CategoryFour from "./pages/categories/CategoryFour";
 import BecomeAHostOverview from "./pages/become a host/BecomeAHostOverview";
 import BecomeAHostLayout from "./root layouts/BecomeAHostLayout";
@@ -51,6 +50,9 @@ const Inbox = lazy(() => import("./pages/Inbox"));
 import { SocketContextProvider } from "./context/SocketContext";
 import BookingLayout from "./root layouts/BookingLayout";
 import MakeABooking from "./pages/MakeABooking";
+import BookingsLayout from "./root layouts/BookingsLayout";
+import Bookings from "./pages/Bookings";
+import DigitalAudioServices from "./pages/categories/DigitalAudioServices";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -145,7 +147,10 @@ function App() {
               )
             }
           />
-          <Route path="/digital&audio-services" element={<CategoryThree />} />
+          <Route
+            path="/digital&audio-services"
+            element={<DigitalAudioServices />}
+          />
           <Route
             path="category/events&entertainment"
             element={<CategoryFour />}
@@ -269,6 +274,11 @@ function App() {
         <Route path="/booking" element={<BookingLayout />}>
           <Route path="show/:id" element={<VisitListing />} />
           <Route path="create/:id" element={<MakeABooking />} />
+        </Route>
+
+        {/* BOOKINGS Route */}
+        <Route path="/bookings" element={<BookingsLayout />}>
+          <Route index element={<Bookings />} />
         </Route>
 
         {/* HOSTING Route */}

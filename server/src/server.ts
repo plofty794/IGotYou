@@ -10,7 +10,11 @@ import { assetRoutes } from "./routes/assetRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { paymentRoutes } from "./routes/paymentRoutes";
 import { Server } from "socket.io";
-import { sendBookingRequest } from "./controllers/bookingsControllers";
+import {
+  sendBookingRequest,
+  updateBookingRequestNotification,
+} from "./controllers/bookingsControllers";
+import { TNotification } from "./models/Notifications";
 
 const app = express();
 const server = app
@@ -62,21 +66,32 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("host-update-notification", ({ status, senderName }) => {
-    const activeUser = findActiveUser(senderName);
-    if (activeUser) {
-      io.to(activeUser.socketId).emit("res", { status, activeUser });
+  socket.on("host-update-notification", async (data) => {
+    const activeUserHost = findActiveUser(data.senderName);
+    const activeUserGuest = findActiveUser(data.receiverName);
+    try {
+      if (activeUserHost) {
+        const res = await updateBookingRequestNotification(data);
+        io.to(activeUserHost.socketId).emit("res", res);
+        if (activeUserGuest) {
+          io.to(activeUserGuest.socketId).emit("res", res);
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
   socket.on("send-bookingRequest", async (data) => {
     try {
-      const activeUser = findActiveUser(data.host);
+      const activeUser = findActiveUser(data.hostName);
       if (activeUser) {
         const res = await sendBookingRequest(data);
-        io.timeout(1000).to(activeUser.socketId).emit("pong", {
+        io.to(activeUser.socketId).emit("pong", {
           notifications: res?.newNotification,
         });
+      } else {
+        await sendBookingRequest(data);
       }
     } catch (error) {
       console.log(error);

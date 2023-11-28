@@ -5,30 +5,66 @@ import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
 import Notifications from "../models/Notifications";
+import BookingRequests from "../models/BookingRequests";
 
-export const getHosts: RequestHandler = async (req, res, next) => {
+// export const getHosts: RequestHandler = async (req, res, next) => {
+//   const id = req.cookies["_&!d"];
+//   try {
+//     if (!id) {
+//       clearCookieAndThrowError(
+//         res,
+//         "A _id cookie is required to access this resource."
+//       );
+//     }
+
+//     const hosts = await Listings.find({
+//       $where: function () {
+//         return (
+//           new Date(this.availableAt).getTime() <= Date.now() &&
+//           new Date(this.endsAt).getTime() >= Date.now()
+//         );
+//       },
+//     }).populate("host");
+
+//     if (!hosts.length) {
+//       return res.status(200).json({ hosts: [] });
+//     }
+//     res.status(200).json({ hosts });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+export const getBookingRequests: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
     if (!id) {
-      clearCookieAndThrowError(
-        res,
-        "A _id cookie is required to access this resource."
-      );
-    }
-
-    const hosts = await Listings.find({
-      $where: function () {
-        return (
-          new Date(this.availableAt).getTime() <= Date.now() &&
-          new Date(this.endsAt).getTime() >= Date.now()
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
         );
-      },
-    }).populate("host");
-
-    if (!hosts.length) {
-      return res.status(200).json({ hosts: [] });
+      }
     }
-    res.status(200).json({ hosts });
+
+    const user = await Users.findById(id);
+
+    if (!user) {
+      throw createHttpError(400, "No user with that id");
+    }
+
+    const bookingRequests = await BookingRequests.find({ guestID: user._id })
+      .sort({ createdAt: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate([{ path: "listingID" }, { select: "username", path: "hostID" }])
+      .exec();
+
+    const totalPages = Math.ceil(bookingRequests.length / limit);
+
+    res.status(200).json({ bookingRequests, totalPages });
   } catch (error) {
     next(error);
   }
@@ -70,17 +106,16 @@ export const getCurrentUserNotifications: RequestHandler = async (
       );
     }
 
-    const userNotifications = await Notifications.find({ receiverID: id })
+    const userNotifications = await Notifications.find({ toUserID: id })
       .populate([
-        { select: ["username", "photoUrl"], path: "senderID" },
-        { select: ["username", "photoUrl"], path: "receiverID" },
+        { select: ["username", "photoUrl"], path: "fromUserID" },
+        {
+          path: "bookingRequest",
+          populate: "listingID",
+        },
       ])
       .sort({ createdAt: "desc" })
       .exec();
-
-    if (!userNotifications) {
-      return res.status(200).json({ notifications: [] });
-    }
 
     res.status(200).json({ notifications: userNotifications });
   } catch (error) {
@@ -98,7 +133,10 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
-    const user = await Users.findById(id).populate("listings");
+    const user = await Users.findById(id).populate([
+      "listings",
+      "bookingRequests",
+    ]);
     if (!user) {
       res.clearCookie("_&!d");
       throw createHttpError(400, "No account with that id");
@@ -111,29 +149,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       },
     });
 
-    res.status(200).json({
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        userStatus: user.userStatus,
-        photoUrl: user.photoUrl ?? null,
-        mobilePhone: user.mobilePhone,
-        mobileVerified: user.mobileVerified,
-        listings: user.listings.length,
-        uid: user.uid,
-        rating: user.rating,
-        work: user.work,
-        funFact: user.funFact,
-        school: user.school,
-        address: user.address,
-        subscriptionStatus: user.subscriptionStatus,
-        subscriptionExpiresAt: user.subscriptionExpiresAt,
-        wishlists: user.wishlists,
-        activeListings: activeListings,
-      },
-    });
+    res.status(200).json({ user, activeListings });
   } catch (error) {
     next(error);
   }

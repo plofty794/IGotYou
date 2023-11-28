@@ -15,10 +15,34 @@ const listingPhotosSchema = new Schema({
   },
 });
 
+const reservationSchema = new Schema({
+  isReserved: {
+    type: Boolean,
+    default: false,
+  },
+  from: {
+    type: Date,
+    required: true,
+  },
+  to: {
+    type: Date,
+    required: true,
+  },
+});
+
 const listingSchema = new Schema(
   {
     serviceType: {
       type: String,
+      enum: [
+        "Digital Audio Services",
+        "Digital Video Services",
+        "Graphic Design and Visual Arts",
+        "Photography Services",
+        "Animation and 3D Modeling",
+        "Live Events and Concerts",
+        "Digital Advertising and Marketing",
+      ],
       required: true,
     },
     serviceDescription: {
@@ -48,6 +72,9 @@ const listingSchema = new Schema(
     serviceLocation: {
       type: String,
       required: true,
+    },
+    reservations: {
+      type: [reservationSchema],
     },
   },
   { timestamps: true }

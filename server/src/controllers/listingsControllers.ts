@@ -26,12 +26,95 @@ type TListing = {
 };
 
 export const getListings: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const limit = 12;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
-    const listings = await Listings.find({})
-      .populate("host")
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const listings = await Listings.find({
+      $where: function () {
+        return (
+          new Date(this.availableAt).getTime() <= Date.now() &&
+          new Date(this.endsAt).getTime() >= Date.now()
+        );
+      },
+    })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: "host",
+        match: {
+          subscriptionExpiresAt: {
+            $gte: new Date(),
+          },
+        },
+      })
       .sort({ created_At: "desc" })
       .exec();
-    res.status(200).json({ listings });
+
+    const totalPages = Math.ceil(listings.length / limit);
+
+    if (!listings.length) {
+      return res.status(200).json({ listings: [], totalPages: 0 });
+    }
+
+    res.status(200).json({ listings, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getListingsPerCategory: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const limit = 12;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  const category = req.params.category;
+
+  try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const categorizedListings = await Listings.find({
+      serviceType: category,
+      $where: function () {
+        return (
+          new Date(this.availableAt).getTime() <= Date.now() &&
+          new Date(this.endsAt).getTime() >= Date.now()
+        );
+      },
+    })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: "host",
+        match: {
+          subscriptionExpiresAt: {
+            $gte: new Date(),
+          },
+        },
+      })
+      .sort({ created_At: "desc" })
+      .exec();
+
+    if (!categorizedListings.length) {
+      return res.status(200).json({ listings: [], totalPages: 0 });
+    }
+    const totalPages = Math.ceil(categorizedListings.length / limit);
+    res.status(200).json({ categorizedListings, totalPages });
   } catch (error) {
     next(error);
   }

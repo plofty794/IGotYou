@@ -17,6 +17,7 @@ import useGetNotifications from "@/hooks/useGetNotifications";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
 import { pulsar } from "ldrs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 pulsar.register();
 
 function Notification() {
@@ -33,6 +34,7 @@ function Notification() {
   useMemo(() => {
     socket &&
       socket.on("pong", (data) => {
+        console.log(data.notifications);
         setNotifications((prev) => [data.notifications, ...prev]);
         setNewNotifications((prev) => prev + 1);
       });
@@ -80,49 +82,56 @@ function Notification() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <PopoverContent className="flex flex-col gap-2">
-            <span className="text-xl font-extrabold text-gray-600">
-              Notifications
-            </span>
-            {newNotifications < 1 && (
-              <>
-                <span className="m-2 mx-auto w-max text-xs font-bold text-gray-600">
-                  No new notifications
-                </span>
-              </>
-            )}
+          <PopoverContent align="center" className="p-0">
+            <div className="flex flex-col gap-2 p-4">
+              <span className="text-xl font-extrabold text-gray-600">
+                Notifications
+              </span>
+              {notifications?.length < 1 && (
+                <>
+                  <span className="m-2 mx-auto w-max text-xs font-bold text-gray-600">
+                    No notifications
+                  </span>
+                </>
+              )}
+            </div>
             {notifications?.length > 0 && (
               <>
                 <Separator />
-                <div className="w-full flex flex-col items-center gap-4">
-                  {notifications?.map((v) => (
-                    <>
-                      <Link key={v._id} to={"/hosting-inbox"}>
-                        <div className="w-full flex items-center gap-2">
-                          <Avatar>
-                            <AvatarImage src={v.senderID.photoUrl} />
-                            <AvatarFallback>CN</AvatarFallback>
-                          </Avatar>
-                          <div className="w-full">
-                            <p className="text-xs font-semibold">
-                              {v.senderID.username as string} has sent you a{" "}
-                              {(v.notificationType as string)
-                                .split("-")
-                                .join(" ")}{" "}
-                              📅✨
-                            </p>
-                            <span className="text-xs font-bold text-green-600">
-                              {formatDistanceToNow(
-                                new Date(v.createdAt as string),
-                                { addSuffix: true }
-                              )}
-                            </span>
+                <ScrollArea className="min-h-72 h-max">
+                  <div className="flex flex-col items-center p-2">
+                    {notifications?.map((v) => (
+                      <>
+                        <Link
+                          key={v._id}
+                          to={"/hosting-inbox"}
+                          className="hover:bg-[#F5F5F5] p-4"
+                        >
+                          <div className="w-full flex items-center gap-2">
+                            <Avatar>
+                              <AvatarImage src={v.fromUserID.photoUrl} />
+                              <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                            <div className="w-full">
+                              <p className="text-gray-600 text-xs font-bold">
+                                {v.fromUserID.username as string} has sent you a{" "}
+                                {(v.notificationType as string)
+                                  .split("-")
+                                  .join(" ")}{" "}
+                              </p>
+                              <span className="text-xs font-bold text-green-600">
+                                {formatDistanceToNow(
+                                  new Date(v.createdAt as string),
+                                  { addSuffix: true }
+                                )}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </Link>
-                    </>
-                  ))}
-                </div>
+                        </Link>
+                      </>
+                    ))}
+                  </div>
+                </ScrollArea>
               </>
             )}
           </PopoverContent>

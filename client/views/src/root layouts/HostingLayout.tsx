@@ -2,19 +2,14 @@ import { Button } from "@/components/ui/button";
 import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 import HostingDropdownMenu from "@/partials/components/HostingDropdownMenu";
 import Loader from "@/partials/loaders/Loader";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Navigate, Outlet } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import Notification from "@/partials/components/Notification";
 
 function HostingLayout() {
   const userProfileData = useGetCurrentUserProfile();
@@ -23,9 +18,9 @@ function HostingLayout() {
     <>
       {userProfileData.isPending ? (
         <Loader />
-      ) : (
+      ) : userProfileData.data?.data.user.userStatus === "host" ? (
         <main className="min-h-screen">
-          <nav className="bg-white shadow py-5 px-20 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
+          <nav className="bg-white shadow py-5 px-28 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
             <Link to={"/hosting"}>
               <span>
                 <img
@@ -93,34 +88,16 @@ function HostingLayout() {
               </DropdownMenu>
             </div>
             <div className="flex items-center justify-center gap-4">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <span className="cursor-pointer">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-5 h-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                        />
-                      </svg>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>Notifications</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Notification />
               <HostingDropdownMenu />
             </div>
           </nav>
           {<Outlet context={{ userData: userProfileData.data?.data }} />}
         </main>
+      ) : (
+        <Navigate
+          to={`/become-a-host/${userProfileData.data?.data.user.uid}`}
+        />
       )}
     </>
   );

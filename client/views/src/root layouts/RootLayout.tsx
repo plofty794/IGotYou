@@ -51,7 +51,7 @@ function RootLayout() {
               <UserDropDownButton />
             </span>
           </nav>
-          {listings.data?.pages[0]?.data.hosts.length > 0 && (
+          {listings.data?.pages[0]?.data.listings.length > 0 && (
             <ListingsNavigation />
           )}
           {

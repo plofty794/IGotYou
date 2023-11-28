@@ -5,7 +5,6 @@ import {
   deleteUser,
   getCurrentUserProfile,
   getUserPhone,
-  getHosts,
   googleSignIn,
   logInUser,
   logOutUser,
@@ -14,11 +13,11 @@ import {
   // userSubscription,
   checkUserEmail,
   getCurrentUserNotifications,
+  getBookingRequests,
 } from "../controllers/usersControllers";
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
 
-router.get("/users", getHosts);
 router.get("/users/current-user/phone", authToken, getUserPhone);
 router.get(
   "/users/current-user/notifications",
@@ -26,6 +25,7 @@ router.get(
   getCurrentUserNotifications
 );
 router.get("/users/profile/visit/:id", authToken, visitUserProfile);
+router.get("/users/booking-requests/:page", authToken, getBookingRequests);
 router.get("/users/current-user/profile", authToken, getCurrentUserProfile);
 router.post("/users/login", logInUser);
 router.post("/users/email-check", authToken, checkUserEmail);

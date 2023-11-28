@@ -31,11 +31,11 @@ function Home() {
   return (
     <>
       <section className="px-8 mt-2">
-        {listings.pages[0].data.hosts.length > 0 ? (
+        {listings.pages[0].data.listings.length > 0 ? (
           <>
             <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-2">
               {listings.pages.map((page) =>
-                page.data.hosts.map((v, i) => (
+                page.data.listings.map((v, i) => (
                   <Card
                     key={v._id}
                     className="border-none shadow-none overflow-hidden w-full"
@@ -183,7 +183,7 @@ type TListingPhotos = {
 };
 
 type TListings = {
-  hosts: [
+  listings: [
     {
       availableAt: string;
       createdAt: string;

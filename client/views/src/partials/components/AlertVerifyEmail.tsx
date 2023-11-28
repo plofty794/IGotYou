@@ -54,7 +54,7 @@ function AlertVerifyEmail({ User }: { User: User }) {
         </div>
         <Separator />
         <AlertDialogFooter className="p-4">
-          <AlertDialogCancel className="font-medium px-4 py-5 text-sm rounded-full">
+          <AlertDialogCancel className="font-medium text-sm rounded-full">
             Close
           </AlertDialogCancel>
           <AlertDialogAction

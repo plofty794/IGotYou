@@ -30,7 +30,10 @@ function Profile() {
       ) : status === "success" ? (
         <Suspense fallback={<ProfileLoader />}>
           {data?.data?.user.username ? (
-            <ProfileContent profileData={data?.data.user} />
+            <ProfileContent
+              profileData={data?.data.user}
+              activeListings={data.data.activeListings}
+            />
           ) : (
             <PromptUsername />
           )}

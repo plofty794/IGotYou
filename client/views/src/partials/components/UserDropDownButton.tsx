@@ -49,7 +49,10 @@ export function UserDropDownButton() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 font-medium" align="end">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
+          <DropdownMenuItem
+            disabled={!auth.currentUser?.emailVerified}
+            className="p-4 font-semibold text-gray-600"
+          >
             Messages
           </DropdownMenuItem>
           <DropdownMenuItem className="p-4 font-semibold text-gray-600">
@@ -57,14 +60,22 @@ export function UserDropDownButton() {
               Wishlists
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
-            Bookings
+          <DropdownMenuItem
+            disabled={!auth.currentUser?.emailVerified}
+            className="p-4 font-semibold text-gray-600"
+          >
+            <Link to={"/bookings"} className="w-full" replace>
+              Bookings
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
-            <Link to={"/hosting"} reloadDocument replace>
+          <DropdownMenuItem
+            disabled={!auth.currentUser?.emailVerified}
+            className="p-4 font-semibold text-gray-600"
+          >
+            <Link to={"/hosting"} className="w-full" reloadDocument replace>
               Manage listings
             </Link>
           </DropdownMenuItem>

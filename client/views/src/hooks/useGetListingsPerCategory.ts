@@ -1,20 +1,23 @@
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosPrivateRoute } from "@/api/axiosRoute";
-import { AxiosError } from "axios";
-import { auth } from "@/firebase config/config";
 import { useToast } from "@/components/ui/use-toast";
 import { UserStateContextProvider } from "@/context/UserStateContext";
+import { auth } from "@/firebase config/config";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useContext } from "react";
 
-function useGetListings() {
+function useGetListingsPerCategory<T>(category: T) {
   const { dispatch } = useContext(UserStateContextProvider);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
   return useInfiniteQuery({
-    queryKey: ["listings"],
+    queryKey: ["listings", category],
     queryFn: async ({ pageParam }) => {
       try {
-        return await axiosPrivateRoute.get(`/api/listings/${pageParam}`);
+        return await axiosPrivateRoute.get(
+          `/api/listings/${category}/${pageParam}`
+        );
       } catch (err) {
         const error = err as AxiosError;
         if (error.response?.status === 400) {
@@ -40,9 +43,9 @@ function useGetListings() {
       return pages.length + 1;
     },
     initialPageParam: 1,
-    enabled: auth.currentUser != null && localStorage.getItem("token") != null,
+    enabled: auth.currentUser != null,
     refetchOnWindowFocus: false,
   });
 }
 
-export default useGetListings;
+export default useGetListingsPerCategory;

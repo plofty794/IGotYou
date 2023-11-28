@@ -1,26 +1,15 @@
-import { Schema, model, Types } from "mongoose";
-
-const contentSchema = new Schema(
-  {
-    requestedBookingDateStartsAt: {
-      type: Date,
-    },
-    requestedBookingDateEndsAt: {
-      type: Date,
-    },
-    message: {
-      type: String,
-    },
-    listingID: {
-      type: Types.ObjectId,
-      ref: "Listings",
-    },
-  },
-  { timestamps: true }
-);
+import { Schema, model, Types, InferSchemaType } from "mongoose";
 
 const notificationSchema = new Schema(
   {
+    fromUserID: {
+      type: Types.ObjectId,
+      ref: "Users",
+    },
+    toUserID: {
+      type: Types.ObjectId,
+      ref: "Users",
+    },
     notificationType: {
       type: String,
       enum: [
@@ -32,25 +21,18 @@ const notificationSchema = new Schema(
       ],
       required: true,
     },
-    content: {
-      type: contentSchema,
-      required: true,
-    },
-    senderID: {
+    bookingRequest: {
       type: Types.ObjectId,
-      ref: "Users",
-    },
-    receiverID: {
-      type: Types.ObjectId,
-      ref: "Users",
+      ref: "BookingRequests",
     },
     read: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true, expires: 3000 }
+  { timestamps: true }
 );
 
+export type TNotification = InferSchemaType<typeof notificationSchema>;
 const Notifications = model("Notifications", notificationSchema);
 export default Notifications;

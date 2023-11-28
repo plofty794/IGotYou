@@ -31,7 +31,15 @@ function useUpdateUserProfile() {
     onSuccess(_, variables) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       queryClient.setQueryData(["profile", id], (prevData: any) => {
-        return { data: { user: { ...prevData.data.user, ...variables } } };
+        return {
+          data: {
+            activeListings: prevData.data.activeListings,
+            user: {
+              ...prevData.data.user,
+              ...variables,
+            },
+          },
+        };
       });
       toast({
         title: "Your profile has been updated successfully",

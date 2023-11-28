@@ -7,7 +7,7 @@ function useVisitListing() {
   return useQuery({
     queryKey: ["listing", id && id],
     queryFn: async () => {
-      return await axiosPrivateRoute.get(`/api/listings/${id}`);
+      return await axiosPrivateRoute.get(`/api/listings/listing/${id}`);
     },
     enabled: id != null,
     refetchOnWindowFocus: false,

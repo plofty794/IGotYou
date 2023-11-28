@@ -6,10 +6,9 @@ import { useToast } from "@/components/ui/use-toast";
 
 function useGetCurrentUserProfile() {
   const { toast } = useToast();
-  const id = auth.currentUser?.uid;
   const queryClient = useQueryClient();
   return useQuery({
-    queryKey: ["profile", id],
+    queryKey: ["profile", auth.currentUser?.uid],
     queryFn: async () => {
       try {
         return await axiosPrivateRoute.get("/api/users/current-user/profile");
@@ -34,8 +33,7 @@ function useGetCurrentUserProfile() {
         }
       }
     },
-    enabled: id != null,
-    retry: 2,
+    enabled: auth.currentUser?.uid != null,
     refetchOnWindowFocus: false,
   });
 }

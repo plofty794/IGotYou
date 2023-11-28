@@ -1,13 +1,17 @@
+import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 import useVisitListing from "@/hooks/useVisitListing";
 import Loader from "@/partials/loaders/Loader";
 import { Link, Outlet } from "react-router-dom";
 
 function BookingLayout() {
+  const userProfileData = useGetCurrentUserProfile();
   const { data, isPending } = useVisitListing();
 
   return (
     <>
-      {isPending ? (
+      {userProfileData.isPending ? (
+        <Loader />
+      ) : isPending ? (
         <Loader />
       ) : (
         <main>
@@ -21,7 +25,14 @@ function BookingLayout() {
               />
             </Link>
           </nav>
-          {<Outlet context={data?.data} />}
+          {
+            <Outlet
+              context={{
+                listing: data?.data,
+                userProfileData: userProfileData.data?.data,
+              }}
+            />
+          }
         </main>
       )}
     </>

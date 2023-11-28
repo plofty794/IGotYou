@@ -17,14 +17,19 @@ import { addDays, format } from "date-fns";
 import { useContext, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { DateRange } from "react-day-picker";
-import { useOutletContext } from "react-router-dom";
+import { Navigate, useOutletContext } from "react-router-dom";
 import { dotPulse } from "ldrs";
 dotPulse.register();
 
 function MakeABooking() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const { listing } = useOutletContext();
+  const {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    listing: { listing },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userProfileData: { user },
+  } = useOutletContext();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const { socket } = useContext(SocketContextProvider);
@@ -34,26 +39,35 @@ function MakeABooking() {
   });
 
   function sendEmitter({
-    guest,
-    host,
+    guestName,
+    hostName,
+    hostID,
     listingID,
   }: {
-    guest?: string;
-    host: string;
+    guestName: string;
+    hostName: string;
+    hostID: string;
     listingID: string;
   }) {
     socket?.emit("send-bookingRequest", {
-      guestName: guest,
-      host,
+      guestName,
+      hostName,
       date,
+      hostID,
       message,
-      type: "booking-request",
+      type: "Booking-Request",
       listingID,
     });
+    document.location.reload();
   }
 
   return (
     <>
+      {user.bookingRequests.find(
+        (v: { listingID: string }) => v.listingID === listing._id
+      ) ? (
+        <Navigate replace to="/bookings" />
+      ) : null}
       <section className="py-12 px-24">
         <div className="w-full flex items-center">
           <Button
@@ -157,9 +171,10 @@ function MakeABooking() {
                 setTimeout(() => {
                   setLoading(false);
                   sendEmitter({
-                    guest: auth.currentUser?.displayName as string | undefined,
-                    host: listing.host.username,
-                    listingID: listing._id,
+                    guestName: auth.currentUser?.displayName as string,
+                    hostName: listing.host.username as string,
+                    listingID: listing._id as string,
+                    hostID: listing.host._id,
                   });
                 }, 1000);
               }}

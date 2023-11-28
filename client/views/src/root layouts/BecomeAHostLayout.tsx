@@ -96,7 +96,7 @@ function BecomeAHostLayout() {
             />
           }
           <nav className="bg-white sticky top-0 z-10 py-8 px-16 flex justify-between items-center">
-            <Link to={"/"}>
+            <Link to={"/hosting"}>
               <span>
                 <img
                   className="w-[30px] h-[30px]"

@@ -1,3 +1,13 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,15 +20,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { auth } from "@/firebase config/config";
+import { CircleBackslashIcon } from "@radix-ui/react-icons";
 import { formatDistanceToNow, subDays } from "date-fns";
 import { useEffect, useState } from "react";
 import { formatValue } from "react-currency-input-field";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 function VisitListing() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const { listing } = useOutletContext();
+  const navigate = useNavigate();
+  const {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    listing: { listing },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    userProfileData: { user },
+  } = useOutletContext();
   const [wishlist, setWishlist] = useState(false);
 
   useEffect(() => {
@@ -95,7 +113,7 @@ function VisitListing() {
             )}
           </div>
         </div>
-        <div className="mt-7 w-full flex gap-4">
+        <div className="mt-6 w-full flex gap-4 mb-4">
           <div className="flex flex-col gap-4 w-full">
             <div className="flex flex-col gap-1">
               <span className="text-lg font-semibold flex items-center gap-1">
@@ -200,11 +218,90 @@ function VisitListing() {
                   </span>
                 </div>
               </div>
-              <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
-                <Link className="w-full" to={`/booking/create/${listing._id}`}>
-                  Continue
-                </Link>
-              </Button>
+              {auth.currentUser?.emailVerified ? (
+                <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
+                  {user?.bookingRequests.find(
+                    (v: { listingID: string }) => v.listingID === listing._id
+                  ) ? (
+                    <Link className="w-full" to="/bookings">
+                      Check request status
+                    </Link>
+                  ) : (
+                    <Link
+                      className="w-full"
+                      to={`/booking/create/${listing._id}`}
+                    >
+                      Continue
+                    </Link>
+                  )}
+                </Button>
+              ) : (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
+                      Continue
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="p-0 gap-0">
+                    <AlertDialogHeader>
+                      <div className="flex items-center gap-2 p-6">
+                        <CircleBackslashIcon
+                          color="red"
+                          width={25}
+                          height={25}
+                        />
+                        <AlertDialogTitle className="font-semibold text-base">
+                          Oops! Your email isn't verified yet.
+                        </AlertDialogTitle>
+                      </div>
+                    </AlertDialogHeader>
+                    <Separator />
+                    <div className="px-6 py-4">
+                      <div className="flex flex-col justify-center gap-2">
+                        <span className="text-sm text-zinc-900">
+                          We hope this message finds you well. In order to
+                          enhance the{" "}
+                          <span className="font-bold text-red-500 underline underline-offset-2">
+                            security
+                          </span>{" "}
+                          and{" "}
+                          <span className="font-bold text-red-500 underline underline-offset-2">
+                            trustworthiness
+                          </span>{" "}
+                          of our platform, we kindly request your assistance in
+                          verifying your email address. This verification is
+                          necessary before you can proceed to create a listing
+                          on our website.
+                        </span>
+                        <span className="text-sm text-zinc-900 ">
+                          Thank you for your cooperation in ensuring the
+                          security and integrity of our platform. We look
+                          forward to having your verified email and seeing your
+                          listing soon!
+                        </span>
+                      </div>
+                    </div>
+                    <Separator />
+                    <AlertDialogFooter className="p-4">
+                      <AlertDialogCancel className="font-medium text-sm rounded-full">
+                        Close
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() =>
+                          navigate(
+                            `/users/show/${
+                              auth.currentUser && auth.currentUser.uid
+                            }`
+                          )
+                        }
+                        className="font-medium text-sm bg-gray-950 text-white rounded-full"
+                      >
+                        Go to your profile
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </CardContent>
           </Card>
         </div>

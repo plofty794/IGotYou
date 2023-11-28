@@ -2,7 +2,7 @@ import Notification from "@/partials/components/Notification";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import { Link, Outlet } from "react-router-dom";
 
-function ProfileLayout() {
+function BookingsLayout() {
   return (
     <main className="min-h-screen">
       <nav className="shadow py-5 px-28 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
@@ -26,4 +26,4 @@ function ProfileLayout() {
   );
 }
 
-export default ProfileLayout;
+export default BookingsLayout;

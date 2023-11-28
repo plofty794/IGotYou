@@ -51,14 +51,12 @@ function ConfirmPayment() {
       <div
         className={`${
           isFadingIn ? "opacity-0" : "opacity-100"
-        } transition-opacity flex justify-center items-center gap-12 h-full pb-12`}
+        } transition-opacity flex justify-center items-center gap-12 h-full`}
       >
-        <div className="w-2/4 border flex flex-col items-center justify-center gap-2 p-8 shadow-xl rounded-xl">
+        <div className="w-2/4 flex flex-col items-center justify-center gap-2 p-8">
           <div className="text-center flex flex-col gap-4 p-2">
-            <h1 className="text-3xl font-semibold text-[#222222]">
-              Confirm your payment
-            </h1>
-            <p className="text-base font-semibold text-gray-600">
+            <h1 className="text-4xl font-semibold ">Confirm your payment</h1>
+            <p className="text-lg font-semibold text-gray-600">
               Take a screenshot or download the photo of the proof of payment
               from GCash containing the amount and the Ref no. and upload it
               here.{" "}
@@ -81,7 +79,7 @@ function ConfirmPayment() {
                 />
                 <img
                   src={paymentProofPhoto.secure_url}
-                  className="w-full h-[150px] object-contain max-h-full max-w-full block"
+                  className="mx-auto h-48 object-cover max-w-full hover:scale-110 transition-transform"
                   alt="proof_of_payment"
                   loading="lazy"
                 />
