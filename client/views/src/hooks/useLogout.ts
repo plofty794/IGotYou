@@ -15,7 +15,7 @@ function useLogOutUser() {
       socket?.emit("user-logout", auth.currentUser?.displayName);
       await axiosPrivateRoute.delete("/api/users/current-user/logout");
       await auth.signOut();
-      queryClient.clear();
+      queryClient.removeQueries();
       dispatch({ type: "USER_LOGOUT", payload: null });
       document.location.reload();
     } catch (err) {

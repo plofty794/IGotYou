@@ -96,10 +96,9 @@ function Home() {
                           <span className="mt-1 font-semibold">
                             {formatValue({
                               value: v.price.toString(),
-                              prefix: "₱",
                               intlConfig: {
-                                locale: "PH",
-                                currency: "php",
+                                locale: "ph-PH",
+                                currency: "PHP",
                               },
                             })}{" "}
                             <span className="text-sm font-normal">service</span>

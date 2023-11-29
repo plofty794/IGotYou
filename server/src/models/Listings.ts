@@ -73,7 +73,7 @@ const listingSchema = new Schema(
       type: String,
       required: true,
     },
-    reservations: {
+    reservedDates: {
       type: [reservationSchema],
     },
   },

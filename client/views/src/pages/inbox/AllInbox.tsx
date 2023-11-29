@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { SocketContextProvider } from "@/context/SocketContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { format, formatDistanceToNow } from "date-fns";
 import { useContext, useMemo, useState } from "react";
 
@@ -25,38 +26,43 @@ function AllInbox({ notification }: { notification: any }) {
   const { toast } = useToast();
   const { socket } = useContext(SocketContextProvider);
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   function updateNotification({
-    notification,
-    senderName,
-    receiverName,
     status,
+    hostID,
+    guestID,
+    bookingRequestID,
+    notificationID,
   }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    notification: any;
-    senderName: string;
-    receiverName: string;
-    status: "accepted" | "declined";
+    status: "approved" | "declined";
+    hostID: unknown;
+    guestID: unknown;
+    bookingRequestID: unknown;
+    notificationID: string;
   }) {
-    socket?.emit("host-update-notification", {
-      notification,
-      senderName,
-      receiverName,
+    socket?.emit("host-update-bookingRequest", {
       status,
+      hostID,
+      guestID,
+      bookingRequestID,
+      notificationID,
     });
   }
 
   useMemo(() => {
-    socket &&
-      socket.on("res", (res) => {
-        toast({
-          title: "Nice!",
-          description: "You have accepted the booking request.",
-          className: "bg-white font-bold text-black",
-        });
-        console.log(res);
+    socket?.on("res", (res) => {
+      toast({
+        title: "Yey!",
+        description: "You have successfully updated the booking request.",
+        className: "bg-white font-bold text-black",
       });
-  }, [socket, toast]);
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+      console.log(res);
+    });
+  }, [queryClient, socket, toast]);
 
   return (
     <Card className="px-4" key={notification._id}>
@@ -105,16 +111,16 @@ function AllInbox({ notification }: { notification: any }) {
           >
             <path
               d="M0.877075 7.49988C0.877075 3.84219 3.84222 0.877045 7.49991 0.877045C11.1576 0.877045 14.1227 3.84219 14.1227 7.49988C14.1227 11.1575 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1575 0.877075 7.49988ZM7.49991 1.82704C4.36689 1.82704 1.82708 4.36686 1.82708 7.49988C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49988C13.1727 4.36686 10.6329 1.82704 7.49991 1.82704Z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
             ></path>
           </svg>
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
-            fill="currentColor"
-            className="w-4 h-4"
+            fill="green"
+            className="w-5 h-5"
           >
             <path
               fillRule="evenodd"
@@ -152,7 +158,7 @@ function AllInbox({ notification }: { notification: any }) {
               "{notification.bookingRequest.listingID.serviceDescription}"
             </span>
           </span>
-          <div className="flex gap-2 ml-auto">
+          <div className="flex items-center justify-center gap-2 ml-auto">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -183,43 +189,61 @@ function AllInbox({ notification }: { notification: any }) {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-
-            <Button
-              type="button"
-              disabled={loading}
-              onClick={() => {
-                setLoading(true);
-                setTimeout(() => {
-                  setLoading(false);
-                  updateNotification({
-                    notification,
-                    senderName: notification.receiverID.username,
-                    receiverName: notification.senderID.username,
-                    status: "accepted",
-                  });
-                }, 1000);
-              }}
-              className={` bg-gray-950 rounded-full ${
-                loading ? "opacity-70" : "opacity-100"
-              }`}
-            >
-              Accept
-            </Button>
-            <Button
-              type="button"
-              onClick={() =>
-                updateNotification({
-                  notification,
-                  senderName: notification.receiverID.username,
-                  receiverName: notification.senderID.username,
-                  status: "declined",
-                })
-              }
-              variant={"outline"}
-              className=" rounded-full"
-            >
-              Decline
-            </Button>
+            {notification.bookingRequest.status === "approved" ? (
+              <span className="text-xs font-bold text-gray-600">
+                You have accepted this request{" "}
+                {formatDistanceToNow(
+                  new Date(notification.bookingRequest.updatedAt),
+                  { addSuffix: true }
+                )}
+              </span>
+            ) : notification.bookingRequest.status === "declined" ? (
+              <span className="text-xs font-bold text-gray-600">
+                You declined this request
+              </span>
+            ) : (
+              <>
+                {" "}
+                <Button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => {
+                    setLoading(true);
+                    setTimeout(() => {
+                      setLoading(false);
+                      updateNotification({
+                        status: "approved",
+                        guestID: notification.fromUserID,
+                        hostID: notification.toUserID,
+                        bookingRequestID: notification.bookingRequest,
+                        notificationID: notification._id,
+                      });
+                    }, 1000);
+                  }}
+                  className={` bg-gray-950 rounded-full ${
+                    loading ? "opacity-70" : "opacity-100"
+                  }`}
+                >
+                  Accept
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() =>
+                    updateNotification({
+                      status: "declined",
+                      guestID: notification.fromUserID,
+                      hostID: notification.toUserID,
+                      bookingRequestID: notification.bookingRequest,
+                      notificationID: notification._id,
+                    })
+                  }
+                  variant={"outline"}
+                  className=" rounded-full"
+                >
+                  Decline
+                </Button>
+              </>
+            )}
           </div>
         </CardFooter>
       </CardContent>

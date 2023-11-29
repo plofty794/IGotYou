@@ -2,7 +2,7 @@ import { Schema, model, Types } from "mongoose";
 
 const reservationsSchema = new Schema(
   {
-    guest: {
+    guestID: {
       type: Types.ObjectId,
       ref: "Users",
     },
@@ -24,11 +24,23 @@ const reservationsSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["accepted", "declined"],
+      enum: ["upcoming", "ongoing", "previous"],
     },
   },
   { timestamps: true }
 );
-const Reservations = model("Reservations", reservationsSchema);
 
+reservationsSchema.pre("save", function () {
+  if (
+    new Date(this.bookingStartsAt).toDateString() === new Date().toDateString()
+  ) {
+    this.status = "ongoing";
+  } else if (
+    new Date(this.bookingStartsAt).toDateString() > new Date().toDateString()
+  ) {
+    this.status = "upcoming";
+  }
+});
+
+const Reservations = model("Reservations", reservationsSchema);
 export default Reservations;

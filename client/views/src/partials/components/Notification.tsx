@@ -32,12 +32,13 @@ function Notification() {
   }, [userNotifications.data?.data.notifications]);
 
   useMemo(() => {
-    socket &&
-      socket.on("pong", (data) => {
-        console.log(data.notifications);
-        setNotifications((prev) => [data.notifications, ...prev]);
-        setNewNotifications((prev) => prev + 1);
-      });
+    socket?.on("pong", (data) => {
+      console.log(data.notifications);
+      setNotifications((prev) => [data.notifications, ...prev]);
+      setNewNotifications((prev) => prev + 1);
+    });
+
+    socket?.on("res", (data) => console.log(data));
   }, [socket]);
 
   return (
@@ -82,7 +83,7 @@ function Notification() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <PopoverContent align="center" className="p-0">
+          <PopoverContent align="center" className="p-0 w-80">
             <div className="flex flex-col gap-2 p-4">
               <span className="text-xl font-extrabold text-gray-600">
                 Notifications
@@ -99,17 +100,20 @@ function Notification() {
               <>
                 <Separator />
                 <ScrollArea className="min-h-72 h-max">
-                  <div className="flex flex-col items-center p-2">
+                  <div className="flex flex-col items-center p-1">
                     {notifications?.map((v) => (
                       <>
                         <Link
                           key={v._id}
                           to={"/hosting-inbox"}
-                          className="hover:bg-[#F5F5F5] p-4"
+                          className="hover:bg-[#F5F5F5] p-3"
                         >
                           <div className="w-full flex items-center gap-2">
                             <Avatar>
-                              <AvatarImage src={v.fromUserID.photoUrl} />
+                              <AvatarImage
+                                className="object-cover max-w-full"
+                                src={v.fromUserID.photoUrl}
+                              />
                               <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <div className="w-full">
@@ -119,7 +123,7 @@ function Notification() {
                                   .split("-")
                                   .join(" ")}{" "}
                               </p>
-                              <span className="text-xs font-bold text-green-600">
+                              <span className="text-xs font-bold text-rose-600">
                                 {formatDistanceToNow(
                                   new Date(v.createdAt as string),
                                   { addSuffix: true }

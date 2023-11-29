@@ -66,16 +66,14 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("host-update-notification", async (data) => {
-    const activeUserHost = findActiveUser(data.senderName);
-    const activeUserGuest = findActiveUser(data.receiverName);
+  socket.on("host-update-bookingRequest", async (data) => {
+    const activeUserGuest = findActiveUser(data.guestID.username);
+    const activeUserHost = findActiveUser(data.hostID.username);
     try {
-      if (activeUserHost) {
+      if (activeUserGuest != null && activeUserHost != null) {
         const res = await updateBookingRequestNotification(data);
+        io.to(activeUserGuest.socketId).emit("pong", res?.guestNotification);
         io.to(activeUserHost.socketId).emit("res", res);
-        if (activeUserGuest) {
-          io.to(activeUserGuest.socketId).emit("res", res);
-        }
       }
     } catch (error) {
       console.error(error);

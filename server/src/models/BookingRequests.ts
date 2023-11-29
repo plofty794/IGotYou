@@ -24,7 +24,7 @@ const bookingRequestsSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "declined"],
+      enum: ["pending", "approved", "declined"],
       default: "pending",
     },
     listingID: {

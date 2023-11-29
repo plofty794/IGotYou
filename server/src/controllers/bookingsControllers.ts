@@ -3,6 +3,7 @@ import BookingRequests from "../models/BookingRequests";
 import Listings from "../models/Listings";
 import Notifications from "../models/Notifications";
 import Users from "../models/Users";
+import Reservations from "../models/Reservations";
 
 type TSendBookingRequest = {
   guestName: string;
@@ -15,24 +16,57 @@ type TSendBookingRequest = {
 
 export const updateBookingRequestNotification = async (data: any) => {
   try {
-    const updateNotifications = await Notifications.findByIdAndUpdate(
-      data.notification._id,
+    await Notifications.findByIdAndUpdate(data.notificationID, {
+      read: true,
+    });
+
+    const updateBookingRequest = await BookingRequests.findByIdAndUpdate(
+      data.bookingRequestID._id,
       {
-        read: true,
-      },
-      { new: true }
+        status: data.status,
+      }
     );
 
-    const listing = await Listings.findById(
-      data.notification.content.listingID._id
+    const updateListingReservedDates = await Listings.findByIdAndUpdate(
+      data.bookingRequestID.listingID._id,
+      {
+        $push: {
+          reservedDates: {
+            from: data.bookingRequestID.requestedBookingDateStartsAt,
+            to: data.bookingRequestID.requestedBookingDateEndsAt,
+          },
+        },
+      }
     );
 
-    const updateBookingRequest = await Users.find({
-      $where: function () {
-        this.bookingRequests.filter;
+    const guestNotification = await Notifications.create({
+      toUserID: data.guestID._id,
+      fromUserID: data.hostID._id,
+      notificationType: "Booking-Confirmed",
+      bookingRequest: updateBookingRequest?._id,
+    });
+
+    await Users.findByIdAndUpdate(data.guestID._id, {
+      $push: {
+        notifications: guestNotification._id,
       },
     });
-    return { updateNotifications, updateBookingRequest, listing };
+
+    const newReservation = await Reservations.create({
+      guestID: data.guestID._id,
+      listingID: data.bookingRequestID.listingID._id,
+      message: data.bookingRequestID.message,
+      bookingStartsAt: data.bookingRequestID.requestedBookingDateStartsAt,
+      bookingEndsAt: data.bookingRequestID.requestedBookingDateEndsAt,
+    });
+
+    const addReservation = await Users.findByIdAndUpdate(data.hostID._id, {
+      $push: {
+        reservations: newReservation._id,
+      },
+    });
+
+    return { guestNotification, updateListingReservedDates };
   } catch (error) {
     console.error(error);
   }

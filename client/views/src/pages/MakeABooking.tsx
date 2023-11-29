@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { auth } from "@/firebase config/config";
 import DatePicker from "@/partials/components/DatePicker";
-import { addDays, format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useContext, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { DateRange } from "react-day-picker";
@@ -35,7 +35,7 @@ function MakeABooking() {
   const { socket } = useContext(SocketContextProvider);
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
-    to: addDays(Date.now(), 2),
+    to: undefined,
   });
 
   function sendEmitter({
@@ -95,11 +95,11 @@ function MakeABooking() {
         <div className="grid grid-cols-2 gap-8">
           <div className="flex flex-col gap-8 mt-8 px-12">
             <div>
-              <span className="text-2xl font-medium">Your booking</span>
+              <span className="text-2xl font-semibold">Your booking</span>
               <div className="mt-4 w-full flex justify-between items-start">
                 <div className="flex flex-col text-base font-semibold gap-1">
-                  <span className="text-base">Dates</span>
-                  <span className="text-gray-600 font-medium">
+                  <span className="text-lg">Dates</span>
+                  <span className="text-gray-600 font-semibold">
                     {date?.from ? (
                       date.to ? (
                         <>
@@ -118,7 +118,7 @@ function MakeABooking() {
                   <DialogTrigger asChild>
                     <Button
                       variant={"ghost"}
-                      className="font-semibold text-base underline rounded-full underline-offset-2"
+                      className="font-semibold text-lg underline rounded-full underline-offset-2"
                     >
                       Edit
                     </Button>
@@ -133,9 +133,7 @@ function MakeABooking() {
                       <DatePicker
                         date={date}
                         setDate={setDate}
-                        subscriptionExpiresAt={
-                          listing.host.subscriptionExpiresAt
-                        }
+                        listingEndsAt={listing.endsAt}
                       />
                     </div>
                   </DialogContent>
@@ -145,9 +143,9 @@ function MakeABooking() {
             <Separator />
             <div className="w-full">
               <div className="w-full flex items-center justify-between">
-                <Label className="text-xl font-medium" htmlFor="message">
+                <Label className="text-xl font-semibold" htmlFor="message">
                   Message{" "}
-                  <span className="text-sm text-gray-600 font-medium">
+                  <span className="text-sm text-gray-600 font-semibold">
                     (required)
                   </span>
                 </Label>
@@ -164,7 +162,7 @@ function MakeABooking() {
               />
             </div>
             <Button
-              disabled={!message.length || loading}
+              disabled={!message.length || loading || !date?.from || !date?.to}
               className="bg-gray-950 rounded-full w-max ml-auto text-lg font-medium p-6"
               onClick={() => {
                 setLoading(true);
@@ -197,23 +195,28 @@ function MakeABooking() {
                   />
                 </span>
                 <div className="flex flex-col gap-1 w-2/3">
-                  <span className="text-gray-600 text-xs font-medium">
+                  <span className="text-lg font-bold">
                     {listing.serviceDescription}
                   </span>
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-semibold text-gray-600">
                     {listing.serviceLocation}
+                  </span>
+                  <span className="text-sm font-semibold text-gray-600">
+                    {formatDistanceToNow(new Date(listing.endsAt))} before
+                    service ends
                   </span>
                 </div>
               </CardHeader>
               <Separator />
               <CardContent className="px-2 py-4">
-                <span className="text-2xl font-medium">Price details</span>
+                <span className="text-2xl font-semibold">Price details</span>
                 <div className="mt-4 w-full flex justify-between items-center">
-                  <span className="font-medium">Total (PHP)</span>
+                  <span className="font-semibold text-gray-600">
+                    Total (PHP)
+                  </span>
                   <span className="font-semibold">
                     {formatValue({
                       value: listing.price.toString(),
-                      prefix: "₱",
                       intlConfig: {
                         locale: "PH",
                         currency: "php",

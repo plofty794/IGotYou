@@ -109,6 +109,7 @@ export const getCurrentUserNotifications: RequestHandler = async (
     const userNotifications = await Notifications.find({ toUserID: id })
       .populate([
         { select: ["username", "photoUrl"], path: "fromUserID" },
+        { select: ["username", "photoUrl"], path: "toUserID" },
         {
           path: "bookingRequest",
           populate: "listingID",

@@ -3,12 +3,12 @@ import { Dispatch, SetStateAction } from "react";
 import { DateRange } from "react-day-picker";
 
 type TProps = {
-  subscriptionExpiresAt: string;
+  listingEndsAt: string;
   date: DateRange | undefined;
   setDate: Dispatch<SetStateAction<DateRange | undefined>>;
 };
 
-function DatePicker({ subscriptionExpiresAt, date, setDate }: TProps) {
+function DatePicker({ listingEndsAt, date, setDate }: TProps) {
   return (
     <Calendar
       className="w-max mx-auto p-0"
@@ -17,7 +17,7 @@ function DatePicker({ subscriptionExpiresAt, date, setDate }: TProps) {
       fromMonth={new Date()}
       disabled={{
         before: new Date(),
-        after: new Date(subscriptionExpiresAt),
+        after: new Date(listingEndsAt),
       }}
       mode="range"
       defaultMonth={date?.from}
