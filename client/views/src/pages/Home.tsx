@@ -14,6 +14,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { auth } from "@/firebase config/config";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
@@ -30,6 +42,70 @@ function Home() {
 
   return (
     <>
+      {!auth.currentUser?.emailVerified && (
+        <Dialog
+          defaultOpen={
+            localStorage.getItem("checked") === "true" ? false : true
+          }
+        >
+          <DialogContent className="p-0">
+            <DialogHeader className="p-4">
+              <div className="flex items-center gap-2">
+                <ExclamationTriangleIcon
+                  color="orange"
+                  width={25}
+                  height={25}
+                />
+                <DialogTitle className="font-semibold text-base">
+                  Some features are disabled!
+                </DialogTitle>
+              </div>
+            </DialogHeader>
+            <Separator />
+            <DialogFooter>
+              <div className="px-6 py-4">
+                <div className="flex flex-col justify-center gap-2">
+                  <span className="text-sm ">
+                    We trust you are doing well. To bolster the{" "}
+                    <span className="font-bold text-red-500 underline underline-offset-2">
+                      security
+                    </span>{" "}
+                    and{" "}
+                    <span className="font-bold text-red-500 underline underline-offset-2">
+                      reliability
+                    </span>{" "}
+                    of our platform, we seek your cooperation in verifying your
+                    email address. This verification is essential before you can{" "}
+                    <span className="font-bold text-red-500 underline underline-offset-2">
+                      access certain features
+                    </span>{" "}
+                    on our website.
+                  </span>
+                  <span className="text-sm  ">
+                    We appreciate your collaboration in maintaining the security
+                    and trustworthiness of our platform. Anticipating your
+                    verified email and the opportunity to see your contributions
+                    soon!
+                  </span>
+                </div>
+              </div>
+            </DialogFooter>
+            <Separator />
+            <div className="m-2 p-2 flex items-center justify-center gap-1 w-max ml-auto">
+              <Label htmlFor="checkbox" className="text-xs font-medium">
+                Don't show this again
+              </Label>
+              <Checkbox
+                className="rounded-full"
+                onCheckedChange={(checked) =>
+                  localStorage.setItem("checked", JSON.stringify(checked))
+                }
+                id="checkbox"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
       <section className="px-8 mt-2">
         {listings.pages[0].data.listings.length > 0 ? (
           <>

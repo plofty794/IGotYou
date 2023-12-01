@@ -111,7 +111,7 @@ export const getListingsPerCategory: RequestHandler = async (
       .exec();
 
     if (!categorizedListings.length) {
-      return res.status(200).json({ listings: [], totalPages: 0 });
+      return res.status(200).json({ categorizedListings: [], totalPages: 0 });
     }
     const totalPages = Math.ceil(categorizedListings.length / limit);
     res.status(200).json({ categorizedListings, totalPages });

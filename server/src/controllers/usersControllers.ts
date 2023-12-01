@@ -220,7 +220,6 @@ export const checkUserEmail: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw createHttpError(400, "No user with that email");
     }
-
     res.status(200).json({ email: user.email });
   } catch (error) {
     next(error);

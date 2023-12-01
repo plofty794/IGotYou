@@ -13,6 +13,8 @@ import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
 import { Link, useParams } from "react-router-dom";
 import Flag from "react-svg-country-flags";
 import { dotPulse } from "ldrs";
+import { unlink } from "firebase/auth";
+import { PhoneAuth, auth } from "@/firebase config/config";
 
 dotPulse.register();
 
@@ -30,6 +32,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
     register,
     handleSubmit,
     setError,
+    watch,
   } = useForm<MobilePhoneSchema>({
     defaultValues: {
       mobile_phone: mobilePhone ?? "",
@@ -37,12 +40,28 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
     resolver: zodResolver(ZodMobilePhoneSchema),
   });
 
-  function mobilePhoneSubmit(data: MobilePhoneSchema) {
+  async function mobilePhoneSubmit(data: MobilePhoneSchema) {
     const phoneNumber = ParsePhoneNumber(data.mobile_phone, "PH");
     if (!phoneNumber?.isValid()) {
       return setError("mobile_phone", { message: "Invalid mobile phone" });
     }
-    mutate({ mobilePhone: phoneNumber.formatInternational() });
+    if (
+      mobilePhone &&
+      auth.currentUser?.providerData
+        .map((value) => value.providerId)
+        .some((value) => value === "phone")
+    ) {
+      await unlink(auth.currentUser!, PhoneAuth.providerId);
+      mutate({
+        mobilePhone: phoneNumber.formatInternational(),
+        mobileVerified: false,
+      });
+    } else {
+      mutate({
+        mobilePhone: phoneNumber.formatInternational(),
+        mobileVerified: false,
+      });
+    }
   }
 
   return (
@@ -56,17 +75,15 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
           <ErrorMessage message={errors.mobile_phone?.message} />
         )}
         <div className="mt-4 flex items-center gap-2">
-          <Button className="w-max font-semibold bg-gray-950 rounded-full text-xs">
-            {mobilePhone != null && !isPending && "Edit"}
-            {isPending && (
-              // Default values shown
-              <l-dot-pulse size="43" speed="1.3" color="white"></l-dot-pulse>
-            )}
-            {!mobilePhone && "Add"}
+          <Button
+            disabled={isPending || mobilePhone === watch().mobile_phone}
+            className="w-max font-semibold bg-gray-950 rounded-full text-xs"
+          >
+            {mobilePhone ? "Change" : "Add"}
           </Button>
           {!mobileVerified && mobilePhone ? (
             <Button className="bg-gray-950 rounded-full text-xs">
-              <Link to={`/account/verify-phone/${id}`}>
+              <Link to={`/account/verify-phone/${id}`} reloadDocument replace>
                 Verify mobile phone
               </Link>
             </Button>

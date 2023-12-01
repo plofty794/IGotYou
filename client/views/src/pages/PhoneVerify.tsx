@@ -23,6 +23,8 @@ import { dotPulse } from "ldrs";
 dotPulse.register();
 import sendingMessage from "@/assets/sendingMessage.json";
 import Lottie from "lottie-react";
+import { useToast } from "@/components/ui/use-toast";
+import { FirebaseError } from "firebase/app";
 
 type TLoaderData = {
   user: {
@@ -31,6 +33,7 @@ type TLoaderData = {
 };
 
 function VerifyPhone() {
+  const { toast } = useToast();
   const { id } = useParams();
   const { mutate } = useUpdateUserProfile();
   const { data } = useLoaderData() as UseQueryResult<TLoaderData>;
@@ -42,7 +45,7 @@ function VerifyPhone() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    document.title = "IGotYou - Verify Phone";
+    document.title = "Verify Phone - IGotYou";
     const Timeout = setTimeout(() => {
       setIsLoaded(true);
     }, 500);
@@ -53,6 +56,7 @@ function VerifyPhone() {
   async function sendOTP() {
     try {
       const reCaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {});
+
       const confirm = await linkWithPhoneNumber(
         auth.currentUser!,
         mobilePhone!,
@@ -69,8 +73,19 @@ function VerifyPhone() {
     try {
       await confirmation?.confirm(OTP);
       mutate({ mobileVerified: true });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      const error = err as FirebaseError;
+      const message = (
+        error.code.split("/")[1].slice(0, 1).toUpperCase() +
+        error.code.split("/")[1].slice(1)
+      )
+        .split("-")
+        .join(" ");
+      toast({
+        title: "Oops! An error occurred.",
+        description: message,
+        variant: "destructive",
+      });
     }
   }
 
@@ -81,7 +96,6 @@ function VerifyPhone() {
           <Button className="bg-gray-950 rounded-full font-medium mx-auto ">
             <Link to={`/users/show/${id}`}>Go back</Link>
           </Button>
-
           {!confirmation ? (
             <Card className="w-2/5">
               <CardHeader className="items-center justify-center p-0">
@@ -158,8 +172,7 @@ function VerifyPhone() {
         </main>
       ) : (
         <div className="min-h-screen flex items-center justify-center">
-          // Default values shown
-          <l-dot-pulse size="40" speed="1.3" color="white"></l-dot-pulse>
+          <l-dot-pulse size="44" speed="1.3" color="black"></l-dot-pulse>
         </div>
       )}
     </>

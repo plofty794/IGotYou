@@ -32,6 +32,8 @@ type TListings = {
 };
 
 function Listings({ listings, username, listingsCount }: TListingProps) {
+  console.log(listingsCount);
+
   return (
     <>
       <div className="w-full rounded-xl bg-white shadow-xl p-6 border">

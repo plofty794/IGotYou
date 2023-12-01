@@ -45,7 +45,6 @@ function Login() {
   });
 
   function handleLogin(data: LoginSchema) {
-    // const {email, password} = data
     mutate(data);
   }
 

@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -15,6 +17,9 @@ import { Card, CardTitle } from "@/components/ui/card";
 import Lottie from "lottie-react";
 import empty from "../assets/no-listings.json";
 import ListingsLoader from "@/partials/loaders/ListingsLoader";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 function Inbox() {
   const { data, isPending } = useGetNotifications();
@@ -48,8 +53,32 @@ function Inbox() {
                   Compose
                 </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>Message</DialogTitle>
+              <DialogContent className="flex flex-col gap-4">
+                <DialogHeader>
+                  <DialogTitle className="text-lg font-semibold">
+                    New Message
+                  </DialogTitle>
+                  <div className="flex flex-col items-center justify-center gap-2 w-full">
+                    <div className="flex items-center justify-center gap-2 w-full">
+                      <Label
+                        htmlFor="to"
+                        className="text-sm font-semibold text-gray-600"
+                      >
+                        To:{" "}
+                      </Label>
+                      <Input
+                        id="to"
+                        placeholder="Username"
+                        autoFocus
+                        className="p-0 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold"
+                      />
+                    </div>
+                  </div>
+                </DialogHeader>
+                <Textarea />
+                <DialogFooter>
+                  <Button className="rounded-full bg-gray-950">Send</Button>
+                </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>

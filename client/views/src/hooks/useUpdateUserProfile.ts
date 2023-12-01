@@ -42,9 +42,9 @@ function useUpdateUserProfile() {
         };
       });
       toast({
-        title: "Your profile has been updated successfully",
-        className: "bg-[#FFF] text-[#222222]",
-        color: "#FFF",
+        title: "Success!",
+        description: "Your profile has been updated.",
+        className: "bg-[#FFF] font-bold",
       });
     },
     onError: async (err) => {
@@ -52,8 +52,7 @@ function useUpdateUserProfile() {
       if (error.response?.status === 400) {
         await auth.signOut();
         localStorage.clear();
-        queryClient.removeQueries({ queryKey: ["profile"] });
-        queryClient.removeQueries({ queryKey: ["listings"] });
+        queryClient.removeQueries();
         toast({
           title: "Oops! An error occurred.",
           description: "This resource requires an identifier.",

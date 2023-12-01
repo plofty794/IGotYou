@@ -50,7 +50,7 @@ type TProps = {
     mobileVerified: boolean;
     mobilePhone: string;
     photoUrl: string;
-    listings: number;
+    listings: TListings[];
   };
   activeListings: TListings[];
 };
@@ -288,12 +288,12 @@ function ProfileContent({ profileData, activeListings }: TProps) {
               </div>
             </CardFooter>
           </Card>
-          {activeListings.length > 0 || profileData.listings > 0 ? (
+          {activeListings.length > 0 || profileData.listings.length > 0 ? (
             <Suspense fallback={<Loader />}>
               <Listings
                 username={profileData?.username}
                 listings={activeListings}
-                listingsCount={profileData.listings}
+                listingsCount={profileData.listings.length}
               />
             </Suspense>
           ) : profileData.emailVerified ? (

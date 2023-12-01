@@ -42,12 +42,11 @@ function DigitalAudioServices() {
       ) : (
         <section className="px-8 mt-2">
           <>
-            {data!.pages.map((page) => page!.data.categorizedListings).length! >
-            0 ? (
+            {data?.pages[0]?.data.categorizedListings.length > 0 ? (
               <>
                 <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-2">
-                  {data!.pages.map((page) =>
-                    page!.data.categorizedListings.map(
+                  {data?.pages.map((page) =>
+                    page?.data.categorizedListings.map(
                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-ignore
                       (v, i) =>

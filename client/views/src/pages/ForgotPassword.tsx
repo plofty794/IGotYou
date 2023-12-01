@@ -73,10 +73,10 @@ function ForgotPassword() {
             </div>
             {isSuccess && (
               <Alert className="w-[400px] shadow-xl">
-                <AlertTitle className="text-sm font-bold text-[#00B6AC]">
+                <AlertTitle className="text-base font-bold text-[#00B6AC]">
                   Heads up!
                 </AlertTitle>
-                <AlertDescription className="w-full text-xs font-semibold text-gray-600">
+                <AlertDescription className="w-full text-xs font-bold text-gray-600">
                   After changing your password from the provided password reset
                   link, you can now proceed to the login page.
                 </AlertDescription>

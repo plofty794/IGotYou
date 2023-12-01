@@ -6,7 +6,7 @@ type TProps = {
 
 const ErrorMessage: FC<TProps> = ({ message }) => {
   return (
-    <div className="w-full flex items-center gap-1">
+    <div className="flex items-center gap-1 w-full">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

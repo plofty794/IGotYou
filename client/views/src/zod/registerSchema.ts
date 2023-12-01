@@ -2,7 +2,11 @@ import { z } from "zod";
 
 export const ZodRegisterSchema = z
   .object({
-    email: z.string().min(1, { message: "Email is required" }).email(),
+    email: z
+      .string()
+      .min(1, { message: "Email is required" })
+      .regex(/(@gmail.com)$/, { message: "A gmail account is required" })
+      .email({ message: "Invalid email" }),
     password: z
       .string()
       .min(1, { message: "Password is required" })
@@ -10,7 +14,7 @@ export const ZodRegisterSchema = z
       .max(20, { message: "Password must contain at least 20 characters" })
       .regex(/^([a-zA-Z0-9])+([\W])+$/, {
         message:
-          "Password must contain at least one alphanumeric character (a-z, A-Z, or 0-9) followed by at least one non-word character",
+          "Password must contain at least 1 uppercase letter, and one non-word character",
       })
       .trim(),
     confirmPassword: z.string().min(1, { message: "Field required" }).trim(),

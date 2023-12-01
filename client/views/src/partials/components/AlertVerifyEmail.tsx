@@ -32,7 +32,7 @@ function AlertVerifyEmail({ User }: { User: User }) {
         <Separator />
         <div className="px-6 py-4">
           <div className="flex flex-col justify-center gap-2">
-            <span className="text-sm text-zinc-900">
+            <span className="text-sm ">
               We hope this message finds you well. In order to enhance the{" "}
               <span className="font-bold text-red-500 underline underline-offset-2">
                 security
@@ -45,7 +45,7 @@ function AlertVerifyEmail({ User }: { User: User }) {
               your email address. This verification is necessary before you can
               proceed to create a listing on our website.
             </span>
-            <span className="text-sm text-zinc-900 ">
+            <span className="text-sm  ">
               Thank you for your cooperation in ensuring the security and
               integrity of our platform. We look forward to having your verified
               email and seeing your listing soon!

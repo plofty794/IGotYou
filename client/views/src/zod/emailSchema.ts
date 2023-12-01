@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 export const ZodEmailSchema = z.object({
-  email: z.string().min(1, { message: "This field is required" }).email(),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .regex(/(@gmail.com)$/, { message: "A gmail account is required" })
+    .email({ message: "Invalid email" }),
 });
 
 export type EmailSchema = z.infer<typeof ZodEmailSchema>;
