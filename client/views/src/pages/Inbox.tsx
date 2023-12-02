@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useGetNotifications from "@/hooks/useGetNotifications";
-import { useEffect } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import AllInbox from "./inbox/AllInbox";
 import BookingRequests from "./inbox/BookingRequests";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -20,9 +20,63 @@ import ListingsLoader from "@/partials/loaders/ListingsLoader";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import {
+  SearchUsernameSchema,
+  ZodSearchUsernameSchema,
+} from "@/zod/composeMessageSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import ErrorMessage from "@/partials/components/ErrorMessage";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { auth } from "@/firebase config/config";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 function Inbox() {
+  const { socket } = useContext(SocketContextProvider);
+  const [receiverName, setReceiverName] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [userDetails, setUserDetails] = useState<any[]>([]);
   const { data, isPending } = useGetNotifications();
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    watch,
+  } = useForm<SearchUsernameSchema>({
+    defaultValues: {
+      message: "",
+    },
+    resolver: zodResolver(ZodSearchUsernameSchema),
+  });
+
+  function handleSearchUsername(data: SearchUsernameSchema) {
+    if (!receiverName) return;
+    socket?.emit("chat-message", {
+      message: data.message,
+      receiverName,
+      senderName: auth.currentUser?.displayName,
+    });
+  }
+
+  useMemo(() => {
+    setTimeout(async () => {
+      if (!receiverName) {
+        return setUserDetails([]);
+      }
+      const res = await axiosPrivateRoute.get(
+        `/api/users/search/${receiverName}`
+      );
+      setUserDetails(res.data.userDetails);
+    }, 500);
+  }, [setUserDetails, receiverName]);
 
   useEffect(() => {
     document.title = "Host Inbox - IGotYou";
@@ -53,32 +107,87 @@ function Inbox() {
                   Compose
                 </Button>
               </DialogTrigger>
-              <DialogContent className="flex flex-col gap-4">
-                <DialogHeader>
-                  <DialogTitle className="text-lg font-semibold">
-                    New Message
-                  </DialogTitle>
-                  <div className="flex flex-col items-center justify-center gap-2 w-full">
-                    <div className="flex items-center justify-center gap-2 w-full">
-                      <Label
-                        htmlFor="to"
-                        className="text-sm font-semibold text-gray-600"
-                      >
-                        To:{" "}
-                      </Label>
-                      <Input
-                        id="to"
-                        placeholder="Username"
-                        autoFocus
-                        className="p-0 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold"
-                      />
+              <DialogContent>
+                <form
+                  onSubmit={handleSubmit(handleSearchUsername)}
+                  className="flex flex-col gap-2"
+                  method="get"
+                >
+                  <DialogHeader>
+                    <DialogTitle className="text-lg font-semibold">
+                      New Message
+                    </DialogTitle>
+                    <div className="flex flex-col items-center justify-center gap-2 w-full">
+                      <div className="flex items-center justify-center gap-2 w-full">
+                        <Label
+                          htmlFor="to"
+                          className="text-sm font-semibold text-gray-600"
+                        >
+                          To:{" "}
+                        </Label>
+                        <div className="w-max mr-auto">
+                          <Input
+                            value={receiverName}
+                            onChange={(e) => setReceiverName(e.target.value)}
+                            id="to"
+                            placeholder="Username"
+                            autoFocus
+                            className="p-2 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold"
+                          />
+                        </div>
+                        {userDetails.length > 0 && (
+                          <Select onValueChange={(e) => setReceiverName(e)}>
+                            <SelectTrigger className="text-xs font-semibold">
+                              Show suggestions
+                            </SelectTrigger>
+                            <SelectContent className="">
+                              <SelectGroup className="rounded ">
+                                {userDetails.map(
+                                  (v) =>
+                                    v.username !==
+                                      auth.currentUser?.displayName && (
+                                      <SelectItem
+                                        key={v.photoURL as string}
+                                        className="hover:bg-gray-100 "
+                                        value={v.username}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <Avatar>
+                                            <AvatarImage
+                                              src={
+                                                (v.photoURL as string) ??
+                                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                                              }
+                                            />
+                                          </Avatar>
+                                          <CardTitle className="font-bold text-xs text-gray-600">
+                                            {v.username}
+                                          </CardTitle>
+                                        </div>
+                                      </SelectItem>
+                                    )
+                                )}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        )}
+                        {!receiverName && (
+                          <ErrorMessage message={"Username is required"} />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </DialogHeader>
-                <Textarea />
-                <DialogFooter>
-                  <Button className="rounded-full bg-gray-950">Send</Button>
-                </DialogFooter>
+                  </DialogHeader>
+                  <span className="ml-auto font-bold text-xs text-gray-600">
+                    {watch("message").length} / 200
+                  </span>
+                  <Textarea {...register("message")} maxLength={201} />
+                  {errors.message && (
+                    <ErrorMessage message={errors.message.message} />
+                  )}
+                  <DialogFooter className="mt-2">
+                    <Button className="rounded-full bg-gray-950">Send</Button>
+                  </DialogFooter>
+                </form>
               </DialogContent>
             </Dialog>
           </div>

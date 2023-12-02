@@ -53,7 +53,9 @@ export function UserDropDownButton() {
             disabled={!auth.currentUser?.emailVerified}
             className="p-4 font-semibold text-gray-600"
           >
-            Messages
+            <Link to={"/users/messages"} className="w-full" replace>
+              Messages
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="p-4 font-semibold text-gray-600">
             <Link to={"/users/wishlists"} className="w-full" replace>

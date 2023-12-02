@@ -16,6 +16,7 @@ function Register() {
     handleSubmit,
     formState: { errors },
     register,
+    watch,
   } = useForm<RegisterSchema>({
     defaultValues: {
       email: "",
@@ -24,6 +25,8 @@ function Register() {
     },
     resolver: zodResolver(ZodRegisterSchema),
   });
+
+  console.log(watch("password"));
 
   async function handleRegister(data: RegisterSchema) {
     const { email, password } = data;

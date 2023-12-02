@@ -15,6 +15,7 @@ import {
   updateBookingRequestNotification,
 } from "./controllers/bookingsControllers";
 import { TNotification } from "./models/Notifications";
+import { sendMessage } from "./controllers/messagesControllers";
 
 const app = express();
 const server = app
@@ -46,7 +47,7 @@ function getActiveUsers({ name, uid, socketId }: TActiveUsers) {
 }
 
 function removeActiveUser(name: string) {
-  onlineUsers = onlineUsers.filter((user) => user.name != name);
+  return (onlineUsers = onlineUsers.filter((user) => user.name != name));
 }
 
 function findActiveUser(host: string) {
@@ -54,7 +55,9 @@ function findActiveUser(host: string) {
 }
 
 function removeUser(socketId: string) {
-  onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId);
+  return (onlineUsers = onlineUsers.filter(
+    (user) => user.socketId !== socketId
+  ));
 }
 
 io.on("connection", (socket) => {
@@ -64,6 +67,17 @@ io.on("connection", (socket) => {
       uid: data.uid,
       socketId: socket.id,
     });
+  });
+
+  socket.on("chat-message", async (data) => {
+    const activeUser = findActiveUser(data.receiverName);
+    if (activeUser) {
+      const res = await sendMessage(data);
+      io.to(activeUser.socketId).emit("receive-message", res);
+    } else {
+      const res = await sendMessage(data);
+      console.log(res);
+    }
   });
 
   socket.on("host-update-bookingRequest", async (data) => {

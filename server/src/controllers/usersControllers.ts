@@ -6,6 +6,7 @@ import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
 import Notifications from "../models/Notifications";
 import BookingRequests from "../models/BookingRequests";
+import Messages from "../models/Messages";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {
 //   const id = req.cookies["_&!d"];
@@ -205,6 +206,41 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Error updating user");
     }
     res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchUsername: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { username } = req.params;
+  let searchOptions = {
+    username: new RegExp("", "gi"),
+  };
+  if (username != null) {
+    searchOptions.username = new RegExp(username, "gi");
+  }
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const user = await Users.find(searchOptions).exec();
+
+    if (!user) {
+      throw createHttpError(400, "No User Found");
+    }
+
+    const userDetails = user.map((v) => ({
+      username: v.username,
+      photoURL: v.photoUrl,
+    }));
+
+    res.status(200).json({ userDetails });
   } catch (error) {
     next(error);
   }

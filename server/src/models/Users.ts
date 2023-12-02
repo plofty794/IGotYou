@@ -122,6 +122,10 @@ const usersSchema = new Schema(
       type: [Types.ObjectId],
       ref: "BookingRequests",
     },
+    messages: {
+      type: [Types.ObjectId],
+      ref: "Messages",
+    },
   },
   { timestamps: true }
 );

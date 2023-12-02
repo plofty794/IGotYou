@@ -45,7 +45,7 @@ function Home() {
       {!auth.currentUser?.emailVerified && (
         <Dialog
           defaultOpen={
-            localStorage.getItem("checked") === "true" ? false : true
+            sessionStorage.getItem("checked") === "true" ? false : true
           }
         >
           <DialogContent className="p-0">
@@ -98,7 +98,7 @@ function Home() {
               <Checkbox
                 className="rounded-full"
                 onCheckedChange={(checked) =>
-                  localStorage.setItem("checked", JSON.stringify(checked))
+                  sessionStorage.setItem("checked", JSON.stringify(checked))
                 }
                 id="checkbox"
               />
