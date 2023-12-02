@@ -74,6 +74,8 @@ export const sendMessage = async (data: any) => {
         messages: newMessage._id,
       },
     });
+
+    return newMessage;
   } catch (error) {
     console.error(error);
   }

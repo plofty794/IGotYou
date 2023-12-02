@@ -1,40 +1,53 @@
-import { Input } from "@/components/ui/input";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { SocketContextProvider } from "@/context/SocketContext";
 import useGetMessages from "@/hooks/useGetMessages";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatDistanceToNowStrict } from "date-fns";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/firebase config/config";
+import { Textarea } from "@/components/ui/textarea";
 
 function Messages() {
   const { data } = useGetMessages();
   const { socket } = useContext(SocketContextProvider);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     document.title = "Messages - IGotYou";
   }, []);
+
+  function sendChatMessage(message: string, receiverName: string) {
+    if (!message) return;
+    socket?.emit("chat-message", {
+      message,
+      receiverName,
+      senderName: auth.currentUser?.displayName,
+    });
+    setMessage("");
+  }
 
   useMemo(() => {
     socket?.on("receive-message", (data) => console.log(data.message));
   }, [socket]);
 
   return (
-    <section className="w-full p-2">
-      <h1 className="font-bold text-2xl">Messages</h1>
+    <section className="w-full">
+      <h1 className="font-bold text-3xl mx-6 mt-4">Messages</h1>
       {data?.pages.map((page) =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         page.data.messages.map((v) => (
-          <Tabs key={v._id} defaultValue="account" className="flex w-full ">
-            <ScrollArea className="h-max w-1/4 h-">
-              <TabsList className="w-full h-max flex-col gap-2">
+          <Tabs
+            key={v._id}
+            defaultValue="account"
+            className="flex gap-2 w-full p-6"
+          >
+            <ScrollArea className="h-max w-1/3 h-">
+              <TabsList className="w-full h-max flex-col">
                 {page.data.currentUserID === v.senderID._id ? (
                   <TabsTrigger
                     className="w-full"
@@ -51,21 +64,9 @@ function Messages() {
                           }
                         />
                       </Avatar>
-                      <div className="flex items-start flex-col">
-                        <span className="font-bold text-sm">
-                          {v.receiverID.username}
-                        </span>
-                        <div className="flex gap-1 items-center justify-center">
-                          <span className="font-semibold text-xs text-gray-600">
-                            {v.replies.length > 0
-                              ? v.replies[0].content
-                              : "You:" + v.content}
-                          </span>
-                          <span className="font-medium text-xs text-gray-600">
-                            {formatDistanceToNowStrict(new Date(v.createdAt))}
-                          </span>
-                        </div>
-                      </div>
+                      <span className="font-bold text-sm">
+                        {v.receiverID.username}
+                      </span>
                     </div>
                   </TabsTrigger>
                 ) : (
@@ -84,34 +85,16 @@ function Messages() {
                           }
                         />
                       </Avatar>
-                      <div className="flex items-start flex-col">
-                        <span className="font-bold text-sm">
-                          {v.senderID.username}
-                        </span>
-                        <div className="flex gap-1 items-center justify-center">
-                          <span className="font-semibold text-xs text-gray-600">
-                            {v.replies.length > 0
-                              ? v.replies[0].content
-                              : "You:" + v.content}
-                          </span>
-                          <span className="font-medium text-xs text-gray-600">
-                            {v.replies.length > 0
-                              ? formatDistanceToNowStrict(
-                                  new Date(v.replies[0].createdAt)
-                                )
-                              : formatDistanceToNowStrict(
-                                  new Date(v.createdAt)
-                                )}
-                          </span>
-                        </div>
-                      </div>
+                      <span className="font-bold text-sm">
+                        {v.senderID.username}
+                      </span>
                     </div>
                   </TabsTrigger>
                 )}
               </TabsList>
             </ScrollArea>
             <TabsContent
-              className="px-8 w-full h-[60vh]"
+              className="m-0 w-full h-[60vh]"
               value={
                 page.data.currentUserID === v.senderID._id
                   ? v.senderID.username
@@ -119,11 +102,122 @@ function Messages() {
               }
             >
               <Card className="relative h-full">
-                <CardContent></CardContent>
-                <CardFooter className="gap-4 p-0 absolute bottom-0 w-full">
-                  <Input className="rounded-full" />
-                  <Button size={"lg"} className="bg-gray-950 rounded-full">
-                    Send
+                <ScrollArea className="h-5/6">
+                  <CardContent className="w-full pt-4">
+                    {page.data.currentUserID === v.senderID._id ? (
+                      <>
+                        <div className="w-max ml-auto border shadow-md rounded-md p-2 flex items-center gap-2">
+                          <Avatar>
+                            <AvatarImage src={v.senderID.photoUrl} />
+                          </Avatar>
+                          <span className="font-bold "> {v.content} </span>
+                        </div>
+                        {v.replies.length > 0 &&
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          v.replies.map((reply) =>
+                            reply.senderID === page.data.currentUserID ? (
+                              <div
+                                key={reply._id}
+                                className="w-max ml-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                              >
+                                <Avatar>
+                                  <AvatarImage src={v.senderID.photoUrl} />
+                                </Avatar>
+                                <span className="font-bold">
+                                  {" "}
+                                  {reply.content}{" "}
+                                </span>
+                              </div>
+                            ) : (
+                              <div
+                                key={reply._id}
+                                className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                              >
+                                <Avatar>
+                                  <AvatarImage src={v.receiverID.photoUrl} />
+                                </Avatar>
+                                <span className="font-bold text-white">
+                                  {" "}
+                                  {reply.content}{" "}
+                                </span>
+                              </div>
+                            )
+                          )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-md p-2 flex items-center gap-2">
+                          <Avatar>
+                            <AvatarImage src={v.senderID.photoUrl} />
+                          </Avatar>
+                          <span className="font-bold text-white">
+                            {" "}
+                            {v.content}{" "}
+                          </span>
+                        </div>
+                        {v.replies.length > 0 &&
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          v.replies.map((reply) =>
+                            reply.senderID === v.receiverID._id ? (
+                              <div
+                                key={reply._id}
+                                className=" w-max ml-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                              >
+                                <Avatar>
+                                  <AvatarImage src={v.receiverID.photoUrl} />
+                                </Avatar>
+                                <span className="font-bold ">
+                                  {" "}
+                                  {reply.content}{" "}
+                                </span>
+                              </div>
+                            ) : (
+                              <div
+                                key={reply._id}
+                                className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                              >
+                                <Avatar>
+                                  <AvatarImage src={v.senderID.photoUrl} />
+                                </Avatar>
+                                <span className="font-bold text-white text-sm">
+                                  {" "}
+                                  {reply.content}{" "}
+                                </span>
+                              </div>
+                            )
+                          )}
+                      </>
+                    )}
+                  </CardContent>
+                </ScrollArea>
+                <CardFooter className="gap-2 p-2 bg-zinc-200 absolute bottom-0 w-full">
+                  <Textarea
+                    autoFocus
+                    className="min-h-[38px] text-sm font-semibold py-2 bg-white rounded-full"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <Button
+                    onClick={() => sendChatMessage(message, v.receiverName)}
+                    size={"lg"}
+                    className="bg-gray-950 rounded-full p-6 "
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="white"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1}
+                      stroke="black"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                      />
+                    </svg>
                   </Button>
                 </CardFooter>
               </Card>
