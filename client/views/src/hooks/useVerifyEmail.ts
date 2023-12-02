@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
 import { sendEmailVerification } from "firebase/auth";
@@ -15,6 +15,8 @@ type TUserUpdates = {
 };
 
 function useVerifyEmail() {
+  const queryClient = useQueryClient();
+  const id = auth.currentUser?.uid;
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
       try {
@@ -38,11 +40,10 @@ function useVerifyEmail() {
       }
     },
     onSuccess: async () => {
-      console.log("Success");
+      queryClient.invalidateQueries({ queryKey: ["profile", id] });
       toast({
         title: "Verification email has been sent",
-        description:
-          "Refresh this page then click the verify button again after verifying your email",
+        description: "Click the verify button again after verifying your email",
         className: "bg-[#FFF] text-[#222222]",
       });
     },

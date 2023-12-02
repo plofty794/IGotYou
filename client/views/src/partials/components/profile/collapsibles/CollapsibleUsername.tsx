@@ -12,6 +12,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../ErrorMessage";
 import { QueryState } from "@tanstack/react-query";
+import useUpdateUserProfile from "@/hooks/useUpdateUserProfile";
+import { updateProfile } from "firebase/auth";
+import { auth } from "@/firebase config/config";
+import { dotPulse } from "ldrs";
+dotPulse.register();
 
 type TUserData = {
   user: {
@@ -34,10 +39,13 @@ type TUser = {
 
 function CollapsibleUsername({ data }: TUser) {
   const [isOpen, setIsOpen] = useState(false);
+  const { mutate, isPending } = useUpdateUserProfile();
+  const [message, setMessage] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<UsernameSchema>({
     defaultValues: {
       username: data?.data?.user.username ?? "",
@@ -45,15 +53,24 @@ function CollapsibleUsername({ data }: TUser) {
     resolver: zodResolver(ZodUsernameSchema),
   });
 
-  function handleFormSubmit(data: UsernameSchema) {
-    console.log(data);
+  async function handleFormSubmit(info: UsernameSchema) {
+    const { username } = info;
+    if (username === data?.data?.user.username) {
+      return setMessage("This is already your current username");
+    }
+    await updateProfile(auth.currentUser!, {
+      displayName: username,
+    });
+    mutate({ username });
   }
 
   return (
     <Collapsible open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <div className="flex justify-between items-start">
         <div className="text-sm">
-          <Label htmlFor="username">Username</Label>
+          <Label className="font-semibold" htmlFor="username">
+            Username
+          </Label>
           <p id="username" className={`mt-2 ${isOpen ? "hidden" : ""}`}>
             {data?.data?.user.username}
           </p>
@@ -66,7 +83,7 @@ function CollapsibleUsername({ data }: TUser) {
       </div>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <CollapsibleContent>
-          <span className="text-xs">
+          <span className="text-sm">
             This is the name on your IGotYou account.
           </span>
           <div className="mt-4 flex gap-2">
@@ -75,11 +92,27 @@ function CollapsibleUsername({ data }: TUser) {
               {errors.username && (
                 <ErrorMessage message={errors.username.message} />
               )}
+              {message && <ErrorMessage message={message} />}
             </div>
           </div>
-          <Button className="text-xs mt-3 w-max font-semibold bg-[#222222] rounded-full">
-            Save
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => {
+                setMessage("");
+                setValue("username", "");
+              }}
+              className="text-xs mt-3 w-max font-semibold bg-[#222222] rounded-full"
+            >
+              Clear
+            </Button>
+            <Button className="text-xs mt-3 w-max font-semibold bg-[#222222] rounded-full">
+              {isPending ? (
+                <l-dot-pulse size="35" speed="1.3" color="white"></l-dot-pulse>
+              ) : (
+                "Save"
+              )}
+            </Button>
+          </div>
         </CollapsibleContent>
       </form>
     </Collapsible>

@@ -5,7 +5,7 @@ export const ZodUsernameSchema = z.object({
     .string()
     .min(1, { message: "Invalid username" })
     .min(4, { message: "Username too short" })
-    .max(10, { message: "Username must be at least 10 characters" }),
+    .max(15, { message: "Username must be at least 15 characters" }),
 });
 
 export type UsernameSchema = z.infer<typeof ZodUsernameSchema>;

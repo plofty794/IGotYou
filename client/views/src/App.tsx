@@ -80,6 +80,12 @@ function App() {
     });
   }, [User, socket]);
 
+  useEffect(() => {
+    if (auth == null) {
+      console.log("YES");
+    }
+  }, []);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>

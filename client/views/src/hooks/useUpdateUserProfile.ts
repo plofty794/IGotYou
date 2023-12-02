@@ -41,6 +41,7 @@ function useUpdateUserProfile() {
           },
         };
       });
+      queryClient.invalidateQueries({ queryKey: ["profile", id] });
       toast({
         title: "Success!",
         description: "Your profile has been updated.",

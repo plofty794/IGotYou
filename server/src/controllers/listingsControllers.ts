@@ -38,7 +38,7 @@ export const getListings: RequestHandler = async (req, res, next) => {
     }
 
     const listings = await Listings.find({
-      $where: function () {
+      $function: function () {
         return (
           new Date(this.availableAt).getTime() <= Date.now() &&
           new Date(this.endsAt).getTime() >= Date.now()
@@ -90,7 +90,7 @@ export const getListingsPerCategory: RequestHandler = async (
 
     const categorizedListings = await Listings.find({
       serviceType: category,
-      $where: function () {
+      $function: function () {
         return (
           new Date(this.availableAt).getTime() <= Date.now() &&
           new Date(this.endsAt).getTime() >= Date.now()

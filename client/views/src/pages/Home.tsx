@@ -91,7 +91,7 @@ function Home() {
               </div>
             </DialogFooter>
             <Separator />
-            <div className="m-2 p-2 flex items-center justify-center gap-1 w-max ml-auto">
+            <div className="m-2 p-2 flex items-center justify-center gap-2 w-max ml-auto">
               <Label htmlFor="checkbox" className="text-xs font-medium">
                 Don't show this again
               </Label>

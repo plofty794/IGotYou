@@ -51,21 +51,21 @@ function PromptUsername() {
   }
 
   return (
-    <section className="mt-16 flex flex-col items-center justify-center gap-4">
+    <section className="mt-16 flex flex-col items-center justify-center gap-2">
       <Card className="flex flex-col items-center border-0 shadow-none">
         <CardHeader>
           <Lottie animationData={wait} className="w-48 h-48" />
         </CardHeader>
         <CardContent>
-          <h1 className="text-xl font-bold">
-            Oops! We noticed you don't have a username yet.
+          <h1 className="text-xl font-bold text-gray-600">
+            Oops! You don't have a username yet.
           </h1>
         </CardContent>
       </Card>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="text-sm font-semibold bg-gray-950 rounded-full">
-            Click here to proceed
+          <Button className="text-lg p-6 font-semibold bg-gray-950 rounded-full">
+            Proceed
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[475px]">

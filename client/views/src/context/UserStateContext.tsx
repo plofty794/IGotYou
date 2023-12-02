@@ -28,6 +28,7 @@ function reducer(state: TState, action: TAction) {
       return { token: action.payload };
     case "USER_LOGOUT":
       localStorage.clear();
+      sessionStorage.clear();
       return { token: action.payload };
     default:
       return state;

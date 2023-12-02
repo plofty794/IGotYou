@@ -42,7 +42,7 @@ export const sendMessage = async (data: any) => {
     const senderID = await Users.findOne({ username: data.senderName });
 
     const messageExist = await Messages.findOne({
-      $where: function () {
+      $function: function () {
         return this.receiverID.messages === this.senderID.messages;
       },
     });

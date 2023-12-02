@@ -19,7 +19,7 @@ import Messages from "../models/Messages";
 //     }
 
 //     const hosts = await Listings.find({
-//       $where: function () {
+//       $function: function () {
 //         return (
 //           new Date(this.availableAt).getTime() <= Date.now() &&
 //           new Date(this.endsAt).getTime() >= Date.now()
@@ -146,7 +146,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
 
     const activeListings = await Listings.find({
       host: user._id,
-      $where: function () {
+      $function: function () {
         return new Date(this.endsAt).getTime() >= Date.now();
       },
     });

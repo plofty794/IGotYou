@@ -22,9 +22,6 @@ import useGoogleSignin from "@/hooks/useGoogleSignin";
 import { Label } from "@/components/ui/label";
 dotPulse.register();
 
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "@/firebase config/config";
-
 function Login() {
   const googleSignIn = useGoogleSignin();
   useEffect(() => {

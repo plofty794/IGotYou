@@ -14,7 +14,6 @@ import {
   sendBookingRequest,
   updateBookingRequestNotification,
 } from "./controllers/bookingsControllers";
-import { TNotification } from "./models/Notifications";
 import { sendMessage } from "./controllers/messagesControllers";
 
 const app = express();
