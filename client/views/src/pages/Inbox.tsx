@@ -22,8 +22,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import {
-  SearchUsernameSchema,
-  ZodSearchUsernameSchema,
+  ComposeMessageSchema,
+  ZodComposeMessageSchema,
 } from "@/zod/composeMessageSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "@/partials/components/ErrorMessage";
@@ -50,14 +50,14 @@ function Inbox() {
     handleSubmit,
     register,
     watch,
-  } = useForm<SearchUsernameSchema>({
+  } = useForm<ComposeMessageSchema>({
     defaultValues: {
       message: "",
     },
-    resolver: zodResolver(ZodSearchUsernameSchema),
+    resolver: zodResolver(ZodComposeMessageSchema),
   });
 
-  function handleSearchUsername(data: SearchUsernameSchema) {
+  function handleSearchUsername(data: ComposeMessageSchema) {
     if (!receiverName) return;
     socket?.emit("chat-message", {
       message: data.message,
@@ -241,7 +241,7 @@ function Inbox() {
                     </svg>
                     Booking requests (
                     {
-                      data?.data.notifications.map(
+                      data?.data.notifications.filter(
                         (v: { notificationType: string }) =>
                           v.notificationType === "Booking-Request"
                       ).length
@@ -249,9 +249,8 @@ function Inbox() {
                     )
                   </TabsTrigger>
                 </TabsList>
-
                 <div className="flex">
-                  <ScrollArea className="flex max-h-[70vh] h-max">
+                  <ScrollArea className="h-[70vh]">
                     <TabsContent
                       className="grid grid-cols-1 gap-1"
                       value="inbox"
@@ -280,6 +279,7 @@ function Inbox() {
                               // @ts-ignore
                               key={notification._id}
                               notification={notification}
+                              socket={socket}
                             />
                           )
                       )}

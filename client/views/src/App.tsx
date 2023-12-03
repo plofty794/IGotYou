@@ -13,8 +13,8 @@ import PageNotFound from "./pages/PageNotFound";
 import { Suspense, lazy, useContext, useEffect, useState } from "react";
 import { verifyPhoneLoader } from "./constants/loaders/verifyPhoneLoader";
 import HeroLayout from "./root layouts/HeroLayout";
-import CategoryTwo from "./pages/categories/CategoryTwo";
-import CategoryFour from "./pages/categories/CategoryFour";
+import DigitalVideoServices from "./pages/categories/DigitalVideoServices";
+import GraphicDesignAndVisualArts from "./pages/categories/GraphicDesignAndVisualArts";
 import BecomeAHostOverview from "./pages/become a host/BecomeAHostOverview";
 import BecomeAHostLayout from "./root layouts/BecomeAHostLayout";
 import AboutYourService from "./pages/become a host/steps/AboutYourService";
@@ -56,6 +56,11 @@ import MakeABooking from "./pages/MakeABooking";
 import BookingsLayout from "./root layouts/BookingsLayout";
 import Bookings from "./pages/Bookings";
 import DigitalAudioServices from "./pages/categories/DigitalAudioServices";
+import PhotographyServices from "./pages/categories/PhotographyServices";
+import AnimationAnd3DModeling from "./pages/categories/AnimationAnd3DModeling";
+import LiveEventsAndConcerts from "./pages/categories/LiveEventsAndConcerts";
+import DigitalAdvertisingAndMarketing from "./pages/categories/DigitalAdvertisingAndMarketing";
+import Listing from "./pages/Listing";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -158,22 +163,38 @@ function App() {
             }
           />
           <Route
-            path="/photography&videography"
+            path="/digital-video-services"
             element={
               User ?? token ?? identifier ? (
-                <CategoryTwo />
+                <DigitalVideoServices />
               ) : (
                 <Navigate replace to={"/login"} />
               )
             }
           />
           <Route
-            path="/digital&audio-services"
+            path="/digital-audio-services"
             element={<DigitalAudioServices />}
           />
           <Route
-            path="category/events&entertainment"
-            element={<CategoryFour />}
+            path="/graphic-design&visual-arts"
+            element={<GraphicDesignAndVisualArts />}
+          />
+          <Route
+            path="/photography-services"
+            element={<PhotographyServices />}
+          />
+          <Route
+            path="/animation&3d-modeling"
+            element={<AnimationAnd3DModeling />}
+          />
+          <Route
+            path="/live-events&concerts"
+            element={<LiveEventsAndConcerts />}
+          />
+          <Route
+            path="/digital-advertising&marketing"
+            element={<DigitalAdvertisingAndMarketing />}
           />
         </Route>
 
@@ -305,7 +326,7 @@ function App() {
         <Route path="/" element={<HostingLayout />}>
           <Route path="hosting" element={<Hosting />} />
           <Route path="hosting-inbox" element={<Inbox />} />
-          <Route path="hosting" element={<Hosting />} />
+          <Route path="hosting-listing" element={<Listing />} />
           <Route path="hosting" element={<Hosting />} />
         </Route>
 

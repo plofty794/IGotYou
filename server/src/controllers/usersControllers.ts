@@ -7,6 +7,7 @@ import Listings from "../models/Listings";
 import Notifications from "../models/Notifications";
 import BookingRequests from "../models/BookingRequests";
 import Messages from "../models/Messages";
+import { getAuth } from "firebase-admin/auth";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {
 //   const id = req.cookies["_&!d"];
@@ -109,6 +110,7 @@ export const getCurrentUserNotifications: RequestHandler = async (
 
     const userNotifications = await Notifications.find({ toUserID: id })
       .populate([
+        { select: ["username", "photoUrl"], path: "fromAdmin" },
         { select: ["username", "photoUrl"], path: "fromUserID" },
         { select: ["username", "photoUrl"], path: "toUserID" },
         {
@@ -120,6 +122,30 @@ export const getCurrentUserNotifications: RequestHandler = async (
       .exec();
 
     res.status(200).json({ notifications: userNotifications });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateNotification: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { notificationID } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const updateNotification = await Notifications.findByIdAndUpdate(
+      notificationID,
+      {
+        read: true,
+      }
+    );
+
+    res.status(201).json({ updateNotification });
   } catch (error) {
     next(error);
   }
@@ -201,11 +227,39 @@ export const updateUser: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
+
     const user = await Users.findByIdAndUpdate(id, { ...req.body });
     if (!user) {
       throw createHttpError(400, "Error updating user");
     }
     res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserEmail: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { email, uid } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const userRecord = await getAuth().updateUser(uid, {
+      email,
+      emailVerified: false,
+    });
+
+    const updatedUser = await Users.findByIdAndUpdate(id, {
+      email: userRecord.email,
+      emailVerified: userRecord.emailVerified,
+    });
+
+    res.status(201).json({ updateUser });
   } catch (error) {
     next(error);
   }

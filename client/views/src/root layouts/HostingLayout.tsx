@@ -44,8 +44,11 @@ function HostingLayout() {
               <NavLink to={"/calendar"} className="font-medium text-gray-600">
                 Calendar
               </NavLink>
-              <NavLink to={"/insights"} className="font-medium text-gray-600">
-                Insights
+              <NavLink
+                to={"/hosting-listing"}
+                className="font-medium text-gray-600"
+              >
+                Listing
               </NavLink>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -69,7 +72,7 @@ function HostingLayout() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
                   <DropdownMenuItem className="p-4 font-medium text-gray-600">
-                    Listings
+                    Insights
                   </DropdownMenuItem>
                   <DropdownMenuItem className="p-4 font-medium text-gray-600">
                     Reservations

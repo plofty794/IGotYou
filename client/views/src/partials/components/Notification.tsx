@@ -37,7 +37,6 @@ function Notification() {
       setNotifications((prev) => [data.notifications, ...prev]);
       setNewNotifications((prev) => prev + 1);
     });
-
     socket?.on("res", (data) => console.log(data));
   }, [socket]);
 
@@ -101,24 +100,31 @@ function Notification() {
                 <Separator />
                 <ScrollArea className="min-h-72 h-max">
                   <div className="flex flex-col items-center p-1">
-                    {notifications?.map((v) => (
+                    {notifications?.map((v, i) => (
                       <>
                         <Link
-                          key={v._id}
+                          key={i}
                           to={"/hosting-inbox"}
                           className="hover:bg-[#F5F5F5] p-3"
                         >
                           <div className="w-full flex items-center gap-2">
                             <Avatar>
                               <AvatarImage
-                                className="object-cover max-w-full"
-                                src={v.fromUserID.photoUrl}
+                                className="object-contain max-w-full"
+                                src={
+                                  v.fromAdmin != undefined
+                                    ? v.fromAdmin.photoUrl
+                                    : v.fromUserID.photoUrl
+                                }
                               />
                               <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <div className="w-full">
                               <p className="text-gray-600 text-xs font-bold">
-                                {v.fromUserID.username as string} has sent you a{" "}
+                                {v.fromAdmin != null
+                                  ? v.fromAdmin.username
+                                  : v.fromUserID.username}{" "}
+                                has sent you a{" "}
                                 {(v.notificationType as string)
                                   .split("-")
                                   .join(" ")}{" "}

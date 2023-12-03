@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import Users from "../models/Users";
 import { addDays } from "date-fns";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
+import Notifications from "../models/Notifications";
 
 export const getVerifiedPayments: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -137,4 +138,27 @@ export const updatePaymentProofStatus: RequestHandler = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const sendPaymentNotificationStatus = async (data: any) => {
+  const userID = await Users.findOne({ username: data.username });
+  console.log(data);
+  const newNotification = await Notifications.create({
+    notificationType: "Subscription-Status",
+    toUserID: userID?._id,
+    fromAdmin: data.adminID,
+  });
+
+  await newNotification.populate({
+    select: ["username", "photoUrl"],
+    path: "fromAdmin",
+  });
+
+  await userID?.updateOne({
+    $push: {
+      notifications: newNotification._id,
+    },
+  });
+
+  return { newNotification };
 };

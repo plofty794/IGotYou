@@ -11,11 +11,20 @@ import useGetPendingPayments from "@/hooks/useGetPendingPayments";
 import useVerifyPayment from "@/hooks/useVerifyPayment";
 import Lottie from "lottie-react";
 import noPendingPayment from "../assets/no-pending-payments.json";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
+import { useContext } from "react";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 function Payments() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = useOutletContext<any>();
+  const { socket } = useContext(SocketContextProvider);
   const { data, isPending } = useGetPendingPayments();
   const verifyPayment = useVerifyPayment();
+
+  function paymentStatus(status: string, username: string, adminID: string) {
+    socket?.emit("update-payment-status", { status, username, adminID });
+  }
 
   return (
     <section className="py-4 px-8">
@@ -55,27 +64,42 @@ function Payments() {
                               Sent at: {new Date(v.createdAt).toLocaleString()}
                             </CardDescription>
                           </CardContent>
-                          <CardFooter className="flex justify-between">
+                          <CardFooter className="flex justify-between gap-2 max-lg:flex-col">
                             <Button
                               type="button"
-                              onClick={() =>
+                              onClick={() => {
                                 verifyPayment.mutate({
                                   _id: v._id,
                                   paymentStatus: "reject",
-                                })
-                              }
-                              className="bg-red-600"
+                                });
+                                setTimeout(() => {
+                                  paymentStatus(
+                                    "reject",
+                                    v.user.username,
+                                    admin._id
+                                  );
+                                }, 500);
+                              }}
+                              className="bg-red-600 w-full"
                             >
                               Reject
                             </Button>
                             <Button
+                              className="w-full"
                               type="button"
-                              onClick={() =>
+                              onClick={() => {
                                 verifyPayment.mutate({
                                   _id: v._id,
                                   paymentStatus: "success",
-                                })
-                              }
+                                });
+                                setTimeout(() => {
+                                  paymentStatus(
+                                    "success",
+                                    v.user.username,
+                                    admin._id
+                                  );
+                                }, 500);
+                              }}
                             >
                               Verify
                             </Button>

@@ -5,12 +5,10 @@ import {
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { auth } from "@/firebase config/config";
 import { EmailSchema, ZodEmailSchema } from "@/zod/emailSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Collapsible } from "@radix-ui/react-collapsible";
 import { QueryState } from "@tanstack/react-query";
-import { GoogleAuthProvider, unlink } from "firebase/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../../ErrorMessage";
@@ -61,7 +59,6 @@ function CollapsibleEmail({ data }: TCollapsibleData) {
     if (email === data?.data?.user.email) {
       return setMessage("This is already your current email address");
     }
-    await unlink(auth.currentUser!, GoogleAuthProvider.PROVIDER_ID);
     mutate({ email, emailVerified: false });
   }
 

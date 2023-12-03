@@ -249,8 +249,10 @@ function ProfileContent({ profileData, activeListings }: TProps) {
                 <PersonalInfoSheet />
               ) : (
                 <Button
-                  onClick={() => {
+                  onClick={async () => {
                     if (isSuccess) {
+                      await auth.currentUser?.reload();
+                      await auth.updateCurrentUser(auth.currentUser);
                       mutate({
                         emailVerified: auth.currentUser?.emailVerified,
                       });

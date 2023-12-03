@@ -10,8 +10,11 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/firebase config/config";
 import { Textarea } from "@/components/ui/textarea";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
 
 function Messages() {
+  const queryClient = useQueryClient();
   const { data } = useGetMessages();
   const { socket } = useContext(SocketContextProvider);
   const [message, setMessage] = useState("");
@@ -21,13 +24,15 @@ function Messages() {
   }, []);
 
   function sendChatMessage(message: string, receiverName: string) {
-    if (!message) return;
     socket?.emit("chat-message", {
       message,
       receiverName,
       senderName: auth.currentUser?.displayName,
     });
     setMessage("");
+    queryClient.invalidateQueries({
+      queryKey: ["messages", auth.currentUser?.uid],
+    });
   }
 
   useMemo(() => {
@@ -36,7 +41,7 @@ function Messages() {
 
   return (
     <section className="w-full">
-      <h1 className="font-bold text-3xl mx-6 mt-4">Messages</h1>
+      <h1 className="font-bold text-3xl ml-6 mt-4 w-max">Messages</h1>
       {data?.pages.map((page) =>
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -44,9 +49,9 @@ function Messages() {
           <Tabs
             key={v._id}
             defaultValue="account"
-            className="flex gap-2 w-full p-6"
+            className="flex gap-2 w-full p-6 max-lg:flex-col"
           >
-            <ScrollArea className="h-max w-1/3 h-">
+            <ScrollArea className="h-max w-1/3 max-lg:w-full">
               <TabsList className="w-full h-max flex-col">
                 {page.data.currentUserID === v.senderID._id ? (
                   <TabsTrigger
@@ -64,9 +69,18 @@ function Messages() {
                           }
                         />
                       </Avatar>
-                      <span className="font-bold text-sm">
-                        {v.receiverID.username}
-                      </span>
+                      <div className="flex items-start flex-col">
+                        <span className="font-bold text-sm">
+                          {v.receiverID.username}
+                        </span>
+                        <span className="font-bold text-xs text-gray-600">
+                          last interaction{" "}
+                          {formatDistanceToNow(
+                            new Date(v.replies[v.replies.length - 1].createdAt),
+                            { addSuffix: true }
+                          )}
+                        </span>
+                      </div>
                     </div>
                   </TabsTrigger>
                 ) : (
@@ -85,9 +99,18 @@ function Messages() {
                           }
                         />
                       </Avatar>
-                      <span className="font-bold text-sm">
-                        {v.senderID.username}
-                      </span>
+                      <div className="flex items-start flex-col">
+                        <span className="font-bold text-sm">
+                          {v.receiverID.username}
+                        </span>
+                        <span className="font-bold text-xs text-gray-600">
+                          last interaction{" "}
+                          {formatDistanceToNow(
+                            new Date(v.replies[v.replies.length - 1].createdAt),
+                            { addSuffix: true }
+                          )}
+                        </span>
+                      </div>
                     </div>
                   </TabsTrigger>
                 )}
@@ -106,9 +129,15 @@ function Messages() {
                   <CardContent className="w-full pt-4">
                     {page.data.currentUserID === v.senderID._id ? (
                       <>
-                        <div className="w-max ml-auto border shadow-md rounded-md p-2 flex items-center gap-2">
+                        <div className="w-max ml-auto border shadow-md rounded-full p-4 flex items-center gap-2">
                           <Avatar>
-                            <AvatarImage src={v.senderID.photoUrl} />
+                            <AvatarImage
+                              className="object-cover"
+                              src={
+                                v.senderID.photoUrl ??
+                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                              }
+                            />
                           </Avatar>
                           <span className="font-bold "> {v.content} </span>
                         </div>
@@ -119,10 +148,15 @@ function Messages() {
                             reply.senderID === page.data.currentUserID ? (
                               <div
                                 key={reply._id}
-                                className="w-max ml-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                                className="w-max ml-auto border shadow-md rounded-full p-4 flex items-center gap-2"
                               >
                                 <Avatar>
-                                  <AvatarImage src={v.senderID.photoUrl} />
+                                  <AvatarImage
+                                    src={
+                                      v.senderID.photoUrl ??
+                                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                                    }
+                                  />
                                 </Avatar>
                                 <span className="font-bold">
                                   {" "}
@@ -132,10 +166,15 @@ function Messages() {
                             ) : (
                               <div
                                 key={reply._id}
-                                className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                                className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-full p-4 flex items-center gap-2"
                               >
                                 <Avatar>
-                                  <AvatarImage src={v.receiverID.photoUrl} />
+                                  <AvatarImage
+                                    src={
+                                      v.receiverID.photoUrl ??
+                                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                                    }
+                                  />
                                 </Avatar>
                                 <span className="font-bold text-white">
                                   {" "}
@@ -147,9 +186,14 @@ function Messages() {
                       </>
                     ) : (
                       <>
-                        <div className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-md p-2 flex items-center gap-2">
+                        <div className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-full p-4 flex items-center gap-2">
                           <Avatar>
-                            <AvatarImage src={v.senderID.photoUrl} />
+                            <AvatarImage
+                              src={
+                                v.senderID.photoUrl ??
+                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                              }
+                            />
                           </Avatar>
                           <span className="font-bold text-white">
                             {" "}
@@ -163,10 +207,15 @@ function Messages() {
                             reply.senderID === v.receiverID._id ? (
                               <div
                                 key={reply._id}
-                                className=" w-max ml-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                                className=" w-max ml-auto border shadow-md rounded-full p-4 flex items-center gap-2"
                               >
                                 <Avatar>
-                                  <AvatarImage src={v.receiverID.photoUrl} />
+                                  <AvatarImage
+                                    src={
+                                      v.receiverID.photoUrl ??
+                                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                                    }
+                                  />
                                 </Avatar>
                                 <span className="font-bold ">
                                   {" "}
@@ -176,12 +225,17 @@ function Messages() {
                             ) : (
                               <div
                                 key={reply._id}
-                                className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-md p-2 flex items-center gap-2"
+                                className="bg-[#00B6AC] w-max mr-auto border shadow-md rounded-full p-4 flex items-center gap-2"
                               >
                                 <Avatar>
-                                  <AvatarImage src={v.senderID.photoUrl} />
+                                  <AvatarImage
+                                    src={
+                                      v.senderID.photoUrl ??
+                                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                                    }
+                                  />
                                 </Avatar>
-                                <span className="font-bold text-white text-sm">
+                                <span className="font-bold text-white text-xs">
                                   {" "}
                                   {reply.content}{" "}
                                 </span>
@@ -195,11 +249,12 @@ function Messages() {
                 <CardFooter className="gap-2 p-2 bg-zinc-200 absolute bottom-0 w-full">
                   <Textarea
                     autoFocus
-                    className="min-h-[38px] text-sm font-semibold py-2 bg-white rounded-full"
+                    className="min-h-[40px] text-sm font-semibold py-2 bg-white"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <Button
+                    disabled={!message.length}
                     onClick={() => sendChatMessage(message, v.receiverName)}
                     size={"lg"}
                     className="bg-gray-950 rounded-full p-6 "

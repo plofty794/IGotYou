@@ -6,6 +6,10 @@ const notificationSchema = new Schema(
       type: Types.ObjectId,
       ref: "Users",
     },
+    fromAdmin: {
+      type: Types.ObjectId,
+      ref: "Admin",
+    },
     toUserID: {
       type: Types.ObjectId,
       ref: "Users",

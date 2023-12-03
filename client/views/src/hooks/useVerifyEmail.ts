@@ -43,8 +43,8 @@ function useVerifyEmail() {
       queryClient.invalidateQueries({ queryKey: ["profile", id] });
       toast({
         title: "Verification email has been sent",
-        description: "Click the verify button again after verifying your email",
-        className: "bg-[#FFF] text-[#222222]",
+        description: "After verifying your email click the reload button",
+        className: "bg-[#FFF] ",
       });
     },
     onError(err) {
@@ -54,10 +54,6 @@ function useVerifyEmail() {
         description: (error.response as AxiosResponse).data.error,
         variant: "destructive",
       });
-    },
-    onMutate: async () => {
-      await auth.currentUser?.reload();
-      await auth.updateCurrentUser(auth.currentUser);
     },
   });
 }

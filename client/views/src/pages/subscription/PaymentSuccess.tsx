@@ -57,7 +57,7 @@ function PaymentSuccessful() {
             In the meantime, you can continue browsing our website or using our
             app.
             <br /> Once your subscription is activated, you will receive a
-            confirmation email.
+            notification.
           </AlertDescription>
         </Alert>
       </Card>

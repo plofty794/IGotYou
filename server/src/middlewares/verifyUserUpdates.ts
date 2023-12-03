@@ -17,7 +17,7 @@ export const verifyUserUpdates = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { username, address, mobilePhone }: TUserUpdates = req.body;
+  const { username, mobilePhone }: TUserUpdates = req.body;
   // const postcode = address?.match(/\d{4}/g)?.join("");
   // const country_code = address?.match(/[A-Z]+$/g)?.join("");
 

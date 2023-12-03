@@ -15,6 +15,8 @@ import {
   getCurrentUserNotifications,
   getBookingRequests,
   searchUsername,
+  updateUserEmail,
+  updateNotification,
 } from "../controllers/usersControllers";
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
@@ -40,6 +42,12 @@ router.patch(
   authToken,
   verifyUserUpdates,
   updateUser
+);
+router.patch("/users/current-user/update-email", authToken, updateUserEmail);
+router.patch(
+  "/users/current-user/update-notification",
+  authToken,
+  updateNotification
 );
 router.delete("/users/current-user/logout", logOutUser);
 router.delete("/users/:id", deleteUser);

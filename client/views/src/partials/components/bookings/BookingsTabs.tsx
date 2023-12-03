@@ -10,19 +10,53 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatValue } from "react-currency-input-field";
-import { formatDistance } from "date-fns";
-import { useEffect, useState } from "react";
+import { compareAsc, formatDistance } from "date-fns";
+import { useContext, useEffect, useState } from "react";
 import Lottie from "lottie-react";
 import noRequest from "../../../assets/no-pending-payments.json";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import ErrorMessage from "../ErrorMessage";
+import { useForm } from "react-hook-form";
+import {
+  ComposeMessageSchema,
+  ZodComposeMessageSchema,
+} from "@/zod/composeMessageSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SocketContextProvider } from "@/context/SocketContext";
+import { auth } from "@/firebase config/config";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
+  const { socket } = useContext(SocketContextProvider);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [approvedRequests, setApprovedRequests] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [declinedRequests, setDeclinedRequests] = useState<any[]>([]);
+  const [receiverName, setReceiverName] = useState("");
+
+  const {
+    handleSubmit,
+    watch,
+    register,
+    formState: { errors },
+  } = useForm<ComposeMessageSchema>({
+    defaultValues: {
+      message: "",
+    },
+    resolver: zodResolver(ZodComposeMessageSchema),
+  });
 
   useEffect(() => {
     setPendingRequests(
@@ -35,6 +69,15 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
       bookingRequests.filter((v) => v.status === "declined") ?? []
     );
   }, [bookingRequests]);
+
+  function handleSendMessage(data: ComposeMessageSchema) {
+    if (receiverName == null) return;
+    socket?.emit("chat-message", {
+      message: data.message,
+      receiverName,
+      senderName: auth.currentUser?.displayName,
+    });
+  }
 
   return (
     <Tabs defaultValue="all" className="mt-6 full">
@@ -77,8 +120,74 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                         {v.hostID.username}
                       </Badge>
                     </CardTitle>
-                    <CardDescription className="">Chat</CardDescription>
-                    <CardDescription className="">View profile</CardDescription>
+                    <Dialog
+                      onOpenChange={(val) => {
+                        if (val) {
+                          setReceiverName(v.hostID.username);
+                        } else {
+                          setReceiverName("");
+                        }
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button variant={"outline"} className="rounded-full">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+                            />
+                          </svg>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <form
+                          onSubmit={handleSubmit(handleSendMessage)}
+                          className="flex flex-col gap-2"
+                          method="get"
+                        >
+                          <DialogHeader>
+                            <DialogTitle className="text-lg font-semibold">
+                              New Message
+                            </DialogTitle>
+                            <div className="flex flex-col items-center justify-center gap-2 w-full">
+                              <div className="flex items-center justify-center gap-2 w-full">
+                                <Label className="text-sm font-semibold text-gray-600">
+                                  To:{" "}
+                                </Label>
+                                <div className="w-max mr-auto">
+                                  <span className="p-2 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold">
+                                    {v.hostID.username}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogHeader>
+                          <span className="ml-auto font-bold text-xs text-gray-600">
+                            {watch("message").length} / 200
+                          </span>
+                          <Textarea {...register("message")} maxLength={201} />
+                          {errors.message && (
+                            <ErrorMessage message={errors.message.message} />
+                          )}
+                          <DialogFooter className="mt-2">
+                            <Button className="rounded-full bg-gray-950">
+                              Send
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <CardDescription className="font-semibold">
+                      View profile
+                    </CardDescription>
                   </div>
                   <Badge
                     className="uppercase font-bold rounded-full"
@@ -120,7 +229,7 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                       </span>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex items-end justify-between flex-col gap-2">
                     <span className="font-semibold text-lg">
                       {formatValue({
                         value: v.listingID.price.toString(),
@@ -129,14 +238,39 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                           currency: "PHP",
                         },
                       })}{" "}
-                      {/* x{" "}
-                      {parseInt(
-                        formatDistance(
-                          new Date(v.requestedBookingDateStartsAt),
-                          new Date(v.requestedBookingDateEndsAt)
-                        )
-                      )} */}
                     </span>
+                    {compareAsc(
+                      new Date(v.requestedBookingDateStartsAt).getDate(),
+                      new Date().getDate()
+                    ) === 0 &&
+                    compareAsc(
+                      new Date(v.requestedBookingDateEndsAt).getDate(),
+                      new Date().getDate()
+                    ) === 1 ? (
+                      <Badge
+                        variant={"outline"}
+                        className="font-bold text-sm uppercase text-green-600"
+                      >
+                        Ongoing
+                      </Badge>
+                    ) : compareAsc(
+                        new Date(v.requestedBookingDateStartsAt).getDate(),
+                        new Date().getDate()
+                      ) === -1 ? (
+                      <Badge
+                        variant={"outline"}
+                        className="font-bold text-sm uppercase text-amber-600"
+                      >
+                        Upcoming
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant={"outline"}
+                        className="font-bold text-sm uppercase text-rose-600"
+                      >
+                        Done
+                      </Badge>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -165,8 +299,74 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                         {v.hostID.username}
                       </Badge>
                     </CardTitle>
-                    <CardDescription className="">Chat</CardDescription>
-                    <CardDescription className="">View profile</CardDescription>
+                    <Dialog
+                      onOpenChange={(val) => {
+                        if (val) {
+                          setReceiverName(v.hostID.username);
+                        } else {
+                          setReceiverName("");
+                        }
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button variant={"outline"} className="rounded-full">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+                            />
+                          </svg>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <form
+                          onSubmit={handleSubmit(handleSendMessage)}
+                          className="flex flex-col gap-2"
+                          method="get"
+                        >
+                          <DialogHeader>
+                            <DialogTitle className="text-lg font-semibold">
+                              New Message
+                            </DialogTitle>
+                            <div className="flex flex-col items-center justify-center gap-2 w-full">
+                              <div className="flex items-center justify-center gap-2 w-full">
+                                <Label className="text-sm font-semibold text-gray-600">
+                                  To:{" "}
+                                </Label>
+                                <div className="w-max mr-auto">
+                                  <span className="p-2 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold">
+                                    {v.fromUserID.username}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogHeader>
+                          <span className="ml-auto font-bold text-xs text-gray-600">
+                            {watch("message").length} / 200
+                          </span>
+                          <Textarea {...register("message")} maxLength={201} />
+                          {errors.message && (
+                            <ErrorMessage message={errors.message.message} />
+                          )}
+                          <DialogFooter className="mt-2">
+                            <Button className="rounded-full bg-gray-950">
+                              Send
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <CardDescription className="font-semibold">
+                      View profile
+                    </CardDescription>
                   </div>
                   <Badge
                     className="uppercase rounded-full font-bold"
@@ -258,8 +458,74 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                         {v.hostID.username}
                       </Badge>
                     </CardTitle>
-                    <CardDescription className="">Chat</CardDescription>
-                    <CardDescription className="">View profile</CardDescription>
+                    <Dialog
+                      onOpenChange={(val) => {
+                        if (val) {
+                          setReceiverName(v.hostID.username);
+                        } else {
+                          setReceiverName("");
+                        }
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button variant={"outline"} className="rounded-full">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+                            />
+                          </svg>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <form
+                          onSubmit={handleSubmit(handleSendMessage)}
+                          className="flex flex-col gap-2"
+                          method="get"
+                        >
+                          <DialogHeader>
+                            <DialogTitle className="text-lg font-semibold">
+                              New Message
+                            </DialogTitle>
+                            <div className="flex flex-col items-center justify-center gap-2 w-full">
+                              <div className="flex items-center justify-center gap-2 w-full">
+                                <Label className="text-sm font-semibold text-gray-600">
+                                  To:{" "}
+                                </Label>
+                                <div className="w-max mr-auto">
+                                  <span className="p-2 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold">
+                                    {v.hostID.username}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogHeader>
+                          <span className="ml-auto font-bold text-xs text-gray-600">
+                            {watch("message").length} / 200
+                          </span>
+                          <Textarea {...register("message")} maxLength={201} />
+                          {errors.message && (
+                            <ErrorMessage message={errors.message.message} />
+                          )}
+                          <DialogFooter className="mt-2">
+                            <Button className="rounded-full bg-gray-950">
+                              Send
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <CardDescription className="font-semibold">
+                      View profile
+                    </CardDescription>
                   </div>
                   <Badge
                     className="uppercase font-bold rounded-full"
@@ -301,7 +567,7 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                       </span>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex items-end justify-between flex-col gap-2">
                     <span className="font-semibold text-lg">
                       {formatValue({
                         value: v.listingID.price.toString(),
@@ -310,14 +576,39 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                           currency: "PHP",
                         },
                       })}{" "}
-                      x{" "}
-                      {parseInt(
-                        formatDistance(
-                          new Date(v.requestedBookingDateStartsAt),
-                          new Date(v.requestedBookingDateEndsAt)
-                        )
-                      )}
                     </span>
+                    {compareAsc(
+                      new Date(v.requestedBookingDateStartsAt).getDate(),
+                      new Date().getDate()
+                    ) === 0 &&
+                    compareAsc(
+                      new Date(v.requestedBookingDateEndsAt).getDate(),
+                      new Date().getDate()
+                    ) === 1 ? (
+                      <Badge
+                        variant={"outline"}
+                        className="font-bold text-sm uppercase text-green-600"
+                      >
+                        Ongoing
+                      </Badge>
+                    ) : compareAsc(
+                        new Date(v.requestedBookingDateStartsAt).getDate(),
+                        new Date().getDate()
+                      ) === -1 ? (
+                      <Badge
+                        variant={"outline"}
+                        className="font-bold text-sm uppercase text-amber-600"
+                      >
+                        Upcoming
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant={"outline"}
+                        className="font-bold text-sm uppercase text-rose-600"
+                      >
+                        Done
+                      </Badge>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -351,8 +642,74 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                         {v.hostID.username}
                       </Badge>
                     </CardTitle>
-                    <CardDescription className="">Chat</CardDescription>
-                    <CardDescription className="">View profile</CardDescription>
+                    <Dialog
+                      onOpenChange={(val) => {
+                        if (val) {
+                          setReceiverName(v.hostID.username);
+                        } else {
+                          setReceiverName("");
+                        }
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button variant={"outline"} className="rounded-full">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+                            />
+                          </svg>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <form
+                          onSubmit={handleSubmit(handleSendMessage)}
+                          className="flex flex-col gap-2"
+                          method="get"
+                        >
+                          <DialogHeader>
+                            <DialogTitle className="text-lg font-semibold">
+                              New Message
+                            </DialogTitle>
+                            <div className="flex flex-col items-center justify-center gap-2 w-full">
+                              <div className="flex items-center justify-center gap-2 w-full">
+                                <Label className="text-sm font-semibold text-gray-600">
+                                  To:{" "}
+                                </Label>
+                                <div className="w-max mr-auto">
+                                  <span className="p-2 text-sm focus-visible:ring-0 focus-visible:border-none border-none outline-none shadow-none font-semibold">
+                                    {v.hostID.username}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogHeader>
+                          <span className="ml-auto font-bold text-xs text-gray-600">
+                            {watch("message").length} / 200
+                          </span>
+                          <Textarea {...register("message")} maxLength={201} />
+                          {errors.message && (
+                            <ErrorMessage message={errors.message.message} />
+                          )}
+                          <DialogFooter className="mt-2">
+                            <Button className="rounded-full bg-gray-950">
+                              Send
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <CardDescription className="font-semibold">
+                      View profile
+                    </CardDescription>
                   </div>
                   <Badge
                     className="uppercase rounded-full font-bold"

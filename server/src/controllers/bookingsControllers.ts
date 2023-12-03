@@ -32,6 +32,7 @@ export const updateBookingRequestNotification = async (data: any) => {
       {
         $push: {
           reservedDates: {
+            isReserved: true,
             from: data.bookingRequestID.requestedBookingDateStartsAt,
             to: data.bookingRequestID.requestedBookingDateEndsAt,
           },

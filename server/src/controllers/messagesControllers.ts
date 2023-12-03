@@ -52,7 +52,7 @@ export const sendMessage = async (data: any) => {
         $push: {
           replies: {
             content: data.message,
-            senderID,
+            senderID: senderID?._id,
           },
         },
       });
