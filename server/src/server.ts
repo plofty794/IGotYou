@@ -156,3 +156,7 @@ app.use("/api", assetRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", paymentRoutes);
 app.use(errorHandler);
+
+app.get("/", (req, res, next) => {
+  res.json({ message: "Hello" });
+});
