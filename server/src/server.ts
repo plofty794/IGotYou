@@ -60,6 +60,10 @@ function removeUser(socketId: string) {
   ));
 }
 
+app.get("/", (req, res, next) => {
+  res.send("HEllo");
+});
+
 io.on("connection", (socket) => {
   socket.on("user-connect", (data) => {
     getActiveUsers({
@@ -141,10 +145,6 @@ io.on("connection", (socket) => {
 //     timeout: 5000,
 //   })
 // );
-
-app.get("/", (req, res, next) => {
-  res.json({ message: "Hello" });
-});
 
 app.use(cookieParser());
 app.use(cors({ origin: [env.CLIENT_URL, env.ADMIN_URL], credentials: true }));

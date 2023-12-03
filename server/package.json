@@ -2,7 +2,8 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server.ts",
+  "type": "commonjs",
   "scripts": {
     "dev": "nodemon --watch \"src/**/*.ts\" --ignore \"src/**/*.spec.ts\" --exec \"ts-node\" src/server.ts"
   },
@@ -18,13 +19,9 @@
     "express": "^4.18.2",
     "firebase-admin": "^11.11.0",
     "http-errors": "^2.0.0",
-    "ipinfo-express": "^2.0.2",
-    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1",
     "npm-check-updates": "^16.14.11",
-    "postcode-validator": "^3.8.20",
-    "socket.io": "^4.7.2",
-    "validator": "^13.11.0"
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
