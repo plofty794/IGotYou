@@ -7,12 +7,6 @@
       "use": "@now/node"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
 
-      "dest": "server.ts"
-    }
-  ],
   "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
 }
