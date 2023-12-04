@@ -37,6 +37,8 @@ const columns: ColumnDef<User>[] = [
 function Users() {
   const users = useGetUsers();
 
+  console.log(users.data);
+
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4">
