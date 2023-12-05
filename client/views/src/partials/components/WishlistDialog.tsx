@@ -4,10 +4,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import useAddToWishlist from "@/hooks/useAddToWishlist";
+import { useMemo, useState } from "react";
 
-function WishlistDialog() {
+function WishlistDialog({ listingID }: { listingID: string }) {
+  const { mutate, isSuccess } = useAddToWishlist();
   const [wishlist, setWishlist] = useState(false);
+
+  console.log(isSuccess);
+
+  useMemo(() => {
+    isSuccess && setWishlist(true);
+  }, [isSuccess]);
 
   return (
     <TooltipProvider>
@@ -21,7 +29,7 @@ function WishlistDialog() {
             className={`w-7 h-7 stroke-gray-500 hover:stroke-slate-600 cursor-pointer ${
               wishlist ? "fill-red-600" : "fill-none"
             }`}
-            onClick={() => setWishlist((prev) => !prev)}
+            onClick={() => mutate(listingID)}
           >
             <path
               strokeLinecap="round"

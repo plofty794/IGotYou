@@ -215,6 +215,34 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const addListingToWishlist: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { listingID } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    const listing = await Listings.findById(listingID);
+
+    if (!listing) {
+      return res.status(400).json({ message: "Something went wrong." });
+    }
+    const user = await Users.findByIdAndUpdate(id, {
+      $addToSet: { wishlists: listingID },
+    });
+
+    res
+      .status(201)
+      .json({ message: "Success", listingName: listing.serviceDescription });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateUser: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
   try {

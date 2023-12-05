@@ -24,7 +24,7 @@ function AnimationAnd3DModeling() {
   const [wishlist, setWishlist] = useState(false);
 
   useEffect(() => {
-    document.title = "Digital Audio Services - IGotYou";
+    document.title = "Animation and 3D Modeling - IGotYou";
   }, []);
 
   return (
@@ -42,7 +42,7 @@ function AnimationAnd3DModeling() {
                       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                       // @ts-ignore
                       (v, i) =>
-                        v.serviceType === "Digital Audio Services" && (
+                        v.serviceType === "Animation and 3D Modeling" && (
                           <Card
                             key={v._id}
                             className="border-none shadow-none overflow-hidden w-full"

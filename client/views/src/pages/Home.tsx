@@ -195,7 +195,7 @@ function Home() {
                               : "No rating"}
                           </span>
                         </div>
-                        <WishlistDialog />
+                        <WishlistDialog listingID={v._id} />
                       </div>
                     </CardContent>
                   </Card>
