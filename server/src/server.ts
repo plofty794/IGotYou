@@ -16,6 +16,7 @@ import {
 } from "./controllers/bookingsControllers";
 import { sendMessage } from "./controllers/messagesControllers";
 import { sendPaymentNotificationStatus } from "./controllers/paymentControllers";
+import { conversationRoutes } from "./routes/conversationRoutes";
 
 const app = express();
 const server = app
@@ -159,4 +160,5 @@ app.use("/api", listingRoutes);
 app.use("/api", assetRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", paymentRoutes);
+app.use("/api", conversationRoutes);
 app.use(errorHandler);

@@ -161,10 +161,11 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
-    const user = await Users.findById(id).populate([
-      "listings",
-      "bookingRequests",
-    ]);
+    const user = await Users.findById(id)
+      .populate(["listings", "bookingRequests"])
+      .select("-password")
+      .exec();
+
     if (!user) {
       res.clearCookie("_&!d");
       throw createHttpError(400, "No account with that id");
@@ -184,32 +185,15 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
 export const visitUserProfile: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const user = await Users.findById(id).populate("listings");
+    const user = await Users.findById(id)
+      .populate("listings")
+      .select("-password")
+      .exec();
+
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
-    res.status(200).json({
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        userStatus: user.userStatus,
-        photoUrl: user.photoUrl ?? null,
-        mobilePhone: user.mobilePhone,
-        mobileVerified: user.mobileVerified,
-        listings: user.listings,
-        uid: user.uid,
-        rating: user.rating,
-        work: user.work,
-        funFact: user.funFact,
-        school: user.school,
-        address: user.address,
-        subscriptionStatus: user.subscriptionStatus,
-        subscriptionExpiresAt: user.subscriptionExpiresAt,
-        wishlists: user.wishlists,
-      },
-    });
+    res.status(200).json({ user });
   } catch (error) {
     next(error);
   }
@@ -298,8 +282,9 @@ export const searchUsername: RequestHandler = async (req, res, next) => {
     username: new RegExp("", "gi"),
   };
   if (username != null) {
-    searchOptions.username = new RegExp(username, "gi");
+    searchOptions.username = new RegExp(`^${username}`, "gi");
   }
+
   try {
     if (!id) {
       res.clearCookie("_&!d");
@@ -309,16 +294,15 @@ export const searchUsername: RequestHandler = async (req, res, next) => {
       );
     }
 
-    const user = await Users.find(searchOptions).exec();
+    const currentUser = await Users.findById(id);
 
-    if (!user) {
+    const userDetails = await Users.find(searchOptions)
+      .select("username _id photoUrl email")
+      .exec();
+
+    if (!userDetails) {
       throw createHttpError(400, "No User Found");
     }
-
-    const userDetails = user.map((v) => ({
-      username: v.username,
-      photoURL: v.photoUrl,
-    }));
 
     res.status(200).json({ userDetails });
   } catch (error) {

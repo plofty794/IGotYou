@@ -147,6 +147,7 @@ export const sendPaymentNotificationStatus = async (data: any) => {
     notificationType: "Subscription-Status",
     toUserID: userID?._id,
     fromAdmin: data.adminID,
+    paymentStatus: data.status,
   });
 
   await newNotification.populate({

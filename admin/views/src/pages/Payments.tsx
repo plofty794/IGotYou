@@ -36,7 +36,7 @@ function Payments() {
           </Button>
         </div>
         {data?.pages[0].data.pendingPayments ? (
-          <div className="grid grid-cols-4 gap-2">
+          <div key={"1234"} className="grid grid-cols-4 gap-2">
             {isPending
               ? "Loading..."
               : data?.pages.flatMap((page) =>

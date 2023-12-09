@@ -37,8 +37,6 @@ function Register() {
     }
   }
 
-  console.log(isHidden);
-
   return (
     <>
       <div className="flex flex-col gap-4">

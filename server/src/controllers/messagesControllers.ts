@@ -18,19 +18,19 @@ export const getUserMessages: RequestHandler = async (req, res, next) => {
     }
 
     const user = await Users.findById(id);
-    const messages = await Messages.find({ _id: user?.messages })
-      .sort({ "replies.createdAt": "desc" })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate([
-        {
-          path: "senderID",
-          select: "username photoUrl",
-        },
-        { path: "receiverID", select: "username photoUrl" },
-      ]);
+    // const messages = await Messages.find({ _id: user })
+    //   .sort({ "replies.createdAt": "desc" })
+    //   .skip((page - 1) * limit)
+    //   .limit(limit)
+    //   .populate([
+    //     {
+    //       path: "senderID",
+    //       select: "username photoUrl",
+    //     },
+    //     { path: "receiverID", select: "username photoUrl" },
+    //   ]);
 
-    res.status(200).json({ messages, currentUserID: id });
+    res.status(200).json({ user, currentUserID: id });
   } catch (error) {
     next(error);
   }
@@ -42,40 +42,43 @@ export const sendMessage = async (data: any) => {
     const senderID = await Users.findOne({ username: data.senderName });
 
     const messageExist = await Messages.findOne({
-      $expr: {
-        $eq: ["$receiverID.messages", "$senderID.messages"],
-      },
+      receiverID: receiverID?._id,
+      senderID: senderID?._id,
     });
 
     if (messageExist) {
-      return await messageExist.updateOne({
-        $push: {
-          replies: {
-            content: data.message,
-            senderID: senderID?._id,
+      return await messageExist.updateOne(
+        {
+          $push: {
+            replies: {
+              content: data.message,
+              senderID: senderID?._id,
+            },
           },
         },
+        { new: true }
+      );
+    } else {
+      const newMessage = await Messages.create({
+        senderID: senderID?._id,
+        receiverID: receiverID?._id,
+        content: data.message,
       });
+
+      await senderID?.updateOne({
+        $push: {
+          messages: newMessage._id,
+        },
+      });
+
+      await receiverID?.updateOne({
+        $push: {
+          messages: newMessage._id,
+        },
+      });
+
+      return newMessage;
     }
-    const newMessage = await Messages.create({
-      senderID: senderID?._id,
-      receiverID: receiverID?._id,
-      content: data.message,
-    });
-
-    await senderID?.updateOne({
-      $push: {
-        messages: newMessage._id,
-      },
-    });
-
-    await receiverID?.updateOne({
-      $push: {
-        messages: newMessage._id,
-      },
-    });
-
-    return newMessage;
   } catch (error) {
     console.error(error);
   }
