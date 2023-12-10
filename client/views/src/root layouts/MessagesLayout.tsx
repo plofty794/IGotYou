@@ -24,13 +24,14 @@ import useCreateConversation from "@/hooks/useCreateConversation";
 import useGetConversations from "@/hooks/useGetConversations";
 import Notification from "@/partials/components/Notification";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
+import { CheckIcon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 
 function MessagesLayout() {
   const { mutate, isPending } = useCreateConversation();
-  const { data, isLoading } = useGetConversations();
-  const { id } = useParams();
+  const conversations = useGetConversations();
+  const { conversationId } = useParams();
   const [receiverName, setReceiverName] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userDetails, setUserDetails] = useState<any[]>([]);
@@ -43,7 +44,12 @@ function MessagesLayout() {
       const res = await axiosPrivateRoute.get(
         `/api/users/search/${receiverName}`
       );
-      setUserDetails(res.data.userDetails);
+      setUserDetails(
+        res.data.userDetails.filter(
+          (v: { username: string }) =>
+            auth.currentUser?.displayName != v.username
+        )
+      );
     }, 500);
   }, [setUserDetails, receiverName]);
 
@@ -77,7 +83,7 @@ function MessagesLayout() {
               <DialogTrigger>
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -118,8 +124,9 @@ function MessagesLayout() {
                     />
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger asChild>
                           <Button
+                            disabled={!receiverName}
                             onClick={() => setReceiverName("")}
                             variant={"outline"}
                             className="p-3"
@@ -155,69 +162,55 @@ function MessagesLayout() {
                       </span>
                     </div>
                   ) : (
-                    userDetails.map(
-                      (v) =>
-                        auth.currentUser?.displayName !== v.username && (
-                          <Card
-                            onClick={() => setReceiverName(v.username)}
-                            className={`hover:cursor-pointer hover:bg-[#F5F5F5] shadow-none border-none ${
-                              receiverName === v.username ? "bg-[#F5F5F5]" : ""
-                            }`}
-                            key={v._id}
-                          >
-                            <CardHeader className="flex-row items-center justify-between gap-2 p-4">
-                              <div className="flex items-center gap-2">
-                                <Avatar>
-                                  <AvatarImage
-                                    className="object-cover"
-                                    src={` ${
-                                      v.photoUrl ??
-                                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
-                                    } `}
-                                  />
-                                </Avatar>
-                                <div className="flex flex-col">
-                                  <span className="text-xs font-semibold">
-                                    {v.username}
-                                  </span>
-                                  <div className="flex items-center justify-start">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth={1.5}
-                                      stroke="currentColor"
-                                      className="w-4 h-4"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25"
-                                      />
-                                    </svg>
-                                    <span className="text-xs font-medium ">
-                                      {v.email}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              {receiverName === v.username && (
+                    userDetails.map((v) => (
+                      <Card
+                        onClick={() => setReceiverName(v.username)}
+                        className={`hover:cursor-pointer hover:bg-[#F5F5F5] shadow-none border-none ${
+                          receiverName === v.username ? "bg-[#F5F5F5]" : ""
+                        }`}
+                        key={v._id}
+                      >
+                        <CardHeader className="flex-row items-center justify-between gap-2 p-4">
+                          <div className="flex items-center gap-2">
+                            <Avatar>
+                              <AvatarImage
+                                className="object-cover"
+                                src={` ${
+                                  v.photoUrl ??
+                                  "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                                } `}
+                              />
+                            </Avatar>
+                            <div className="flex flex-col">
+                              <span className="text-xs font-semibold">
+                                {v.username}
+                              </span>
+                              <div className="flex items-center justify-start">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="green"
-                                  className="w-5 h-5"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="w-4 h-4"
                                 >
                                   <path
-                                    fillRule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                    clipRule="evenodd"
+                                    strokeLinecap="round"
+                                    d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25"
                                   />
                                 </svg>
-                              )}
-                            </CardHeader>
-                          </Card>
-                        )
-                    )
+                                <span className="text-xs font-medium ">
+                                  {v.email}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          {receiverName === v.username && (
+                            <CheckIcon className="w-5 h-5" />
+                          )}
+                        </CardHeader>
+                      </Card>
+                    ))
                   )}
                 </ScrollArea>
                 <DialogFooter className="w-full">
@@ -228,7 +221,7 @@ function MessagesLayout() {
                         (v) =>
                           v.username.toLowerCase() ===
                           receiverName.toLowerCase()
-                      )
+                      ) || isPending
                     }
                     className="w-full bg-gray-950 rounded-full p-5"
                   >
@@ -238,16 +231,31 @@ function MessagesLayout() {
               </DialogContent>
             </Dialog>
           </div>
-          {isLoading ? (
+          {conversations.isPending ? (
             "Loading..."
           ) : (
             <div className="w-full flex flex-col gap-4 py-6">
-              {data?.data.userConversations.length > 0 ? (
-                data?.data.userConversations.map((v: { _id: string }) => (
-                  <span className="font-semibold text-gray-600">
-                    <NavLink to={`/messages/chat/${v._id}`}>Message 1</NavLink>
-                  </span>
-                ))
+              {conversations.data?.data.userConversations.length > 0 ? (
+                conversations.data?.data.userConversations.map(
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  (v: { participants: any[]; _id: string }) => (
+                    <span
+                      key={v._id}
+                      className="p-4 hover:bg-[#F5F5F5] rounded-md grid place-items-center w-full "
+                    >
+                      <NavLink
+                        className="font-bold text-gray-600 text-sm text-center w-full"
+                        to={`/messages/chat/${v._id}`}
+                      >
+                        {
+                          v.participants.find(
+                            (u) => u.username !== auth.currentUser?.displayName
+                          ).username
+                        }
+                      </NavLink>
+                    </span>
+                  )
+                )
               ) : (
                 <span className="mt-8 w-max mx-auto font-medium text-gray-600">
                   No messages found.
@@ -257,7 +265,7 @@ function MessagesLayout() {
           )}
         </div>
         <div className="w-3/4 h-3/4">
-          {!id && (
+          {!conversationId && (
             <div className="h-[70vh] flex flex-col gap-4 items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -307,8 +315,9 @@ function MessagesLayout() {
                       />
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger>
+                          <TooltipTrigger asChild>
                             <Button
+                              disabled={!receiverName}
                               onClick={() => setReceiverName("")}
                               variant={"outline"}
                               className="p-3"
@@ -390,18 +399,7 @@ function MessagesLayout() {
                                 </div>
                               </div>
                               {receiverName === v.username && (
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 20 20"
-                                  fill="green"
-                                  className="w-5 h-5"
-                                >
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
+                                <CheckIcon className="w-5 h-5" />
                               )}
                             </CardHeader>
                           </Card>
@@ -417,7 +415,7 @@ function MessagesLayout() {
                           (v) =>
                             v.username.toLowerCase() ===
                             receiverName.toLowerCase()
-                        )
+                        ) || isPending
                       }
                       className="w-full bg-gray-950 rounded-full p-5"
                     >

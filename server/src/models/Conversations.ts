@@ -6,6 +6,10 @@ const conversationSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Users",
     },
+    senderID: {
+      type: Types.ObjectId,
+      ref: "Users",
+    },
     lastMessage: {
       type: Types.ObjectId,
       ref: "Messages",

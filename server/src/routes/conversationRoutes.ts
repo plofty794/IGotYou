@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createConversation,
+  getCurrentUserConversation,
   getCurrentUserConversations,
 } from "../controllers/conversationsControllers";
 import { authToken } from "../middlewares/authToken";
@@ -10,6 +11,11 @@ router.get(
   "/users/current-user/conversations",
   authToken,
   getCurrentUserConversations
+);
+router.get(
+  "/users/current-user/conversations/:conversationId",
+  authToken,
+  getCurrentUserConversation
 );
 router.post(
   "/users/current-user/conversations/create",
