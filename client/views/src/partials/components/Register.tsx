@@ -50,7 +50,7 @@ function Register() {
           <Input
             id="email"
             className="border-slate-400 font-medium"
-            autoComplete="email"
+            autoComplete="off"
             type="text"
             {...register("email")}
           />

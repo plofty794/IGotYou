@@ -14,7 +14,7 @@ import {
   sendBookingRequest,
   updateBookingRequestNotification,
 } from "./controllers/bookingsControllers";
-import { sendMessage } from "./controllers/messagesControllers";
+import { sendMessage } from "./controllers/conversationsControllers";
 import { sendPaymentNotificationStatus } from "./controllers/paymentControllers";
 import { conversationRoutes } from "./routes/conversationRoutes";
 
@@ -81,7 +81,6 @@ io.on("connection", (socket) => {
       io.to(activeUser.socketId).emit("receive-message", res);
     } else {
       const res = await sendMessage(data);
-      console.log(res);
     }
   });
 

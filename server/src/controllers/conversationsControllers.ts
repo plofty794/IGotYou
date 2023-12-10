@@ -2,6 +2,8 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import Conversations from "../models/Conversations";
 import Users from "../models/Users";
+import Messages from "../models/Messages";
+import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 
 export const getCurrentUserConversations: RequestHandler = async (
   req,
@@ -24,14 +26,22 @@ export const getCurrentUserConversations: RequestHandler = async (
       },
     })
       .populate([
-        { path: "lastMessage" },
-        { path: "replies", populate: "senderID" },
+        {
+          path: "lastMessage",
+          populate: { path: "senderID", select: "username" },
+        },
+        {
+          path: "messages",
+          populate: {
+            path: "senderID",
+            select: ["username", "photoUrl"],
+          },
+        },
         { path: "participants", select: ["username", "_id", "photoUrl"] },
-        { path: "senderID", select: ["username", "_id"] },
       ])
       .exec();
 
-    res.status(200).json({ userConversations });
+    res.status(200).json({ userConversations, currentUserID: id });
   } catch (error) {
     next(error);
   }
@@ -56,9 +66,14 @@ export const getCurrentUserConversation: RequestHandler = async (
     const conversation = await Conversations.findById(conversationId)
       .populate([
         { path: "lastMessage" },
-        { path: "replies", populate: "senderID" },
+        {
+          path: "messages",
+          populate: {
+            path: "senderID",
+            select: ["username", "photoUrl"],
+          },
+        },
         { path: "participants", select: ["username", "_id", "photoUrl"] },
-        { path: "senderID", select: ["username", "_id"] },
       ])
       .exec();
 
@@ -87,12 +102,10 @@ export const createConversation: RequestHandler = async (req, res, next) => {
         $all: [id, receiver?._id],
       },
     })
-      .populate([
-        { path: "lastMessage" },
-        { path: "replies", populate: "senderID" },
-        { path: "participants", select: ["username", "_id", "photoUrl"] },
-        { path: "senderID", select: ["username", "_id"] },
-      ])
+      .populate({
+        path: "participants",
+        select: ["username", "_id", "photoUrl"],
+      })
       .exec();
 
     if (conversationExist) {
@@ -106,5 +119,47 @@ export const createConversation: RequestHandler = async (req, res, next) => {
     res.status(201).json({ newConversation: [newConversation] });
   } catch (error) {
     next(error);
+  }
+};
+
+export const getUserMessages: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const user = await Users.findById(id);
+    res.status(200).json({ user, currentUserID: id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendMessage = async (data: any) => {
+  try {
+    const lastMessage = await Messages.create({
+      content: data.content,
+      senderID: data.senderID,
+    });
+
+    const conversation = await Conversations.findByIdAndUpdate(
+      data.conversationID,
+      {
+        lastMessage: lastMessage?._id,
+        $push: {
+          messages: [lastMessage._id],
+        },
+      }
+    );
+
+    return { conversation: [conversation] };
+  } catch (error) {
+    console.error(error);
   }
 };

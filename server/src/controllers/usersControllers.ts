@@ -6,7 +6,6 @@ import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
 import Notifications from "../models/Notifications";
 import BookingRequests from "../models/BookingRequests";
-import Messages from "../models/Messages";
 import { getAuth } from "firebase-admin/auth";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {

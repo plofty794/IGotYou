@@ -6,23 +6,15 @@ const conversationSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Users",
     },
-    senderID: {
-      type: Types.ObjectId,
-      ref: "Users",
-    },
     lastMessage: {
       type: Types.ObjectId,
       ref: "Messages",
     },
-    content: {
-      type: String,
-    },
-    replies: {
+    messages: {
       type: [Types.ObjectId],
       ref: "Messages",
     },
   },
-
   { timestamps: true }
 );
 

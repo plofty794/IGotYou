@@ -311,7 +311,7 @@ function App() {
         {/* MESSAGES Route */}
         <Route path="/messages" element={<MessagesLayout />}>
           <Route
-            path="chat/:conversationId"
+            path="conversation/:conversationId"
             element={
               User ?? token ?? identifier ? (
                 <Messages />

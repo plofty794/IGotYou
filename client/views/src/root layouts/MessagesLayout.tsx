@@ -25,6 +25,7 @@ import useGetConversations from "@/hooks/useGetConversations";
 import Notification from "@/partials/components/Notification";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import { CheckIcon } from "@radix-ui/react-icons";
+import { formatDistanceToNow } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 
@@ -38,18 +39,17 @@ function MessagesLayout() {
 
   useMemo(() => {
     setTimeout(async () => {
-      if (!receiverName) {
-        return setUserDetails([]);
+      if (receiverName) {
+        const res = await axiosPrivateRoute.get(
+          `/api/users/search/${receiverName}`
+        );
+        setUserDetails(
+          res.data.userDetails.filter(
+            (v: { username: string }) =>
+              auth.currentUser?.displayName != v.username
+          )
+        );
       }
-      const res = await axiosPrivateRoute.get(
-        `/api/users/search/${receiverName}`
-      );
-      setUserDetails(
-        res.data.userDetails.filter(
-          (v: { username: string }) =>
-            auth.currentUser?.displayName != v.username
-        )
-      );
     }, 500);
   }, [setUserDetails, receiverName]);
 
@@ -58,7 +58,7 @@ function MessagesLayout() {
   }, []);
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen ">
       <nav className="shadow py-5 px-28 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
         <Link to={"/"}>
           <span>
@@ -76,7 +76,7 @@ function MessagesLayout() {
         </div>
       </nav>
       <section className="flex w-full">
-        <div className="w-1/4 p-8">
+        <div className=" w-1/4 p-8">
           <div className="w-full flex items-center justify-between">
             <span className="block font-bold text-2xl">Messages</span>
             <Dialog>
@@ -154,7 +154,7 @@ function MessagesLayout() {
                     </TooltipProvider>
                   </div>
                 </DialogHeader>
-                <ScrollArea className="w-full h-60 p-4">
+                <ScrollArea className="bg-[#F5F5F5] w-full h-60 p-4">
                   {!userDetails.length ? (
                     <div className="w-max">
                       <span className="text-sm font-semibold text-gray-600">
@@ -238,22 +238,44 @@ function MessagesLayout() {
               {conversations.data?.data.userConversations.length > 0 ? (
                 conversations.data?.data.userConversations.map(
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  (v: { participants: any[]; _id: string }) => (
-                    <span
+                  (v: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    lastMessage: any;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    participants: any[];
+                    _id: string;
+                  }) => (
+                    <NavLink
+                      to={`/messages/conversation/${v._id}`}
                       key={v._id}
-                      className="p-4 hover:bg-[#F5F5F5] rounded-md grid place-items-center w-full "
+                      className="flex flex-col gap-2 p-4 rounded-md w-full "
                     >
-                      <NavLink
-                        className="font-bold text-gray-600 text-sm text-center w-full"
-                        to={`/messages/chat/${v._id}`}
-                      >
+                      {v.lastMessage != null && (
+                        <span className="font-medium w-max mx-auto text-xs">
+                          {conversations.data.data.currentUserID ===
+                          v.lastMessage.senderID._id
+                            ? `You: ${
+                                v.lastMessage.content
+                              } ${formatDistanceToNow(
+                                new Date(v.lastMessage.createdAt),
+                                { addSuffix: true }
+                              )}`
+                            : `${v.lastMessage.senderID.username}: ${
+                                v.lastMessage.content
+                              } ${formatDistanceToNow(
+                                new Date(v.lastMessage.createdAt),
+                                { addSuffix: true }
+                              )} `}
+                        </span>
+                      )}
+                      <span className="font-bold text-sm text-center w-full">
                         {
                           v.participants.find(
                             (u) => u.username !== auth.currentUser?.displayName
                           ).username
                         }
-                      </NavLink>
-                    </span>
+                      </span>
+                    </NavLink>
                   )
                 )
               ) : (

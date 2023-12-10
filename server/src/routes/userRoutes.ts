@@ -21,7 +21,7 @@ import {
 } from "../controllers/usersControllers";
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
-import { getUserMessages } from "../controllers/messagesControllers";
+import { getUserMessages } from "../controllers/conversationsControllers";
 
 router.get("/users/current-user/phone", authToken, getUserPhone);
 router.get(
