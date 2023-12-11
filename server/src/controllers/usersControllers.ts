@@ -198,6 +198,33 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getWishlists: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const wishlists = await Users.findById(id)
+      .select("wishlists")
+      .populate({
+        path: "wishlists",
+        populate: {
+          path: "host",
+          select: "username",
+        },
+      });
+
+    res.status(200).json({ wishlists: wishlists?.wishlists });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const addListingToWishlist: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
   const { listingID } = req.body;
@@ -214,8 +241,25 @@ export const addListingToWishlist: RequestHandler = async (req, res, next) => {
     if (!listing) {
       return res.status(400).json({ message: "Something went wrong." });
     }
-    const user = await Users.findByIdAndUpdate(id, {
-      $addToSet: { wishlists: listingID },
+
+    const listingAlreadyInWishlist = await Users.findOne({
+      _id: id,
+      wishlists: {
+        $in: listingID,
+      },
+    });
+
+    if (listingAlreadyInWishlist) {
+      const listingRemovedFromWishlist = await Users.findByIdAndUpdate(id, {
+        $pull: {
+          wishlists: listingID,
+        },
+      });
+      return res.status(200).json({ listingRemovedFromWishlist });
+    }
+
+    await Users.findByIdAndUpdate(id, {
+      $push: { wishlists: listingID },
     });
 
     res

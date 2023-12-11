@@ -20,6 +20,7 @@ type TMessage = {
   content: string;
   conversationID: string;
   senderID: string;
+  receiverName: string;
 };
 
 function Messages() {
@@ -51,14 +52,28 @@ function Messages() {
   }, [data?.data.conversation, data?.data.currentUserID]);
 
   useMemo(() => {
-    socket?.on("receive-message", (data) => console.log(data));
-  }, [socket]);
+    socket?.on("receive-message", (data) => {
+      setMessages((prev) => [...prev, data.conversation]);
+      queryClient.invalidateQueries({
+        queryKey: ["conversation", conversationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    });
+  }, [conversationId, queryClient, socket]);
 
-  function sendMessage({ content, conversationID, senderID }: TMessage) {
+  function sendMessage({
+    content,
+    conversationID,
+    senderID,
+    receiverName,
+  }: TMessage) {
     socket?.emit("chat-message", {
       content,
       conversationID,
       senderID,
+      receiverName,
     });
     queryClient.invalidateQueries({
       queryKey: ["conversation", conversationId],
@@ -66,6 +81,10 @@ function Messages() {
     queryClient.invalidateQueries({
       queryKey: ["conversations"],
     });
+    setMessages((prev) => [
+      ...prev,
+      { content, conversation, senderID: { _id: senderID } },
+    ]);
     setContent("");
   }
 
@@ -128,7 +147,7 @@ function Messages() {
               <span className="font-semibold text-xl">
                 {participant[0]?.username}
               </span>
-              <Button className="bg-gray-950 rounded-full text-xs">
+              <Button className="bg-zinc-900 rounded-full text-xs">
                 View profile
               </Button>
             </div>
@@ -137,14 +156,14 @@ function Messages() {
                 v.senderID._id === data?.data.currentUserID ? (
                   <span
                     key={v._id}
-                    className="ml-auto bg-[#3797F0] w-max text-white font-medium px-4 py-2 rounded-full"
+                    className="ml-auto bg-zinc-700 w-max text-white font-medium px-4 py-2 rounded-full"
                   >
                     {v.content}
                   </span>
                 ) : (
                   <span
                     key={v.username}
-                    className="bg-[#3797F0] w-max text-white font-medium px-4 py-2 rounded-full"
+                    className="bg-zinc-700 w-max text-white font-medium px-4 py-2 rounded-full"
                   >
                     {v.content}
                   </span>
@@ -158,6 +177,7 @@ function Messages() {
                   content,
                   conversationID: conversation && conversation[0]?._id,
                   senderID: data?.data.currentUserID,
+                  receiverName: participant[0].username,
                 });
               }}
             >

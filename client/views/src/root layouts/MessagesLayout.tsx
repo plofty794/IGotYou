@@ -234,7 +234,7 @@ function MessagesLayout() {
           {conversations.isPending ? (
             "Loading..."
           ) : (
-            <div className="w-full flex flex-col gap-4 py-6">
+            <div className="w-full flex flex-col gap-3 py-6">
               {conversations.data?.data.userConversations.length > 0 ? (
                 conversations.data?.data.userConversations.map(
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -245,37 +245,44 @@ function MessagesLayout() {
                     participants: any[];
                     _id: string;
                   }) => (
-                    <NavLink
-                      to={`/messages/conversation/${v._id}`}
-                      key={v._id}
-                      className="flex flex-col gap-2 p-4 rounded-md w-full "
-                    >
-                      {v.lastMessage != null && (
-                        <span className="font-medium w-max mx-auto text-xs">
-                          {conversations.data.data.currentUserID ===
-                          v.lastMessage.senderID._id
-                            ? `You: ${
-                                v.lastMessage.content
-                              } ${formatDistanceToNow(
-                                new Date(v.lastMessage.createdAt),
-                                { addSuffix: true }
-                              )}`
-                            : `${v.lastMessage.senderID.username}: ${
-                                v.lastMessage.content
-                              } ${formatDistanceToNow(
-                                new Date(v.lastMessage.createdAt),
-                                { addSuffix: true }
-                              )} `}
+                    <div className="p-2 bg-[#F5F5F5] rounded-md w-full">
+                      <NavLink
+                        to={`/messages/conversation/${v._id}`}
+                        key={v._id}
+                        className="flex flex-col gap-2 "
+                      >
+                        {v.lastMessage != null ? (
+                          <span className="font-semibold w-max mx-auto text-xs">
+                            {conversations.data.data.currentUserID ===
+                            v.lastMessage.senderID._id
+                              ? `You: ${
+                                  v.lastMessage.content
+                                } ${formatDistanceToNow(
+                                  new Date(v.lastMessage.createdAt),
+                                  { addSuffix: true }
+                                )}`
+                              : `${v.lastMessage.senderID.username}: ${
+                                  v.lastMessage.content
+                                } ${formatDistanceToNow(
+                                  new Date(v.lastMessage.createdAt),
+                                  { addSuffix: true }
+                                )} `}
+                          </span>
+                        ) : (
+                          <span className="font-semibold w-max mx-auto text-xs">
+                            You are connected with{" "}
+                          </span>
+                        )}
+                        <span className="font-bold text-sm text-center w-full">
+                          {
+                            v.participants.find(
+                              (u) =>
+                                u.username !== auth.currentUser?.displayName
+                            ).username
+                          }
                         </span>
-                      )}
-                      <span className="font-bold text-sm text-center w-full">
-                        {
-                          v.participants.find(
-                            (u) => u.username !== auth.currentUser?.displayName
-                          ).username
-                        }
-                      </span>
-                    </NavLink>
+                      </NavLink>
+                    </div>
                   )
                 )
               ) : (

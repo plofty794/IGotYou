@@ -75,12 +75,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat-message", async (data) => {
+    console.log(data);
     const activeUser = findActiveUser(data.receiverName);
     if (activeUser) {
       const res = await sendMessage(data);
       io.to(activeUser.socketId).emit("receive-message", res);
     } else {
-      const res = await sendMessage(data);
+      await sendMessage(data);
     }
   });
 
@@ -92,6 +93,8 @@ io.on("connection", (socket) => {
         const res = await updateBookingRequestNotification(data);
         io.to(activeUserGuest.socketId).emit("pong", res?.guestNotification);
         io.to(activeUserHost.socketId).emit("res", res);
+      } else {
+        await updateBookingRequestNotification(data);
       }
     } catch (error) {
       console.error(error);

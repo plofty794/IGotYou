@@ -18,6 +18,7 @@ import {
   updateUserEmail,
   updateNotification,
   addListingToWishlist,
+  getWishlists,
 } from "../controllers/usersControllers";
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
@@ -29,6 +30,7 @@ router.get(
   authToken,
   getCurrentUserNotifications
 );
+router.get("/users/current-user/wishlists", authToken, getWishlists);
 router.get("/users/search/:username", authToken, searchUsername);
 router.get("/users/profile/visit/:id", authToken, visitUserProfile);
 router.get("/users/booking-requests/:page", authToken, getBookingRequests);

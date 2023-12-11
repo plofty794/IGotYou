@@ -5,17 +5,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useAddToWishlist from "@/hooks/useAddToWishlist";
+import useGetWishlists from "@/hooks/useGetWishlists";
 import { useMemo, useState } from "react";
 
 function WishlistDialog({ listingID }: { listingID: string }) {
-  const { mutate, isSuccess } = useAddToWishlist();
-  const [wishlist, setWishlist] = useState(false);
-
-  console.log(isSuccess);
+  const wishlistsData = useGetWishlists();
+  const { mutate } = useAddToWishlist();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [wishlists, setWishlists] = useState<any[]>([]);
 
   useMemo(() => {
-    isSuccess && setWishlist(true);
-  }, [isSuccess]);
+    setWishlists(wishlistsData.data?.data.wishlists ?? []);
+  }, [wishlistsData.data?.data.wishlists]);
 
   return (
     <TooltipProvider>
@@ -27,7 +28,9 @@ function WishlistDialog({ listingID }: { listingID: string }) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             className={`w-7 h-7 stroke-gray-500 hover:stroke-slate-600 cursor-pointer ${
-              wishlist ? "fill-red-600" : "fill-none"
+              wishlists.length > 0 && wishlists.find((v) => v._id === listingID)
+                ? "fill-red-600"
+                : "fill-none"
             }`}
             onClick={() => mutate(listingID)}
           >

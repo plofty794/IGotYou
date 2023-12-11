@@ -104,7 +104,7 @@ export const createConversation: RequestHandler = async (req, res, next) => {
     })
       .populate({
         path: "participants",
-        select: ["username", "_id", "photoUrl"],
+        select: ["username", "photoUrl"],
       })
       .exec();
 
@@ -148,17 +148,19 @@ export const sendMessage = async (data: any) => {
       senderID: data.senderID,
     });
 
-    const conversation = await Conversations.findByIdAndUpdate(
-      data.conversationID,
-      {
-        lastMessage: lastMessage?._id,
-        $push: {
-          messages: [lastMessage._id],
-        },
-      }
-    );
+    await lastMessage.populate({
+      path: "senderID",
+      select: "username photoUrl",
+    });
 
-    return { conversation: [conversation] };
+    await Conversations.findByIdAndUpdate(data.conversationID, {
+      lastMessage: lastMessage?._id,
+      $push: {
+        messages: [lastMessage._id],
+      },
+    });
+
+    return { conversation: lastMessage };
   } catch (error) {
     console.error(error);
   }

@@ -1,8 +1,9 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function useAddToWishlist() {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   return useMutation({
     mutationFn: async (listingID: string) => {
@@ -15,10 +16,11 @@ function useAddToWishlist() {
     },
     onSuccess() {
       toast({
-        title: "Success!",
-        description: "Listing added to wishlist",
+        title: "Success! 🎉",
+        description: "Wishlist has been updated.",
         className: "bg-#FFF",
       });
+      queryClient.invalidateQueries({ queryKey: ["wishlists"] });
     },
     onError(error) {
       console.log(error);
