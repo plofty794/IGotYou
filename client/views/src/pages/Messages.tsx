@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +21,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SocketContextProvider } from "@/context/SocketContext";
+import useDeleteConversation from "@/hooks/useDeleteConversation";
 import useGetConversation from "@/hooks/useGetConversation";
 import ListingsLoader from "@/partials/loaders/ListingsLoader";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { useContext, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type TMessage = {
   content: string;
@@ -24,6 +37,8 @@ type TMessage = {
 };
 
 function Messages() {
+  const navigate = useNavigate();
+  const { mutate } = useDeleteConversation();
   const { conversationId } = useParams();
   const queryClient = useQueryClient();
   const { socket } = useContext(SocketContextProvider);
@@ -37,14 +52,16 @@ function Messages() {
   const [conversation, setConversation] = useState<any[]>();
 
   useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?.data.conversation.map((v: { participants: any[] }) =>
-      setParticipant(
-        v.participants.filter(
-          (u: { _id: string }) => u._id !== data.data.currentUserID
-        )
-      )
-    );
+    data?.data.conversation.length &&
+      data?.data.conversation?.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (v: { participants: any[] }) =>
+          setParticipant(
+            v.participants.filter(
+              (u: { _id: string }) => u._id !== data.data.currentUserID
+            )
+          )
+      );
     setConversation(data?.data.conversation);
     data?.data.conversation.map((v: { messages: [] }) =>
       setMessages(v.messages)
@@ -75,15 +92,14 @@ function Messages() {
       senderID,
       receiverName,
     });
-    queryClient.invalidateQueries({
-      queryKey: ["conversation", conversationId],
-    });
-    queryClient.invalidateQueries({
-      queryKey: ["conversations"],
-    });
     setMessages((prev) => [
       ...prev,
-      { content, conversation, senderID: { _id: senderID } },
+      {
+        content,
+        conversation,
+        senderID: { _id: senderID },
+        createdAt: Date.now(),
+      },
     ]);
     setContent("");
   }
@@ -110,23 +126,57 @@ function Messages() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  {" "}
-                  <Button className="p-2" variant={"destructive"}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="white"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                      />
-                    </svg>
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="p-2" variant={"destructive"}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="white"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="font-medium">
+                          This action cannot be undone. This will{" "}
+                          <span className="font-bold text-red-600 underline">
+                            permanently delete
+                          </span>{" "}
+                          this conversation from our servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="rounded-full">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => {
+                            conversationId && mutate(conversationId);
+                            setTimeout(() => {
+                              navigate("/messages", { replace: true });
+                              document.location.reload();
+                            }, 600);
+                          }}
+                          className="rounded-full bg-gray-950"
+                        >
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Delete chat</p>
@@ -154,25 +204,51 @@ function Messages() {
             <div className="flex flex-col gap-2 mt-4 mb-10 p-4 h-max">
               {messages.map((v) =>
                 v.senderID._id === data?.data.currentUserID ? (
-                  <span
-                    key={v._id}
-                    className="ml-auto bg-zinc-700 w-max text-white font-medium px-4 py-2 rounded-full"
-                  >
-                    {v.content}
-                  </span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="ml-auto rounded-full w-max bg-zinc-700 px-4 py-2">
+                        {" "}
+                        <span
+                          key={v._id}
+                          className="text-white font-medium text-sm"
+                        >
+                          {v.content}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{format(new Date(v.createdAt), "p")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 ) : (
-                  <span
-                    key={v.username}
-                    className="bg-zinc-700 w-max text-white font-medium px-4 py-2 rounded-full"
-                  >
-                    {v.content}
-                  </span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="mr-auto rounded-full w-max bg-zinc-700 px-4 py-2">
+                        {" "}
+                        <span
+                          key={v._id}
+                          className="text-white font-medium text-sm"
+                        >
+                          {v.content}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{format(new Date(v.createdAt), "p")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )
               )}
             </div>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                queryClient.invalidateQueries({
+                  queryKey: ["conversations"],
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ["conversation", conversationId],
+                });
                 sendMessage({
                   content,
                   conversationID: conversation && conversation[0]?._id,

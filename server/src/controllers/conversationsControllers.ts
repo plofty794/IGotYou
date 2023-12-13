@@ -22,7 +22,7 @@ export const getCurrentUserConversations: RequestHandler = async (
 
     const userConversations = await Conversations.find({
       participants: {
-        $in: id,
+        $all: id,
       },
     })
       .populate([
@@ -77,7 +77,47 @@ export const getCurrentUserConversation: RequestHandler = async (
       ])
       .exec();
 
+    if (!conversation) {
+      return res.status(200).json({ conversation: [] });
+    }
+
     res.status(200).json({ conversation: [conversation], currentUserID: id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteConversation: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { conversationId } = req.params;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const conversation = await Conversations.findById(conversationId);
+
+    const messages = conversation?.messages;
+
+    console.log(messages);
+
+    await Messages.deleteMany({
+      _id: {
+        $in: messages,
+      },
+    });
+    await Conversations.findByIdAndDelete(conversationId);
+    await Users.findByIdAndUpdate(id, {
+      $pull: {
+        conversation: [conversationId],
+      },
+    });
+
+    res.status(200);
   } catch (error) {
     next(error);
   }

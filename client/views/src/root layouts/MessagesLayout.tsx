@@ -24,10 +24,12 @@ import useCreateConversation from "@/hooks/useCreateConversation";
 import useGetConversations from "@/hooks/useGetConversations";
 import Notification from "@/partials/components/Notification";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
-import { CheckIcon } from "@radix-ui/react-icons";
+import { CheckIcon, CircleIcon } from "@radix-ui/react-icons";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
+import { ping } from "ldrs";
+ping.register();
 
 function MessagesLayout() {
   const { mutate, isPending } = useCreateConversation();
@@ -232,7 +234,9 @@ function MessagesLayout() {
             </Dialog>
           </div>
           {conversations.isPending ? (
-            "Loading..."
+            <div className="w-max mx-auto p-10">
+              <l-ping size="40" speed="2" color="black"></l-ping>
+            </div>
           ) : (
             <div className="w-full flex flex-col gap-3 py-6">
               {conversations.data?.data.userConversations.length > 0 ? (
@@ -254,19 +258,23 @@ function MessagesLayout() {
                         {v.lastMessage != null ? (
                           <span className="font-semibold w-max mx-auto text-xs">
                             {conversations.data.data.currentUserID ===
-                            v.lastMessage.senderID._id
-                              ? `You: ${
-                                  v.lastMessage.content
-                                } ${formatDistanceToNow(
+                            v.lastMessage.senderID._id ? (
+                              <span className="flex items-center justify-center gap-1">
+                                You: {v.lastMessage.content}{" "}
+                                <CircleIcon className="w-1 h-1 bg-gray-400 rounded-full" />
+                                {formatDistanceToNow(
                                   new Date(v.lastMessage.createdAt),
                                   { addSuffix: true }
-                                )}`
-                              : `${v.lastMessage.senderID.username}: ${
-                                  v.lastMessage.content
-                                } ${formatDistanceToNow(
-                                  new Date(v.lastMessage.createdAt),
-                                  { addSuffix: true }
-                                )} `}
+                                )}
+                              </span>
+                            ) : (
+                              `${v.lastMessage.senderID.username}: ${
+                                v.lastMessage.content
+                              } ${formatDistanceToNow(
+                                new Date(v.lastMessage.createdAt),
+                                { addSuffix: true }
+                              )} `
+                            )}
                           </span>
                         ) : (
                           <span className="font-semibold w-max mx-auto text-xs">
@@ -293,7 +301,7 @@ function MessagesLayout() {
             </div>
           )}
         </div>
-        <div className="w-3/4 h-3/4">
+        <div className="w-3/4">
           {!conversationId && (
             <div className="h-[70vh] flex flex-col gap-4 items-center justify-center">
               <svg

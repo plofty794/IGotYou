@@ -75,7 +75,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat-message", async (data) => {
-    console.log(data);
     const activeUser = findActiveUser(data.receiverName);
     if (activeUser) {
       const res = await sendMessage(data);

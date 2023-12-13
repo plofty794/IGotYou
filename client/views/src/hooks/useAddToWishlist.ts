@@ -18,7 +18,7 @@ function useAddToWishlist() {
       toast({
         title: "Success! 🎉",
         description: "Wishlist has been updated.",
-        className: "bg-#FFF",
+        className: "bg-[#FFF]",
       });
       queryClient.invalidateQueries({ queryKey: ["wishlists"] });
     },

@@ -9,7 +9,7 @@ import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { Link } from "react-router-dom";
-import { Keyboard, Mousewheel, Navigation, Pagination } from "swiper/modules";
+import { Mousewheel, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import noListing from "../../assets/no-listings.json";
 import useGetListingsPerCategory from "@/hooks/useGetListingsPerCategory";
@@ -65,13 +65,7 @@ function AnimationAnd3DModeling() {
                                   }}
                                   pagination={true}
                                   mousewheel={true}
-                                  keyboard={true}
-                                  modules={[
-                                    Navigation,
-                                    Pagination,
-                                    Mousewheel,
-                                    Keyboard,
-                                  ]}
+                                  modules={[Navigation, Pagination, Mousewheel]}
                                 >
                                   {v.listingPhotos.map(
                                     (photo: TListingPhotos) => (
