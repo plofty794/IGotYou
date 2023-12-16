@@ -45,6 +45,11 @@ const usersSchema = new Schema(
     password: {
       type: String,
     },
+    identityVerified: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
     mobileVerified: {
       type: Boolean,
       default: false,

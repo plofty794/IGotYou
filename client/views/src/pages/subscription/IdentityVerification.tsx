@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { useOutletContext } from "react-router-dom";
-import { CrossCircledIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
 import useRemoveAsset from "@/hooks/useRemoveAsset";
-import { TStateSubscriptionPhotos } from "./IdentityVerification";
+import { TSubscriptionPhotos } from "@/root layouts/SubscriptionLayout";
+import { CrossCircledIcon } from "@radix-ui/react-icons";
+import { Dispatch, useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
-function ConfirmPayment() {
+export type TStateSubscriptionPhotos = {
+  subscriptionPhotos: TSubscriptionPhotos;
+  setSubscriptionPhotos: Dispatch<React.SetStateAction<TSubscriptionPhotos>>;
+};
+
+function IdentityVerification() {
   const [isFadingIn, setIsFadingIn] = useState(true);
   const { mutate } = useRemoveAsset();
   const { subscriptionPhotos, setSubscriptionPhotos } =
@@ -20,23 +25,20 @@ function ConfirmPayment() {
     {
       cloudName: "dop5kqpod",
       uploadPreset: "s6lymwwh",
-      folder: "IGotYou-Subscriptions",
+      folder: "IGotYou-GovernmentID",
       resourceType: "image",
       multiple: false,
       cropping: false,
     },
     (_, res) => {
       if (res.event === "success") {
-        setSubscriptionPhotos((prev) => ({
+        setSubscriptionPhotos({
           government_id: {
-            public_id: prev.government_id.public_id,
-            secure_url: prev.government_id.secure_url,
-          },
-          payment_proof: {
             public_id: res.info.public_id,
             secure_url: res.info.secure_url,
           },
-        }));
+          payment_proof: { public_id: "", secure_url: "" },
+        });
       }
     }
   );
@@ -50,23 +52,22 @@ function ConfirmPayment() {
       >
         <div className="w-2/4 flex flex-col items-center justify-center gap-2 p-8">
           <div className="text-center flex flex-col gap-4 p-2">
-            <h1 className="text-4xl font-semibold ">Confirm your payment</h1>
+            <h1 className="text-4xl font-semibold ">Identity Verification</h1>
             <p className="text-lg font-semibold text-gray-600">
-              Take a screenshot or download the photo of the proof of payment
-              from GCash containing the amount and the Ref no. and upload it
-              here.{" "}
+              Upload a scanned copy or clear photo of your government-issued ID
+              through a secure document upload interface.{" "}
               <span className="text-sm mt-1 block font-bold text-amber-600">
-                Note: Make sure you include the Ref no. on the screenshot
+                Note: Make sure that the credentials in the photo is not blurry.
               </span>
             </p>
           </div>
           <div className="overflow-hidden w-3/4 rounded-lg border-dashed border border-zinc-600">
-            {subscriptionPhotos.payment_proof.secure_url ? (
+            {subscriptionPhotos.government_id.secure_url ? (
               <div className="relative bg-[#222222d6]">
                 <CrossCircledIcon
                   onClick={() => {
                     mutate({
-                      publicId: subscriptionPhotos.payment_proof.public_id,
+                      publicId: subscriptionPhotos.government_id.public_id,
                     });
                     setSubscriptionPhotos({
                       government_id: { public_id: "", secure_url: "" },
@@ -76,7 +77,7 @@ function ConfirmPayment() {
                   className="absolute right-0 w-[25px] h-[25px] text-zinc-300 hover:text-zinc-100 m-1 cursor-pointer"
                 />
                 <img
-                  src={subscriptionPhotos.payment_proof.secure_url}
+                  src={subscriptionPhotos.government_id.secure_url}
                   className="mx-auto h-48 object-cover max-w-full hover:scale-110 transition-transform"
                   alt="proof_of_payment"
                   loading="lazy"
@@ -105,7 +106,7 @@ function ConfirmPayment() {
             )}
           </div>
           <Button
-            disabled={!!subscriptionPhotos.payment_proof.public_id}
+            disabled={!!subscriptionPhotos.government_id.public_id}
             type="button"
             onClick={() => cloudinaryWidget.open()}
             className="bg-gray-950 rounded-full font-medium flex gap-2"
@@ -133,4 +134,4 @@ function ConfirmPayment() {
   );
 }
 
-export default ConfirmPayment;
+export default IdentityVerification;

@@ -62,6 +62,7 @@ import LiveEventsAndConcerts from "./pages/categories/LiveEventsAndConcerts";
 import DigitalAdvertisingAndMarketing from "./pages/categories/DigitalAdvertisingAndMarketing";
 import Listing from "./pages/Listing";
 import MessagesLayout from "./root layouts/MessagesLayout";
+import IdentityVerification from "./pages/subscription/IdentityVerification";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -338,6 +339,10 @@ function App() {
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}
         <Route path="/subscription/:id" element={<SubscriptionLayout />}>
           <Route path="welcome" element={<SubscriptionWelcome />} />
+          <Route
+            path="identity-verification"
+            element={<IdentityVerification />}
+          />
           <Route path="send-payment" element={<SubscriptionPayment />} />
           <Route path="confirm-payment" element={<ConfirmPayment />} />
           <Route path="payment-success" element={<PaymentSuccessful />} />

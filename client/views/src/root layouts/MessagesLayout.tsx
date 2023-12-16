@@ -249,7 +249,7 @@ function MessagesLayout() {
                     participants: any[];
                     _id: string;
                   }) => (
-                    <div className="p-2 bg-[#F5F5F5] rounded-md w-full">
+                    <div className="p-2 bg-[#F5F5F5] rounded-md">
                       <NavLink
                         to={`/messages/conversation/${v._id}`}
                         key={v._id}
@@ -259,8 +259,10 @@ function MessagesLayout() {
                           <span className="font-semibold w-max mx-auto text-xs">
                             {conversations.data.data.currentUserID ===
                             v.lastMessage.senderID._id ? (
-                              <span className="flex items-center justify-center gap-1">
-                                You: {v.lastMessage.content}{" "}
+                              <span className="flex items-center gap-1">
+                                <span className="max-w-max w-32 whitespace-nowrap overflow-hidden text-ellipsis">
+                                  You: {v.lastMessage.content}{" "}
+                                </span>
                                 <CircleIcon className="w-1 h-1 bg-gray-400 rounded-full" />
                                 {formatDistanceToNow(
                                   new Date(v.lastMessage.createdAt),
@@ -268,12 +270,17 @@ function MessagesLayout() {
                                 )}
                               </span>
                             ) : (
-                              `${v.lastMessage.senderID.username}: ${
-                                v.lastMessage.content
-                              } ${formatDistanceToNow(
-                                new Date(v.lastMessage.createdAt),
-                                { addSuffix: true }
-                              )} `
+                              <span className="flex items-center gap-1">
+                                <span className="max-w-max w-32 whitespace-nowrap overflow-hidden text-ellipsis">
+                                  {v.lastMessage.senderID.username}:{" "}
+                                  {v.lastMessage.content}{" "}
+                                </span>
+                                <CircleIcon className="w-1 h-1 bg-gray-400 rounded-full" />
+                                {formatDistanceToNow(
+                                  new Date(v.lastMessage.createdAt),
+                                  { addSuffix: true }
+                                )}
+                              </span>
                             )}
                           </span>
                         ) : (

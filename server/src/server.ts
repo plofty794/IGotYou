@@ -15,7 +15,6 @@ import {
   updateBookingRequestNotification,
 } from "./controllers/bookingsControllers";
 import { sendMessage } from "./controllers/conversationsControllers";
-import { sendPaymentNotificationStatus } from "./controllers/paymentControllers";
 import { conversationRoutes } from "./routes/conversationRoutes";
 
 const app = express();
@@ -113,18 +112,6 @@ io.on("connection", (socket) => {
       }
     } catch (error) {
       console.log(error);
-    }
-  });
-
-  socket.on("update-payment-status", async (data) => {
-    const activeUser = findActiveUser(data.username);
-    if (activeUser) {
-      const res = await sendPaymentNotificationStatus(data);
-      io.to(activeUser.socketId).emit("pong", {
-        notifications: res?.newNotification,
-      });
-    } else {
-      await sendPaymentNotificationStatus(data);
     }
   });
 

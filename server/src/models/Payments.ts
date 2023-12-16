@@ -2,6 +2,9 @@ import { Schema, Types, model } from "mongoose";
 
 const paymentsSchema = new Schema(
   {
+    identityCredential: {
+      type: String,
+    },
     paymentProofPhoto: {
       type: String,
     },

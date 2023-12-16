@@ -48,6 +48,7 @@ type TProps = {
     work: string;
     emailVerified: boolean;
     mobileVerified: boolean;
+    identityVerified: boolean;
     mobilePhone: string;
     photoUrl: string;
     listings: TListings[];
@@ -172,9 +173,22 @@ function ProfileContent({ profileData, activeListings }: TProps) {
                 )}
               </span>
             </CardHeader>
-            <CardContent className="flex flex-col">
+            <CardContent className="flex flex-col gap-2">
+              {profileData.identityVerified && (
+                <div className="font-medium">
+                  <CheckCircledIcon
+                    color="#FFF"
+                    width={22}
+                    height={22}
+                    className="inline-block bg-[#39c152] rounded-full"
+                  />{" "}
+                  <span className="text-gray-600 ml-2 text-sm font-semibold">
+                    Identity (verified)
+                  </span>
+                </div>
+              )}
               {profileData?.emailVerified ? (
-                <div className="my-1 font-medium">
+                <div className="font-medium">
                   <CheckCircledIcon
                     color="#FFF"
                     width={22}
@@ -186,7 +200,7 @@ function ProfileContent({ profileData, activeListings }: TProps) {
                   </span>
                 </div>
               ) : (
-                <div className="my-1 font-medium">
+                <div className="font-medium">
                   <CrossCircledIcon
                     color="#FFF"
                     width={22}
@@ -199,7 +213,7 @@ function ProfileContent({ profileData, activeListings }: TProps) {
                 </div>
               )}
               {profileData?.mobileVerified ? (
-                <div className="my-1 font-medium">
+                <div className="font-medium">
                   <CheckCircledIcon
                     color="#FFF"
                     width={22}
@@ -211,7 +225,7 @@ function ProfileContent({ profileData, activeListings }: TProps) {
                   </span>
                 </div>
               ) : (
-                <div className="my-1 font-medium">
+                <div className="font-medium">
                   <CrossCircledIcon
                     color="#FFF"
                     width={22}

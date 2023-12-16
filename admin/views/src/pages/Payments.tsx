@@ -26,6 +26,8 @@ function Payments() {
     socket?.emit("update-payment-status", { status, username, adminID });
   }
 
+  console.log(data?.pages[0].data.pendingPayments);
+
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4 overflow-clip">

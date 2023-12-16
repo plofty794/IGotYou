@@ -206,7 +206,7 @@ function Messages() {
                 v.senderID._id === data?.data.currentUserID ? (
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="ml-auto rounded-full w-max bg-zinc-700 px-4 py-2">
+                      <TooltipTrigger className="ml-auto rounded-full w-max bg-gray-900 px-4 py-2">
                         {" "}
                         <span
                           key={v._id}
@@ -223,7 +223,7 @@ function Messages() {
                 ) : (
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="mr-auto rounded-full w-max bg-zinc-700 px-4 py-2">
+                      <TooltipTrigger className="mr-auto rounded-full w-max bg-gray-700 px-4 py-2">
                         {" "}
                         <span
                           key={v._id}
@@ -246,9 +246,7 @@ function Messages() {
                 queryClient.invalidateQueries({
                   queryKey: ["conversations"],
                 });
-                queryClient.invalidateQueries({
-                  queryKey: ["conversation", conversationId],
-                });
+
                 sendMessage({
                   content,
                   conversationID: conversation && conversation[0]?._id,

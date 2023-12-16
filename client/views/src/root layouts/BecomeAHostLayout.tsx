@@ -2,7 +2,7 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import useMultistepForm from "@/hooks/useMultistepForm";
 import { auth } from "@/firebase config/config";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import useUploadListing from "@/hooks/useUploadListing";
 import { BASE_PRICE, PRICE_CAP } from "@/constants/price";
@@ -55,7 +55,6 @@ function BecomeAHostLayout() {
   });
 
   const {
-    step,
     next,
     previous,
     isFetching,
@@ -75,7 +74,7 @@ function BecomeAHostLayout() {
     "success",
   ]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (status === "success") {
       next();
     }
@@ -87,14 +86,7 @@ function BecomeAHostLayout() {
         <Loader />
       ) : userProfile.data?.data.user.userStatus === "host" ? (
         <main className="relative overflow-hidden h-screen">
-          {
-            <Navigate
-              to={`/become-a-host/${
-                auth.currentUser && auth.currentUser.uid
-              }/${step}`}
-              replace
-            />
-          }
+          {<Navigate to={"/hosting"} replace />}
           <nav className="bg-white sticky top-0 z-10 py-8 px-16 flex justify-between items-center">
             <Link to={"/hosting"}>
               <span>
