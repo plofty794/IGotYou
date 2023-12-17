@@ -68,7 +68,7 @@ function BecomeAHostLayout() {
     "service-description",
     "service-location",
     "make-it-standout",
-    "photos",
+    "service-assets",
     "price",
     "listing-date",
     "success",

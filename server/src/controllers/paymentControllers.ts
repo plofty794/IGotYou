@@ -7,7 +7,8 @@ import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Notifications from "../models/Notifications";
 import { createTransport } from "nodemailer";
 import env from "../utils/envalid";
-import { emailTemplate } from "../utils/emailTemplate";
+import { emailPaymentSuccess } from "../utils/emails/emailPaymentSuccess";
+import { emailPaymentReject } from "../utils/emails/emailPaymentReject";
 
 const transport = createTransport({
   service: "gmail",
@@ -137,15 +138,21 @@ export const updateSubscriptionPhotosStatus: RequestHandler = async (
           subscriptionStatus: "active",
           subscriptionExpiresAt: addDays(Date.now(), 30),
           userStatus: "host",
-        }
+        },
+        { new: true }
       );
       await transport.sendMail({
         from: "aceguevarra48@gmail.com",
-        to: "aceguevarra48@gmail.com",
-        subject: "Test mail",
-        html: emailTemplate,
+        to: updatedUserSubscription?.email,
+        subject: "IGotYou - Subscription Payment Update",
+        html: emailPaymentSuccess(
+          updatedUserSubscription?.username!,
+          new Date(
+            updatedUserSubscription?.subscriptionExpiresAt!
+          ).toDateString()
+        ),
       });
-      return res.status(200).json({ paymentSuccess, updatedUserSubscription });
+      return res.status(200).json({ paymentSuccess });
     }
     if (paymentStatus === "reject") {
       const paymentReject = await Payments.findByIdAndUpdate(_id, {
@@ -155,16 +162,22 @@ export const updateSubscriptionPhotosStatus: RequestHandler = async (
         paymentReject?.user,
         {
           subscriptionStatus: "reject",
-        }
+        },
+        { new: true }
       );
       await transport.sendMail({
         from: "aceguevarra48@gmail.com",
-        to: "aceguevarra48@gmail.com",
-        subject: "Test mail",
-        html: emailTemplate,
+        to: updatedUserSubscription?.email,
+        subject: "IGotYou - Subscription Payment Update",
+        html: emailPaymentReject(
+          updatedUserSubscription?.username!,
+          new Date(
+            updatedUserSubscription?.subscriptionExpiresAt!
+          ).toDateString()
+        ),
       });
 
-      return res.status(200).json({ paymentReject, updatedUserSubscription });
+      return res.status(200).json({ paymentReject });
     }
   } catch (error) {
     next(error);

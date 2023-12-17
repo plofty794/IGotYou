@@ -36,15 +36,20 @@ export function UserDropDownButton() {
               d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
             />
           </svg>
-          <img
-            className="w-[30px] h-[30px] max-h-full max-w-full object-cover rounded-full"
-            src={
-              auth.currentUser?.photoURL ??
-              "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
-            }
-            alt="user-avatar"
-            loading="lazy"
-          />
+          <div className="w-max relative">
+            <img
+              className="w-[30px] h-[30px] max-h-full max-w-full object-cover rounded-full"
+              src={
+                auth.currentUser?.photoURL ??
+                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+              }
+              alt="user-avatar"
+              loading="lazy"
+            />
+            <span className="top-[-5px] left-5 absolute w-4 h-4 text-xs text-white rounded-full bg-[#FF385C] outline-white outline outline-1">
+              1
+            </span>
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 font-medium" align="end">

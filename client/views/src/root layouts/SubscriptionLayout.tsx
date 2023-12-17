@@ -33,9 +33,7 @@ export type TSubscriptionPhotos = {
 };
 
 function SubscriptionLayout() {
-  const [isAgreed, setIsAgreed] = useState(
-    sessionStorage.getItem("agreed") === "true" ? true : false
-  );
+  const [isAgreed, setIsAgreed] = useState(false);
   const { mutate, status } = useSendSubscriptionPhotos();
   const { id } = useParams();
   const [subscriptionPhotos, setSubscriptionPhotos] =
@@ -74,8 +72,6 @@ function SubscriptionLayout() {
       ...subscriptionPhotos,
     });
   }
-
-  console.log(status);
 
   return (
     <>
@@ -197,10 +193,7 @@ function SubscriptionLayout() {
                       <Separator />
                       <div className="m-2 p-2 flex items-center justify-center gap-2 w-max ml-auto">
                         <Button
-                          onClick={() => {
-                            setIsAgreed(true);
-                            sessionStorage.setItem("agreed", "true");
-                          }}
+                          onClick={() => setIsAgreed(true)}
                           className="rounded-full font-medium w-max bg-gray-950"
                         >
                           Agree
@@ -211,10 +204,7 @@ function SubscriptionLayout() {
                 )}
                 <Button
                   type="button"
-                  disabled={
-                    sessionStorage.getItem("agreed") == null ||
-                    sessionStorage.getItem("agreed") === "false"
-                  }
+                  disabled={!isAgreed}
                   onClick={() => next()}
                   className="rounded-full p-6 font-medium text-lg w-max bg-gray-950"
                 >

@@ -41,17 +41,15 @@ function Notification() {
     userNotifications.data?.data.notifications,
   ]);
 
-  console.log(notifications);
-
   useMemo(() => {
     socket?.on("pong", (data) => {
       setNotifications((prev) => [data.notifications, ...prev]);
-      console.log(data);
+
       setNewNotifications((prev) => [{ ...data.notifications }, ...prev]);
     });
     socket?.on("res", (data) => {
       setNotifications((prev) => [data.notifications, ...prev]);
-      console.log(data);
+
       setNewNotifications((prev) => [{ ...data.notifications }, ...prev]);
     });
   }, [socket]);
@@ -100,14 +98,15 @@ function Notification() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <PopoverContent align="center" className="p-0 w-80">
-            <div className="flex flex-col gap-2 p-4">
-              <span className="text-xl font-extrabold text-gray-600">
-                Notifications
+          <PopoverContent align="end" className="rounded-lg mt-10 p-0 w-80">
+            <div className="flex flex-col">
+              <span className="text-base font-semibold p-4">
+                Booking Notifications
               </span>
+              <Separator />
               {notifications?.length < 1 && (
                 <>
-                  <span className="m-2 mx-auto w-max text-xs font-bold text-gray-600">
+                  <span className="p-4 m-2 mx-auto w-max text-xs font-semibold ">
                     No notifications
                   </span>
                 </>

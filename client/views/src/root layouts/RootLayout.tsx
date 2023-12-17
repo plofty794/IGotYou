@@ -6,7 +6,6 @@ import Loader from "@/partials/loaders/Loader";
 import { Suspense, lazy } from "react";
 import ListingsNavigation from "@/partials/components/ListingsNavigation";
 import useGetListings from "@/hooks/useGetListings";
-import Notification from "@/partials/components/Notification";
 
 const AlertVerifyEmail = lazy(
   () => import("@/partials/components/AlertVerifyEmail")
@@ -47,7 +46,7 @@ function RootLayout() {
                   <AlertVerifyEmail User={auth.currentUser} />
                 </Suspense>
               )}
-              <Notification />
+
               <UserDropDownButton />
             </span>
           </nav>

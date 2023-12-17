@@ -10,36 +10,42 @@ function ConfirmPayment() {
   const { mutate } = useRemoveAsset();
   const { subscriptionPhotos, setSubscriptionPhotos } =
     useOutletContext<TStateSubscriptionPhotos>();
+  const [cloudinaryWidget, setCloudinaryWidget] =
+    useState<CloudinaryUploadWidget>();
+
+  useEffect(() => {
+    if (cloudinaryWidget) return;
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: "dop5kqpod",
+        uploadPreset: "s6lymwwh",
+        folder: "IGotYou-Subscriptions",
+        resourceType: "image",
+        multiple: false,
+        cropping: false,
+      },
+      (_, res) => {
+        if (res.event === "success") {
+          setSubscriptionPhotos((prev) => ({
+            government_id: {
+              public_id: prev.government_id.public_id,
+              secure_url: prev.government_id.secure_url,
+            },
+            payment_proof: {
+              public_id: res.info.public_id,
+              secure_url: res.info.secure_url,
+            },
+          }));
+        }
+      }
+    );
+    widget && setCloudinaryWidget(widget);
+  }, [cloudinaryWidget, setSubscriptionPhotos]);
 
   useEffect(() => {
     const Timeout = setTimeout(() => setIsFadingIn(false), 800);
     return () => clearTimeout(Timeout);
   }, []);
-
-  const cloudinaryWidget = window.cloudinary.createUploadWidget(
-    {
-      cloudName: "dop5kqpod",
-      uploadPreset: "s6lymwwh",
-      folder: "IGotYou-Subscriptions",
-      resourceType: "image",
-      multiple: false,
-      cropping: false,
-    },
-    (_, res) => {
-      if (res.event === "success") {
-        setSubscriptionPhotos((prev) => ({
-          government_id: {
-            public_id: prev.government_id.public_id,
-            secure_url: prev.government_id.secure_url,
-          },
-          payment_proof: {
-            public_id: res.info.public_id,
-            secure_url: res.info.secure_url,
-          },
-        }));
-      }
-    }
-  );
 
   return (
     <>
@@ -107,7 +113,7 @@ function ConfirmPayment() {
           <Button
             disabled={!!subscriptionPhotos.payment_proof.public_id}
             type="button"
-            onClick={() => cloudinaryWidget.open()}
+            onClick={() => cloudinaryWidget?.open()}
             className="bg-gray-950 rounded-full font-medium flex gap-2"
             size={"lg"}
           >
@@ -134,3 +140,73 @@ function ConfirmPayment() {
 }
 
 export default ConfirmPayment;
+
+interface CloudinaryImageUploadResponse {
+  access_mode: string;
+  asset_id: string;
+  batchId: string;
+  bytes: number;
+  created_at: string;
+  etag: string;
+  folder: string;
+  format: string;
+  height: number;
+  id: string;
+  original_filename: string;
+  path: string;
+  placeholder: boolean;
+  public_id: string;
+  resource_type: string;
+  secure_url: string;
+  signature: string;
+  tags: string[];
+  thumbnail_url: string;
+  type: string;
+  url: string;
+  version: number;
+  version_id: string;
+  width: number;
+}
+
+interface CloudinaryUploadWidget {
+  open(): void;
+  close(): void;
+  destroy(): void;
+  setFolder(folder: string): void;
+  setUploadPreset(uploadPreset: string): void;
+  setMultiple(multiple: boolean): void;
+  setCropping(cropping: boolean): void;
+  setResultCallback(
+    callback: (
+      error: Error | null,
+      result: CloudinaryImageUploadResponse
+    ) => void
+  ): void;
+}
+
+type TResult = {
+  event: string;
+  info: CloudinaryImageUploadResponse;
+};
+
+type TFn = (err: unknown, res: TResult) => void;
+
+declare global {
+  interface Window {
+    cloudinary: {
+      createUploadWidget: (
+        { cloudName, uploadPreset, folder, cropping }: TParamsProps,
+        fn: TFn
+      ) => CloudinaryUploadWidget;
+    };
+  }
+}
+
+type TParamsProps = {
+  cloudName?: string;
+  uploadPreset?: string;
+  folder?: string;
+  cropping?: boolean;
+  resourceType?: string;
+  multiple?: boolean;
+};

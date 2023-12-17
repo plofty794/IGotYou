@@ -22,7 +22,6 @@ import {
 import { auth } from "@/firebase config/config";
 import useCreateConversation from "@/hooks/useCreateConversation";
 import useGetConversations from "@/hooks/useGetConversations";
-import Notification from "@/partials/components/Notification";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
 import { CheckIcon, CircleIcon } from "@radix-ui/react-icons";
 import { formatDistanceToNow } from "date-fns";
@@ -73,7 +72,6 @@ function MessagesLayout() {
           </span>
         </Link>
         <div className="flex items-center justify-center gap-4">
-          <Notification />
           <UserDropDownButton />
         </div>
       </nav>

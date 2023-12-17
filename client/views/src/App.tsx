@@ -21,7 +21,6 @@ import AboutYourService from "./pages/become a host/steps/AboutYourService";
 import Service from "./pages/become a host/Service";
 import ServiceDescription from "./pages/become a host/ServiceDescription";
 import MakeItStandOut from "./pages/become a host/steps/MakeItStandOut";
-import Photos from "./pages/become a host/steps/Photos";
 import Price from "./pages/become a host/Price";
 import Success from "./pages/become a host/steps/Success";
 import VisitProfile from "./pages/VisitProfile";
@@ -51,7 +50,7 @@ const Inbox = lazy(() => import("./pages/Inbox"));
 const Messages = lazy(() => import("./pages/Messages"));
 
 import { SocketContextProvider } from "./context/SocketContext";
-import BookingLayout from "./root layouts/BookingLayout";
+import ListingsLayout from "./root layouts/ListingsLayout";
 import MakeABooking from "./pages/MakeABooking";
 import BookingsLayout from "./root layouts/BookingsLayout";
 import Bookings from "./pages/Bookings";
@@ -63,6 +62,7 @@ import DigitalAdvertisingAndMarketing from "./pages/categories/DigitalAdvertisin
 import Listing from "./pages/Listing";
 import MessagesLayout from "./root layouts/MessagesLayout";
 import IdentityVerification from "./pages/subscription/IdentityVerification";
+import ServiceAssets from "./pages/become a host/steps/ServiceAssets";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -262,10 +262,10 @@ function App() {
             }
           />
           <Route
-            path="photos"
+            path="service-assets"
             element={
               User ?? token ?? identifier ? (
-                <Photos />
+                <ServiceAssets />
               ) : (
                 <Navigate to={"/login"} replace />
               )
@@ -304,7 +304,7 @@ function App() {
         </Route>
 
         {/* BOOKING Route */}
-        <Route path="/booking" element={<BookingLayout />}>
+        <Route path="/listings" element={<ListingsLayout />}>
           <Route path="show/:id" element={<VisitListing />} />
           <Route path="create/:id" element={<MakeABooking />} />
         </Route>

@@ -1,5 +1,6 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
-import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type TData = {
   paymentStatus: "success" | "reject";
@@ -7,6 +8,8 @@ type TData = {
 };
 
 function useVerifyPayment() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: TData) => {
       return await axiosPrivateRoute.patch(
@@ -14,8 +17,13 @@ function useVerifyPayment() {
         { ...data }
       );
     },
-    onSuccess(data) {
-      console.log(data);
+    onSuccess() {
+      toast({
+        title: "Success!",
+        description: "Pending payment has been updated.",
+        className: "bg-[#FFF]",
+      });
+      queryClient.invalidateQueries({ queryKey: ["pending-payments"] });
     },
     onError(data) {
       console.log(data);
