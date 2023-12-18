@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
-import useGetNotifications from "@/hooks/useGetNotifications";
+import useGetNotifications from "@/hooks/useGetGuestNotifications";
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
 import { pulsar } from "ldrs";
@@ -21,7 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CircleIcon } from "@radix-ui/react-icons";
 pulsar.register();
 
-function Notification() {
+function HostNotification() {
   const userNotifications = useGetNotifications();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -181,4 +181,4 @@ function Notification() {
   );
 }
 
-export default Notification;
+export default HostNotification;

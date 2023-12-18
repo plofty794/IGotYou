@@ -100,22 +100,22 @@ const usersSchema = new Schema(
     subscriptionExpiresAt: {
       type: Date,
     },
+    hostNotifications: {
+      type: [Types.ObjectId],
+      ref: "HostNotifications",
+    },
     // Other details
     wishlists: {
       type: [Types.ObjectId],
       ref: "Listings",
     },
-    notifications: {
+    guestNotifications: {
       type: [Types.ObjectId],
-      ref: "Notifications",
+      ref: "GuestNotifications",
     },
     bookingRequests: {
       type: [Types.ObjectId],
       ref: "BookingRequests",
-    },
-    conversation: {
-      type: [Types.ObjectId],
-      ref: "Conversations",
     },
   },
   { timestamps: true }

@@ -1,3 +1,4 @@
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,9 +38,9 @@ type TMessage = {
 };
 
 function Messages() {
+  const { conversationId } = useParams();
   const navigate = useNavigate();
   const { mutate } = useDeleteConversation();
-  const { conversationId } = useParams();
   const queryClient = useQueryClient();
   const { socket } = useContext(SocketContextProvider);
   const { data, isPending } = useGetConversation();
@@ -67,6 +68,17 @@ function Messages() {
       setMessages(v.messages)
     );
   }, [data?.data.conversation, data?.data.currentUserID]);
+
+  async function readMessage(messageId: string) {
+    await axiosPrivateRoute.patch(
+      `/api/users/current-user/conversations/read-message/${messageId}`,
+      {
+        read: true,
+      }
+    );
+    queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    queryClient.invalidateQueries({ queryKey: ["guest-notifications"] });
+  }
 
   useMemo(() => {
     socket?.on("receive-message", (data) => {
@@ -260,7 +272,10 @@ function Messages() {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Message..."
-                  autoFocus
+                  onFocus={async () =>
+                    conversation &&
+                    (await readMessage(conversation[0].lastMessage._id))
+                  }
                   className="bg-white p-5 font-medium rounded-full w-full"
                 />
                 <Button

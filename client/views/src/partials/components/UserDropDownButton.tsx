@@ -10,10 +10,21 @@ import {
 import { Link } from "react-router-dom";
 import { auth } from "../../firebase config/config";
 import useLogOutUser from "@/hooks/useLogout";
+import useGetGuestNotifications from "@/hooks/useGetGuestNotifications";
+import { useContext, useMemo } from "react";
+import { SocketContextProvider } from "@/context/SocketContext";
 
 export function UserDropDownButton() {
+  const { socket } = useContext(SocketContextProvider);
+  const { data } = useGetGuestNotifications();
   const User = auth.currentUser;
   const logOutUser = useLogOutUser();
+
+  useMemo(() => {
+    socket?.on("receive-message", (data) => console.log(data));
+  }, [socket]);
+
+  console.log(data?.data.guestNotifications);
 
   return (
     <DropdownMenu>
@@ -46,17 +57,24 @@ export function UserDropDownButton() {
               alt="user-avatar"
               loading="lazy"
             />
-            <span className="top-[-5px] left-5 absolute w-4 h-4 text-xs text-white rounded-full bg-[#FF385C] outline-white outline outline-1">
-              1
-            </span>
+            {data?.data.guestNotifications.length > 0 && (
+              <span className="top-[-5px] left-5 absolute w-4 h-4 text-xs text-white rounded-full bg-[#FF385C] outline-white outline outline-1">
+                {data?.data.guestNotifications.length}
+              </span>
+            )}
           </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 font-medium" align="end">
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-4 font-semibold text-gray-600">
-            <Link to={"/messages"} className="w-full" replace>
+            <Link to={"/messages"} className="relative w-full" replace>
               Messages
+              {data?.data.guestNotifications.find(
+                (v: string) => v === "New-Message"
+              ) && (
+                <span className="absolute w-[5px] h-[5px] rounded-full bg-[#FF385C]"></span>
+              )}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="p-4 font-semibold text-gray-600">

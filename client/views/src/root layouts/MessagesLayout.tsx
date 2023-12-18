@@ -247,7 +247,16 @@ function MessagesLayout() {
                     participants: any[];
                     _id: string;
                   }) => (
-                    <div className="p-2 bg-[#F5F5F5] rounded-md">
+                    <div
+                      className={`${
+                        v.lastMessage?.read ? "" : "relative"
+                      } p-2 bg-[#F5F5F5] rounded-md`}
+                    >
+                      {v.lastMessage?.read ? (
+                        ""
+                      ) : (
+                        <span className="absolute w-2 h-2 rounded-full bg-[#FF385C] right-3"></span>
+                      )}
                       <NavLink
                         to={`/messages/conversation/${v._id}`}
                         key={v._id}

@@ -4,7 +4,7 @@ import createHttpError from "http-errors";
 import Users from "../models/Users";
 import { addDays } from "date-fns";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
-import Notifications from "../models/Notifications";
+import Notifications from "../models/GuestNotifications";
 import { createTransport } from "nodemailer";
 import env from "../utils/envalid";
 import { emailPaymentSuccess } from "../utils/emails/emailPaymentSuccess";
