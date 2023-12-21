@@ -38,11 +38,11 @@ function Payments() {
                     <>
                       {v.paymentStatus === "pending" && (
                         <Card key={v._id}>
-                          <CardHeader className="p-2">
+                          <CardHeader className="p-0">
                             <Dialog>
                               <DialogTrigger>
                                 <img
-                                  className="aspect-square object-cover rounded-md "
+                                  className="aspect-square object-cover rounded-md hover:scale-105 transition-transform"
                                   src={v.paymentProofPhoto}
                                   alt=""
                                   loading="lazy"
@@ -70,7 +70,7 @@ function Payments() {
                               Sent at: {new Date(v.createdAt).toLocaleString()}
                             </CardDescription>
                           </CardContent>
-                          <CardFooter className="flex justify-between gap-2 max-lg:flex-col">
+                          <CardFooter className="flex justify-between gap-2 max-lg:flex-col p-2">
                             <Button
                               disabled={verifyPayment.isPending}
                               type="button"

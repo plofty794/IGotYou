@@ -13,6 +13,7 @@ import { UserStateContextProvider } from "./context/UserStateContext";
 import Users from "./pages/Users";
 import Payments from "./pages/Payments";
 import VerifiedPayments from "./pages/VerifiedPayments";
+import IdentityPhotos from "./pages/IdentityPhotos";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
@@ -49,6 +50,16 @@ function App() {
             element={
               state.state ?? isAdmin ? (
                 <Payments />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="identity-photos"
+            element={
+              state.state ?? isAdmin ? (
+                <IdentityPhotos />
               ) : (
                 <Navigate to={"/login"} replace />
               )

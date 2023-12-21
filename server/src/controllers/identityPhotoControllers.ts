@@ -5,6 +5,7 @@ import Users from "../models/Users";
 import { createTransport } from "nodemailer";
 import env from "../utils/envalid";
 import { emailIdentityVerificationRequest } from "../utils/emails/emailIdentityVerificationRequest";
+import createHttpError from "http-errors";
 
 const transport = createTransport({
   service: "gmail",
@@ -13,6 +14,44 @@ const transport = createTransport({
     pass: env.APP_PASSWORD,
   },
 });
+
+export const getIdentityVerificationRequests: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const admin_id = req.cookies.admin_id;
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const pendingIdentityVerificationRequests = await IdentityPhotos.find({
+      identityVerificationStatus: "pending",
+    })
+      .sort({ createdAt: "desc" })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .populate({ path: "user", select: "userStatus username email photoUrl" })
+      .exec();
+
+    const totalPages = Math.ceil(
+      pendingIdentityVerificationRequests.length / limit
+    );
+
+    if (!pendingIdentityVerificationRequests.length) {
+      return res
+        .status(200)
+        .json({ pendingIdentityVerificationRequests: [], totalPages: 0 });
+    }
+
+    res.status(200).json({ pendingIdentityVerificationRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const sendIdentityVerificationRequest: RequestHandler = async (
   req,
@@ -55,6 +94,40 @@ export const sendIdentityVerificationRequest: RequestHandler = async (
     });
 
     res.status(201).json({ message: "Success" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePendingIdentityVerificationRequest: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const { identityPhotoId } = req.params;
+  try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const updatedIdentityRequest = await IdentityPhotos.findByIdAndUpdate(
+      identityPhotoId,
+      {
+        identityVerificationStatus: req.body.identityVerificationStatus,
+      }
+    );
+
+    await Users.findByIdAndUpdate(req.body.userId, {
+      identityVerificationStatus: req.body.identityVerificationStatus,
+      identityVerified:
+        req.body.identityVerificationStatus === "success" ? true : false,
+    });
+
+    res.status(200).json({ message: "Success" });
   } catch (error) {
     next(error);
   }

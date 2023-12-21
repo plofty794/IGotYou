@@ -91,8 +91,7 @@ function IdentityVerification() {
               </span>
               <span>
                 We're here to help you with any concerns or inquiries you may
-                have. Thank you for choosing IGotYou as your subscription
-                provider. We look forward to providing you with the best service
+                have. We look forward to providing you with the best service
                 once your subscription is fully processed.
               </span>
             </CardContent>
