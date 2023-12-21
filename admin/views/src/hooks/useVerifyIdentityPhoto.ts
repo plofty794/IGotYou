@@ -25,7 +25,7 @@ function useVerifyIdentityPhoto() {
     },
     onSuccess() {
       toast({
-        title: "Success!",
+        title: "Success! 🎉",
         description: "Pending identity request verification has been updated.",
         className: "bg-[#FFF]",
       });

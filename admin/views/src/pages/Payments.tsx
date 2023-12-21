@@ -40,9 +40,9 @@ function Payments() {
                         <Card key={v._id}>
                           <CardHeader className="p-0">
                             <Dialog>
-                              <DialogTrigger>
+                              <DialogTrigger className="overflow-hidden rounded-md ">
                                 <img
-                                  className="aspect-square object-cover rounded-md hover:scale-105 transition-transform"
+                                  className="aspect-square object-cover hover:scale-105 transition-transform"
                                   src={v.paymentProofPhoto}
                                   alt=""
                                   loading="lazy"

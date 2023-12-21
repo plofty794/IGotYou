@@ -85,7 +85,7 @@ export const sendIdentityVerificationRequest: RequestHandler = async (
     await transport.sendMail({
       from: user?.email,
       to: "aceguevarra48@gmail.com",
-      subject: "IGotYou - Identity Verification Request Request",
+      subject: "IGotYou - Identity Verification Request",
       html: emailIdentityVerificationRequest(
         user?.username!,
         user?.email!,
@@ -121,10 +121,21 @@ export const updatePendingIdentityVerificationRequest: RequestHandler = async (
       }
     );
 
-    await Users.findByIdAndUpdate(req.body.userId, {
+    const user = await Users.findByIdAndUpdate(req.body.userId, {
       identityVerificationStatus: req.body.identityVerificationStatus,
       identityVerified:
         req.body.identityVerificationStatus === "success" ? true : false,
+    });
+
+    await transport.sendMail({
+      from: "aceguevarra48@gmail.com",
+      to: user?.email,
+      subject: "IGotYou - Identity Verification Request Update",
+      html: emailIdentityVerificationRequest(
+        user?.username!,
+        user?.email!,
+        new Date(updatedIdentityRequest?.updatedAt!).toLocaleString()
+      ),
     });
 
     res.status(200).json({ message: "Success" });

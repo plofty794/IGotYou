@@ -19,7 +19,7 @@ function useVerifyPayment() {
     },
     onSuccess() {
       toast({
-        title: "Success!",
+        title: "Success! 🎉",
         description: "Pending payment has been updated.",
         className: "bg-[#FFF]",
       });
