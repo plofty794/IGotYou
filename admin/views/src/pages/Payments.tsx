@@ -5,13 +5,14 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import useGetPendingPayments from "@/hooks/useGetPendingPayments";
 import useVerifyPayment from "@/hooks/useVerifyPayment";
 import Lottie from "lottie-react";
 import noPendingPayment from "../assets/no-pending-payments.json";
 import { Link } from "react-router-dom";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 function Payments() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,18 +38,31 @@ function Payments() {
                     <>
                       {v.paymentStatus === "pending" && (
                         <Card key={v._id}>
-                          <CardHeader>
-                            <img
-                              className="max-h-full max-w-full block object-cover rounded-md "
-                              src={v.paymentProofPhoto}
-                              alt=""
-                              loading="lazy"
-                            />
-                            <CardTitle className="text-xs font-bold text-gray-600">
+                          <CardHeader className="p-2">
+                            <Dialog>
+                              <DialogTrigger>
+                                <img
+                                  className="aspect-square object-cover rounded-md "
+                                  src={v.paymentProofPhoto}
+                                  alt=""
+                                  loading="lazy"
+                                />
+                              </DialogTrigger>
+                              <DialogContent className="h-screen p-0">
+                                <img
+                                  className="aspect-square object-cover h-full rounded-md "
+                                  src={v.paymentProofPhoto}
+                                  alt=""
+                                  loading="lazy"
+                                />
+                              </DialogContent>
+                            </Dialog>
+
+                            <Badge className="w-max mx-auto text-xs font-bold bg-gray-950">
                               Proof of payment
-                            </CardTitle>
+                            </Badge>
                           </CardHeader>
-                          <CardContent>
+                          <CardContent className="p-2">
                             <CardDescription className="text-gray-600 font-medium text-sm">
                               Username: {v.user.username}
                             </CardDescription>

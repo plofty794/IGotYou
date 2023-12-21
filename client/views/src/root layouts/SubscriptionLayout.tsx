@@ -1,9 +1,21 @@
 import useMultistepForm from "@/hooks/useMultistepForm";
-import { FormEvent, useEffect, useState } from "react";
-import { Link, Navigate, Outlet, useParams } from "react-router-dom";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
+import {
+  Link,
+  Navigate,
+  Outlet,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { CheckIcon } from "@radix-ui/react-icons";
-import useSendSubscriptionPhotos from "@/hooks/useSendSubscriptionPhotos";
+import useSendSubscriptionPayment from "@/hooks/useSendSubscriptionPayment";
 import { dotPulse } from "ldrs";
 import {
   Dialog,
@@ -22,25 +34,20 @@ type TPaymentProofPhoto = {
   secure_url: string;
 };
 
-type TGovernmentID = {
-  public_id: string;
-  secure_url: string;
-};
-
-export type TSubscriptionPhotos = {
-  payment_proof: TPaymentProofPhoto;
-  government_id: TGovernmentID;
+export type TStatePaymentPhoto = {
+  paymentProof?: TPaymentProofPhoto;
+  setPaymentProof: Dispatch<SetStateAction<TPaymentProofPhoto>>;
 };
 
 function SubscriptionLayout() {
+  const navigate = useNavigate();
   const [isAgreed, setIsAgreed] = useState(false);
-  const { mutate, status } = useSendSubscriptionPhotos();
+  const { mutate, isPending } = useSendSubscriptionPayment();
   const { id } = useParams();
-  const [subscriptionPhotos, setSubscriptionPhotos] =
-    useState<TSubscriptionPhotos>({
-      government_id: { public_id: "", secure_url: "" },
-      payment_proof: { public_id: "", secure_url: "" },
-    });
+  const [paymentProof, setPaymentProof] = useState<TPaymentProofPhoto>({
+    public_id: "",
+    secure_url: "",
+  });
   const {
     step,
     isFirstPage,
@@ -51,35 +58,31 @@ function SubscriptionLayout() {
     currentStepIndex,
   } = useMultistepForm([
     "welcome",
-    "identity-verification",
     "send-payment",
     "confirm-payment",
     "payment-success",
   ]);
 
   useEffect(() => {
-    document.title = "IGotYou - Subscription";
+    document.title = "Subscription - IGotYou";
   }, []);
 
   function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (
-      Object.values(subscriptionPhotos.government_id).length < 0 &&
-      Object.values(subscriptionPhotos.payment_proof).length < 0
-    )
+    if (paymentProof.public_id == null && paymentProof.secure_url == null)
       return;
     mutate({
-      ...subscriptionPhotos,
+      ...paymentProof,
     });
+    navigate(`/users/show/${id}`, { replace: true });
   }
 
   return (
     <>
-      {status === "success" && <Navigate to={`/users/show/${id}`} replace />}
       {<Navigate to={`/subscription/${id}/${step}`} replace />}
       <section className="relative min-h-screen">
         <form className="absolute bottom-0 w-full" onSubmit={handleFormSubmit}>
-          {<Outlet context={{ subscriptionPhotos, setSubscriptionPhotos }} />}
+          {<Outlet context={{ paymentProof, setPaymentProof }} />}
           <div className="border-t-2 flex justify-between gap-4 p-8">
             {isFirstPage && (
               <>
@@ -145,13 +148,10 @@ function SubscriptionLayout() {
                                   2. Collection of Information
                                 </span>
                                 <span>
-                                  In the process of subscribing to our services,
-                                  you may be required to provide personal
-                                  information, including but not limited to
-                                  government-issued identification. You hereby
-                                  consent to the collection and use of this
-                                  information for the purposes outlined in this
-                                  agreement.
+                                  As part of the subscription process, you may
+                                  be required to submit payment proof, including
+                                  your name, reference number of the payment,
+                                  amount, and date and time of the transaction.
                                 </span>
                               </div>
                               <div className="text-sm flex flex-col gap-2">
@@ -160,11 +160,10 @@ function SubscriptionLayout() {
                                 </span>
                                 <span>
                                   We will use the collected information for the
-                                  purpose of identity verification, subscription
-                                  processing, etc.. Your information will be
-                                  treated with the utmost confidentiality and
-                                  will not be shared with third parties unless
-                                  required by law.
+                                  purpose of subscription processing. Your
+                                  information will be treated with the utmost
+                                  confidentiality and will not be shared with
+                                  third parties unless required by law.
                                 </span>
                               </div>
                               <div className="text-sm flex flex-col gap-2">
@@ -223,36 +222,6 @@ function SubscriptionLayout() {
             )}{" "}
             {currentStepIndex === 1 && (
               <>
-                {" "}
-                <Button
-                  variant={"link"}
-                  type="button"
-                  onClick={() => previous()}
-                  className="p-6 font-medium text-sm w-max"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  disabled={!subscriptionPhotos.government_id.secure_url}
-                  onClick={() => next()}
-                  className="rounded-full p-6 font-medium text-lg w-max bg-gray-950"
-                >
-                  {isFetching ? (
-                    // Default values shown
-                    <l-dot-pulse
-                      size="43"
-                      speed="1.3"
-                      color="white"
-                    ></l-dot-pulse>
-                  ) : (
-                    "Proceed"
-                  )}
-                </Button>
-              </>
-            )}
-            {currentStepIndex === 2 && (
-              <>
                 <Button
                   variant={"link"}
                   type="button"
@@ -279,7 +248,7 @@ function SubscriptionLayout() {
                 </Button>
               </>
             )}
-            {currentStepIndex === 3 && (
+            {currentStepIndex === 2 && (
               <>
                 <Button
                   variant={"link"}
@@ -291,8 +260,8 @@ function SubscriptionLayout() {
                 </Button>
                 <Button
                   disabled={
-                    !Object.values(subscriptionPhotos.payment_proof.public_id)
-                      .length
+                    paymentProof.public_id == null &&
+                    paymentProof.secure_url == null
                   }
                   type="button"
                   onClick={() => next()}
@@ -313,7 +282,10 @@ function SubscriptionLayout() {
             )}
             {isLastPage && (
               <>
-                <Button className="rounded-full p-6 font-medium text-lg w-max bg-gray-950 ">
+                <Button
+                  disabled={isPending}
+                  className="rounded-full p-6 font-medium text-lg w-max bg-gray-950 "
+                >
                   Done
                 </Button>
               </>

@@ -1,22 +1,25 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
-import { TSubscriptionPhotos } from "@/root layouts/SubscriptionLayout";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 
-function useSendSubscriptionPhotos() {
+type TPaymentProofPhoto = {
+  public_id: string;
+  secure_url: string;
+};
+
+function useSendSubscriptionPayment() {
   const { toast } = useToast();
   const { id } = useParams();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: TSubscriptionPhotos) => {
+    mutationFn: async (data: TPaymentProofPhoto) => {
       return await axiosPrivateRoute.post(
         "/api/payments/send-subscription-photos",
         {
-          paymentProofPhoto: data.payment_proof.secure_url,
-          identityCredential: data.government_id.secure_url,
+          paymentProofPhoto: data.secure_url,
           subscriptionStatus: "pending",
           paymentStatus: "pending",
         }
@@ -47,4 +50,4 @@ function useSendSubscriptionPhotos() {
   });
 }
 
-export default useSendSubscriptionPhotos;
+export default useSendSubscriptionPayment;

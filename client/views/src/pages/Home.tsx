@@ -34,8 +34,6 @@ function Home() {
     document.title = "IGotYou";
   }, []);
 
-  listings.pages.map((v) => console.log(v.data.listings));
-
   return (
     <>
       {!auth.currentUser?.emailVerified && (

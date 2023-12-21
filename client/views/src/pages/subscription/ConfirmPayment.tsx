@@ -3,13 +3,13 @@ import { useOutletContext } from "react-router-dom";
 import { CrossCircledIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import useRemoveAsset from "@/hooks/useRemoveAsset";
-import { TStateSubscriptionPhotos } from "./IdentityVerification";
+import { TStatePaymentPhoto } from "../../root layouts/SubscriptionLayout";
 
 function ConfirmPayment() {
   const [isFadingIn, setIsFadingIn] = useState(true);
   const { mutate } = useRemoveAsset();
-  const { subscriptionPhotos, setSubscriptionPhotos } =
-    useOutletContext<TStateSubscriptionPhotos>();
+  const { paymentProof, setPaymentProof } =
+    useOutletContext<TStatePaymentPhoto>();
   const [cloudinaryWidget, setCloudinaryWidget] =
     useState<CloudinaryUploadWidget>();
 
@@ -26,21 +26,15 @@ function ConfirmPayment() {
       },
       (_, res) => {
         if (res.event === "success") {
-          setSubscriptionPhotos((prev) => ({
-            government_id: {
-              public_id: prev.government_id.public_id,
-              secure_url: prev.government_id.secure_url,
-            },
-            payment_proof: {
-              public_id: res.info.public_id,
-              secure_url: res.info.secure_url,
-            },
-          }));
+          setPaymentProof({
+            public_id: res.info.public_id,
+            secure_url: res.info.secure_url,
+          });
         }
       }
     );
     widget && setCloudinaryWidget(widget);
-  }, [cloudinaryWidget, setSubscriptionPhotos]);
+  }, [cloudinaryWidget, setPaymentProof]);
 
   useEffect(() => {
     const Timeout = setTimeout(() => setIsFadingIn(false), 800);
@@ -67,22 +61,22 @@ function ConfirmPayment() {
             </p>
           </div>
           <div className="overflow-hidden w-3/4 rounded-lg border-dashed border border-zinc-600">
-            {subscriptionPhotos.payment_proof.secure_url ? (
+            {paymentProof?.secure_url ? (
               <div className="relative bg-[#222222d6]">
                 <CrossCircledIcon
                   onClick={() => {
                     mutate({
-                      publicId: subscriptionPhotos.payment_proof.public_id,
+                      publicId: paymentProof?.public_id,
                     });
-                    setSubscriptionPhotos({
-                      government_id: { public_id: "", secure_url: "" },
-                      payment_proof: { public_id: "", secure_url: "" },
+                    setPaymentProof({
+                      public_id: "",
+                      secure_url: "",
                     });
                   }}
                   className="absolute right-0 w-[25px] h-[25px] text-zinc-300 hover:text-zinc-100 m-1 cursor-pointer"
                 />
                 <img
-                  src={subscriptionPhotos.payment_proof.secure_url}
+                  src={paymentProof.secure_url}
                   className="mx-auto h-48 object-cover max-w-full hover:scale-110 transition-transform"
                   alt="proof_of_payment"
                   loading="lazy"
@@ -111,7 +105,7 @@ function ConfirmPayment() {
             )}
           </div>
           <Button
-            disabled={!!subscriptionPhotos.payment_proof.public_id}
+            disabled={!!paymentProof?.public_id}
             type="button"
             onClick={() => cloudinaryWidget?.open()}
             className="bg-gray-950 rounded-full font-medium flex gap-2"

@@ -89,6 +89,10 @@ const usersSchema = new Schema(
     rating: {
       type: [ratingSchema],
     },
+    identityVerificationStatus: {
+      type: String,
+      enum: ["pending", "success", "reject"],
+    },
     subscriptionStatus: {
       type: String,
       enum: ["pending", "active", "expired", "reject"],

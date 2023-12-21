@@ -1,11 +1,11 @@
 import { Schema, Types, model } from "mongoose";
 
-const paymentsSchema = new Schema(
+const identitySchema = new Schema(
   {
-    paymentProofPhoto: {
+    identityPhoto: {
       type: String,
     },
-    paymentStatus: {
+    identityVerificationStatus: {
       type: String,
       enum: ["pending", "success", "reject"],
     },
@@ -17,5 +17,5 @@ const paymentsSchema = new Schema(
   { timestamps: true }
 );
 
-const Payments = model("Payments", paymentsSchema);
-export default Payments;
+const IdentityPhotos = model("IdentityPhotos", identitySchema);
+export default IdentityPhotos;

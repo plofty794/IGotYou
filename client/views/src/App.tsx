@@ -61,7 +61,7 @@ import LiveEventsAndConcerts from "./pages/categories/LiveEventsAndConcerts";
 import DigitalAdvertisingAndMarketing from "./pages/categories/DigitalAdvertisingAndMarketing";
 import Listing from "./pages/Listing";
 import MessagesLayout from "./root layouts/MessagesLayout";
-import IdentityVerification from "./pages/subscription/IdentityVerification";
+import IdentityVerification from "./pages/IdentityVerification";
 import ServiceAssets from "./pages/become a host/steps/ServiceAssets";
 
 function App() {
@@ -78,20 +78,13 @@ function App() {
         return setUser(null);
       } else {
         setUser(user);
-        socket &&
-          socket.emit("user-connect", {
-            name: user.displayName,
-            uid: user.uid,
-          });
+        socket?.emit("user-connect", {
+          name: user.displayName,
+          uid: user.uid,
+        });
       }
     });
-  }, [User, socket]);
-
-  useEffect(() => {
-    if (auth == null) {
-      console.log("YES");
-    }
-  }, []);
+  }, [socket]);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -125,6 +118,11 @@ function App() {
                 <Navigate replace to={"/login"} />
               )
             }
+          />
+
+          <Route
+            path="identity-verification/:id"
+            element={<IdentityVerification />}
           />
         </Route>
 
@@ -339,10 +337,6 @@ function App() {
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}
         <Route path="/subscription/:id" element={<SubscriptionLayout />}>
           <Route path="welcome" element={<SubscriptionWelcome />} />
-          <Route
-            path="identity-verification"
-            element={<IdentityVerification />}
-          />
           <Route path="send-payment" element={<SubscriptionPayment />} />
           <Route path="confirm-payment" element={<ConfirmPayment />} />
           <Route path="payment-success" element={<PaymentSuccessful />} />

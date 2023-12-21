@@ -21,13 +21,11 @@ export const getGuestNotifications: RequestHandler = async (req, res, next) => {
       .sort({ createdAt: "desc" })
       .exec();
 
-    const notificationTypes = guestNotifications.map(
-      (v: { notificationType: string }) => v.notificationType
-    );
-
     res
       .status(200)
-      .json({ guestNotifications: [...new Set(notificationTypes)] });
+      .json({
+        guestNotifications: guestNotifications.map((v) => v.notificationType),
+      });
   } catch (error) {
     next(error);
   }

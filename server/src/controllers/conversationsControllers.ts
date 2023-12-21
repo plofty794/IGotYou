@@ -192,6 +192,7 @@ export const sendMessage = async (data: any) => {
     const guestNotificationExist = await GuestNotifications.findOne({
       senderID: data.senderID,
       recipientID,
+      notificationType: "New-Message",
     });
 
     if (guestNotificationExist) {
@@ -199,6 +200,7 @@ export const sendMessage = async (data: any) => {
         data: lastMessage?._id,
         read: false,
       });
+
       return { conversation: lastMessage };
     }
 

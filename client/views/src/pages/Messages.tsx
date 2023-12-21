@@ -258,7 +258,6 @@ function Messages() {
                 queryClient.invalidateQueries({
                   queryKey: ["conversations"],
                 });
-
                 sendMessage({
                   content,
                   conversationID: conversation && conversation[0]?._id,

@@ -180,7 +180,7 @@ function ProfileContent({ profileData, activeListings }: TProps) {
               </span>
             </CardHeader>
             <CardContent className="flex flex-col gap-2">
-              {profileData.identityVerified && (
+              {profileData.identityVerified ? (
                 <div className="font-medium">
                   <CheckCircledIcon
                     color="#FFF"
@@ -190,6 +190,18 @@ function ProfileContent({ profileData, activeListings }: TProps) {
                   />{" "}
                   <span className="text-gray-600 ml-2 text-sm font-semibold">
                     Identity (verified)
+                  </span>
+                </div>
+              ) : (
+                <div className="font-medium">
+                  <CrossCircledIcon
+                    color="#FFF"
+                    width={22}
+                    height={22}
+                    className="inline-block bg-[#e94242] rounded-full"
+                  />{" "}
+                  <span className="text-gray-600  ml-2 text-sm font-semibold">
+                    Identity (not verified)
                   </span>
                 </div>
               )}

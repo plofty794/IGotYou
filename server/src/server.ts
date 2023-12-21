@@ -17,6 +17,7 @@ import {
 import { sendMessage } from "./controllers/conversationsControllers";
 import { conversationRoutes } from "./routes/conversationRoutes";
 import { notificationRoutes } from "./routes/notificationRoutes";
+import { identityRoutes } from "./routes/identityPhotoRoutes";
 
 const app = express();
 const server = app
@@ -151,4 +152,5 @@ app.use("/api", adminRoutes);
 app.use("/api", paymentRoutes);
 app.use("/api", conversationRoutes);
 app.use("/api", notificationRoutes);
+app.use("/api", identityRoutes);
 app.use(errorHandler);

@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getPendingPayments,
   getVerifiedPayments,
-  sendSubscriptionPhotos,
+  sendSubscriptionPayment,
   updateSubscriptionPhotosStatus,
 } from "../controllers/paymentControllers";
 import { authToken } from "../middlewares/authToken";
@@ -13,7 +13,7 @@ router.get("/payments/verified/:page", getVerifiedPayments);
 router.post(
   "/payments/send-subscription-photos",
   authToken,
-  sendSubscriptionPhotos
+  sendSubscriptionPayment
 );
 router.patch("/payments/update-payment-status", updateSubscriptionPhotosStatus);
 

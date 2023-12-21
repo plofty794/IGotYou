@@ -9,6 +9,7 @@ import { createTransport } from "nodemailer";
 import env from "../utils/envalid";
 import { emailPaymentSuccess } from "../utils/emails/emailPaymentSuccess";
 import { emailPaymentReject } from "../utils/emails/emailPaymentReject";
+import { emailSubscriptionRequest } from "../utils/emails/emailSubscriptionRequest";
 
 const transport = createTransport({
   service: "gmail",
@@ -80,7 +81,7 @@ export const getPendingPayments: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const sendSubscriptionPhotos: RequestHandler = async (
+export const sendSubscriptionPayment: RequestHandler = async (
   req,
   res,
   next
@@ -98,8 +99,19 @@ export const sendSubscriptionPhotos: RequestHandler = async (
 
     await payment.populate({ path: "user", select: ["username", "email"] });
 
-    await Users.findByIdAndUpdate(id, {
+    const user = await Users.findByIdAndUpdate(id, {
       ...req.body,
+    });
+
+    await transport.sendMail({
+      from: user?.email,
+      to: "aceguevarra48@gmail.com",
+      subject: "IGotYou - Subscription Request",
+      html: emailSubscriptionRequest(
+        user?.username!,
+        user?.email!,
+        new Date(payment?.createdAt!).toLocaleString()
+      ),
     });
 
     res.status(201).json({ message: "Success" });
@@ -135,6 +147,7 @@ export const updateSubscriptionPhotosStatus: RequestHandler = async (
       const updatedUserSubscription = await Users.findByIdAndUpdate(
         paymentSuccess?.user,
         {
+          identityVerified: true,
           subscriptionStatus: "active",
           subscriptionExpiresAt: addDays(Date.now(), 30),
           userStatus: "host",

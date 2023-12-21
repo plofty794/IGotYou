@@ -31,6 +31,7 @@ function RootLayout() {
               </span>
             </Link>
             <span className="flex justify-center items-center gap-4">
+              {/* outline-1 outline outline-[#FF385C] hover:text-[#FF385C]  */}
               {auth.currentUser?.emailVerified ? (
                 <Button
                   className="text-sm font-semibold hover:bg-zinc-100 rounded-full"
