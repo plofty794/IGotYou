@@ -3,12 +3,11 @@ import UsersTable from "@/partials/UsersTable";
 import { ColumnDef } from "@tanstack/react-table";
 
 type User = {
-  uid: string;
   email: string;
-  user_status: string;
-  listings: number;
-  subscription_status: "pending" | "active" | "expired";
   username: string;
+  userStatus: string;
+  emailVerified: boolean;
+  identityVerified: boolean;
 };
 
 const columns: ColumnDef<User>[] = [
@@ -21,33 +20,31 @@ const columns: ColumnDef<User>[] = [
     header: "Username",
   },
   {
-    accessorKey: "subscription_status",
-    header: "Subscription status",
-  },
-  {
-    accessorKey: "user_status",
+    accessorKey: "userStatus",
     header: "User status",
   },
   {
-    accessorKey: "listings",
-    header: "# of Listings",
+    accessorKey: "createdAt",
+    header: "Created",
+    cell: (props) => new Date(props.getValue() as string).toDateString(),
+  },
+  {
+    accessorKey: "identityVerified",
+    header: "Identity verified",
+  },
+  {
+    accessorKey: "emailVerified",
+    header: "Email verified",
   },
 ];
 
 function Users() {
   const users = useGetUsers();
 
-  console.log(users.data);
-
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4">
-        <h1 className="font-bold text-3xl">
-          Users{" "}
-          <span className="text-sm text-gray-600 font-semibold">
-            (pending & active)
-          </span>
-        </h1>
+        <h1 className="font-bold text-3xl">Users</h1>
         {users.isPending ? (
           "Loading..."
         ) : (
