@@ -55,6 +55,7 @@ function Login() {
               <CardContent className="flex flex-col gap-2 px-6">
                 <Label className="font-semibold text-zinc-600">Username</Label>
                 <Input
+                  autoComplete="off"
                   {...register("username")}
                   autoFocus
                   className="border-gray-300"

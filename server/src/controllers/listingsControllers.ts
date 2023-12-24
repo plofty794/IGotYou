@@ -162,7 +162,7 @@ export const addListing: RequestHandler = async (req, res, next) => {
       },
       { new: true }
     );
-    res.status(200).json({ newListing });
+    res.status(200).json({ newListingID: newListing._id });
   } catch (error) {
     next(error);
   }

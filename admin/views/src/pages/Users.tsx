@@ -1,5 +1,6 @@
 import useGetUsers from "@/hooks/useGetUsers";
 import UsersTable from "@/partials/UsersTable";
+
 import { ColumnDef } from "@tanstack/react-table";
 
 type User = {
@@ -26,7 +27,9 @@ const columns: ColumnDef<User>[] = [
   {
     accessorKey: "createdAt",
     header: "Created",
-    cell: (props) => new Date(props.getValue() as string).toDateString(),
+    cell: (props) => (
+      <p>{new Date(props.getValue() as string).toDateString()}</p>
+    ),
   },
   {
     accessorKey: "identityVerified",

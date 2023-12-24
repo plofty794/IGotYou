@@ -124,13 +124,13 @@ function VerifiedPayments() {
                             </Badge>
                           </CardHeader>
                           <CardContent className="px-4 mt-2">
-                            <CardDescription className="text-gray-600 font-medium text-sm">
+                            <CardDescription className="text-gray-600 font-medium text-sm w-max ">
                               {v.user.username}
                             </CardDescription>
-                            <CardDescription className="text-gray-600 font-medium text-sm">
+                            <CardDescription className="text-gray-600 font-medium text-sm w-max">
                               {v.user.email}
                             </CardDescription>
-                            <CardDescription className="text-gray-600 font-medium text-sm">
+                            <CardDescription className="text-gray-600 font-medium text-sm w-max">
                               Sent at: {new Date(v.createdAt).toLocaleString()}
                             </CardDescription>
                           </CardContent>
