@@ -77,7 +77,6 @@ export const getListings: RequestHandler = async (req, res, next) => {
       .limit(limit)
       .populate({
         path: "host",
-        select: "username email ",
         match: {
           subscriptionExpiresAt: {
             $gte: new Date(),

@@ -1,4 +1,4 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 import {
   Table,
@@ -27,7 +27,7 @@ const columns: ColumnDef<TListings>[] = [
     header: "Name",
     accessorKey: "serviceDescription",
     cell: (props) => (
-      <p className="font-semibold">{props.getValue() as string}</p>
+      <p className="font-semibold w-max">{props.getValue() as string}</p>
     ),
   },
   {
@@ -36,7 +36,7 @@ const columns: ColumnDef<TListings>[] = [
     cell: (props) => (
       <div className="w-22">
         <img
-          className="h-10 w-15 object-cover rounded-md"
+          className="h-10 w-full object-cover rounded-md"
           src={`${(props.getValue() as TListingPhotos[])[0].secure_url}`}
         />
       </div>
@@ -46,8 +46,9 @@ const columns: ColumnDef<TListings>[] = [
     accessorKey: "serviceType",
     header: "Type",
     cell: (props) => (
-      <ScrollArea className="h-5">
-        <p>{props.getValue() as string}</p>
+      <ScrollArea className="w-28">
+        <p className="font-semibold w-max py-2">{props.getValue() as string}</p>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     ),
   },
@@ -81,8 +82,9 @@ const columns: ColumnDef<TListings>[] = [
     accessorKey: "serviceLocation",
     header: "Location",
     cell: (props) => (
-      <ScrollArea className="h-10 w-64">
-        <p>{props.getValue() as string}</p>
+      <ScrollArea className="w-36 py-2">
+        <p className="font-semibold w-max">{props.getValue() as string}</p>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     ),
   },

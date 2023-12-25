@@ -56,7 +56,7 @@ function ListingFilters({ table }: { table: Table<TListings> }) {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="font-medium">
+            <Button variant="outline" className="font-medium rounded-full">
               Cancellation policy <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -99,7 +99,7 @@ function ListingFilters({ table }: { table: Table<TListings> }) {
         </DropdownMenu>
         <Button
           variant={"outline"}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 rounded-full"
           onClick={() => {
             setCancellationPolicyFilter("");
             table.resetColumnFilters();
@@ -125,6 +125,7 @@ function ListingFilters({ table }: { table: Table<TListings> }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                className="rounded-full"
                 onClick={() =>
                   queryClient.invalidateQueries({ queryKey: ["host-listings"] })
                 }
