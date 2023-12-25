@@ -2,6 +2,7 @@ import useGetUsers from "@/hooks/useGetUsers";
 import UsersTable from "@/partials/UsersTable";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { useEffect } from "react";
 
 type User = {
   email: string;
@@ -44,10 +45,18 @@ const columns: ColumnDef<User>[] = [
 function Users() {
   const users = useGetUsers();
 
+  useEffect(() => {
+    document.title = "Users - IGotYou";
+  }, []);
+
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4">
-        <h1 className="font-bold text-3xl">Users</h1>
+        <span className="font-bold text-3xl">Users</span>
+        <span className="font-bold text-lg text-gray-600">
+          # of users:{" "}
+          {users.data?.pages.flatMap((page) => page.data.users).length}
+        </span>
         {users.isPending ? (
           "Loading..."
         ) : (

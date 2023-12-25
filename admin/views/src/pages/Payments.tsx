@@ -13,11 +13,16 @@ import noPendingPayment from "../assets/no-pending-payments.json";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { useEffect } from "react";
 
 function Payments() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, isPending } = useGetPendingPayments();
   const verifyPayment = useVerifyPayment();
+
+  useEffect(() => {
+    document.title = "Payments - IGotYou";
+  }, []);
 
   return (
     <section className="py-4 px-8">

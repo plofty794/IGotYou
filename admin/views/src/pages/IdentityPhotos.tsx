@@ -13,10 +13,15 @@ import Lottie from "lottie-react";
 import { Link } from "react-router-dom";
 import noPendingPayment from "../assets/no-pending-payments.json";
 import useVerifyIdentityPhoto from "@/hooks/useVerifyIdentityPhoto";
+import { useEffect } from "react";
 
 function IdentityPhotos() {
   const { data, isPending } = useGetPendingIdentityVerificationRequests();
   const verifyIdentityPhoto = useVerifyIdentityPhoto();
+
+  useEffect(() => {
+    document.title = "Identity Photos - IGotYou";
+  }, []);
 
   return (
     <section className="py-4 px-8">
