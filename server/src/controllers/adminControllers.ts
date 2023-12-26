@@ -40,8 +40,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
     if (!admin_id) {
       throw createHttpError(401, "This action requires an identifier");
     }
-    const totalUsers = await Users.countDocuments();
-    const totalPages = Math.ceil(totalUsers / limit);
+
     const users = await Users.find({
       username: { $ne: null },
     })
@@ -53,10 +52,13 @@ export const getUsers: RequestHandler = async (req, res, next) => {
       .sort({ createdAt: "desc" })
       .exec();
 
+    const totalUsers = await Users.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+
     if (!users.length) {
       return res.status(200).json({ users: [], totalPages: 0 });
     }
-    res.status(200).json({ users, totalPages });
+    res.status(200).json({ users, totalPages, totalUsers });
   } catch (error) {
     next(error);
   }

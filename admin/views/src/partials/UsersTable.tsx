@@ -3,6 +3,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -14,34 +15,92 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import UserFilters from "./filters/UserFilters";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  totalPages: number;
+  fetchNextPage: () => void;
 }
 
 function UsersTable<TData, TValue>({
   columns,
   data,
+  totalPages,
+  fetchNextPage,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    pageCount: totalPages,
   });
+
+  function getNextPage() {
+    fetchNextPage();
+    setTimeout(() => {
+      table.nextPage();
+    }, 200);
+  }
+
+  function getPrevPage() {
+    table.previousPage();
+  }
 
   return (
     <>
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex items-center justify-between gap-2">
         <UserFilters table={table} />
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1 ml-auto w-max">
+            <Button
+              disabled={!table.getCanPreviousPage()}
+              onClick={getPrevPage}
+              size={"sm"}
+              variant={"outline"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                />
+              </svg>
+            </Button>
+            <Button
+              disabled={!table.getCanNextPage()}
+              onClick={getNextPage}
+              size={"sm"}
+              variant={"outline"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </Button>
+          </div>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>
@@ -102,42 +161,6 @@ function UsersTable<TData, TValue>({
                       </TableCell>
                     )
                   )}
-                  <TableCell className="w-max flex items-center justify-center gap-2">
-                    <Popover>
-                      <PopoverTrigger>
-                        <Button variant={"ghost"} className="rounded-full p-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                            />
-                          </svg>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="flex flex-col items-start w-max py-2 px-0">
-                        <Button
-                          variant={"ghost"}
-                          className="font-medium text-sm rounded-none"
-                        >
-                          Disable account
-                        </Button>
-                        <Button
-                          variant={"ghost"}
-                          className="font-medium text-sm rounded-none"
-                        >
-                          Delete account
-                        </Button>
-                      </PopoverContent>
-                    </Popover>
-                  </TableCell>
                 </TableRow>
               ))
             ) : (

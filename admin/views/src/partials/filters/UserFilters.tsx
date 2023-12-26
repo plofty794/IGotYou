@@ -134,7 +134,7 @@ function UserFilters({ table }: { table: Table<TData> }) {
               setIdentityVerifiedFilter("");
               setEmailVerifiedFilter("");
               setUserStatusFilter("");
-              table.resetColumnFilters();
+              table.reset();
             }}
           >
             <svg

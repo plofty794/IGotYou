@@ -21,6 +21,7 @@ import { formatValue } from "react-currency-input-field";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import ListingFilters from "./ListingFilters";
+import { Badge } from "@/components/ui/badge";
 
 const columns: ColumnDef<TListings>[] = [
   {
@@ -140,6 +141,21 @@ const columns: ColumnDef<TListings>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => (
+      <Badge
+        variant={`${
+          compareAsc(new Date(row.original.endsAt), new Date()) >= 0 &&
+          compareDesc(new Date(row.original.availableAt), new Date()) >= 0
+            ? "default"
+            : "destructive"
+        }`}
+      >
+        {compareAsc(new Date(row.original.endsAt), new Date()) >= 0 &&
+        compareDesc(new Date(row.original.availableAt), new Date()) >= 0
+          ? "Active"
+          : "Inactive"}
+      </Badge>
+    ),
     accessorFn: (row) =>
       compareAsc(new Date(row.endsAt), new Date()) >= 0 &&
       compareDesc(new Date(row.availableAt), new Date()) >= 0

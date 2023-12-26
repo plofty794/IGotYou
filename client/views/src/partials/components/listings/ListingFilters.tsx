@@ -102,7 +102,7 @@ function ListingFilters({ table }: { table: Table<TListings> }) {
           className="flex items-center gap-2 rounded-full"
           onClick={() => {
             setCancellationPolicyFilter("");
-            table.resetColumnFilters();
+            table.reset();
           }}
         >
           <svg
