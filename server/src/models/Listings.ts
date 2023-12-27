@@ -63,6 +63,10 @@ const listingSchema = new Schema(
       enum: ["Flexible", "Moderate", "Strict"],
       required: true,
     },
+    reservedDates: {
+      type: [Types.ObjectId],
+      ref: "Reservations",
+    },
   },
   { timestamps: true }
 );

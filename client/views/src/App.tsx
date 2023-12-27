@@ -318,7 +318,7 @@ function App() {
         {/* BOOKING Route */}
         <Route path="/listings" element={<ListingsLayout />}>
           <Route path="show/:id" element={<VisitListing />} />
-          <Route path="create/:id" element={<MakeABooking />} />
+          <Route path="create-booking/:id" element={<MakeABooking />} />
         </Route>
 
         {/* MESSAGES Route */}

@@ -79,35 +79,37 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
     });
   }
 
-  console.log(pendingRequests);
-
   return (
     <Tabs defaultValue="all" className="mt-6 full">
       <TabsList className="justify-between items-center gap-2 bg-white">
         <TabsTrigger
-          className="rounded-full px-4 py-2 border font-semibold"
+          className="flex gap-1 rounded-full px-4 py-2 border font-semibold"
           value="all"
         >
           All Requests
+          <span className="text-xs font-bold">({bookingRequests.length})</span>
         </TabsTrigger>
         <TabsTrigger
-          className="rounded-full px-4 py-2 border font-semibold"
+          className="flex gap-1 rounded-full px-4 py-2 border font-semibold"
           value="approved"
         >
           Approved
+          <span className="text-xs font-bold">({approvedRequests.length})</span>
         </TabsTrigger>
         <TabsTrigger
-          className="rounded-full px-4 py-2 border font-semibold"
+          className="flex gap-1 rounded-full px-4 py-2 border font-semibold"
           value="pending"
         >
           Pending
+          <span className="text-xs font-bold">({pendingRequests.length})</span>
         </TabsTrigger>
 
         <TabsTrigger
-          className="rounded-full px-4 py-2 border font-semibold"
+          className="flex gap-1 rounded-full px-4 py-2 border font-semibold"
           value="declined"
         >
-          Declined
+          Declined{" "}
+          <span className="text-xs font-bold">({declinedRequests.length})</span>
         </TabsTrigger>
       </TabsList>
       <TabsContent className="mt-6 p-4 rounded-md bg-[#F7F7F7]" value="all">
@@ -192,7 +194,13 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                     </CardDescription>
                   </div>
                   <Badge
-                    className="uppercase font-bold rounded-full"
+                    className={`uppercase font-bold rounded-full ${
+                      v.status === "pending"
+                        ? "text-amber-600"
+                        : v.status === "approved"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
                     variant={"outline"}
                   >
                     {v.status}
@@ -369,7 +377,13 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                     </CardDescription>
                   </div>
                   <Badge
-                    className="uppercase rounded-full font-bold"
+                    className={`uppercase font-bold rounded-full ${
+                      v.status === "pending"
+                        ? "text-amber-600"
+                        : v.status === "approved"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
                     variant={"outline"}
                   >
                     {v.status}
@@ -515,7 +529,13 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                     </CardDescription>
                   </div>
                   <Badge
-                    className="uppercase font-bold rounded-full"
+                    className={`uppercase font-bold rounded-full ${
+                      v.status === "pending"
+                        ? "text-amber-600"
+                        : v.status === "approved"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
                     variant={"outline"}
                   >
                     {v.status}
@@ -693,7 +713,13 @@ function BookingsTabs({ bookingRequests }: { bookingRequests: any[] }) {
                     </CardDescription>
                   </div>
                   <Badge
-                    className="uppercase rounded-full font-bold"
+                    className={`uppercase font-bold rounded-full ${
+                      v.status === "pending"
+                        ? "text-amber-600"
+                        : v.status === "approved"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
                     variant={"outline"}
                   >
                     {v.status}

@@ -5,7 +5,7 @@ import Listings from "../models/Listings";
 import Users from "../models/Users";
 import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
-import { add, compareAsc, compareDesc } from "date-fns";
+import { add } from "date-fns";
 
 cloudinary.v2.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -150,7 +150,10 @@ export const getUserListing: RequestHandler = async (req, res, next) => {
     if (!id) {
       throw createHttpError(400, "Invalid listing id");
     }
-    const listing = await Listings.findById(id).populate("host");
+    const listing = await Listings.findById(id).populate({
+      path: "host",
+      select: "username photoUrl rating subscriptionExpiresAt",
+    });
     res.status(200).json({ listing });
   } catch (error) {
     next(error);
