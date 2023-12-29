@@ -1,5 +1,4 @@
 import { Calendar } from "@/components/ui/calendar";
-import { addDays } from "date-fns";
 import { Dispatch, SetStateAction } from "react";
 import { DateRange } from "react-day-picker";
 
@@ -17,7 +16,7 @@ function DatePicker({ listingEndsAt, date, setDate }: TProps) {
       fromYear={2023}
       fromMonth={new Date()}
       disabled={{
-        before: addDays(new Date(), 1),
+        before: new Date(),
         after: new Date(listingEndsAt),
       }}
       mode="range"

@@ -11,11 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "@/partials/components/DatePicker";
-import { addDays, format, formatDistance, formatDistanceToNow } from "date-fns";
+import { format, formatDistance, formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { DateRange } from "react-day-picker";
-import { Link, Navigate, useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { dotPulse } from "ldrs";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
@@ -35,7 +35,6 @@ function MakeABooking() {
     listing: { listing },
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    userProfileData: { user },
   } = useOutletContext();
   const {
     handleSubmit,
@@ -50,8 +49,8 @@ function MakeABooking() {
   });
 
   const [date, setDate] = useState<DateRange | undefined>({
-    from: addDays(new Date(), 1),
-    to: new Date(listing.endsAt),
+    from: new Date(new Date().setHours(0, 0, 0, 0)),
+    to: new Date(new Date(listing.endsAt).setHours(0, 0, 0, 0)),
   });
 
   useEffect(() => {
@@ -70,11 +69,6 @@ function MakeABooking() {
 
   return (
     <>
-      {user.bookingRequests.find(
-        (v: { listingID: string }) => v.listingID === listing._id
-      ) ? (
-        <Navigate replace to="/bookings" />
-      ) : null}
       <section className="py-12 px-24">
         <div className="w-full flex items-center">
           <Button
