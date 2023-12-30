@@ -4,6 +4,7 @@ import Reservations from "../models/Reservations";
 import BookingRequests from "../models/BookingRequests";
 import Users from "../models/Users";
 import HostNotifications from "../models/HostNotifications";
+import Listings from "../models/Listings";
 
 type TBookingRequest = {
   hostID: string;
@@ -28,10 +29,21 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
       );
     }
 
+    const listingIsActive = await Listings.findOne({
+      _id: listingID,
+      status: "Active",
+    });
+
+    if (!listingIsActive) {
+      return res.status(400).json({ message: "Listing is not active." });
+    }
+
     const bookingRequestAlreadyExist = await BookingRequests.findOne({
       guestID: id,
       hostID,
       listingID,
+      requestedBookingDateStartsAt,
+      requestedBookingDateEndsAt,
     });
 
     if (bookingRequestAlreadyExist) {

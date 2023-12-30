@@ -67,6 +67,11 @@ const listingSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Reservations",
     },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive", "Ended"],
+      default: "Active",
+    },
   },
   { timestamps: true }
 );
