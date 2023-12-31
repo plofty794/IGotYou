@@ -53,7 +53,6 @@ import { SocketContextProvider } from "./context/SocketContext";
 import ListingsLayout from "./root layouts/ListingsLayout";
 import MakeABooking from "./pages/MakeABooking";
 import BookingsLayout from "./root layouts/BookingsLayout";
-import Bookings from "./pages/Bookings";
 import DigitalAudioServices from "./pages/categories/DigitalAudioServices";
 import PhotographyServices from "./pages/categories/PhotographyServices";
 import AnimationAnd3DModeling from "./pages/categories/AnimationAnd3DModeling";
@@ -69,6 +68,11 @@ import CancellationPolicy from "./pages/become a host/CancellationPolicy";
 import Listings from "./pages/Listings";
 import RenewListing from "./pages/host/listings/RenewListing";
 import EditListing from "./pages/host/listings/EditListing";
+import AllBookingRequests from "./pages/bookings/AllBookingRequests";
+import ApprovedBookingRequests from "./pages/bookings/ApprovedBookingRequests";
+import PendingBookingRequests from "./pages/bookings/PendingBookingRequests";
+import DeclinedBookingRequests from "./pages/bookings/DeclinedBookingRequests";
+import CancelledBookingRequests from "./pages/bookings/CancelledBookingRequests";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -339,7 +343,11 @@ function App() {
 
         {/* BOOKINGS Route */}
         <Route path="/bookings" element={<BookingsLayout />}>
-          <Route index element={<Bookings />} />
+          <Route path="all" element={<AllBookingRequests />} />
+          <Route path="approved" element={<ApprovedBookingRequests />} />
+          <Route path="pending" element={<PendingBookingRequests />} />
+          <Route path="declined" element={<DeclinedBookingRequests />} />
+          <Route path="cancelled" element={<CancelledBookingRequests />} />
         </Route>
 
         {/* HOSTING Route */}

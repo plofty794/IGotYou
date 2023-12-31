@@ -124,3 +124,147 @@ export const getBookingRequests: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getApprovedBookingRequests: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const approvedBookingRequests = await BookingRequests.find({
+      guestID: id,
+      status: "approved",
+    })
+      .sort({ createdAt: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate([{ path: "listingID" }, { select: "username", path: "hostID" }])
+      .exec();
+
+    const totalPages = Math.ceil(approvedBookingRequests.length / limit);
+
+    res.status(200).json({ approvedBookingRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPendingBookingRequests: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const pendingBookingRequests = await BookingRequests.find({
+      guestID: id,
+      status: "pending",
+    })
+      .sort({ createdAt: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate([{ path: "listingID" }, { select: "username", path: "hostID" }])
+      .exec();
+
+    const totalPages = Math.ceil(pendingBookingRequests.length / limit);
+
+    res.status(200).json({ pendingBookingRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getDeclinedBookingRequests: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const declinedBookingRequests = await BookingRequests.find({
+      guestID: id,
+      status: "declined",
+    })
+      .sort({ createdAt: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate([{ path: "listingID" }, { select: "username", path: "hostID" }])
+      .exec();
+
+    const totalPages = Math.ceil(declinedBookingRequests.length / limit);
+
+    res.status(200).json({ declinedBookingRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCancelledBookingRequests: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const cancelledBookingRequests = await BookingRequests.find({
+      guestID: id,
+      status: "cancelled",
+    })
+      .sort({ createdAt: "desc" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate([{ path: "listingID" }, { select: "username", path: "hostID" }])
+      .exec();
+
+    const totalPages = Math.ceil(cancelledBookingRequests.length / limit);
+
+    res.status(200).json({ cancelledBookingRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
