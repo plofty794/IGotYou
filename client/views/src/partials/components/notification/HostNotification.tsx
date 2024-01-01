@@ -5,7 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SocketContextProvider } from "@/context/SocketContext";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -38,9 +38,8 @@ function HostNotification() {
     );
   }, [hostNotifications.data?.data.hostNotifications]);
 
-  useMemo(() => {
+  useEffect(() => {
     socket?.on("send-hostNotification", (newHostNotification) => {
-      console.log(newHostNotification);
       setNotifications((prev) => [newHostNotification, ...prev]);
       setNewNotifications((prev) => [newHostNotification, ...prev]);
     });

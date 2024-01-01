@@ -5,11 +5,13 @@ import {
   getCancelledBookingRequests,
   getDeclinedBookingRequests,
   getPendingBookingRequests,
+  searchBookingRequest,
   sendBookingRequest,
 } from "../controllers/bookingRequestsControllers";
 import { authToken } from "../middlewares/authToken";
 const router = Router();
 
+router.get("/booking-requests", authToken, searchBookingRequest);
 router.get("/booking-requests/:page", authToken, getBookingRequests);
 router.get(
   "/approved-booking-requests/:page",

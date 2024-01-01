@@ -73,19 +73,15 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("chat-message", async (data) => {
-    const activeUser = findActiveUser(data.receiverName);
+  socket.on("chat-message", async (receiverName) => {
+    const activeUser = findActiveUser(receiverName);
     if (activeUser) {
-      const res = await sendMessage(data);
-      io.to(activeUser.socketId).emit("receive-message", res);
-    } else {
-      await sendMessage(data);
+      io.to(activeUser.socketId).emit("receive-message", receiverName);
     }
   });
 
   socket.on("send-bookingRequest", (data) => {
     const activeUser = findActiveUser(data.receiverName);
-    console.log(data);
     if (activeUser) {
       io.to(activeUser.socketId).emit(
         "send-hostNotification",

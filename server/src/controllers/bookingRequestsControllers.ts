@@ -161,6 +161,49 @@ export const getApprovedBookingRequests: RequestHandler = async (
   }
 };
 
+export const searchBookingRequest: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { search } = req.query;
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const bookingRequest = await BookingRequests.find({
+      guestID: id,
+    })
+      .populate([
+        {
+          path: "hostID",
+          select: "username",
+        },
+        {
+          path: "listingID",
+        },
+      ])
+      .exec();
+
+    const searchResults = bookingRequest.filter(
+      (v) =>
+        (v.hostID as { username: string }).username
+          .toLowerCase()
+          .includes((search as string).toLowerCase()) ||
+        (v.listingID as { serviceDescription: string }).serviceDescription
+          .toLowerCase()
+          .includes((search as string).toLowerCase())
+    );
+
+    res.status(200).json({ searchResults });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getPendingBookingRequests: RequestHandler = async (
   req,
   res,

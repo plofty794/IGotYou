@@ -330,7 +330,7 @@ function App() {
         {/* MESSAGES Route */}
         <Route path="/messages" element={<MessagesLayout />}>
           <Route
-            path="conversation/:conversationId"
+            path="conversation/:conversationID"
             element={
               User ?? token ?? identifier ? (
                 <Messages />

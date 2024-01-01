@@ -22,24 +22,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { SocketContextProvider } from "@/context/SocketContext";
+import useChatMessage from "@/hooks/useChatMessage";
 import useDeleteConversation from "@/hooks/useDeleteConversation";
 import useGetConversation from "@/hooks/useGetConversation";
 import ListingsLoader from "@/partials/loaders/ListingsLoader";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-type TMessage = {
-  content: string;
-  conversationID: string;
-  senderID: string;
-  receiverName: string;
-};
-
 function Messages() {
-  const { conversationId } = useParams();
+  const { conversationID } = useParams();
   const navigate = useNavigate();
+  const chatMessage = useChatMessage();
   const { mutate } = useDeleteConversation();
   const queryClient = useQueryClient();
   const { socket } = useContext(SocketContextProvider);
@@ -52,7 +47,7 @@ function Messages() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [conversation, setConversation] = useState<any[]>();
 
-  useMemo(() => {
+  useEffect(() => {
     data?.data.conversation.length &&
       data?.data.conversation?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -80,41 +75,16 @@ function Messages() {
     queryClient.invalidateQueries({ queryKey: ["guest-notifications"] });
   }
 
-  useMemo(() => {
-    socket?.on("receive-message", (data) => {
-      setMessages((prev) => [...prev, data.conversation]);
+  useEffect(() => {
+    socket?.on("receive-message", () => {
       queryClient.invalidateQueries({
-        queryKey: ["conversation", conversationId],
+        queryKey: ["conversation", conversationID],
       });
       queryClient.invalidateQueries({
         queryKey: ["conversations"],
       });
     });
-  }, [conversationId, queryClient, socket]);
-
-  function sendMessage({
-    content,
-    conversationID,
-    senderID,
-    receiverName,
-  }: TMessage) {
-    socket?.emit("chat-message", {
-      content,
-      conversationID,
-      senderID,
-      receiverName,
-    });
-    setMessages((prev) => [
-      ...prev,
-      {
-        content,
-        conversation,
-        senderID: { _id: senderID },
-        createdAt: Date.now(),
-      },
-    ]);
-    setContent("");
-  }
+  }, [conversationID, queryClient, socket]);
 
   return (
     <div className="px-8 py-6">
@@ -176,7 +146,7 @@ function Messages() {
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => {
-                            conversationId && mutate(conversationId);
+                            conversationID && mutate(conversationID);
                             setTimeout(() => {
                               navigate("/messages", { replace: true });
                               document.location.reload();
@@ -255,13 +225,9 @@ function Messages() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                queryClient.invalidateQueries({
-                  queryKey: ["conversations"],
-                });
-                sendMessage({
+                setContent("");
+                chatMessage.mutate({
                   content,
-                  conversationID: conversation && conversation[0]?._id,
-                  senderID: data?.data.currentUserID,
                   receiverName: participant[0].username,
                 });
               }}
@@ -272,7 +238,8 @@ function Messages() {
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Message..."
                   onFocus={async () =>
-                    conversation &&
+                    conversation != null &&
+                    !conversation[0]?.lastMessage.read &&
                     (await readMessage(conversation[0].lastMessage._id))
                   }
                   className="bg-white p-5 font-medium rounded-full w-full"

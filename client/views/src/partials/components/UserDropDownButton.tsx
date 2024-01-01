@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../../firebase config/config";
 import useLogOutUser from "@/hooks/useLogout";
 import useGetGuestNotifications from "@/hooks/useGetGuestNotifications";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -22,8 +22,9 @@ export function UserDropDownButton() {
   const User = auth.currentUser;
   const logOutUser = useLogOutUser();
 
-  useMemo(() => {
+  useEffect(() => {
     socket?.on("receive-message", () => {
+      console.log("YES");
       queryClient.invalidateQueries({
         queryKey: ["guest-notifications"],
       });

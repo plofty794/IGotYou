@@ -22,7 +22,8 @@ function BookingsLayout() {
             <UserDropDownButton />
           </div>
         </nav>
-        <div className="p-6 flex items-center justify-center gap-4">
+
+        <div className="flex items-center justify-center gap-4 p-4 pb-2">
           <NavLink
             to={"/bookings/all"}
             className="text-sm font-semibold text-gray-600 px-4 py-2 border rounded-full"
@@ -55,7 +56,7 @@ function BookingsLayout() {
           </NavLink>
         </div>
 
-        <ScrollArea className="h-[70vh] px-2 mx-2 bg-[#F5F5F5] rounded-lg">
+        <ScrollArea className="h-[70vh] px-2 mx-2 mt-6 bg-[#F5F5F5] rounded-lg">
           {<Outlet />}
         </ScrollArea>
       </main>

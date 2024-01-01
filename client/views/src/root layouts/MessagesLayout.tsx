@@ -35,7 +35,7 @@ ping.register();
 function MessagesLayout() {
   const { mutate, isPending } = useCreateConversation();
   const conversations = useGetConversations();
-  const { conversationId } = useParams();
+  const { conversationID } = useParams();
   const [receiverName, setReceiverName] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userDetails, setUserDetails] = useState<any[]>([]);
@@ -326,7 +326,7 @@ function MessagesLayout() {
                 )}
               </div>
               <div className="w-3/4">
-                {!conversationId && (
+                {!conversationID && (
                   <div className="h-[70vh] flex flex-col gap-4 items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

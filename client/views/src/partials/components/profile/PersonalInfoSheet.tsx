@@ -75,6 +75,7 @@ function PersonalInfoSheet() {
           {!data?.data?.user.identityVerified && (
             <Button className="bg-gray-950">
               <Link
+                className="w-full"
                 to={`/users/identity-verification/${data?.data?.user.uid}`}
                 reloadDocument
               >

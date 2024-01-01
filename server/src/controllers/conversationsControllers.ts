@@ -162,11 +162,28 @@ export const createConversation: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const sendMessage = async (data: any) => {
+export const sendMessage: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { content, receiverName } = req.body;
+  const { conversationID } = req.params;
   try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const conversationExist = await Conversations.findById(conversationID);
+
+    if (!conversationExist) {
+      return res.status(400).json({ message: "Invalid conversation ID" });
+    }
+
     const lastMessage = await Messages.create({
-      content: data.content,
-      senderID: data.senderID,
+      content,
+      senderID: id,
     });
 
     await lastMessage.populate({
@@ -174,8 +191,8 @@ export const sendMessage = async (data: any) => {
       select: "username photoUrl",
     });
 
-    const updatedConversation = await Conversations.findByIdAndUpdate(
-      data.conversationID,
+    await Conversations.findByIdAndUpdate(
+      conversationID,
       {
         lastMessage: lastMessage?._id,
         $push: {
@@ -185,13 +202,11 @@ export const sendMessage = async (data: any) => {
       { new: true }
     );
 
-    const recipientID = updatedConversation?.participants.find(
-      (v) => v != data.senderID
-    ) as string;
+    const recipientID = await Users.findOne({ username: receiverName });
 
     const guestNotificationExist = await GuestNotifications.findOne({
-      senderID: data.senderID,
-      recipientID,
+      senderID: id,
+      recipientID: recipientID?._id,
       notificationType: "New-Message",
     });
 
@@ -201,28 +216,25 @@ export const sendMessage = async (data: any) => {
         read: false,
       });
 
-      return { conversation: lastMessage };
+      return res.status(200).json({ conversation: lastMessage, receiverName });
     }
 
     const messageNotification = await GuestNotifications.create({
-      recipientID,
-      senderID: data.senderID,
+      recipientID: recipientID?._id,
+      senderID: id,
       notificationType: "New-Message",
       data: lastMessage?._id,
     });
 
-    await Users.findOneAndUpdate(
-      { _id: recipientID },
-      {
-        $push: {
-          guestNotifications: messageNotification._id,
-        },
-      }
-    );
+    await Users.findByIdAndUpdate(recipientID?._id, {
+      $push: {
+        guestNotifications: messageNotification._id,
+      },
+    });
 
-    return { conversation: lastMessage };
+    return res.status(200).json({ conversation: lastMessage, receiverName });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
