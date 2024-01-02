@@ -80,7 +80,7 @@ export const getCurrentUserConversation: RequestHandler = async (
       .exec();
 
     if (!conversation) {
-      return res.status(200).json({ conversation: [] });
+      throw createHttpError(400, { conversation: [] });
     }
 
     res.status(200).json({ conversation: [conversation], currentUserID: id });
@@ -178,7 +178,7 @@ export const sendMessage: RequestHandler = async (req, res, next) => {
     const conversationExist = await Conversations.findById(conversationID);
 
     if (!conversationExist) {
-      return res.status(400).json({ message: "Invalid conversation ID" });
+      throw createHttpError(400, "Invalid conversation ID");
     }
 
     const lastMessage = await Messages.create({

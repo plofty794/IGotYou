@@ -22,13 +22,13 @@ import { compareAsc, differenceInDays, formatDistance } from "date-fns";
 import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
-import useGetPendingBookingRequests from "@/hooks/useGetPendingBookingRequests";
+import useGetGuestPendingBookingRequests from "@/hooks/useGetGuestPendingBookingRequests";
 import { jelly } from "ldrs";
 import { useEffect } from "react";
 jelly.register();
 
 function PendingBookingRequests() {
-  const { data, isPending } = useGetPendingBookingRequests();
+  const { data, isPending } = useGetGuestPendingBookingRequests();
 
   useEffect(() => {
     document.title = "Pending Booking Requests - IGotYou";

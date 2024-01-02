@@ -1,20 +1,22 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { auth } from "@/firebase config/config";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-function useGetCancelledBookingRequests() {
+function useGetGuestPendingBookingRequests() {
   return useInfiniteQuery({
-    queryKey: ["cancelled-booking-requests"],
+    queryKey: ["guest-pending-booking-requests"],
     queryFn: async ({ pageParam }) => {
       return axiosPrivateRoute.get(
-        `/api/cancelled-booking-requests/${pageParam}`
+        `/api/guest-pending-booking-requests/${pageParam}`
       );
     },
     getNextPageParam: (_, pages) => {
       return pages.length + 1;
     },
     initialPageParam: 1,
+    enabled: auth.currentUser?.uid != null,
     refetchOnWindowFocus: false,
   });
 }
 
-export default useGetCancelledBookingRequests;
+export default useGetGuestPendingBookingRequests;

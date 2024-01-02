@@ -1,20 +1,20 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
-import { auth } from "@/firebase config/config";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-function useGetBookingRequests() {
+function useGetApprovedBookingRequests() {
   return useInfiniteQuery({
-    queryKey: ["booking-requests"],
+    queryKey: ["guest-approved-booking-requests"],
     queryFn: async ({ pageParam }) => {
-      return axiosPrivateRoute.get(`/api/booking-requests/${pageParam}`);
+      return axiosPrivateRoute.get(
+        `/api/guest-approved-booking-requests/${pageParam}`
+      );
     },
     getNextPageParam: (_, pages) => {
       return pages.length + 1;
     },
     initialPageParam: 1,
-    enabled: auth.currentUser?.uid != null,
     refetchOnWindowFocus: false,
   });
 }
 
-export default useGetBookingRequests;
+export default useGetApprovedBookingRequests;

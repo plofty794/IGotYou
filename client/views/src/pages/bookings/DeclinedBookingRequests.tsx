@@ -23,12 +23,12 @@ import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
 import { jelly } from "ldrs";
-import useGetDeclinedBookingRequests from "@/hooks/useGetDeclinedBookingRequests";
+import useGetGuestDeclinedBookingRequests from "@/hooks/useGetGuestDeclinedBookingRequests";
 import { useEffect } from "react";
 jelly.register();
 
 function DeclinedBookingRequests() {
-  const { data, isPending } = useGetDeclinedBookingRequests();
+  const { data, isPending } = useGetGuestDeclinedBookingRequests();
 
   useEffect(() => {
     document.title = "Declined Booking Requests - IGotYou";

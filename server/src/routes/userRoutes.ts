@@ -12,7 +12,7 @@ import {
   visitUserProfile,
   // userSubscription,
   checkUserEmail,
-  searchUsername,
+  searchHostUsername,
   updateUserEmail,
   addListingToWishlist,
   getWishlists,
@@ -23,7 +23,7 @@ import { authToken } from "../middlewares/authToken";
 router.get("/users/current-user/phone", authToken, getUserPhone);
 
 router.get("/users/current-user/wishlists", authToken, getWishlists);
-router.get("/users/search/:username", authToken, searchUsername);
+router.get("/users/search-host/:username", authToken, searchHostUsername);
 router.get("/users/profile/visit/:id", authToken, visitUserProfile);
 router.get("/users/current-user/profile", authToken, getCurrentUserProfile);
 router.post("/users/login", logInUser);

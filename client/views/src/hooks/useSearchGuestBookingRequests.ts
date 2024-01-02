@@ -1,12 +1,12 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useQuery } from "@tanstack/react-query";
 
-function useSearchBookingRequests(search: string) {
+function useSearchGuestBookingRequests(search: string) {
   return useQuery({
     queryKey: ["booking-requests", search],
     queryFn: async () => {
       return await axiosPrivateRoute.get(
-        `/api/booking-requests?search=${search}`
+        `/api/guest-booking-requests?search=${search}`
       );
     },
     enabled: search.length > 0,
@@ -15,4 +15,4 @@ function useSearchBookingRequests(search: string) {
   });
 }
 
-export default useSearchBookingRequests;
+export default useSearchGuestBookingRequests;

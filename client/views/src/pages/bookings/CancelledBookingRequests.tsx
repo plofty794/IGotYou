@@ -23,11 +23,11 @@ import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
 import { jelly } from "ldrs";
-import useGetCancelledBookingRequests from "@/hooks/useGetCancelledBookingRequests";
+import useGetGuestCancelledBookingRequests from "@/hooks/useGetGuestCancelledBookingRequests";
 import { useEffect } from "react";
 jelly.register();
 function CancelledBookingRequests() {
-  const { data, isPending } = useGetCancelledBookingRequests();
+  const { data, isPending } = useGetGuestCancelledBookingRequests();
 
   useEffect(() => {
     document.title = "Cancelled Booking Requests - IGotYou";

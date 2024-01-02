@@ -1,38 +1,50 @@
 import { Router } from "express";
 import {
-  getApprovedBookingRequests,
-  getBookingRequests,
-  getCancelledBookingRequests,
-  getDeclinedBookingRequests,
-  getPendingBookingRequests,
-  searchBookingRequest,
+  getBookingRequestDetails,
+  getGuestApprovedBookingRequests,
+  getGuestBookingRequests,
+  getGuestCancelledBookingRequests,
+  getGuestDeclinedBookingRequests,
+  getGuestPendingBookingRequests,
+  getHostBookingRequests,
+  searchGuestBookingRequest,
   sendBookingRequest,
 } from "../controllers/bookingRequestsControllers";
 import { authToken } from "../middlewares/authToken";
 const router = Router();
 
-router.get("/booking-requests", authToken, searchBookingRequest);
-router.get("/booking-requests/:page", authToken, getBookingRequests);
+router.get("/guest-booking-requests", authToken, searchGuestBookingRequest);
 router.get(
-  "/approved-booking-requests/:page",
+  "/booking-requests/:bookingRequestID",
   authToken,
-  getApprovedBookingRequests
+  getBookingRequestDetails
+);
+router.get("/guest-booking-requests/:page", authToken, getGuestBookingRequests);
+router.get("/host-booking-requests/:page", authToken, getHostBookingRequests);
+router.get(
+  "/guest-approved-booking-requests/:page",
+  authToken,
+  getGuestApprovedBookingRequests
 );
 router.get(
-  "/pending-booking-requests/:page",
+  "/guest-pending-booking-requests/:page",
   authToken,
-  getPendingBookingRequests
+  getGuestPendingBookingRequests
 );
 router.get(
-  "/declined-booking-requests/:page",
+  "/guest-declined-booking-requests/:page",
   authToken,
-  getDeclinedBookingRequests
+  getGuestDeclinedBookingRequests
 );
 router.get(
-  "/cancelled-booking-requests/:page",
+  "/guest-cancelled-booking-requests/:page",
   authToken,
-  getCancelledBookingRequests
+  getGuestCancelledBookingRequests
 );
-router.post("/booking-requests/:listingID", authToken, sendBookingRequest);
+router.post(
+  "/guest-send-booking-requests/:listingID",
+  authToken,
+  sendBookingRequest
+);
 
 export { router as bookingRequestRoutes };

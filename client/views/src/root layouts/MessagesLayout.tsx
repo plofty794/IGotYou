@@ -44,7 +44,7 @@ function MessagesLayout() {
     setTimeout(async () => {
       if (receiverName) {
         const res = await axiosPrivateRoute.get(
-          `/api/users/search/${receiverName}`
+          `/api/users/search-host/${receiverName}`
         );
         setUserDetails(
           res.data.userDetails.filter(
@@ -137,7 +137,10 @@ function MessagesLayout() {
                               <TooltipTrigger asChild>
                                 <Button
                                   disabled={!receiverName}
-                                  onClick={() => setReceiverName("")}
+                                  onClick={() => {
+                                    setReceiverName("");
+                                    setUserDetails([]);
+                                  }}
                                   variant={"outline"}
                                   className="p-3"
                                 >
@@ -168,7 +171,7 @@ function MessagesLayout() {
                         {!userDetails.length ? (
                           <div className="w-max">
                             <span className="text-sm font-semibold text-gray-600">
-                              No users found.
+                              No hosts found.
                             </span>
                           </div>
                         ) : (
@@ -227,7 +230,11 @@ function MessagesLayout() {
                       </ScrollArea>
                       <DialogFooter className="w-full">
                         <Button
-                          onClick={() => mutate(receiverName)}
+                          onClick={() => {
+                            mutate(receiverName);
+                            setReceiverName("");
+                            setUserDetails([]);
+                          }}
                           disabled={
                             !userDetails.find(
                               (v) =>

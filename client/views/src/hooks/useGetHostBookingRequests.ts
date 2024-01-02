@@ -2,13 +2,11 @@ import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { auth } from "@/firebase config/config";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-function useGetPendingBookingRequests() {
+function useGetHostBookingRequests() {
   return useInfiniteQuery({
-    queryKey: ["pending-booking-requests"],
+    queryKey: ["host-booking-requests"],
     queryFn: async ({ pageParam }) => {
-      return axiosPrivateRoute.get(
-        `/api/pending-booking-requests/${pageParam}`
-      );
+      return axiosPrivateRoute.get(`/api/host-booking-requests/${pageParam}`);
     },
     getNextPageParam: (_, pages) => {
       return pages.length + 1;
@@ -19,4 +17,4 @@ function useGetPendingBookingRequests() {
   });
 }
 
-export default useGetPendingBookingRequests;
+export default useGetHostBookingRequests;

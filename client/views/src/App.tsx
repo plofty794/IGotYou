@@ -73,6 +73,7 @@ import ApprovedBookingRequests from "./pages/bookings/ApprovedBookingRequests";
 import PendingBookingRequests from "./pages/bookings/PendingBookingRequests";
 import DeclinedBookingRequests from "./pages/bookings/DeclinedBookingRequests";
 import CancelledBookingRequests from "./pages/bookings/CancelledBookingRequests";
+import BookingRequest from "./pages/inbox/BookingRequest";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -366,7 +367,9 @@ function App() {
               element={<PreviousReservations />}
             />
           </Route>
-          <Route path="hosting-inbox" element={<Inbox />} />
+          <Route path="hosting-inbox" element={<Inbox />}>
+            <Route path="booking-request/:id" element={<BookingRequest />} />
+          </Route>
           <Route path="hosting-listings" element={<Listings />}>
             <Route path="renew/:listingID" element={<RenewListing />} />
             <Route path="edit/:listingID" element={<EditListing />} />

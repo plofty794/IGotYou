@@ -1,12 +1,12 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-function useGetApprovedBookingRequests() {
+function useGetGuestDeclinedBookingRequests() {
   return useInfiniteQuery({
-    queryKey: ["approved-booking-requests"],
+    queryKey: ["guest-declined-booking-requests"],
     queryFn: async ({ pageParam }) => {
       return axiosPrivateRoute.get(
-        `/api/approved-booking-requests/${pageParam}`
+        `/api/guest-declined-booking-requests/${pageParam}`
       );
     },
     getNextPageParam: (_, pages) => {
@@ -17,4 +17,4 @@ function useGetApprovedBookingRequests() {
   });
 }
 
-export default useGetApprovedBookingRequests;
+export default useGetGuestDeclinedBookingRequests;

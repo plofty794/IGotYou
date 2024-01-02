@@ -22,19 +22,19 @@ import { compareAsc, differenceInDays, formatDistance } from "date-fns";
 import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
-import useGetBookingRequests from "@/hooks/useGetBookingRequests";
+import useGetGuestBookingRequests from "@/hooks/useGetGuestBookingRequests";
 import { jelly } from "ldrs";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import useSearchBookingRequests from "@/hooks/useSearchBookingRequests";
+import useSearchGuestBookingRequests from "@/hooks/useSearchGuestBookingRequests";
 import SearchResults from "./SearchResults";
 import { useQueryClient } from "@tanstack/react-query";
 jelly.register();
 
 function AllBookingRequests() {
-  const { data, isPending } = useGetBookingRequests();
+  const { data, isPending } = useGetGuestBookingRequests();
   const [search, setSearch] = useState("");
-  const searchData = useSearchBookingRequests(search);
+  const searchData = useSearchGuestBookingRequests(search);
   const queryClient = useQueryClient();
 
   useEffect(() => {

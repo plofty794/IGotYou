@@ -225,15 +225,9 @@ export const updateUserEmail: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const searchUsername: RequestHandler = async (req, res, next) => {
+export const searchHostUsername: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
   const { username } = req.params;
-  let searchOptions = {
-    username: new RegExp("", "gi"),
-  };
-  if (username != null) {
-    searchOptions.username = new RegExp(`^${username}`, "gi");
-  }
   try {
     if (!id) {
       res.clearCookie("_&!d");
@@ -243,7 +237,13 @@ export const searchUsername: RequestHandler = async (req, res, next) => {
       );
     }
 
-    const userDetails = await Users.find(searchOptions)
+    const userDetails = await Users.find({
+      username: {
+        $regex: username,
+        $options: "mi",
+      },
+      userStatus: "host",
+    })
       .select("username _id photoUrl email")
       .exec();
 
