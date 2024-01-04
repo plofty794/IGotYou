@@ -73,10 +73,10 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("chat-message", async (receiverName) => {
-    const activeUser = findActiveUser(receiverName);
+  socket.on("chat-message", async (data) => {
+    const activeUser = findActiveUser(data.receiverName);
     if (activeUser) {
-      io.to(activeUser.socketId).emit("receive-message", receiverName);
+      io.to(activeUser.socketId).emit("receive-message", data.conversationID);
     }
   });
 

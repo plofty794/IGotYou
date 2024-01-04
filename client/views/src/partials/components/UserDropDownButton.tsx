@@ -23,10 +23,15 @@ export function UserDropDownButton() {
   const logOutUser = useLogOutUser();
 
   useEffect(() => {
-    socket?.on("receive-message", () => {
-      console.log("YES");
+    socket?.on("receive-message", (conversationID) => {
       queryClient.invalidateQueries({
         queryKey: ["guest-notifications"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversation", conversationID],
       });
     });
   }, [queryClient, socket]);

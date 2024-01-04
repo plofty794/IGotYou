@@ -232,7 +232,7 @@ export const sendMessage: RequestHandler = async (req, res, next) => {
       },
     });
 
-    return res.status(200).json({ conversation: lastMessage, receiverName });
+    return res.status(200).json({ receiverName, conversationID });
   } catch (error) {
     next(error);
   }

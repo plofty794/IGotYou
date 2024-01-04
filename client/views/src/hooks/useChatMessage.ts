@@ -24,7 +24,7 @@ function useChatMessage() {
       );
     },
     onSuccess(data) {
-      socket?.emit("chat-message", data.data.receiverName);
+      socket?.emit("chat-message", data.data);
       queryClient.invalidateQueries({
         queryKey: ["conversations"],
       });
