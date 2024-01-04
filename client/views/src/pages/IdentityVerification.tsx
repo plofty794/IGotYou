@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { CloudinaryUploadWidget } from "@/types/createUploadWidget";
 
 type TIdentityPhoto = {
   public_id: string;
@@ -44,6 +45,8 @@ function IdentityVerification() {
 
   useEffect(() => {
     if (cloudinaryWidget) return;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const widget = window.cloudinary.createUploadWidget(
       {
         cloudName: "dop5kqpod",
@@ -53,6 +56,8 @@ function IdentityVerification() {
         multiple: false,
         cropping: false,
       },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       (_, res) => {
         if (res.event === "success") {
           setIdentityPhoto({
@@ -338,73 +343,3 @@ function IdentityVerification() {
 }
 
 export default IdentityVerification;
-
-interface CloudinaryImageUploadResponse {
-  access_mode: string;
-  asset_id: string;
-  batchId: string;
-  bytes: number;
-  created_at: string;
-  etag: string;
-  folder: string;
-  format: string;
-  height: number;
-  id: string;
-  original_filename: string;
-  path: string;
-  placeholder: boolean;
-  public_id: string;
-  resource_type: string;
-  secure_url: string;
-  signature: string;
-  tags: string[];
-  thumbnail_url: string;
-  type: string;
-  url: string;
-  version: number;
-  version_id: string;
-  width: number;
-}
-
-interface CloudinaryUploadWidget {
-  open(): void;
-  close(): void;
-  destroy(): void;
-  setFolder(folder: string): void;
-  setUploadPreset(uploadPreset: string): void;
-  setMultiple(multiple: boolean): void;
-  setCropping(cropping: boolean): void;
-  setResultCallback(
-    callback: (
-      error: Error | null,
-      result: CloudinaryImageUploadResponse
-    ) => void
-  ): void;
-}
-
-type TResult = {
-  event: string;
-  info: CloudinaryImageUploadResponse;
-};
-
-type TFn = (err: unknown, res: TResult) => void;
-
-declare global {
-  interface Window {
-    cloudinary: {
-      createUploadWidget: (
-        { cloudName, uploadPreset, folder, cropping }: TParamsProps,
-        fn: TFn
-      ) => CloudinaryUploadWidget;
-    };
-  }
-}
-
-type TParamsProps = {
-  cloudName?: string;
-  uploadPreset?: string;
-  folder?: string;
-  cropping?: boolean;
-  resourceType?: string;
-  multiple?: boolean;
-};

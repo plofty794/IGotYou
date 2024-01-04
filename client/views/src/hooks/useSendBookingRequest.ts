@@ -19,7 +19,7 @@ function useSendBookingRequest() {
   return useMutation({
     mutationFn: async (data: TBookingRequest) => {
       return await axiosPrivateRoute.post(
-        `/api/booking-requests/${data.listingID}`,
+        `/api/guest-send-booking-requests/${data.listingID}`,
         { ...data }
       );
     },

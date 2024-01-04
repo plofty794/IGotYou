@@ -225,7 +225,7 @@ export const updateUserEmail: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const searchHostUsername: RequestHandler = async (req, res, next) => {
+export const searchUsername: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
   const { username } = req.params;
   try {
@@ -242,7 +242,6 @@ export const searchHostUsername: RequestHandler = async (req, res, next) => {
         $regex: username,
         $options: "mi",
       },
-      userStatus: "host",
     })
       .select("username _id photoUrl email")
       .exec();

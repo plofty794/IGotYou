@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import useGetBookingRequestDetails from "@/hooks/useGetBookingRequestDetails";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
@@ -90,122 +91,129 @@ function BookingRequest() {
             <div className="flex flex-col gap-2">
               <div className="p-2">
                 <h3 className="uppercase font-semibold text-sm">Message</h3>
-                <CardDescription className="text-sm font-semibold">
+                <CardDescription className="text-sm font-semibold italic">
                   {data?.data.bookingRequest.message}
                 </CardDescription>
               </div>
 
               <div className="w-full flex items-end justify-between">
-                <Card className="w-max">
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-lg font-semibold ">
-                      {data?.data.bookingRequest.guestID.username}'s information
-                    </CardTitle>
-                    <CardContent className="flex flex-col gap-2 p-0">
-                      {data?.data.bookingRequest.guestID.emailVerified ? (
-                        <div className="w-max flex items-center justify-center gap-2">
-                          {" "}
-                          <CheckCircledIcon
-                            color="#FFF"
-                            width={22}
-                            height={22}
-                            className="inline-block bg-green-600 rounded-full"
-                          />{" "}
-                          <p className="text-sm font-semibold text-gray-600">
-                            Email verified
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="w-max flex items-center justify-center gap-2">
-                          {" "}
-                          <CrossCircledIcon
-                            color="#FFF"
-                            width={22}
-                            height={22}
-                            className="inline-block bg-red-600 rounded-full"
-                          />{" "}
-                          <p className="text-sm font-semibold text-gray-600">
-                            Email verified
-                          </p>
-                        </div>
-                      )}
-                      {data?.data.bookingRequest.guestID.identityVerified ? (
-                        <div className="w-max flex items-center justify-center gap-2">
-                          {" "}
-                          <CheckCircledIcon
-                            color="#FFF"
-                            width={22}
-                            height={22}
-                            className="inline-block bg-green-600 rounded-full"
-                          />{" "}
-                          <p className="text-sm font-semibold text-gray-600">
-                            Identity verified
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="w-max flex items-center justify-center gap-2">
-                          {" "}
-                          <CrossCircledIcon
-                            color="#FFF"
-                            width={22}
-                            height={22}
-                            className="inline-block bg-red-600 rounded-full"
-                          />{" "}
-                          <p className="text-sm font-semibold text-gray-600">
-                            Identity (not verified)
-                          </p>
-                        </div>
-                      )}
-                      {data?.data.bookingRequest.guestID.mobileVerified ? (
-                        <div className="w-max flex items-center justify-center gap-2">
-                          {" "}
-                          <CheckCircledIcon
-                            color="#FFF"
-                            width={22}
-                            height={22}
-                            className="inline-block bg-green-600 rounded-full"
-                          />{" "}
-                          <p className="text-sm font-semibold text-gray-600">
-                            Mobile verified
-                          </p>
-                          <p className="text-sm font-semibold text-gray-600">
-                            {data?.data.bookingRequest.guestID.mobilePhone}
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="w-max flex items-center justify-center gap-2">
-                          {" "}
-                          <CrossCircledIcon
-                            color="#FFF"
-                            width={22}
-                            height={22}
-                            className="inline-block bg-red-600 rounded-full"
-                          />{" "}
-                          <p className="text-sm font-semibold text-gray-600">
-                            Mobile (not verified)
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </CardHeader>
-                </Card>
-                <div className="w-max h-max border rounded-md p-4 bg-[#F5F5F5]">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="text-xs" variant={"outline"}>
+                      View {data?.data.bookingRequest.guestID.username}'s
+                      information
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <Card className="w-max">
+                      <CardHeader className="p-4"></CardHeader>
+                      <CardContent className="flex flex-col gap-2">
+                        {data?.data.bookingRequest.guestID.emailVerified ? (
+                          <div className="w-max flex items-center justify-center gap-2">
+                            {" "}
+                            <CheckCircledIcon
+                              color="#FFF"
+                              width={22}
+                              height={22}
+                              className="inline-block bg-green-600 rounded-full"
+                            />{" "}
+                            <p className="text-sm font-semibold text-gray-600">
+                              Email verified
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="w-max flex items-center justify-center gap-2">
+                            {" "}
+                            <CrossCircledIcon
+                              color="#FFF"
+                              width={22}
+                              height={22}
+                              className="inline-block bg-red-600 rounded-full"
+                            />{" "}
+                            <p className="text-sm font-semibold text-gray-600">
+                              Email verified
+                            </p>
+                          </div>
+                        )}
+                        {data?.data.bookingRequest.guestID.identityVerified ? (
+                          <div className="w-max flex items-center justify-center gap-2">
+                            {" "}
+                            <CheckCircledIcon
+                              color="#FFF"
+                              width={22}
+                              height={22}
+                              className="inline-block bg-green-600 rounded-full"
+                            />{" "}
+                            <p className="text-sm font-semibold text-gray-600">
+                              Identity verified
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="w-max flex items-center justify-center gap-2">
+                            {" "}
+                            <CrossCircledIcon
+                              color="#FFF"
+                              width={22}
+                              height={22}
+                              className="inline-block bg-red-600 rounded-full"
+                            />{" "}
+                            <p className="text-sm font-semibold text-gray-600">
+                              Identity (not verified)
+                            </p>
+                          </div>
+                        )}
+                        {data?.data.bookingRequest.guestID.mobileVerified ? (
+                          <div className="w-max flex items-center justify-center gap-2">
+                            {" "}
+                            <CheckCircledIcon
+                              color="#FFF"
+                              width={22}
+                              height={22}
+                              className="inline-block bg-green-600 rounded-full"
+                            />{" "}
+                            <p className="text-sm font-semibold text-gray-600">
+                              Mobile verified
+                            </p>
+                            <p className="text-sm font-semibold text-gray-600">
+                              {data?.data.bookingRequest.guestID.mobilePhone}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="w-max flex items-center justify-center gap-2">
+                            {" "}
+                            <CrossCircledIcon
+                              color="#FFF"
+                              width={22}
+                              height={22}
+                              className="inline-block bg-red-600 rounded-full"
+                            />{" "}
+                            <p className="text-sm font-semibold text-gray-600">
+                              Mobile (not verified)
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </DialogContent>
+                </Dialog>
+
+                <div className="w-max h-max border rounded-md p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <CardDescription className="font-bold text-sm">
+                    <CardDescription className="font-semibold text-sm text-black">
                       Requested dates
                     </CardDescription>
                     {compareAsc(
-                      new Date(),
+                      new Date().setHours(0, 0, 0, 0),
                       new Date(
                         data?.data.bookingRequest.requestedBookingDateStartsAt
                       )
-                    ) >= 0 ? (
+                    ) > 0 ? (
                       <Badge variant={"destructive"}>Expired</Badge>
                     ) : (
                       <Badge>Available</Badge>
                     )}
                   </div>
-                  <CardDescription className="mt-2">
+                  <CardDescription className="mt-2 font-medium">
                     {new Date(
                       data?.data.bookingRequest.requestedBookingDateStartsAt
                     ).toDateString()}

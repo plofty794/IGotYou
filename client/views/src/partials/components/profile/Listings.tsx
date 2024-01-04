@@ -22,7 +22,7 @@ type TListings = {
   _id: string;
   serviceType: string[];
   serviceDescription: string;
-  listingPhotos: [
+  listingAssets: [
     {
       public_id: string;
       secure_url: string;
@@ -77,7 +77,7 @@ function Listings({ listings, username, listingsCount }: TListingProps) {
                   keyboard={true}
                   modules={[Navigation, Pagination, Mousewheel, Keyboard]}
                 >
-                  {listing.listingPhotos.map((photo) => (
+                  {listing.listingAssets.map((photo) => (
                     <SwiperSlide key={photo.public_id}>
                       <img
                         key={photo._id}

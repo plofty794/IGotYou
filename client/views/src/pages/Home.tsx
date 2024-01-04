@@ -15,17 +15,32 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import WishlistDialog from "@/partials/components/WishlistDialog";
+import { Cloudinary } from "@cloudinary/url-gen";
+import {
+  AdvancedImage,
+  AdvancedVideo,
+  lazyload,
+  responsive,
+} from "@cloudinary/react";
+import { fadeIn, fadeOut } from "@cloudinary/url-gen/actions/effect";
 
 type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
   uid: string;
 };
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dop5kqpod",
+  },
+});
 
 function Home() {
   const { listings, uid } = useOutletContext<TOutletContext>();
@@ -110,6 +125,93 @@ function Home() {
                     key={v._id}
                     className="border-none shadow-none overflow-hidden w-full"
                   >
+                    <CardHeader className="p-0 flex flex-col gap-1">
+                      <Swiper
+                        key={i}
+                        spaceBetween={10}
+                        cssMode={true}
+                        navigation={{
+                          enabled: true,
+                        }}
+                        pagination={true}
+                        mousewheel={true}
+                        modules={[Navigation, Pagination, Mousewheel]}
+                      >
+                        {v.listingAssets?.map((asset) =>
+                          asset.resource_type === "video" ? (
+                            <SwiperSlide
+                              className="relative"
+                              key={asset.public_id}
+                            >
+                              <AdvancedImage
+                                className="relative -z-10 rounded-lg h-72 w-full mx-auto object-cover hover:cursor-pointer"
+                                cldImg={cld
+                                  .image(asset.public_id)
+                                  .setAssetType("video")
+                                  .format("auto:image")}
+                              />
+                              <AdvancedVideo
+                                className="absolute opacity-0 top-0 left-0 z-0 rounded-lg h-72 w-full mx-auto object-cover hover:opacity-100 hover:z-10"
+                                muted
+                                onMouseOver={(e) => {
+                                  e.currentTarget.play();
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.pause();
+                                }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.currentTarget.requestFullscreen();
+                                }}
+                                loop
+                                cldVid={cld
+                                  .video(asset.public_id)
+                                  .effect(fadeIn().duration(2000))
+                                  .effect(fadeOut().duration(4000))}
+                                plugins={[
+                                  lazyload(),
+                                  responsive({
+                                    steps: [800, 1000, 1400],
+                                  }),
+                                ]}
+                                poster={cld
+                                  .image(asset.public_id)
+                                  .setAssetType("video")
+                                  .format("auto:image")
+                                  .toURL()}
+                              />
+                            </SwiperSlide>
+                          ) : (
+                            <SwiperSlide key={asset.public_id}>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <AdvancedImage
+                                    key={asset._id}
+                                    cldImg={cld.image(asset.public_id)}
+                                    plugins={[
+                                      lazyload(),
+                                      responsive({
+                                        steps: [800, 1000, 1400],
+                                      }),
+                                    ]}
+                                    className="rounded-lg h-72 w-full mx-auto object-cover"
+                                  />
+                                </DialogTrigger>
+                                <DialogContent className="p-0 items-center justify-center">
+                                  <AdvancedImage
+                                    key={asset._id}
+                                    cldImg={cld.image(asset.public_id)}
+                                    plugins={[lazyload()]}
+                                    className="aspect-video h-96 w-max object-cover rounded-lg"
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                            </SwiperSlide>
+                          )
+                        )}
+                      </Swiper>
+                    </CardHeader>
+
                     <Link
                       to={`${
                         uid === v.host.uid
@@ -117,83 +219,61 @@ function Home() {
                           : `/listings/show/${v._id}`
                       } `}
                     >
-                      <CardHeader className="p-0 flex flex-col gap-1">
-                        <Swiper
-                          key={i}
-                          spaceBetween={10}
-                          cssMode={true}
-                          navigation={{
-                            enabled: true,
-                          }}
-                          pagination={true}
-                          mousewheel={true}
-                          modules={[Navigation, Pagination, Mousewheel]}
-                        >
-                          {v.listingPhotos.map((photo) => (
-                            <SwiperSlide key={photo.public_id}>
-                              <img
-                                key={photo._id}
-                                loading="lazy"
-                                className="rounded-lg max-h-full max-w-full h-72 w-full mx-auto object-cover"
-                                src={photo.secure_url}
-                              />
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
-                      </CardHeader>
-                    </Link>
-                    <CardContent className="mt-2 px-1 flex items-start justify-between">
-                      <div className="flex flex-col">
-                        <span className="font-semibold">{v.serviceType}</span>
-                        <span className="text-sm font-medium text-gray-600">
-                          {v.host.username}
-                        </span>
+                      <CardContent className="mt-2 px-1 flex items-start justify-between">
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{v.serviceType}</span>
+                          <span className="text-sm font-medium text-gray-600">
+                            {v.host.username}
+                          </span>
 
-                        <div className="text-sm w-full">
-                          <span className="text-gray-600">Ends at</span>
-                          <span className="text-gray-600">
-                            {" "}
-                            {new Date(v.endsAt).toDateString()}
-                          </span>
+                          <div className="text-sm w-full">
+                            <span className="text-gray-600">Ends at</span>
+                            <span className="text-gray-600">
+                              {" "}
+                              {new Date(v.endsAt).toDateString()}
+                            </span>
+                          </div>
+                          <div className="w-full flex items-center justify-between">
+                            <span className="mt-1 font-semibold">
+                              {formatValue({
+                                value: v.price.toString(),
+                                intlConfig: {
+                                  locale: "ph-PH",
+                                  currency: "PHP",
+                                },
+                              })}{" "}
+                              <span className="text-sm font-normal">
+                                service
+                              </span>
+                            </span>
+                          </div>
                         </div>
-                        <div className="w-full flex items-center justify-between">
-                          <span className="mt-1 font-semibold">
-                            {formatValue({
-                              value: v.price.toString(),
-                              intlConfig: {
-                                locale: "ph-PH",
-                                currency: "PHP",
-                              },
-                            })}{" "}
-                            <span className="text-sm font-normal">service</span>
-                          </span>
+                        <div className="flex flex-col items-end  gap-10">
+                          <div className="flex items-center justify-center gap-1">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="font-semibold text-sm">
+                              {v.host.rating.length > 0
+                                ? v.host.rating.length
+                                : "No rating"}
+                            </span>
+                          </div>
+                          {v.host.uid !== auth.currentUser?.uid && (
+                            <WishlistDialog listingID={v._id} />
+                          )}
                         </div>
-                      </div>
-                      <div className="flex flex-col items-end  gap-10">
-                        <div className="flex items-center justify-center gap-1">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="w-4 h-4"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          <span className="font-semibold text-sm">
-                            {v.host.rating.length > 0
-                              ? v.host.rating.length
-                              : "No rating"}
-                          </span>
-                        </div>
-                        {v.host.uid !== auth.currentUser?.uid && (
-                          <WishlistDialog listingID={v._id} />
-                        )}
-                      </div>
-                    </CardContent>
+                      </CardContent>
+                    </Link>
                   </Card>
                 ))
               )}
@@ -216,11 +296,13 @@ function Home() {
   );
 }
 
-type TListingPhotos = {
+type TListingAssets = {
   original_filename: string;
   public_id: string;
   secure_url: string;
   _id: string;
+  resource_type: string;
+  thumbnail_url: string;
 };
 
 type TListings = {
@@ -230,7 +312,7 @@ type TListings = {
       createdAt: string;
       endsAt: string;
       host: THost;
-      listingPhotos: [TListingPhotos];
+      listingAssets: [TListingAssets];
       price: number;
       serviceDescription: string;
       serviceType: string;

@@ -1,6 +1,6 @@
 import { Schema, InferSchemaType, model, Types } from "mongoose";
 
-const listingPhotosSchema = new Schema({
+const listingAssetsSchema = new Schema({
   public_id: {
     type: String,
     required: true,
@@ -12,6 +12,14 @@ const listingPhotosSchema = new Schema({
   original_filename: {
     type: String,
     required: true,
+  },
+  thumbnail_url: {
+    type: String,
+    required: true,
+  },
+  resource_type: {
+    type: String,
+    enum: ["audio", "video", "image"],
   },
 });
 
@@ -34,8 +42,8 @@ const listingSchema = new Schema(
       type: String,
       required: true,
     },
-    listingPhotos: {
-      type: [listingPhotosSchema],
+    listingAssets: {
+      type: [listingAssetsSchema],
       required: true,
     },
     host: {

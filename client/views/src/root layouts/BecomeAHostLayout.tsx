@@ -40,13 +40,14 @@ type TFileType = {
   original_filename: string;
   bytes: number;
   thumbnail_url: string;
+  resource_type: string;
   format: string;
 };
 
 export type TListing = {
   serviceType: string;
   serviceDescription?: string;
-  listingPhotos: TFileType[];
+  listingAssets: TFileType[];
   price: number;
   date: DateRange;
   serviceLocation: string;
@@ -59,7 +60,7 @@ function BecomeAHostLayout() {
   const [service, setService] = useState<TListing>({
     serviceType: "",
     serviceDescription: "",
-    listingPhotos: [],
+    listingAssets: [],
     price: 0,
     date: {
       from: undefined,
@@ -283,7 +284,7 @@ function BecomeAHostLayout() {
               {currentStepIndex === 6 && (
                 <>
                   <Button
-                    disabled={service.listingPhotos.length > 0}
+                    disabled={service.listingAssets.length > 0}
                     type="button"
                     onClick={previous}
                     size={"lg"}
@@ -295,7 +296,7 @@ function BecomeAHostLayout() {
                   <Button
                     type="button"
                     onClick={next}
-                    disabled={service.listingPhotos.length < 5}
+                    disabled={service.listingAssets.length < 5}
                     size={"lg"}
                     className="bg-gray-950 rounded-full text-lg font-semibold p-6"
                   >

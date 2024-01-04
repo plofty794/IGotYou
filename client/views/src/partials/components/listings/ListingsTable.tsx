@@ -43,13 +43,14 @@ const columns: ColumnDef<TListings>[] = [
     ),
   },
   {
-    id: "listingPhoto",
+    id: "listingAssets",
     cell: ({ row }) => (
       <div className="w-22">
         <img
           className="h-10 w-full shadow object-cover rounded-md"
           src={`${
-            (row.original.listingPhotos as TListingPhotos[])[0].secure_url
+            row.original.listingAssets[0]?.secure_url ??
+            row.original.listingPhotos[0]?.secure_url
           }`}
         />
       </div>
@@ -298,7 +299,8 @@ export type TListings = {
   createdAt: string;
   endsAt: string;
   host: THost;
-  listingPhotos: [TListingPhotos];
+  listingAssets: [TListingAssets];
+  listingPhotos: [TListingAssets];
   price: number;
   serviceDescription: string;
   serviceType: string;
@@ -309,11 +311,13 @@ export type TListings = {
   status: string;
 };
 
-type TListingPhotos = {
+type TListingAssets = {
   original_filename: string;
   public_id: string;
   secure_url: string;
   _id: string;
+  thumbnail_url: string;
+  resource_type: string;
 };
 
 type THost = {

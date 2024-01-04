@@ -19,9 +19,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CircleIcon } from "@radix-ui/react-icons";
 import useGetHostNotifications from "@/hooks/useGetHostNotifications";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 pulsar.register();
 
 function HostNotification() {
+  const queryClient = useQueryClient();
   const hostNotifications = useGetHostNotifications();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -39,11 +41,12 @@ function HostNotification() {
   }, [hostNotifications.data?.data.hostNotifications]);
 
   useEffect(() => {
-    socket?.on("send-hostNotification", (newHostNotification) => {
-      setNotifications((prev) => [newHostNotification, ...prev]);
-      setNewNotifications((prev) => [newHostNotification, ...prev]);
+    socket?.on("send-hostNotification", () => {
+      queryClient.invalidateQueries({
+        queryKey: ["host-booking-requests"],
+      });
     });
-  }, [socket]);
+  }, [queryClient, socket]);
 
   return (
     <>
