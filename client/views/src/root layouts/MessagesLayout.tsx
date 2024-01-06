@@ -96,7 +96,6 @@ function MessagesLayout() {
                     mutate={mutate}
                     userDetails={userDetails}
                     setUserDetails={setUserDetails}
-                    isPending
                   />
                 </div>
                 {conversations.isPending ? (

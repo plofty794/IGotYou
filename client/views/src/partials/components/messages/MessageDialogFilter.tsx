@@ -32,7 +32,6 @@ type TProps = {
   userDetails: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setUserDetails: React.Dispatch<React.SetStateAction<any[]>>;
-  isPending: boolean;
 };
 function MessageDialogFilter({
   queryClient,
@@ -41,7 +40,6 @@ function MessageDialogFilter({
   mutate,
   userDetails,
   setUserDetails,
-  isPending,
 }: TProps) {
   return (
     <Dialog
@@ -139,53 +137,57 @@ function MessageDialogFilter({
               </span>
             </div>
           ) : (
-            userDetails.map((v) => (
-              <Card
-                onClick={() => setReceiverName(v.username)}
-                className={`hover:cursor-pointer hover:bg-[#F5F5F5] shadow-none border-none ${
-                  receiverName === v.username ? "bg-[#F5F5F5]" : ""
-                }`}
-                key={v._id}
-              >
-                <CardHeader className="flex-row items-center justify-between gap-2 p-4">
-                  <div className="flex items-center gap-2">
-                    <Avatar>
-                      <AvatarImage
-                        className="object-cover"
-                        src={` ${
-                          v.photoUrl ??
-                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
-                        } `}
-                      />
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-semibold">
-                        {v.username}
-                      </span>
-                      <div className="flex items-center justify-start">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-4 h-4"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25"
-                          />
-                        </svg>
-                        <span className="text-xs font-medium ">{v.email}</span>
+            <div className="grid grid-cols-1 gap-2">
+              {userDetails.map((v) => (
+                <Card
+                  onClick={() => setReceiverName(v.username)}
+                  className={`hover:cursor-pointer shadow-none ${
+                    receiverName === v.username ? "border" : ""
+                  }`}
+                  key={v._id}
+                >
+                  <CardHeader className="flex-row items-center justify-between gap-2 p-4">
+                    <div className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage
+                          className="object-cover"
+                          src={` ${
+                            v.photoUrl ??
+                            "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                          } `}
+                        />
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-semibold">
+                          {v.username}
+                        </span>
+                        <div className="flex items-center justify-start">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-4 h-4"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25"
+                            />
+                          </svg>
+                          <span className="text-xs font-medium ">
+                            {v.email}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {receiverName === v.username && (
-                    <CheckIcon className="w-5 h-5" />
-                  )}
-                </CardHeader>
-              </Card>
-            ))
+                    {receiverName === v.username && (
+                      <CheckIcon className="w-5 h-5" />
+                    )}
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
           )}
         </ScrollArea>
         <DialogFooter className="w-full">
@@ -196,9 +198,9 @@ function MessageDialogFilter({
               setUserDetails([]);
             }}
             disabled={
-              !userDetails?.find(
+              userDetails?.find(
                 (v) => v.username.toLowerCase() === receiverName.toLowerCase()
-              ) || isPending
+              ) == null
             }
             className="w-full bg-gray-950 rounded-full p-5"
           >

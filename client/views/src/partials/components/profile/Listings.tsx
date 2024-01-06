@@ -40,7 +40,7 @@ function Listings({ listings, username, listingsCount }: TListingProps) {
       <div className="w-full rounded-xl bg-white shadow-xl p-6 border">
         <div className="w-full flex justify-between items-center">
           <h2 className="mb-5 font-semibold text-xl text-[#222222]">
-            {username}'s services
+            {username}'s most recent listings
           </h2>
           {listingsCount > 0 && (
             <>

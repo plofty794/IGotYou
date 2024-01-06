@@ -60,8 +60,17 @@ const usersSchema = new Schema(
     address: {
       type: String,
     },
-    school: {
+    educationalAttainment: {
       type: String,
+      enum: [
+        "High School Diploma",
+        "Associate's Degree",
+        "Bachelor's Degree",
+        "Master's Degree",
+        "Doctorate",
+        "Professional License",
+        "No Formal Education",
+      ],
     },
     funFact: {
       type: String,
