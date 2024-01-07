@@ -16,6 +16,8 @@ function ConfirmPayment() {
 
   useEffect(() => {
     if (cloudinaryWidget) return;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const widget = window.cloudinary.createUploadWidget(
       {
         cloudName: "dop5kqpod",
@@ -25,6 +27,8 @@ function ConfirmPayment() {
         multiple: false,
         cropping: false,
       },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       (_, res) => {
         if (res.event === "success") {
           setPaymentProof({

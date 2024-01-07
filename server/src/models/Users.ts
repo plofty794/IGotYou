@@ -63,13 +63,13 @@ const usersSchema = new Schema(
     educationalAttainment: {
       type: String,
       enum: [
-        "High School Diploma",
-        "Associate's Degree",
-        "Bachelor's Degree",
-        "Master's Degree",
-        "Doctorate",
-        "Professional License",
-        "No Formal Education",
+        "high school diploma",
+        "associate's degree",
+        "bachelor's degree",
+        "master's degree",
+        "doctorate",
+        "professional license",
+        "no formal education",
       ],
     },
     funFact: {

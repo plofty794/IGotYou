@@ -97,12 +97,12 @@ function VisitListing() {
         </div>
         <div className="shadow-md border mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden h-72">
           <img
-            src={listing.listingPhotos[0].secure_url}
+            src={listing.listingAssets[0].secure_url}
             className="object-cover max-h-full max-w-full h-full w-full"
             loading="lazy"
           />
           <div className="grid grid-cols-2 gap-1 h-max">
-            {listing.listingPhotos.map(
+            {listing.listingAssets.map(
               (photo: TListingPhoto, i: number) =>
                 i != 0 && (
                   <img

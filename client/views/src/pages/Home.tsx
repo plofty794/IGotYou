@@ -21,7 +21,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import WishlistDialog from "@/partials/components/WishlistDialog";
+import AddToWishlist from "@/partials/components/AddToWishlist";
 import { Cloudinary } from "@cloudinary/url-gen";
 import {
   AdvancedImage,
@@ -30,6 +30,8 @@ import {
   responsive,
 } from "@cloudinary/react";
 import { fadeIn, fadeOut } from "@cloudinary/url-gen/actions/effect";
+import { formatDistanceToNow } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
@@ -188,21 +190,21 @@ function Home() {
                                   <AdvancedImage
                                     key={asset._id}
                                     cldImg={cld.image(asset.public_id)}
+                                    plugins={[lazyload()]}
+                                    className="rounded-lg h-72 w-full mx-auto object-cover"
+                                  />
+                                </DialogTrigger>
+                                <DialogContent className="p-0 h-max w-max items-center justify-center">
+                                  <AdvancedImage
+                                    key={asset._id}
+                                    cldImg={cld.image(asset.public_id)}
                                     plugins={[
                                       lazyload(),
                                       responsive({
                                         steps: [800, 1000, 1400],
                                       }),
                                     ]}
-                                    className="rounded-lg h-72 w-full mx-auto object-cover"
-                                  />
-                                </DialogTrigger>
-                                <DialogContent className="p-0 items-center justify-center">
-                                  <AdvancedImage
-                                    key={asset._id}
-                                    cldImg={cld.image(asset.public_id)}
-                                    plugins={[lazyload()]}
-                                    className="aspect-video h-96 w-max object-cover rounded-lg"
+                                    className="object-cover w-max h-max rounded-lg"
                                   />
                                 </DialogContent>
                               </Dialog>
@@ -212,68 +214,79 @@ function Home() {
                       </Swiper>
                     </CardHeader>
 
-                    <Link
-                      to={`${
-                        uid === v.host.uid
-                          ? `/users/show/${v.host.uid}`
-                          : `/listings/show/${v._id}`
-                      } `}
-                    >
-                      <CardContent className="mt-2 px-1 flex items-start justify-between">
-                        <div className="flex flex-col">
-                          <span className="font-semibold">{v.serviceType}</span>
-                          <span className="text-sm font-medium text-gray-600">
-                            {v.host.username}
-                          </span>
+                    <CardContent className="mt-2 p-0 flex justify-between">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-sm">
+                          {v.serviceType}
+                        </span>
+                        <span className="text-sm font-semibold text-gray-600">
+                          {v.host.username}
+                        </span>
 
-                          <div className="text-sm w-full">
-                            <span className="text-gray-600">Ends at</span>
-                            <span className="text-gray-600">
-                              {" "}
-                              {new Date(v.endsAt).toDateString()}
-                            </span>
-                          </div>
-                          <div className="w-full flex items-center justify-between">
-                            <span className="mt-1 font-semibold">
-                              {formatValue({
-                                value: v.price.toString(),
-                                intlConfig: {
-                                  locale: "ph-PH",
-                                  currency: "PHP",
-                                },
-                              })}{" "}
-                              <span className="text-sm font-normal">
-                                service
-                              </span>
-                            </span>
-                          </div>
+                        <div className="w-full">
+                          <span className="text-gray-600 font-semibold text-sm">
+                            Ends{" "}
+                            {formatDistanceToNow(new Date(v.endsAt), {
+                              addSuffix: true,
+                            })}
+                          </span>
                         </div>
-                        <div className="flex flex-col items-end  gap-10">
-                          <div className="flex items-center justify-center gap-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                              className="w-4 h-4"
+                        <div className="w-full flex items-center justify-between">
+                          <span className="mt-1 font-semibold">
+                            {formatValue({
+                              value: v.price.toString(),
+                              intlConfig: {
+                                locale: "ph-PH",
+                                currency: "PHP",
+                              },
+                            })}{" "}
+                            <span className="text-sm font-normal">service</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <div className="mb-2 flex items-center justify-center gap-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-4 h-4"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span className="font-semibold text-xs">
+                            {v.host.rating.length > 0
+                              ? v.host.rating.length
+                              : "No rating"}
+                          </span>
+                        </div>
+                        {v.host.uid !== auth.currentUser?.uid && (
+                          <>
+                            <AddToWishlist listingID={v._id} />
+                            <Link
+                              to={`${
+                                uid === v.host.uid
+                                  ? `/users/show/${v.host.uid}`
+                                  : `/listings/show/${v._id}`
+                              } `}
+                              className="mt-2"
                             >
-                              <path
-                                fillRule="evenodd"
-                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span className="font-semibold text-sm">
-                              {v.host.rating.length > 0
-                                ? v.host.rating.length
-                                : "No rating"}
-                            </span>
-                          </div>
-                          {v.host.uid !== auth.currentUser?.uid && (
-                            <WishlistDialog listingID={v._id} />
-                          )}
-                        </div>
-                      </CardContent>
-                    </Link>
+                              <Button
+                                className="p-0"
+                                variant={"link"}
+                                size={"sm"}
+                              >
+                                View listing
+                              </Button>
+                            </Link>
+                          </>
+                        )}
+                      </div>
+                    </CardContent>
                   </Card>
                 ))
               )}

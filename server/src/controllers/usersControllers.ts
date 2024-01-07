@@ -187,12 +187,32 @@ export const updateUser: RequestHandler = async (req, res, next) => {
         "A _id cookie is required to access this resource."
       );
     }
-
     const user = await Users.findByIdAndUpdate(id, { ...req.body });
     if (!user) {
       throw createHttpError(400, "Error updating user");
     }
     res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyEmail: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { emailVerified } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+    await Users.findByIdAndUpdate(id, {
+      emailVerified,
+    });
+
+    res.status(200).json({ message: "Email status has been updated" });
   } catch (error) {
     next(error);
   }
@@ -219,7 +239,7 @@ export const updateUserEmail: RequestHandler = async (req, res, next) => {
       emailVerified: userRecord.emailVerified,
     });
 
-    res.status(201).json({ updateUser });
+    res.status(201).json({ updatedUser });
   } catch (error) {
     next(error);
   }
@@ -256,7 +276,7 @@ export const checkUserEmail: RequestHandler = async (req, res, next) => {
   const { email } = req.body;
   try {
     if (!email) {
-      throw createHttpError(400, "No data to be processed.");
+      throw createHttpError(400, "Email is required");
     }
     const user = await Users.findOne({ email: email });
     if (!user) {

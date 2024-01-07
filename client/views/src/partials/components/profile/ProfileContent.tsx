@@ -80,9 +80,12 @@ function ProfileContent({ profileData, activeListings }: TProps) {
     useState<CloudinaryUploadWidget>();
 
   useEffect(() => {
-    auth.currentUser?.emailVerified &&
-      profileData.emailVerified == false &&
+    if (
+      auth.currentUser?.emailVerified &&
+      profileData.emailVerified === false
+    ) {
       mutate({ emailVerified: true });
+    }
   }, [mutate, profileData.emailVerified]);
 
   useEffect(() => {

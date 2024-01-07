@@ -1,8 +1,16 @@
 import { Card } from "@/components/ui/card";
 import useGetWishlists from "@/hooks/useGetWishlists";
 import ListingsLoader from "@/partials/loaders/ListingsLoader";
+import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen/index";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useEffect, useMemo, useState } from "react";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dop5kqpod",
+  },
+});
 
 function Wishlists() {
   const { data, isPending } = useGetWishlists();
@@ -17,8 +25,6 @@ function Wishlists() {
     document.title = "Wishlists - IGotYou";
   }, []);
 
-  console.log(wishlists);
-
   return (
     <section className="py-12 px-24 flex flex-col gap-6">
       {isPending ? (
@@ -30,10 +36,17 @@ function Wishlists() {
             <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
               {wishlists?.map((v) => (
                 <div className="flex flex-col gap-2">
-                  <Card className="relative h-72 w-72 p-2 overflow-hidden">
-                    <img
-                      src={v.listingPhotos[0].secure_url}
-                      className="object-cover h-full w-full rounded-md hover:scale-110 transition-transform"
+                  <Card className="relative h-72 w-72 p-0 overflow-hidden">
+                    <AdvancedImage
+                      key={v.listingAssets[0].public_id}
+                      cldImg={cld.image(v.listingAssets[0].public_id)}
+                      plugins={[
+                        lazyload(),
+                        responsive({
+                          steps: [800, 1000, 1400],
+                        }),
+                      ]}
+                      className="rounded-lg h-full w-full hover:scale-105 transition-transform object-cover"
                     />
                     <div
                       className="absolute top-1 left-1 

@@ -84,6 +84,7 @@ function PromptUsername() {
               <Input
                 {...register("username")}
                 id="username"
+                autoComplete="off"
                 className="col-span-3"
               />
               {errors.username && (

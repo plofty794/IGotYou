@@ -25,7 +25,7 @@ dotPulse.register();
 function Login() {
   const googleSignIn = useGoogleSignin();
   useEffect(() => {
-    document.title = "IGotYou - Sign in";
+    document.title = "Sign in - IGotYou";
   }, []);
 
   const { mutate, isPending } = useLogin();
