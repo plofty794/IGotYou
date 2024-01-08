@@ -15,7 +15,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Separator } from "@/components/ui/separator";
@@ -23,15 +22,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import AddToWishlist from "@/partials/components/AddToWishlist";
 import { Cloudinary } from "@cloudinary/url-gen";
-import {
-  AdvancedImage,
-  AdvancedVideo,
-  lazyload,
-  responsive,
-} from "@cloudinary/react";
-import { fadeIn, fadeOut } from "@cloudinary/url-gen/actions/effect";
-import { formatDistanceToNow } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
+import { formatDistance } from "date-fns";
 
 type TOutletContext = {
   listings: InfiniteData<AxiosResponse<TListings>>;
@@ -120,7 +112,7 @@ function Home() {
       <section className="px-8 mt-2">
         {listings.pages[0].data.listings.length > 0 ? (
           <>
-            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-2">
+            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
               {listings.pages.map((page) =>
                 page.data.listings.map((v, i) => (
                   <Card
@@ -128,92 +120,56 @@ function Home() {
                     className="border-none shadow-none overflow-hidden w-full"
                   >
                     <CardHeader className="p-0 flex flex-col gap-1">
-                      <Swiper
-                        key={i}
-                        spaceBetween={10}
-                        cssMode={true}
-                        navigation={{
-                          enabled: true,
-                        }}
-                        pagination={true}
-                        mousewheel={true}
-                        modules={[Navigation, Pagination, Mousewheel]}
+                      <Link
+                        to={`${
+                          uid === v.host.uid
+                            ? `/users/show/${v.host.uid}`
+                            : `/listings/show/${v._id}`
+                        } `}
+                        className="mt-2"
                       >
-                        {v.listingAssets?.map((asset) =>
-                          asset.resource_type === "video" ? (
-                            <SwiperSlide
-                              className="relative"
-                              key={asset.public_id}
-                            >
-                              <AdvancedImage
-                                className="relative -z-10 rounded-lg h-72 w-full mx-auto object-cover hover:cursor-pointer"
-                                cldImg={cld
-                                  .image(asset.public_id)
-                                  .setAssetType("video")
-                                  .format("auto:image")}
-                              />
-                              <AdvancedVideo
-                                className="absolute opacity-0 top-0 left-0 z-0 rounded-lg h-72 w-full mx-auto object-cover hover:opacity-100 hover:z-10"
-                                muted
-                                onMouseOver={(e) => {
-                                  e.currentTarget.play();
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.pause();
-                                }}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.currentTarget.requestFullscreen();
-                                }}
-                                loop
-                                cldVid={cld
-                                  .video(asset.public_id)
-                                  .effect(fadeIn().duration(2000))
-                                  .effect(fadeOut().duration(4000))}
-                                plugins={[
-                                  lazyload(),
-                                  responsive({
-                                    steps: [800, 1000, 1400],
-                                  }),
-                                ]}
-                                poster={cld
-                                  .image(asset.public_id)
-                                  .setAssetType("video")
-                                  .format("auto:image")
-                                  .toURL()}
-                              />
-                            </SwiperSlide>
-                          ) : (
-                            <SwiperSlide key={asset.public_id}>
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <AdvancedImage
-                                    key={asset._id}
-                                    cldImg={cld.image(asset.public_id)}
-                                    plugins={[lazyload()]}
-                                    className="rounded-lg h-72 w-full mx-auto object-cover"
-                                  />
-                                </DialogTrigger>
-                                <DialogContent className="p-0 h-max w-max items-center justify-center">
-                                  <AdvancedImage
-                                    key={asset._id}
-                                    cldImg={cld.image(asset.public_id)}
-                                    plugins={[
-                                      lazyload(),
-                                      responsive({
-                                        steps: [800, 1000, 1400],
-                                      }),
-                                    ]}
-                                    className="object-cover w-max h-max rounded-lg"
-                                  />
-                                </DialogContent>
-                              </Dialog>
-                            </SwiperSlide>
-                          )
-                        )}
-                      </Swiper>
+                        <Swiper
+                          className="h-72"
+                          key={i}
+                          spaceBetween={10}
+                          cssMode={true}
+                          navigation={{
+                            enabled: true,
+                          }}
+                          pagination={true}
+                          mousewheel={true}
+                          modules={[Navigation, Pagination, Mousewheel]}
+                        >
+                          {v.listingAssets?.map((asset) =>
+                            asset.resource_type === "video" ? (
+                              <SwiperSlide key={asset.public_id}>
+                                <AdvancedImage
+                                  className="rounded-lg h-72 w-full mx-auto object-cover border"
+                                  cldImg={cld
+                                    .image(asset.public_id)
+                                    .setAssetType("video")
+                                    .format("auto:image")}
+                                />
+                              </SwiperSlide>
+                            ) : (
+                              <SwiperSlide key={asset.public_id}>
+                                <AdvancedImage
+                                  key={asset._id}
+                                  cldImg={cld.image(asset.public_id)}
+                                  plugins={[
+                                    lazyload(),
+                                    responsive({
+                                      steps: [800, 1000, 1400],
+                                    }),
+                                  ]}
+                                  className="rounded-lg h-72 w-full mx-auto object-cover border"
+                                />
+                              </SwiperSlide>
+                            )
+                          )}
+                        </Swiper>
+                      </Link>
                     </CardHeader>
-
                     <CardContent className="mt-2 p-0 flex justify-between">
                       <div className="flex flex-col">
                         <span className="font-semibold text-sm">
@@ -225,10 +181,11 @@ function Home() {
 
                         <div className="w-full">
                           <span className="text-gray-600 font-semibold text-sm">
-                            Ends{" "}
-                            {formatDistanceToNow(new Date(v.endsAt), {
-                              addSuffix: true,
-                            })}
+                            Ends in{" "}
+                            {formatDistance(
+                              new Date().setHours(0, 0, 0, 0),
+                              new Date(v.endsAt)
+                            )}
                           </span>
                         </div>
                         <div className="w-full flex items-center justify-between">
@@ -240,7 +197,9 @@ function Home() {
                                 currency: "PHP",
                               },
                             })}{" "}
-                            <span className="text-sm font-normal">service</span>
+                            <span className="text-sm font-semibold">
+                              service
+                            </span>
                           </span>
                         </div>
                       </div>
@@ -267,22 +226,6 @@ function Home() {
                         {v.host.uid !== auth.currentUser?.uid && (
                           <>
                             <AddToWishlist listingID={v._id} />
-                            <Link
-                              to={`${
-                                uid === v.host.uid
-                                  ? `/users/show/${v.host.uid}`
-                                  : `/listings/show/${v._id}`
-                              } `}
-                              className="mt-2"
-                            >
-                              <Button
-                                className="p-0"
-                                variant={"link"}
-                                size={"sm"}
-                              >
-                                View listing
-                              </Button>
-                            </Link>
                           </>
                         )}
                       </div>

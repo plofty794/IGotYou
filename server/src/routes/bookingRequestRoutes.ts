@@ -11,6 +11,7 @@ import {
   sendBookingRequest,
 } from "../controllers/bookingRequestsControllers";
 import { authToken } from "../middlewares/authToken";
+import { sendBookingRequestLimiter } from "../utils/limiters";
 const router = Router();
 
 router.get("/guest-booking-requests", authToken, searchGuestBookingRequest);
@@ -44,6 +45,7 @@ router.get(
 router.post(
   "/guest-send-booking-requests/:listingID",
   authToken,
+  sendBookingRequestLimiter,
   sendBookingRequest
 );
 

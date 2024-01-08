@@ -54,6 +54,7 @@ function Price() {
             allowNegativeValue={false}
             decimalsLimit={2}
             value={service.price}
+            inputMode="numeric"
             onValueChange={(value) =>
               setService((prev) => ({
                 ...prev,

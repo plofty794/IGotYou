@@ -113,23 +113,23 @@ function HostNotification() {
               <>
                 <Separator />
                 <ScrollArea className="h-80">
-                  <div className="flex flex-col items-center p-1">
+                  <div className="flex flex-col items-center ">
                     {notifications?.map((v) => (
                       <>
                         <Link
                           key={v._id}
                           to="/hosting-inbox"
-                          className="hover:bg-[#F5F5F5] p-3"
+                          className="hover:bg-[#F5F5F5] w-full p-4"
                         >
-                          <div className="w-full flex gap-2">
+                          <div className="w-full flex items-center gap-2">
                             <div className="w-full">
-                              <p className="text-gray-600 text-xs font-bold">
+                              <p className="text-gray-600 text-xs font-semibold">
                                 {v.senderID.username} has sent you a{" "}
                                 {(v.notificationType as string)
                                   .split("-")
                                   .join(" ")}{" "}
                               </p>
-                              <span className="text-xs font-bold text-rose-600">
+                              <span className="text-xs font-semibold text-red-600">
                                 {formatDistanceToNow(
                                   new Date(v.createdAt as string),
                                   { addSuffix: true }

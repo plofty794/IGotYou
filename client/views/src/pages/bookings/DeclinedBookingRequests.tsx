@@ -118,7 +118,7 @@ function DeclinedBookingRequests() {
             <div className="flex gap-2">
               <div className="w-44 h-full overflow-hidden rounded-md">
                 <img
-                  src={v.listingID.listingPhotos[0].secure_url}
+                  src={v.listingID.listingAssets[0].secure_url}
                   alt="Image"
                   className="object-cover w-full h-full hover:scale-110 transition-transform"
                 />

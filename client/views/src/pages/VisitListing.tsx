@@ -9,23 +9,18 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Separator } from "@/components/ui/separator";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { auth } from "@/firebase config/config";
 import { CircleBackslashIcon } from "@radix-ui/react-icons";
 import { formatDistanceToNow, subDays } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { formatValue } from "react-currency-input-field";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import AssetsDrawer from "@/partials/components/AssetsDrawer";
+import AddToWishlist from "@/partials/components/AddToWishlist";
 
 function VisitListing() {
   const navigate = useNavigate();
@@ -37,7 +32,6 @@ function VisitListing() {
     // @ts-ignore
     userProfileData: { user },
   } = useOutletContext();
-  const [wishlist, setWishlist] = useState(false);
 
   useEffect(() => {
     document.title = "View Listing - IGotYou";
@@ -64,81 +58,21 @@ function VisitListing() {
             </svg>
             {listing.serviceDescription}
           </span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger
-                onClick={() => setWishlist((prev) => !prev)}
-                className="flex items-center justify-center gap-2 rounded-md"
-              >
-                {" "}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  className={`w-6 h-6 stroke-gray-500 hover:stroke-slate-600 cursor-pointer ${
-                    wishlist ? "fill-red-600" : "fill-none"
-                  }`}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                  />
-                </svg>
-                <span className="underline font-medium text-sm">Save</span>
-              </TooltipTrigger>
-              <TooltipContent className="bg-gray-950">
-                <p>Save to wishlist</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-        <div className="shadow-md border mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden h-72">
-          <img
-            src={listing.listingAssets[0].secure_url}
-            className="object-cover max-h-full max-w-full h-full w-full"
-            loading="lazy"
-          />
-          <div className="grid grid-cols-2 gap-1 h-max">
-            {listing.listingAssets.map(
-              (photo: TListingPhoto, i: number) =>
-                i != 0 && (
-                  <img
-                    key={photo._id}
-                    src={photo.secure_url}
-                    className="object-cover max-w-full h-36 w-full"
-                    loading="lazy"
-                  />
-                )
-            )}
+          <div className="flex items-center justify-center gap-2 p-2">
+            <p className="text-sm font-semibold underline">Save</p>
+            <AddToWishlist listingID={listing._id} />
           </div>
         </div>
+        <AssetsDrawer listing={listing} />
         <div className="mt-6 w-full flex gap-4 mb-4">
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-2 w-full">
             <div className="flex flex-col gap-1">
-              <span className="text-lg font-semibold flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-                  />
-                </svg>
-                {listing.serviceLocation}
-              </span>
-              <span className="flex items-center font-semibold text-base underline underline-offset-2">
+              <div className="w-4/5 overflow-hidden text-ellipsis whitespace-nowrap">
+                <span className="text-xl font-semibold w-max">
+                  {listing.serviceLocation}
+                </span>
+              </div>
+              <span className="flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -151,9 +85,11 @@ function VisitListing() {
                     clipRule="evenodd"
                   />
                 </svg>
-                {listing.host.rating.length
-                  ? listing.host.rating
-                  : "No ratings yet "}
+                {listing.host.rating.length ? (
+                  listing.host.rating
+                ) : (
+                  <p className="font-semibold text-lg">No ratings yet</p>
+                )}
               </span>
               <div className="flex items-center">
                 <span>{listing.host.rating}</span>
@@ -161,7 +97,7 @@ function VisitListing() {
             </div>
             <Card className="border-0 shadow-none">
               <Separator />
-              <CardHeader className="flex-row gap-6 items-start w-max">
+              <CardHeader className="flex-row gap-6 items-center w-max">
                 <Avatar className="w-12 h-12">
                   <AvatarImage
                     className="max-w-full object-cover"
@@ -176,12 +112,12 @@ function VisitListing() {
                   <span className="text-lg font-semibold">
                     Hosted by {listing.host.username}
                   </span>
-                  <span className="text-sm font-medium text-gray-600">
+                  <Badge variant={"outline"} className="w-max">
                     {formatDistanceToNow(
                       subDays(new Date(listing.host.subscriptionExpiresAt), 30)
                     )}{" "}
-                    hosting
-                  </span>
+                    of hosting
+                  </Badge>
                 </div>
               </CardHeader>
               <Separator />
@@ -308,12 +244,5 @@ function VisitListing() {
     </>
   );
 }
-
-type TListingPhoto = {
-  secure_url: string;
-  public_id: string;
-  _id: string;
-  original_filename: string;
-};
 
 export default VisitListing;

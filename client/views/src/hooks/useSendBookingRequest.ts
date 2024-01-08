@@ -41,7 +41,7 @@ function useSendBookingRequest() {
       toast({
         variant: "destructive",
         title: "Oops! An error occurred.",
-        description: response.data.message,
+        description: response.data.error,
       });
     },
   });

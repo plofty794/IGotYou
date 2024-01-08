@@ -8,6 +8,15 @@ export const passwordResetLimiter = rateLimit({
   },
 });
 
+export const sendBookingRequestLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 3,
+  message: {
+    error: "Too many booking requests, please try again later.",
+  },
+  skipSuccessfulRequests: true,
+});
+
 export const sendIdentityVerificationRequestLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 3,

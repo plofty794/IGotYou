@@ -11,16 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "@/partials/components/DatePicker";
-import {
-  addHours,
-  compareAsc,
-  format,
-  formatDistance,
-  formatDistanceToNow,
-  getHours,
-  getTime,
-  subHours,
-} from "date-fns";
+import { format, formatDistance } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { DateRange } from "react-day-picker";
@@ -34,12 +25,6 @@ import {
 } from "@/zod/composeMessageSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSendBookingRequest from "@/hooks/useSendBookingRequest";
-import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 
 dotPulse.register();
 
@@ -69,8 +54,6 @@ function MakeABooking() {
     to: new Date(new Date(listing.endsAt).setHours(0, 0, 0, 0)),
   });
 
-  const [time, setTIme] = useState(new Date());
-
   const totalPrice = useMemo(
     () =>
       listing.price * parseInt(formatDistance(date?.to ?? 0, date?.from ?? 0)),
@@ -90,14 +73,6 @@ function MakeABooking() {
       requestedBookingDateEndsAt: date?.to,
       totalPrice,
     });
-  }
-
-  function onClick(adjustment: number) {
-    if (adjustment < 1) {
-      setTIme(subHours(time, Math.abs(adjustment)));
-    } else {
-      setTIme(addHours(time, adjustment));
-    }
   }
 
   return (
@@ -134,7 +109,11 @@ function MakeABooking() {
                 <div className="flex w-full justify-between items-start">
                   <div className="flex flex-col gap-1">
                     <span className="text-lg font-semibold">Dates</span>
-                    <span className="text-gray-600 font-semibold">
+                    <span
+                      className={`${
+                        isNaN(totalPrice) ? "text-red-600" : "text-gray-600"
+                      } font-semibold`}
+                    >
                       {date?.from ? (
                         date.to ? (
                           <>
@@ -174,104 +153,6 @@ function MakeABooking() {
                     </DialogContent>
                   </Dialog>
                 </div>
-                <Separator />
-                <div className="flex w-full justify-between items-start">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-lg font-semibold">Time</span>
-                    <span className="text-gray-600 font-semibold">
-                      {time ? (
-                        getTime(time) < getTime(new Date()) &&
-                        compareAsc(
-                          new Date().setHours(0, 0, 0, 0),
-                          date?.from ?? new Date().setHours(0, 0, 0, 0)
-                        ) === 0 ? (
-                          <div className="flex items-center justify-center w-max gap-2">
-                            {format(time, "p")}
-                            <HoverCard>
-                              <HoverCardTrigger>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={2}
-                                  stroke="blue"
-                                  className="w-5 h-5"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                                  />
-                                </svg>
-                              </HoverCardTrigger>
-                              <HoverCardContent
-                                align="center"
-                                className="text-xs font-bold"
-                              >
-                                Just a friendly reminder, it's{" "}
-                                {format(new Date(), "p")} but your booking is
-                                for {format(time, "p")}. Still good to go?
-                              </HoverCardContent>
-                            </HoverCard>
-                          </div>
-                        ) : (
-                          format(new Date(time).setMinutes(0), "p")
-                        )
-                      ) : (
-                        "Set time"
-                      )}
-                    </span>
-                  </div>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant={"ghost"}
-                        className="font-semibold text-lg underline rounded-full underline-offset-2 p-0 items-start"
-                      >
-                        Edit
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle className="text-2xl font-semibold">
-                          Set time
-                        </DialogTitle>
-                      </DialogHeader>
-                      <div className="mt-4 w-max mx-auto">
-                        <div className="flex items-center justify-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 shrink-0 rounded-full"
-                            onClick={() => onClick(-1)}
-                            disabled={getHours(time) <= 7}
-                          >
-                            <MinusIcon className="h-4 w-4" />
-                            <span className="sr-only">Decrease</span>
-                          </Button>
-                          <div className="flex-1 text-center">
-                            <div className="text-7xl font-bold tracking-tighter">
-                              {format(time.setMinutes(0), "p")}
-                            </div>
-                            <div className="text-[0.70rem] uppercase text-muted-foreground">
-                              Starting time
-                            </div>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 shrink-0 rounded-full"
-                            onClick={() => onClick(1)}
-                            disabled={getHours(time) >= 12}
-                          >
-                            <PlusIcon className="h-4 w-4" />
-                            <span className="sr-only">Increase</span>
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
               </div>
             </div>
             <Separator />
@@ -306,8 +187,7 @@ function MakeABooking() {
                     date.to == null ||
                     errors.message?.message != null ||
                     isPending ||
-                    isNaN(totalPrice) ||
-                    !time
+                    isNaN(totalPrice)
                   }
                   className="bg-gray-950 rounded-full w-max ml-auto text-lg font-medium p-6"
                 >
@@ -338,8 +218,11 @@ function MakeABooking() {
                     {listing.serviceLocation}
                   </Link>
                   <Badge className="w-max">
-                    {formatDistanceToNow(new Date(listing.endsAt))} before
-                    listing ends
+                    {formatDistance(
+                      new Date().setHours(0, 0, 0, 0),
+                      new Date(listing.endsAt)
+                    )}{" "}
+                    before listing ends
                   </Badge>
                   <div className="mt-4 w-full flex items-center justify-between">
                     <Badge variant={"outline"}>Cancellation policy</Badge>
