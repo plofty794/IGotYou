@@ -11,8 +11,15 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "@/partials/components/DatePicker";
-import { format, formatDistance, formatDistanceToNow } from "date-fns";
-import { useEffect, useState } from "react";
+import {
+  addHours,
+  format,
+  formatDistance,
+  formatDistanceToNow,
+  getHours,
+  subHours,
+} from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { DateRange } from "react-day-picker";
 import { Link, useOutletContext } from "react-router-dom";
@@ -25,6 +32,8 @@ import {
 } from "@/zod/composeMessageSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSendBookingRequest from "@/hooks/useSendBookingRequest";
+import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+
 dotPulse.register();
 
 function MakeABooking() {
@@ -53,6 +62,14 @@ function MakeABooking() {
     to: new Date(new Date(listing.endsAt).setHours(0, 0, 0, 0)),
   });
 
+  const [time, setTIme] = useState(new Date());
+
+  const totalPrice = useMemo(
+    () =>
+      listing.price * parseInt(formatDistance(date?.to ?? 0, date?.from ?? 0)),
+    [date?.from, date?.to, listing.price]
+  );
+
   useEffect(() => {
     document.title = "Make A Request - IGotYou";
   }, []);
@@ -64,7 +81,16 @@ function MakeABooking() {
       listingID: listing._id,
       requestedBookingDateStartsAt: date?.from,
       requestedBookingDateEndsAt: date?.to,
+      totalPrice,
     });
+  }
+
+  function onClick(adjustment: number) {
+    if (adjustment < 1) {
+      setTIme(subHours(time, Math.abs(adjustment)));
+    } else {
+      setTIme(addHours(time, adjustment));
+    }
   }
 
   return (
@@ -97,48 +123,107 @@ function MakeABooking() {
           <div className="flex flex-col gap-8 mt-8 px-12">
             <div>
               <span className="text-2xl font-semibold">Your booking</span>
-              <div className="mt-4 w-full flex justify-between items-start">
-                <div className="flex flex-col text-base font-semibold gap-1">
-                  <span className="text-lg">Dates</span>
-                  <span className="text-gray-600 font-semibold">
-                    {date?.from ? (
-                      date.to ? (
-                        <>
-                          {format(date.from, "LLL dd, y")} -{" "}
-                          {format(date.to, "LLL dd, y")}
-                        </>
+              <div className="mt-4 w-full flex flex-col gap-2">
+                <div className="flex w-full justify-between items-start">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-lg font-semibold">Dates</span>
+                    <span className="text-gray-600 font-semibold">
+                      {date?.from ? (
+                        date.to ? (
+                          <>
+                            {format(date.from, "LLL dd, y")} -{" "}
+                            {format(date.to, "LLL dd, y")}
+                          </>
+                        ) : (
+                          format(date.from, "LLL dd, y")
+                        )
                       ) : (
-                        format(date.from, "LLL dd, y")
-                      )
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </span>
+                        "Pick a date"
+                      )}
+                    </span>
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        className="font-semibold text-lg underline rounded-full underline-offset-2 p-0 items-start"
+                      >
+                        Edit
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl font-semibold">
+                          Choose a date
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4">
+                        <DatePicker
+                          date={date}
+                          setDate={setDate}
+                          listingEndsAt={listing.endsAt}
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="font-semibold text-lg underline rounded-full underline-offset-2"
-                    >
-                      Edit
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-semibold">
-                        Choose a date
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="mt-4">
-                      <DatePicker
-                        date={date}
-                        setDate={setDate}
-                        listingEndsAt={listing.endsAt}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <div className="flex w-full justify-between items-start">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-lg font-semibold">Time</span>
+                    <span className="text-gray-600 font-semibold">
+                      {time ? format(time.setMinutes(0), "p") : "Set a time"}
+                    </span>
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        className="font-semibold text-lg underline rounded-full underline-offset-2 p-0 items-start"
+                      >
+                        Edit
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl font-semibold">
+                          Set time
+                        </DialogTitle>
+                      </DialogHeader>
+                      <div className="mt-4 w-max mx-auto">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            onClick={() => onClick(-1)}
+                            disabled={getHours(time) <= 7}
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                            <span className="sr-only">Decrease</span>
+                          </Button>
+                          <div className="flex-1 text-center">
+                            <div className="text-7xl font-bold tracking-tighter">
+                              {format(time, "p")}
+                            </div>
+                            <div className="text-[0.70rem] uppercase text-muted-foreground">
+                              Starting time
+                            </div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            onClick={() => onClick(1)}
+                            disabled={getHours(time) >= 11}
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                            <span className="sr-only">Increase</span>
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
             </div>
             <Separator />
@@ -172,7 +257,9 @@ function MakeABooking() {
                     date?.from == null ||
                     date.to == null ||
                     errors.message?.message != null ||
-                    isPending
+                    isPending ||
+                    isNaN(totalPrice) ||
+                    !time
                   }
                   className="bg-gray-950 rounded-full w-max ml-auto text-lg font-medium p-6"
                 >
@@ -186,7 +273,7 @@ function MakeABooking() {
               <CardHeader className="p-0 mb-4 flex-row gap-4">
                 <span className="w-32 h-32 overflow-hidden rounded-md border">
                   <img
-                    src={listing.listingPhotos[1].secure_url}
+                    src={listing.listingAssets[1].secure_url}
                     className="object-cover w-full h-full hover:scale-110 transition-transform"
                     alt=""
                   />
@@ -256,18 +343,13 @@ function MakeABooking() {
                   <div className="w-full flex justify-between items-center">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="font-semibold">
-                      {date?.from != null && date.to != null
-                        ? formatValue({
-                            value: String(
-                              listing.price *
-                                parseInt(formatDistance(date?.to, date?.from))
-                            ),
-                            intlConfig: {
-                              locale: "PH",
-                              currency: "php",
-                            },
-                          })
-                        : "0"}
+                      {isNaN(totalPrice) ? (
+                        <Badge variant={"destructive"}>
+                          Invalid date range
+                        </Badge>
+                      ) : (
+                        totalPrice
+                      )}
                     </span>
                   </div>
                 </div>

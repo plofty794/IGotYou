@@ -11,6 +11,7 @@ type TBookingRequest = {
   requestedBookingDateStartsAt?: Date;
   requestedBookingDateEndsAt?: Date;
   message: string;
+  totalPrice: number;
 };
 
 function useSendBookingRequest() {

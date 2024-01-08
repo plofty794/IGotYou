@@ -39,8 +39,6 @@ function VisitListing() {
   } = useOutletContext();
   const [wishlist, setWishlist] = useState(false);
 
-  console.log(listing);
-
   useEffect(() => {
     document.title = "View Listing - IGotYou";
   }, []);

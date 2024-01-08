@@ -18,9 +18,11 @@ function useVerifyEmail() {
     mutationFn: async (data: TUserUpdates) => {
       try {
         await sendEmailVerification(auth.currentUser!);
-        axiosPrivateRoute.patch("/api/users/current-user/verify-email", {
-          ...data,
-        });
+        if (data.emailVerified) {
+          axiosPrivateRoute.patch("/api/users/current-user/verify-email", {
+            ...data,
+          });
+        }
       } catch (err) {
         const error = err as FirebaseError;
         const message = (

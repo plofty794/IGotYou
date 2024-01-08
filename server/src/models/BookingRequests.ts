@@ -31,6 +31,10 @@ const bookingRequestsSchema = new Schema(
       type: Types.ObjectId,
       ref: "Listings",
     },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
