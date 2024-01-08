@@ -13,10 +13,12 @@ import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "@/partials/components/DatePicker";
 import {
   addHours,
+  compareAsc,
   format,
   formatDistance,
   formatDistanceToNow,
   getHours,
+  getTime,
   subHours,
 } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
@@ -33,6 +35,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSendBookingRequest from "@/hooks/useSendBookingRequest";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 dotPulse.register();
 
@@ -167,11 +174,52 @@ function MakeABooking() {
                     </DialogContent>
                   </Dialog>
                 </div>
+                <Separator />
                 <div className="flex w-full justify-between items-start">
                   <div className="flex flex-col gap-1">
                     <span className="text-lg font-semibold">Time</span>
                     <span className="text-gray-600 font-semibold">
-                      {time ? format(time.setMinutes(0), "p") : "Set a time"}
+                      {time ? (
+                        getTime(time) < getTime(new Date()) &&
+                        compareAsc(
+                          new Date().setHours(0, 0, 0, 0),
+                          date?.from ?? new Date().setHours(0, 0, 0, 0)
+                        ) === 0 ? (
+                          <div className="flex items-center justify-center w-max gap-2">
+                            {format(time, "p")}
+                            <HoverCard>
+                              <HoverCardTrigger>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={2}
+                                  stroke="blue"
+                                  className="w-5 h-5"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                                  />
+                                </svg>
+                              </HoverCardTrigger>
+                              <HoverCardContent
+                                align="center"
+                                className="text-xs font-bold"
+                              >
+                                Just a friendly reminder, it's{" "}
+                                {format(new Date(), "p")} but your booking is
+                                for {format(time, "p")}. Still good to go?
+                              </HoverCardContent>
+                            </HoverCard>
+                          </div>
+                        ) : (
+                          format(new Date(time).setMinutes(0), "p")
+                        )
+                      ) : (
+                        "Set time"
+                      )}
                     </span>
                   </div>
                   <Dialog>
@@ -203,7 +251,7 @@ function MakeABooking() {
                           </Button>
                           <div className="flex-1 text-center">
                             <div className="text-7xl font-bold tracking-tighter">
-                              {format(time, "p")}
+                              {format(time.setMinutes(0), "p")}
                             </div>
                             <div className="text-[0.70rem] uppercase text-muted-foreground">
                               Starting time
@@ -214,7 +262,7 @@ function MakeABooking() {
                             size="icon"
                             className="h-8 w-8 shrink-0 rounded-full"
                             onClick={() => onClick(1)}
-                            disabled={getHours(time) >= 11}
+                            disabled={getHours(time) >= 12}
                           >
                             <PlusIcon className="h-4 w-4" />
                             <span className="sr-only">Increase</span>
