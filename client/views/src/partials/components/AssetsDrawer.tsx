@@ -14,7 +14,8 @@ import {
 } from "@cloudinary/react";
 import { fadeIn, fadeOut } from "@cloudinary/url-gen/actions/effect";
 import { Cloudinary } from "@cloudinary/url-gen/index";
-import AddToWishlist from "./AddToWishlist";
+import UpdateWishlist from "./UpdateWishlist";
+import { useState } from "react";
 
 const cld = new Cloudinary({
   cloud: {
@@ -24,13 +25,15 @@ const cld = new Cloudinary({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function AssetsDrawer({ listing }: { listing: any }) {
+  const [viewListing, setViewListing] = useState("");
+
   return (
-    <Drawer>
+    <Drawer onClose={() => setViewListing("")}>
       <DrawerTrigger>
-        <div className="shadow-md border mt-4 grid grid-cols-2 gap-1 rounded-xl overflow-hidden h-72">
+        <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl h-80 overflow-hidden">
           {listing.listingAssets[0].resource_type === "video" ? (
             <AdvancedImage
-              className="object-cover max-h-full max-w-full h-full w-full"
+              className="object-cover h-full w-full"
               cldImg={cld
                 .image(listing.listingAssets[0].public_id)
                 .setAssetType("video")
@@ -44,7 +47,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
             />
           ) : (
             <AdvancedImage
-              className="object-cover max-h-full max-w-full h-full w-full"
+              className="object-cover h-full w-full"
               cldImg={cld.image(listing.listingAssets[0].public_id)}
               plugins={[
                 lazyload(),
@@ -60,6 +63,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
                 i != 0 &&
                 (asset.resource_type === "video" ? (
                   <AdvancedImage
+                    key={asset._id}
                     className="object-cover h-full w-full"
                     cldImg={cld
                       .image(asset.public_id)
@@ -96,15 +100,26 @@ function AssetsDrawer({ listing }: { listing: any }) {
             </DrawerTitle>
             <div className="flex items-center justify-center gap-2 p-2">
               <p className="text-base font-semibold underline">Save</p>
-              <AddToWishlist listingID={listing._id} />
+              <UpdateWishlist listingID={listing._id} />
             </div>
           </DrawerHeader>
-          <div className="flex flex-col items-center justify-center w-full gap-4">
+          <div className="flex flex-col items-center justify-center w-full gap-4 py-8">
             {listing.listingAssets.map((asset: TListingAsset) =>
               asset.resource_type === "video" ? (
-                <div className="relative w-full">
+                <div
+                  onClick={(e) => {
+                    e.currentTarget.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
+                    setViewListing(asset.public_id);
+                  }}
+                  className={`relative w-4/5 h-4/6 cursor-pointer ${
+                    asset.public_id === viewListing ? "outline rounded-2xl" : ""
+                  }`}
+                >
                   <AdvancedImage
-                    className="relative -z-10 object-contain w-4/5 h-4/6 mx-auto rounded-2xl border shadow-lg"
+                    className="relative -z-10 object-contain w-full h-full mx-auto rounded-2xl border shadow-lg"
                     cldImg={cld
                       .image(asset.public_id)
                       .setAssetType("video")
@@ -117,7 +132,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
                     ]}
                   />
                   <AdvancedVideo
-                    className="absolute opacity-0 top-0 left-0 z-0 w-full h-full object-contain hover:opacity-100 hover:z-10"
+                    className="absolute opacity-0 top-0 left-[50%] translate-x-[-50%] z-0 h-full object-contain hover:opacity-100 hover:z-10 rounded-2xl border shadow-lg w-max"
                     muted
                     onMouseOver={(e) => {
                       e.currentTarget.play();
@@ -144,16 +159,29 @@ function AssetsDrawer({ listing }: { listing: any }) {
                   />
                 </div>
               ) : (
-                <AdvancedImage
-                  className="object-cover w-3/5 h-4/6 rounded-2xl border shadow-lg"
-                  cldImg={cld.image(asset.public_id)}
-                  plugins={[
-                    lazyload(),
-                    responsive({
-                      steps: [800, 1000, 1400],
-                    }),
-                  ]}
-                />
+                <span
+                  onClick={(e) => {
+                    e.currentTarget.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
+                    setViewListing(asset.public_id);
+                  }}
+                  className={`w-3/5 h-4/6 cursor-pointer ${
+                    asset.public_id === viewListing ? "outline rounded-2xl" : ""
+                  }`}
+                >
+                  <AdvancedImage
+                    className="object-cover rounded-2xl border shadow-xl w-full"
+                    cldImg={cld.image(asset.public_id)}
+                    plugins={[
+                      lazyload(),
+                      responsive({
+                        steps: [800, 1000, 1400],
+                      }),
+                    ]}
+                  />
+                </span>
               )
             )}
           </div>

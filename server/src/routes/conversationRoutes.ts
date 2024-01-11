@@ -6,6 +6,7 @@ import {
   getCurrentUserConversations,
   readMessage,
   sendMessage,
+  sendMessageToHost,
 } from "../controllers/conversationsControllers";
 import { authToken } from "../middlewares/authToken";
 const router = Router();
@@ -24,6 +25,11 @@ router.post(
   "/users/current-user/conversations/create",
   authToken,
   createConversation
+);
+router.post(
+  "/users/current-user/conversations/send-message-to-host/",
+  authToken,
+  sendMessageToHost
 );
 router.post(
   "/users/current-user/conversations/send-message/:conversationID",

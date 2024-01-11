@@ -117,6 +117,10 @@ const usersSchema = new Schema(
     wishlists: {
       type: [Types.ObjectId],
       ref: "Listings",
+      createdAt: {
+        type: Date,
+        default: Date.now(),
+      },
     },
     guestNotifications: {
       type: [Types.ObjectId],

@@ -20,7 +20,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import AddToWishlist from "@/partials/components/AddToWishlist";
+import UpdateWishlist from "@/partials/components/UpdateWishlist";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
 import { formatDistance } from "date-fns";
@@ -129,7 +129,7 @@ function Home() {
                         className="mt-2"
                       >
                         <Swiper
-                          className="h-72"
+                          className="rounded-xl"
                           key={i}
                           spaceBetween={10}
                           cssMode={true}
@@ -142,9 +142,12 @@ function Home() {
                         >
                           {v.listingAssets?.map((asset) =>
                             asset.resource_type === "video" ? (
-                              <SwiperSlide key={asset.public_id}>
+                              <SwiperSlide
+                                className="h-72 rounded-xl"
+                                key={asset.public_id}
+                              >
                                 <AdvancedImage
-                                  className="rounded-lg h-72 w-full mx-auto object-cover border"
+                                  className="rounded-xl h-full w-full mx-auto object-cover"
                                   cldImg={cld
                                     .image(asset.public_id)
                                     .setAssetType("video")
@@ -225,7 +228,7 @@ function Home() {
                         </div>
                         {v.host.uid !== auth.currentUser?.uid && (
                           <>
-                            <AddToWishlist listingID={v._id} />
+                            <UpdateWishlist listingID={v._id} />
                           </>
                         )}
                       </div>

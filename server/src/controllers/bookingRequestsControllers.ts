@@ -87,7 +87,7 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
     if (bookingRequestAlreadyExist) {
       return res
         .status(400)
-        .json({ message: "You've already sent a booking request" });
+        .json({ error: "You've already sent a booking request" });
     }
 
     const hasReservation = await Reservations.findOne({

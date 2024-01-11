@@ -15,12 +15,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/firebase config/config";
 import { CircleBackslashIcon } from "@radix-ui/react-icons";
-import { formatDistanceToNow, subDays } from "date-fns";
+import { compareAsc, formatDistanceToNow, subDays } from "date-fns";
 import { useEffect } from "react";
 import { formatValue } from "react-currency-input-field";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import AssetsDrawer from "@/partials/components/AssetsDrawer";
-import AddToWishlist from "@/partials/components/AddToWishlist";
+import UpdateWishlist from "@/partials/components/UpdateWishlist";
+import MessageHost from "@/partials/components/messages/MessageHost";
 
 function VisitListing() {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ function VisitListing() {
           </span>
           <div className="flex items-center justify-center gap-2 p-2">
             <p className="text-sm font-semibold underline">Save</p>
-            <AddToWishlist listingID={listing._id} />
+            <UpdateWishlist listingID={listing._id} />
           </div>
         </div>
         <AssetsDrawer listing={listing} />
@@ -97,34 +98,40 @@ function VisitListing() {
             </div>
             <Card className="border-0 shadow-none">
               <Separator />
-              <CardHeader className="flex-row gap-6 items-center w-max">
-                <Avatar className="w-12 h-12">
-                  <AvatarImage
-                    className="max-w-full object-cover"
-                    src={
-                      listing.host.photoUrl ??
-                      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
-                    }
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-lg font-semibold">
-                    Hosted by {listing.host.username}
-                  </span>
-                  <Badge variant={"outline"} className="w-max">
-                    {formatDistanceToNow(
-                      subDays(new Date(listing.host.subscriptionExpiresAt), 30)
-                    )}{" "}
-                    of hosting
-                  </Badge>
+              <CardHeader className="flex-row justify-between items-center w-full">
+                <div className="flex items-center justify-center gap-2 w-max">
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage
+                      className="max-w-full object-cover"
+                      src={
+                        listing.host.photoUrl ??
+                        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.slotcharter.net%2Fwp-content%2Fuploads%2F2020%2F02%2Fno-avatar.png&f=1&nofb=1&ipt=9e90fdb80f5dc7485d14a9754e5441d7fbcadb4db1a76173bf266e3acd9b3369&ipo=images"
+                      }
+                    />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-semibold">
+                      Hosted by {listing.host.username}
+                    </span>
+                    <Badge variant={"outline"} className="w-max">
+                      {formatDistanceToNow(
+                        subDays(
+                          new Date(listing.host.subscriptionExpiresAt),
+                          30
+                        )
+                      )}{" "}
+                      of hosting
+                    </Badge>
+                  </div>
                 </div>
+                <MessageHost listing={listing} />
               </CardHeader>
               <Separator />
             </Card>
           </div>
           <Card className="w-3/6 border-gray-300 shadow-xl">
-            <CardHeader>
+            <CardHeader className="flex-row justify-between w-full">
               <CardTitle className="text-xl font-semibold">
                 {formatValue({
                   value: String(listing.price),
@@ -135,6 +142,14 @@ function VisitListing() {
                 })}{" "}
                 <span className="uppercase text-sm">service</span>
               </CardTitle>
+              {compareAsc(
+                new Date().setHours(0, 0, 0, 0),
+                new Date(listing.endsAt)
+              ) >= 0 && (
+                <Badge variant={"destructive"} className="w-max">
+                  Listing ended
+                </Badge>
+              )}
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 rounded-md border border-gray-400 w-full">
@@ -154,7 +169,15 @@ function VisitListing() {
                 </div>
               </div>
               {auth.currentUser?.emailVerified ? (
-                <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
+                <Button
+                  disabled={
+                    compareAsc(
+                      new Date().setHours(0, 0, 0, 0),
+                      new Date(listing.endsAt)
+                    ) >= 0
+                  }
+                  className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full"
+                >
                   {user?.bookingRequests.find(
                     (v: { listingID: string }) => v.listingID === listing._id
                   ) ? (
@@ -163,7 +186,14 @@ function VisitListing() {
                     </Link>
                   ) : (
                     <Link
-                      className="w-full"
+                      className={`w-full ${
+                        compareAsc(
+                          new Date().setHours(0, 0, 0, 0),
+                          new Date(listing.endsAt)
+                        ) >= 0
+                          ? "pointer-events-none"
+                          : ""
+                      } `}
                       to={`/listings/create-booking/${listing._id}`}
                     >
                       Continue

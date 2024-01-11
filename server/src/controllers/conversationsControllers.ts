@@ -3,7 +3,6 @@ import createHttpError from "http-errors";
 import Conversations from "../models/Conversations";
 import Users from "../models/Users";
 import Messages from "../models/Messages";
-import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import GuestNotifications from "../models/GuestNotifications";
 
 export const getCurrentUserConversations: RequestHandler = async (
@@ -149,7 +148,9 @@ export const createConversation: RequestHandler = async (req, res, next) => {
       .exec();
 
     if (conversationExist) {
-      return res.status(400).json({ conversationExist: [conversationExist] });
+      return res
+        .status(400)
+        .json({ error: "This user is already in a conversation with you." });
     }
 
     const newConversation = await Conversations.create({
@@ -157,6 +158,35 @@ export const createConversation: RequestHandler = async (req, res, next) => {
     });
 
     res.status(201).json({ newConversation: [newConversation] });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const readMessage: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { messageId } = req.params;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    await Messages.findByIdAndUpdate(messageId, {
+      ...req.body,
+    });
+
+    await GuestNotifications.findOneAndUpdate(
+      { data: messageId },
+      {
+        read: true,
+      }
+    );
+
+    res.status(200).json({ message: "Success" });
   } catch (error) {
     next(error);
   }
@@ -173,6 +203,10 @@ export const sendMessage: RequestHandler = async (req, res, next) => {
         400,
         "A _id cookie is required to access this resource."
       );
+    }
+
+    if (content == null || receiverName == null) {
+      throw createHttpError(400, "Missing field(s): Content or Receiver name");
     }
 
     const conversationExist = await Conversations.findById(conversationID);
@@ -238,9 +272,9 @@ export const sendMessage: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const readMessage: RequestHandler = async (req, res, next) => {
+export const sendMessageToHost: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
-  const { messageId } = req.params;
+  const { hostID, content } = req.body;
   try {
     if (!id) {
       res.clearCookie("_&!d");
@@ -250,18 +284,74 @@ export const readMessage: RequestHandler = async (req, res, next) => {
       );
     }
 
-    await Messages.findByIdAndUpdate(messageId, {
-      ...req.body,
+    if (content == null || hostID == null) {
+      throw createHttpError(400, "Missing field(s): Content or Host id");
+    }
+
+    const hostName = await Users.findById(hostID).select("username");
+
+    const conversationExist = await Conversations.findOne({
+      participants: {
+        $all: [id, hostID],
+      },
     });
 
-    await GuestNotifications.findOneAndUpdate(
-      { data: messageId },
+    const lastMessage = await Messages.create({
+      content,
+      senderID: id,
+    });
+
+    if (!conversationExist) {
+      const newConversation = await Conversations.create({
+        participants: [id, hostID],
+        lastMessage: lastMessage?._id,
+        messages: [lastMessage?._id],
+      });
+
+      const messageNotification = await GuestNotifications.create({
+        senderID: id,
+        recipientID: hostID,
+        notificationType: "New-Message",
+        data: lastMessage?._id,
+      });
+
+      await Users.findByIdAndUpdate(hostID, {
+        $push: {
+          guestNotifications: messageNotification._id,
+        },
+      });
+
+      return res.status(201).json({
+        conversation: lastMessage,
+        receiverName: hostName?.username,
+        conversationID: newConversation?._id,
+      });
+    }
+
+    await Conversations.findByIdAndUpdate(
+      conversationExist?._id,
       {
-        read: true,
+        lastMessage: lastMessage?._id,
+        $push: {
+          messages: lastMessage._id,
+        },
+      },
+      { new: true }
+    );
+
+    await GuestNotifications.findOneAndUpdate(
+      { senderID: id, recipientID: hostID },
+      {
+        data: lastMessage?._id,
+        read: false,
       }
     );
 
-    res.status(200).json({ message: "Success" });
+    return res.status(200).json({
+      conversation: lastMessage,
+      receiverName: hostName?.username,
+      conversationID: conversationExist?._id,
+    });
   } catch (error) {
     next(error);
   }

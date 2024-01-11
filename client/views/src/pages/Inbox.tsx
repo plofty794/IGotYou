@@ -43,22 +43,38 @@ function Inbox() {
                         <AvatarImage
                           className="object-cover"
                           src={v.guestID.photoUrl}
-                          alt="@shadcn"
+                          alt={v.guestID.username}
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
                       <div className="w-full flex flex-col gap-1">
-                        <div className="flex items-center justify-between w-full">
+                        <div className="flex items-start justify-between w-full">
                           <span className="text-xs">{v.guestID.username}</span>
+
                           <span className="text-xs text-gray-600">
                             {formatDistanceToNow(new Date(v.createdAt), {
                               addSuffix: true,
                             })}
                           </span>
                         </div>
-                        <span className="text-xs max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">
-                          {v.message}
-                        </span>
+                        <div className="flex items-center justify-between w-full">
+                          <div className="w-44 overflow-hidden text-ellipsis whitespace-nowrap">
+                            <span className="text-xs max-w-xs italic">
+                              {v.message}
+                            </span>
+                          </div>
+                          <span
+                            className={` ${
+                              v.status === "pending"
+                                ? "text-amber-600 hover:text-amber-500"
+                                : v.status === "approved"
+                                ? "text-green-600 hover:text-green-500"
+                                : "text-red-600 hover:text-red-500"
+                            }  w-max text-xs font-extrabold`}
+                          >
+                            {v.status}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </NavLink>

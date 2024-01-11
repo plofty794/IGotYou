@@ -14,7 +14,7 @@ import {
   checkUserEmail,
   searchUsername,
   updateUserEmail,
-  addListingToWishlist,
+  updateWishlist,
   getWishlists,
   verifyEmail,
 } from "../controllers/usersControllers";
@@ -34,11 +34,7 @@ router.post(
   passwordResetLimiter,
   checkUserEmail
 );
-router.post(
-  "/users/current-user/add-listing-wishlist",
-  authToken,
-  addListingToWishlist
-);
+router.post("/users/current-user/update-wishlist", authToken, updateWishlist);
 router.post("/users/login/google", googleSignIn);
 router.post("/users/register", createUser);
 router.patch(

@@ -120,6 +120,7 @@ export const getWishlists: RequestHandler = async (req, res, next) => {
       .select("wishlists")
       .populate({
         path: "wishlists",
+        select: ["listingAssets", "host", "serviceDescription", "serviceType"],
         populate: {
           path: "host",
           select: "username",
@@ -132,7 +133,7 @@ export const getWishlists: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const addListingToWishlist: RequestHandler = async (req, res, next) => {
+export const updateWishlist: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
   const { listingID } = req.body;
   try {
@@ -166,7 +167,12 @@ export const addListingToWishlist: RequestHandler = async (req, res, next) => {
     }
 
     await Users.findByIdAndUpdate(id, {
-      $push: { wishlists: listingID },
+      $push: {
+        wishlists: {
+          $each: [listingID],
+          $position: 0,
+        },
+      },
     });
 
     res

@@ -6,6 +6,7 @@ import Users from "../models/Users";
 import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import { addDays } from "date-fns";
+import Reservations from "../models/Reservations";
 
 cloudinary.v2.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -235,6 +236,14 @@ export const disableListing: RequestHandler = async (req, res, next) => {
         res,
         "A _id cookie is required to access this resource."
       );
+    }
+
+    const hasReservations = await Reservations.find({ listingID });
+
+    if (hasReservations.length) {
+      return res.status(409).json({
+        error: "This listing cannot be disabled as reservations exist",
+      });
     }
 
     await Listings.findByIdAndUpdate(listingID, {

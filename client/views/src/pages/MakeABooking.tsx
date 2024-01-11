@@ -25,7 +25,6 @@ import {
 } from "@/zod/composeMessageSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useSendBookingRequest from "@/hooks/useSendBookingRequest";
-
 dotPulse.register();
 
 function MakeABooking() {
@@ -131,8 +130,8 @@ function MakeABooking() {
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button
-                        variant={"ghost"}
-                        className="font-semibold text-lg underline rounded-full underline-offset-2 p-0 items-start"
+                        variant={"link"}
+                        className="font-semibold text-lg p-0 rounded-full items-start"
                       >
                         Edit
                       </Button>

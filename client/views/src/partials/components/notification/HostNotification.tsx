@@ -113,7 +113,7 @@ function HostNotification() {
               <>
                 <Separator />
                 <ScrollArea className="h-80">
-                  <div className="flex flex-col items-center ">
+                  <div className="flex flex-col items-center">
                     {notifications?.map((v) => (
                       <>
                         <Link
@@ -146,6 +146,7 @@ function HostNotification() {
                             )}
                           </div>
                         </Link>
+                        <Separator />
                       </>
                     ))}
                   </div>
