@@ -132,7 +132,7 @@ function Messages() {
                         <AlertDialogTitle>
                           Are you absolutely sure?
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="font-medium">
+                        <AlertDialogDescription className="font-semibold text-gray-600">
                           This action cannot be undone. This will{" "}
                           <span className="font-bold text-red-600 underline">
                             permanently delete
@@ -243,6 +243,7 @@ function Messages() {
                     (await readMessage(conversation[0].lastMessage._id))
                   }
                   className="bg-white p-5 font-medium rounded-full w-full"
+                  spellCheck="true"
                 />
                 <Button
                   disabled={!content}

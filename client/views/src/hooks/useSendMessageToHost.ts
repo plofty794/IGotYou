@@ -39,6 +39,7 @@ function useSendMessageToHost() {
           border: "1px solid black",
         },
         duration: 5000,
+        descriptionClassName: "font-semibold",
       });
       socket?.emit("message-host", data.data);
       queryClient.invalidateQueries({

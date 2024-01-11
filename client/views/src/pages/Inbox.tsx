@@ -47,7 +47,7 @@ function Inbox() {
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
-                      <div className="w-full flex flex-col gap-1">
+                      <div className="w-full flex flex-col">
                         <div className="flex items-start justify-between w-full">
                           <span className="text-xs">{v.guestID.username}</span>
 

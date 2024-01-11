@@ -12,14 +12,13 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import useGetBookingRequestDetails from "@/hooks/useGetBookingRequestDetails";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
-import { compareAsc, differenceInDays, formatDistance } from "date-fns";
+import { compareAsc, formatDistance } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 import { Link } from "react-router-dom";
+import DeclineReasons from "./DeclineReasons";
 
 function BookingRequest() {
   const { data, isPending } = useGetBookingRequestDetails();
-
-  console.log(data?.data.bookingRequest);
 
   return (
     <>
@@ -55,37 +54,33 @@ function BookingRequest() {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="font-semibold text-lg">
-                {data?.data.bookingRequest.guestID.username}
+              <span className="mt-2 font-bold text-sm">
+                {data?.data.bookingRequest.guestID.username} wants to book{" "}
               </span>
-              <span className="font-semibold text-sm text-gray-600">
-                {formatDistance(
-                  new Date(
-                    data?.data.bookingRequest.requestedBookingDateEndsAt
-                  ),
-                  new Date(
-                    data?.data.bookingRequest.requestedBookingDateStartsAt
-                  )
-                )}
-                {" - "}
-                {formatValue({
-                  value: String(
-                    data?.data.bookingRequest.listingID.price *
-                      differenceInDays(
-                        new Date(
-                          data?.data.bookingRequest.requestedBookingDateEndsAt
-                        ),
-                        new Date(
-                          data?.data.bookingRequest.requestedBookingDateStartsAt
-                        )
-                      )
-                  ),
-                  intlConfig: {
-                    locale: "PH",
-                    currency: "php",
-                  },
-                })}
-              </span>
+              <div className="flex gap-1">
+                <span className="font-semibold text-sm underline">
+                  {data?.data.bookingRequest.listingID.serviceDescription}
+                </span>
+                <span className="font-semibold text-sm ">
+                  for{" "}
+                  {formatDistance(
+                    new Date(
+                      data?.data.bookingRequest.requestedBookingDateEndsAt
+                    ),
+                    new Date(
+                      data?.data.bookingRequest.requestedBookingDateStartsAt
+                    )
+                  )}
+                  {" - "}
+                  {formatValue({
+                    value: String(data?.data.bookingRequest.totalPrice),
+                    intlConfig: {
+                      locale: "PH",
+                      currency: "php",
+                    },
+                  })}
+                </span>
+              </div>
             </div>
             <div className="flex flex-col gap-2">
               <div className="p-2">
@@ -94,13 +89,14 @@ function BookingRequest() {
                   {data?.data.bookingRequest.message}
                 </CardDescription>
               </div>
-
               <div className="w-full flex items-end justify-between">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="text-xs" variant={"outline"}>
-                      View {data?.data.bookingRequest.guestID.username}'s
-                      information
+                    <Button
+                      className="text-xs border-black"
+                      variant={"outline"}
+                    >
+                      {data?.data.bookingRequest.guestID.username}'s information
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -196,7 +192,7 @@ function BookingRequest() {
                   </DialogContent>
                 </Dialog>
 
-                <div className="w-max h-max border rounded-md p-4">
+                <div className="w-max h-max border rounded-md p-4 shadow-md">
                   <div className="flex items-center justify-between gap-2">
                     <CardDescription className="font-semibold text-sm text-black">
                       Requested dates
@@ -229,9 +225,7 @@ function BookingRequest() {
           <CardFooter className="justify-between gap-2 p-4">
             <div className="flex items-center gap-2">
               <Button className="bg-gray-950 rounded-full">Accept</Button>
-              <Button className="rounded-full" variant={"destructive"}>
-                Decline
-              </Button>
+              <DeclineReasons />
             </div>
             <Button variant={"link"}>
               <Link to={"/"}>View profile</Link>

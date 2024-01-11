@@ -191,7 +191,7 @@ export const getHostBookingRequests: RequestHandler = async (
       .limit(limit)
       .populate([
         { path: "listingID" },
-        { select: "username", path: "guestID" },
+        { select: "username photoUrl", path: "guestID" },
       ])
       .exec();
 

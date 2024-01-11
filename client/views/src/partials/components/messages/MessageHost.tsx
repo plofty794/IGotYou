@@ -37,6 +37,7 @@ function MessageHost({ listing }: { listing: TListing }) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className="text-sm font-medium"
+          spellCheck="true"
         />
         <DialogFooter>
           <Button
