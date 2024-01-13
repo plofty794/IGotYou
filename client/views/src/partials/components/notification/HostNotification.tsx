@@ -35,8 +35,8 @@ function HostNotification() {
     setNotifications(hostNotifications.data?.data.hostNotifications);
     setNewNotifications(
       hostNotifications.data?.data.hostNotifications?.filter(
-        (v: { read: boolean }) => !v.read
-      )
+        (v: { read: boolean }) => !v.read,
+      ),
     );
   }, [hostNotifications.data?.data.hostNotifications]);
 
@@ -70,7 +70,7 @@ function HostNotification() {
                         viewBox="0 0 24 24"
                         strokeWidth={2}
                         stroke="currentColor"
-                        className="w-5 h-5"
+                        className="h-5 w-5"
                       >
                         <path
                           strokeLinecap="round"
@@ -79,7 +79,7 @@ function HostNotification() {
                         />
                       </svg>
                       {newNotifications?.length > 0 && (
-                        <span className="absolute top-[-5px] text-xs rounded-full text-white w-4 h-4 bg-red-500">
+                        <span className="absolute top-[-5px] h-4 w-4 rounded-full bg-red-500 text-xs text-white">
                           {newNotifications.length}
                         </span>
                       )}
@@ -91,19 +91,19 @@ function HostNotification() {
                 {newNotifications?.length < 1
                   ? "No notification"
                   : newNotifications?.length > 1
-                  ? `${newNotifications?.length} unread notifications`
-                  : `${newNotifications?.length} unread notification`}
+                    ? `${newNotifications?.length} unread notifications`
+                    : `${newNotifications?.length} unread notification`}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <PopoverContent align="end" className="rounded-lg p-0 w-80">
+          <PopoverContent align="end" className="w-80 rounded-lg p-0">
             <div className="flex flex-col">
-              <span className="text-lg font-bold p-4">
+              <span className="p-4 text-lg font-bold">
                 Booking Notifications
               </span>
               {notifications?.length < 1 && (
                 <>
-                  <span className="p-4 m-2 mx-auto w-max text-xs font-bold ">
+                  <span className="m-2 mx-auto w-max p-4 text-xs font-bold ">
                     No notifications
                   </span>
                 </>
@@ -119,11 +119,11 @@ function HostNotification() {
                         <Link
                           key={v._id}
                           to="/hosting-inbox"
-                          className="hover:bg-[#F5F5F5] w-full p-4"
+                          className="w-full p-4 hover:bg-[#F5F5F5]"
                         >
-                          <div className="w-full flex items-center gap-2">
+                          <div className="flex w-full items-center gap-2">
                             <div className="w-full">
-                              <p className="text-gray-600 text-xs font-semibold">
+                              <p className="text-xs font-semibold text-gray-600">
                                 {v.senderID.username} has sent you a{" "}
                                 {(v.notificationType as string)
                                   .split("-")
@@ -132,7 +132,7 @@ function HostNotification() {
                               <span className="text-xs font-semibold text-red-600">
                                 {formatDistanceToNow(
                                   new Date(v.createdAt as string),
-                                  { addSuffix: true }
+                                  { addSuffix: true },
                                 )}
                               </span>
                             </div>
@@ -141,7 +141,7 @@ function HostNotification() {
                                 height={10}
                                 width={10}
                                 color="blue"
-                                className="fill-blue-600 bg-blue-600 rounded-full p-0 h-max w-max"
+                                className="h-max w-max rounded-full bg-blue-600 fill-blue-600 p-0"
                               />
                             )}
                           </div>

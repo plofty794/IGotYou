@@ -59,7 +59,7 @@ function Home() {
                   width={25}
                   height={25}
                 />
-                <DialogTitle className="font-semibold text-base">
+                <DialogTitle className="text-base font-semibold">
                   Some features are disabled!
                 </DialogTitle>
               </div>
@@ -94,7 +94,7 @@ function Home() {
               </div>
             </DialogFooter>
             <Separator />
-            <div className="m-2 p-2 flex items-center justify-center gap-2 w-max ml-auto">
+            <div className="m-2 ml-auto flex w-max items-center justify-center gap-2 p-2">
               <Label htmlFor="checkbox" className="text-xs font-medium">
                 Don't show this again
               </Label>
@@ -109,24 +109,26 @@ function Home() {
           </DialogContent>
         </Dialog>
       )}
-      <section className="px-8 mt-2">
+      <section className="mt-2 px-8">
         {listings.pages[0].data.listings.length > 0 ? (
           <>
-            <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
+            <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
               {listings.pages.map((page) =>
                 page.data.listings.map((v, i) => (
                   <Card
                     key={v._id}
-                    className="border-none shadow-none overflow-hidden w-full"
+                    className="w-full overflow-hidden border-none shadow-none"
                   >
-                    <CardHeader className="p-0 flex flex-col gap-1">
+                    <CardHeader className="flex flex-col gap-1 p-0">
                       <Link
                         to={`${
                           uid === v.host.uid
-                            ? `/users/show/${v.host.uid}`
+                            ? `/hosting-listings/edit/${v._id}`
                             : `/listings/show/${v._id}`
                         } `}
                         className="mt-2"
+                        reloadDocument={uid === v.host.uid}
+                        replace
                       >
                         <Swiper
                           className="rounded-xl"
@@ -147,7 +149,7 @@ function Home() {
                                 key={asset.public_id}
                               >
                                 <AdvancedImage
-                                  className="rounded-xl h-full w-full mx-auto object-cover"
+                                  className="mx-auto h-72 w-full rounded-xl object-cover"
                                   cldImg={cld
                                     .image(asset.public_id)
                                     .setAssetType("video")
@@ -165,17 +167,17 @@ function Home() {
                                       steps: [800, 1000, 1400],
                                     }),
                                   ]}
-                                  className="rounded-lg h-72 w-full mx-auto object-cover border"
+                                  className="mx-auto h-72 w-full rounded-lg border object-cover"
                                 />
                               </SwiperSlide>
-                            )
+                            ),
                           )}
                         </Swiper>
                       </Link>
                     </CardHeader>
-                    <CardContent className="mt-2 p-0 flex justify-between">
+                    <CardContent className="mt-2 flex justify-between p-0">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-sm">
+                        <span className="text-sm font-semibold">
                           {v.serviceType}
                         </span>
                         <span className="text-sm font-semibold text-gray-600">
@@ -183,15 +185,15 @@ function Home() {
                         </span>
 
                         <div className="w-full">
-                          <span className="text-gray-600 font-semibold text-sm">
+                          <span className="text-sm font-semibold text-gray-600">
                             Ends in{" "}
                             {formatDistance(
                               new Date().setHours(0, 0, 0, 0),
-                              new Date(v.endsAt)
+                              new Date(v.endsAt),
                             )}
                           </span>
                         </div>
-                        <div className="w-full flex items-center justify-between">
+                        <div className="flex w-full items-center justify-between">
                           <span className="mt-1 font-semibold">
                             {formatValue({
                               value: v.price.toString(),
@@ -212,7 +214,7 @@ function Home() {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="w-4 h-4"
+                            className="h-4 w-4"
                           >
                             <path
                               fillRule="evenodd"
@@ -220,7 +222,7 @@ function Home() {
                               clipRule="evenodd"
                             />
                           </svg>
-                          <span className="font-semibold text-xs">
+                          <span className="text-xs font-semibold">
                             {v.host.rating.length > 0
                               ? v.host.rating.length
                               : "No rating"}
@@ -234,7 +236,7 @@ function Home() {
                       </div>
                     </CardContent>
                   </Card>
-                ))
+                )),
               )}
             </div>
           </>
@@ -243,9 +245,9 @@ function Home() {
             <Lottie
               loop={false}
               animationData={noListing}
-              className="w-64 h-64"
+              className="h-64 w-64"
             />
-            <span className="text-gray-600 font-bold text-xl">
+            <span className="text-xl font-bold text-gray-600">
               No listings to show
             </span>
           </div>
@@ -277,7 +279,7 @@ type TListings = {
       serviceType: string;
       updatedAt: string;
       _id: string;
-    }
+    },
   ];
 };
 

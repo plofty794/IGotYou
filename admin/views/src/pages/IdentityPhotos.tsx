@@ -45,33 +45,32 @@ function IdentityPhotos() {
                           <Card key={v._id}>
                             <CardHeader className="p-0">
                               <Dialog>
-                                <DialogTrigger className="overflow-hidden rounded-md">
+                                <DialogTrigger className="h-72 w-full overflow-hidden rounded-md">
                                   <img
-                                    className="aspect-square object-cover hover:scale-105 transition-transform"
+                                    className="h-full w-full object-cover hover:scale-105 transition-transform"
                                     src={v.identityPhoto}
                                     alt=""
                                     loading="lazy"
                                   />
                                 </DialogTrigger>
-                                <DialogContent className="h-screen p-0">
+                                <DialogContent className="max-w-4xl p-0">
                                   <img
-                                    className="aspect-square object-cover h-full rounded-md "
+                                    className="object-cover rounded-xl w-full"
                                     src={v.identityPhoto}
                                     alt=""
                                     loading="lazy"
                                   />
                                 </DialogContent>
                               </Dialog>
-
                               <Badge className="w-max mx-auto text-xs font-bold bg-gray-950">
                                 Identity photo
                               </Badge>
                             </CardHeader>
                             <CardContent className="p-2">
-                              <CardDescription className="text-gray-600 font-medium text-sm">
+                              <CardDescription className="text-gray-600 font-semibold text-sm">
                                 Username: {v.user.username}
                               </CardDescription>
-                              <CardDescription className="text-gray-600 font-medium text-sm">
+                              <CardDescription className="text-gray-600 font-semibold text-sm">
                                 Sent at:{" "}
                                 {new Date(v.createdAt).toLocaleString()}
                               </CardDescription>

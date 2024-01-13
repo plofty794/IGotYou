@@ -56,7 +56,7 @@ function MakeABooking() {
   const totalPrice = useMemo(
     () =>
       listing.price * parseInt(formatDistance(date?.to ?? 0, date?.from ?? 0)),
-    [date?.from, date?.to, listing.price]
+    [date?.from, date?.to, listing.price],
   );
 
   useEffect(() => {
@@ -76,11 +76,11 @@ function MakeABooking() {
 
   return (
     <>
-      <section className="py-12 px-24">
-        <div className="w-full flex items-center">
+      <section className="px-24 py-12">
+        <div className="flex w-full items-center">
           <Button
             variant={"ghost"}
-            className="rounded-full w-max"
+            className="w-max rounded-full"
             onClick={() => history.back()}
           >
             <svg
@@ -89,7 +89,7 @@ function MakeABooking() {
               viewBox="0 0 24 24"
               strokeWidth={2}
               stroke="currentColor"
-              className="w-4 h-4"
+              className="h-4 w-4"
             >
               <path
                 strokeLinecap="round"
@@ -101,11 +101,11 @@ function MakeABooking() {
           <span className="text-4xl font-medium">Make a booking</span>
         </div>
         <div className="grid grid-cols-2 gap-8">
-          <div className="flex flex-col gap-8 mt-8 px-12">
+          <div className="mt-8 flex flex-col gap-8 px-12">
             <div>
               <span className="text-2xl font-semibold">Your booking</span>
-              <div className="mt-4 w-full flex flex-col gap-2">
-                <div className="flex w-full justify-between items-start">
+              <div className="mt-4 flex w-full flex-col gap-2">
+                <div className="flex w-full items-start justify-between">
                   <div className="flex flex-col gap-1">
                     <span className="text-lg font-semibold">Dates</span>
                     <span
@@ -131,7 +131,7 @@ function MakeABooking() {
                     <DialogTrigger asChild>
                       <Button
                         variant={"link"}
-                        className="font-semibold text-lg p-0 rounded-full items-start"
+                        className="items-start rounded-full p-0 text-lg font-semibold"
                       >
                         Edit
                       </Button>
@@ -156,8 +156,8 @@ function MakeABooking() {
             </div>
             <Separator />
             <form onSubmit={handleSubmit(sendBookingRequest)}>
-              <div className="flex flex-col gap-2 w-full">
-                <div className="w-full flex items-center justify-between">
+              <div className="flex w-full flex-col gap-2">
+                <div className="flex w-full items-center justify-between">
                   <Label className="text-xl font-semibold" htmlFor="message">
                     Message{" "}
                   </Label>
@@ -188,7 +188,7 @@ function MakeABooking() {
                     isPending ||
                     isNaN(totalPrice)
                   }
-                  className="bg-gray-950 rounded-full w-max ml-auto text-lg font-medium p-6"
+                  className="ml-auto w-max rounded-full bg-gray-950 p-6 text-lg font-medium"
                 >
                   Send
                 </Button>
@@ -197,41 +197,41 @@ function MakeABooking() {
           </div>
           <div className="px-12">
             <Card className="p-6">
-              <CardHeader className="p-0 mb-4 flex-row gap-4">
-                <span className="w-32 h-32 overflow-hidden rounded-md border">
+              <CardHeader className="mb-4 flex-row gap-4 p-0">
+                <span className="h-32 w-32 overflow-hidden rounded-md border">
                   <img
                     src={listing.listingAssets[1].secure_url}
-                    className="object-cover w-full h-full hover:scale-110 transition-transform"
+                    className="h-full w-full object-cover transition-transform hover:scale-110"
                     alt=""
                   />
                 </span>
-                <div className="flex flex-col gap-1 w-2/3">
+                <div className="flex w-2/3 flex-col gap-1">
                   <span className="text-lg font-bold">
                     {listing.serviceDescription}
                   </span>
                   <Link
                     to={`https://www.google.com/maps/place/${listing.serviceLocation}`}
                     target="_blank"
-                    className="hover:underline text-sm font-bold text-gray-600"
+                    className="text-sm font-bold text-gray-600 hover:underline"
                   >
                     {listing.serviceLocation}
                   </Link>
                   <Badge className="w-max">
                     {formatDistance(
                       new Date().setHours(0, 0, 0, 0),
-                      new Date(listing.endsAt)
+                      new Date(listing.endsAt),
                     )}{" "}
                     before listing ends
                   </Badge>
-                  <div className="mt-4 w-full flex items-center justify-between">
+                  <div className="mt-4 flex w-full items-center justify-between">
                     <Badge variant={"outline"}>Cancellation policy</Badge>
                     <span
                       className={`text-sm font-bold underline ${
                         listing.cancellationPolicy === "Flexible"
                           ? "text-green-600"
                           : listing.cancellationPolicy === "Moderate"
-                          ? "text-amber-600"
-                          : "text-red-600"
+                            ? "text-amber-600"
+                            : "text-red-600"
                       }`}
                     >
                       {listing.cancellationPolicy}
@@ -243,7 +243,7 @@ function MakeABooking() {
               <CardContent className="px-2 py-4">
                 <span className="text-2xl font-semibold">Price details</span>
                 <div className="mt-4 flex flex-col gap-2">
-                  <div className="w-full flex justify-between items-center">
+                  <div className="flex w-full items-center justify-between">
                     <span className="font-semibold text-gray-600">Price</span>
                     <span className="font-semibold text-gray-600">
                       {formatValue({
@@ -255,7 +255,7 @@ function MakeABooking() {
                       })}
                     </span>
                   </div>
-                  <div className="w-full flex justify-between items-center">
+                  <div className="flex w-full items-center justify-between">
                     <span className="font-semibold text-gray-600">
                       {date?.from != null && date.to != null
                         ? listing.price +
@@ -270,7 +270,7 @@ function MakeABooking() {
                     </span>
                   </div>
                   <Separator />
-                  <div className="w-full flex justify-between items-center">
+                  <div className="flex w-full items-center justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="font-semibold">
                       {isNaN(totalPrice) ? (

@@ -45,7 +45,7 @@ function VerifiedPayments() {
   return (
     <main className="min-h-screen">
       <nav className="py-4 px-8 flex justify-between items-center border-b">
-        <Link to={"/payments"}>
+        <Link to={"/subscriptions"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -104,15 +104,15 @@ function VerifiedPayments() {
                             <Dialog>
                               <DialogTrigger className="overflow-hidden rounded-md ">
                                 <img
-                                  className="aspect-square object-cover hover:scale-105 transition-transform"
+                                  className="h-72 w-full object-cover hover:scale-105 transition-transform"
                                   src={v.paymentProofPhoto}
                                   alt=""
                                   loading="lazy"
                                 />
                               </DialogTrigger>
-                              <DialogContent className="h-screen p-0">
+                              <DialogContent className="max-w-4xl p-0">
                                 <img
-                                  className="aspect-square object-cover h-full rounded-md "
+                                  className=" object-cover rounded-md"
                                   src={v.paymentProofPhoto}
                                   alt=""
                                   loading="lazy"

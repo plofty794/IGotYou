@@ -5,7 +5,9 @@ function useGetVerifiedPayments() {
   return useInfiniteQuery({
     queryKey: ["verified-payments"],
     queryFn: async ({ pageParam }) => {
-      return await axiosPrivateRoute.get(`/api/payments/verified/${pageParam}`);
+      return await axiosPrivateRoute.get(
+        `/api/subscriptions/verified/${pageParam}`
+      );
     },
     getNextPageParam: (_, page) => page.length + 1,
     getPreviousPageParam: (_, page) => page.length - 1,

@@ -27,25 +27,25 @@ function BookingRequest() {
       ) : (
         <Card className="w-full">
           <CardHeader>
-            <div className="flex items-center justify-between w-full">
-              <h1 className="font-bold text-xl">Booking request details</h1>
+            <div className="flex w-full items-center justify-between">
+              <h1 className="text-xl font-bold">Booking request details</h1>
               <Badge
                 className={` ${
                   data?.data.bookingRequest.status === "pending"
                     ? "bg-amber-600 hover:bg-amber-500"
                     : data?.data.bookingRequest.status === "approved"
-                    ? "bg-green-600 hover:bg-green-500"
-                    : "bg-red-600 hover:bg-red-500"
-                } uppercase w-max`}
+                      ? "bg-green-600 hover:bg-green-500"
+                      : "bg-red-600 hover:bg-red-500"
+                } w-max uppercase`}
               >
                 {data?.data.bookingRequest.status}
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <div className="flex flex-col items-center w-max mx-auto">
-              <div className="w-20 h-20">
-                <Avatar className="w-full h-full">
+            <div className="mx-auto flex w-max flex-col items-center">
+              <div className="h-20 w-20">
+                <Avatar className="h-full w-full">
                   <AvatarImage
                     className="object-cover"
                     src={data?.data.bookingRequest.guestID.photoUrl}
@@ -54,22 +54,22 @@ function BookingRequest() {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="mt-2 font-bold text-sm">
+              <span className="mt-2 text-sm font-bold">
                 {data?.data.bookingRequest.guestID.username} wants to book{" "}
               </span>
               <div className="flex gap-1">
-                <span className="font-semibold text-sm underline">
+                <span className="text-sm font-semibold underline">
                   {data?.data.bookingRequest.listingID.serviceDescription}
                 </span>
-                <span className="font-semibold text-sm ">
+                <span className="text-sm font-semibold ">
                   for{" "}
                   {formatDistance(
                     new Date(
-                      data?.data.bookingRequest.requestedBookingDateEndsAt
+                      data?.data.bookingRequest.requestedBookingDateEndsAt,
                     ),
                     new Date(
-                      data?.data.bookingRequest.requestedBookingDateStartsAt
-                    )
+                      data?.data.bookingRequest.requestedBookingDateStartsAt,
+                    ),
                   )}
                   {" - "}
                   {formatValue({
@@ -84,16 +84,16 @@ function BookingRequest() {
             </div>
             <div className="flex flex-col gap-2">
               <div className="p-2">
-                <h3 className="uppercase font-semibold text-sm">Message</h3>
+                <h3 className="text-sm font-semibold uppercase">Message</h3>
                 <CardDescription className="text-sm font-semibold italic">
                   {data?.data.bookingRequest.message}
                 </CardDescription>
               </div>
-              <div className="w-full flex items-end justify-between">
+              <div className="flex w-full items-end justify-between">
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
-                      className="text-xs border-black"
+                      className="border-black text-xs"
                       variant={"outline"}
                     >
                       {data?.data.bookingRequest.guestID.username}'s information
@@ -104,26 +104,26 @@ function BookingRequest() {
                       <CardHeader className="p-4"></CardHeader>
                       <CardContent className="flex flex-col gap-2">
                         {data?.data.bookingRequest.guestID.emailVerified ? (
-                          <div className="w-max flex items-center justify-center gap-2">
+                          <div className="flex w-max items-center justify-center gap-2">
                             {" "}
                             <CheckCircledIcon
                               color="#FFF"
                               width={22}
                               height={22}
-                              className="inline-block bg-green-600 rounded-full"
+                              className="inline-block rounded-full bg-green-600"
                             />{" "}
                             <p className="text-sm font-semibold text-gray-600">
                               Email verified
                             </p>
                           </div>
                         ) : (
-                          <div className="w-max flex items-center justify-center gap-2">
+                          <div className="flex w-max items-center justify-center gap-2">
                             {" "}
                             <CrossCircledIcon
                               color="#FFF"
                               width={22}
                               height={22}
-                              className="inline-block bg-red-600 rounded-full"
+                              className="inline-block rounded-full bg-red-600"
                             />{" "}
                             <p className="text-sm font-semibold text-gray-600">
                               Email verified
@@ -131,26 +131,26 @@ function BookingRequest() {
                           </div>
                         )}
                         {data?.data.bookingRequest.guestID.identityVerified ? (
-                          <div className="w-max flex items-center justify-center gap-2">
+                          <div className="flex w-max items-center justify-center gap-2">
                             {" "}
                             <CheckCircledIcon
                               color="#FFF"
                               width={22}
                               height={22}
-                              className="inline-block bg-green-600 rounded-full"
+                              className="inline-block rounded-full bg-green-600"
                             />{" "}
                             <p className="text-sm font-semibold text-gray-600">
                               Identity verified
                             </p>
                           </div>
                         ) : (
-                          <div className="w-max flex items-center justify-center gap-2">
+                          <div className="flex w-max items-center justify-center gap-2">
                             {" "}
                             <CrossCircledIcon
                               color="#FFF"
                               width={22}
                               height={22}
-                              className="inline-block bg-red-600 rounded-full"
+                              className="inline-block rounded-full bg-red-600"
                             />{" "}
                             <p className="text-sm font-semibold text-gray-600">
                               Identity (not verified)
@@ -158,13 +158,13 @@ function BookingRequest() {
                           </div>
                         )}
                         {data?.data.bookingRequest.guestID.mobileVerified ? (
-                          <div className="w-max flex items-center justify-center gap-2">
+                          <div className="flex w-max items-center justify-center gap-2">
                             {" "}
                             <CheckCircledIcon
                               color="#FFF"
                               width={22}
                               height={22}
-                              className="inline-block bg-green-600 rounded-full"
+                              className="inline-block rounded-full bg-green-600"
                             />{" "}
                             <p className="text-sm font-semibold text-gray-600">
                               Mobile verified
@@ -174,13 +174,13 @@ function BookingRequest() {
                             </p>
                           </div>
                         ) : (
-                          <div className="w-max flex items-center justify-center gap-2">
+                          <div className="flex w-max items-center justify-center gap-2">
                             {" "}
                             <CrossCircledIcon
                               color="#FFF"
                               width={22}
                               height={22}
-                              className="inline-block bg-red-600 rounded-full"
+                              className="inline-block rounded-full bg-red-600"
                             />{" "}
                             <p className="text-sm font-semibold text-gray-600">
                               Mobile (not verified)
@@ -192,16 +192,16 @@ function BookingRequest() {
                   </DialogContent>
                 </Dialog>
 
-                <div className="w-max h-max border rounded-md p-4 shadow-md">
+                <div className="h-max w-max rounded-md border p-4 shadow-md">
                   <div className="flex items-center justify-between gap-2">
-                    <CardDescription className="font-semibold text-sm text-black">
+                    <CardDescription className="text-sm font-semibold text-black">
                       Requested dates
                     </CardDescription>
                     {compareAsc(
                       new Date().setHours(0, 0, 0, 0),
                       new Date(
-                        data?.data.bookingRequest.requestedBookingDateStartsAt
-                      )
+                        data?.data.bookingRequest.requestedBookingDateStartsAt,
+                      ),
                     ) > 0 ? (
                       <Badge variant={"destructive"}>Expired</Badge>
                     ) : (
@@ -210,11 +210,11 @@ function BookingRequest() {
                   </div>
                   <CardDescription className="mt-2 font-medium">
                     {new Date(
-                      data?.data.bookingRequest.requestedBookingDateStartsAt
+                      data?.data.bookingRequest.requestedBookingDateStartsAt,
                     ).toDateString()}
                     {" - "}
                     {new Date(
-                      data?.data.bookingRequest.requestedBookingDateEndsAt
+                      data?.data.bookingRequest.requestedBookingDateEndsAt,
                     ).toDateString()}
                   </CardDescription>
                 </div>
@@ -224,7 +224,7 @@ function BookingRequest() {
           <Separator />
           <CardFooter className="justify-between gap-2 p-4">
             <div className="flex items-center gap-2">
-              <Button className="bg-gray-950 rounded-full">Accept</Button>
+              <Button className="rounded-full bg-gray-950">Accept</Button>
               <DeclineReasons />
             </div>
             <Button variant={"link"}>

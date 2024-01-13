@@ -23,7 +23,7 @@ function MessageHost({ listing }: { listing: TListing }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} className="p-6 border-black rounded-full">
+        <Button variant={"outline"} className="rounded-full border-black p-6">
           Contact Host
         </Button>
       </DialogTrigger>
@@ -44,7 +44,7 @@ function MessageHost({ listing }: { listing: TListing }) {
             disabled={!content || isPending}
             onClick={sendMessageToHost}
             variant={"outline"}
-            className="border-black p-5 rounded-full"
+            className="rounded-full border-black p-5"
           >
             Send message
           </Button>

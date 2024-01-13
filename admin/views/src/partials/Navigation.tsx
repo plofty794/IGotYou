@@ -15,8 +15,8 @@ function Navigation() {
           <NavLink className="font-bold opacity-70" to={"/identity-photos"}>
             ID's
           </NavLink>
-          <NavLink className="font-bold opacity-70" to={"/payments"}>
-            Payments
+          <NavLink className="font-bold opacity-70" to={"/Subscriptions"}>
+            Subscriptions
           </NavLink>
           <NavLink className="font-bold opacity-70" to={"/settings"}>
             Settings

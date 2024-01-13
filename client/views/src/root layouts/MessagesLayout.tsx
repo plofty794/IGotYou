@@ -50,8 +50,8 @@ function MessagesLayout() {
         setUserDetails(
           data?.data.userDetails.filter(
             (v: { username: string }) =>
-              auth.currentUser?.displayName != v.username
-          )
+              auth.currentUser?.displayName != v.username,
+          ),
         );
       } else {
         setUserDetails([]);
@@ -70,11 +70,11 @@ function MessagesLayout() {
       ) : (
         <>
           <main className="min-h-screen ">
-            <nav className="shadow py-5 px-28 flex justify-between items-center w-full max-w-screen-2xl mx-auto 2xl:rounded-b-lg">
+            <nav className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-28 py-5 shadow 2xl:rounded-b-lg">
               <Link to={"/"}>
                 <span>
                   <img
-                    className="object-cover w-[30px] max-h-full max-w-full"
+                    className="max-h-full w-[30px] max-w-full object-cover"
                     loading="lazy"
                     src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
                     alt="logo"
@@ -87,8 +87,8 @@ function MessagesLayout() {
             </nav>
             <section className="flex w-full">
               <div className=" w-1/4 p-8">
-                <div className="w-full flex items-center justify-between">
-                  <span className="block font-bold text-2xl">Messages</span>
+                <div className="flex w-full items-center justify-between">
+                  <span className="block text-2xl font-bold">Messages</span>
                   <MessageDialogFilter
                     queryClient={queryClient}
                     receiverName={receiverName}
@@ -99,11 +99,11 @@ function MessagesLayout() {
                   />
                 </div>
                 {conversations.isPending ? (
-                  <div className="w-max mx-auto p-10">
+                  <div className="mx-auto w-max p-10">
                     <l-ping size="40" speed="2" color="black"></l-ping>
                   </div>
                 ) : (
-                  <div className="w-full flex flex-col gap-3 py-6">
+                  <div className="flex w-full flex-col gap-3 py-6">
                     {conversations.data?.data.userConversations.length > 0 ? (
                       conversations.data?.data.userConversations.map(
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,24 +114,24 @@ function MessagesLayout() {
                           participants: any[];
                           _id: string;
                         }) => (
-                          <div className="p-2 bg-[#F5F5F5] rounded-md">
+                          <div className="rounded-md bg-[#F5F5F5] p-2">
                             <NavLink
                               to={`/messages/conversation/${v._id}`}
                               key={v._id}
                               className="flex flex-col gap-2 "
                             >
                               {v.lastMessage != null ? (
-                                <span className="font-semibold w-max mx-auto text-xs">
+                                <span className="mx-auto w-max text-xs font-semibold">
                                   {conversations.data.data.currentUserID ===
                                   v.lastMessage.senderID._id ? (
                                     <span className="flex items-center gap-1">
-                                      <span className="max-w-max w-32 whitespace-nowrap overflow-hidden text-ellipsis">
+                                      <span className="w-32 max-w-max overflow-hidden text-ellipsis whitespace-nowrap">
                                         You: {v.lastMessage.content}{" "}
                                       </span>
-                                      <CircleIcon className="w-1 h-1 bg-gray-400 rounded-full" />
+                                      <CircleIcon className="h-1 w-1 rounded-full bg-gray-400" />
                                       {formatDistanceToNow(
                                         new Date(v.lastMessage.createdAt),
-                                        { addSuffix: true }
+                                        { addSuffix: true },
                                       )}
                                     </span>
                                   ) : (
@@ -142,38 +142,38 @@ function MessagesLayout() {
                                           : "font-extrabold"
                                       }`}
                                     >
-                                      <span className="max-w-max w-32 whitespace-nowrap overflow-hidden text-ellipsis">
+                                      <span className="w-32 max-w-max overflow-hidden text-ellipsis whitespace-nowrap">
                                         {v.lastMessage.senderID.username}:{" "}
                                         {v.lastMessage.content}{" "}
                                       </span>
-                                      <CircleIcon className="w-1 h-1 bg-gray-400 rounded-full" />
+                                      <CircleIcon className="h-1 w-1 rounded-full bg-gray-400" />
                                       {formatDistanceToNow(
                                         new Date(v.lastMessage.createdAt),
-                                        { addSuffix: true }
+                                        { addSuffix: true },
                                       )}
                                     </div>
                                   )}
                                 </span>
                               ) : (
-                                <span className="font-semibold w-max mx-auto text-xs">
+                                <span className="mx-auto w-max text-xs font-semibold">
                                   You are connected with{" "}
                                 </span>
                               )}
-                              <span className="font-bold text-sm text-center w-full">
+                              <span className="w-full text-center text-sm font-bold">
                                 {
                                   v.participants.find(
                                     (u) =>
                                       u.username !==
-                                      auth.currentUser?.displayName
+                                      auth.currentUser?.displayName,
                                   ).username
                                 }
                               </span>
                             </NavLink>
                           </div>
-                        )
+                        ),
                       )
                     ) : (
-                      <span className="mt-8 w-max mx-auto font-medium text-gray-600">
+                      <span className="mx-auto mt-8 w-max font-medium text-gray-600">
                         No messages found.
                       </span>
                     )}
@@ -182,14 +182,14 @@ function MessagesLayout() {
               </div>
               <div className="w-3/4">
                 {!conversationID && (
-                  <div className="h-[70vh] flex flex-col gap-4 items-center justify-center">
+                  <div className="flex h-[70vh] flex-col items-center justify-center gap-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
                       strokeWidth={1}
                       stroke="currentColor"
-                      className="w-16 h-16"
+                      className="h-16 w-16"
                     >
                       <path
                         strokeLinecap="round"
@@ -197,17 +197,17 @@ function MessagesLayout() {
                         d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
                       />
                     </svg>
-                    <div className="flex flex-col items-center gap-2 justify-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
                       <span className="text-2xl font-semibold">
                         Your messages
                       </span>
-                      <span className="text-gray-600 font-medium">
+                      <span className="font-medium text-gray-600">
                         Send private messages to a user
                       </span>
                     </div>
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button className="bg-gray-950 rounded-full">
+                        <Button className="rounded-full bg-gray-950">
                           Send message
                         </Button>
                       </DialogTrigger>
@@ -219,7 +219,7 @@ function MessagesLayout() {
                           <div className="flex w-full items-center justify-center gap-2">
                             <Label
                               htmlFor="username"
-                              className="font-semibold text-sm"
+                              className="text-sm font-semibold"
                             >
                               To:
                             </Label>
@@ -228,7 +228,7 @@ function MessagesLayout() {
                               onChange={(e) => setReceiverName(e.target.value)}
                               autoComplete="off"
                               placeholder="Search username"
-                              className="text-sm font-medium p-2"
+                              className="p-2 text-sm font-medium"
                               id="username"
                             />
                             <TooltipProvider>
@@ -246,7 +246,7 @@ function MessagesLayout() {
                                       viewBox="0 0 24 24"
                                       strokeWidth={1.5}
                                       stroke="currentColor"
-                                      className="w-6 h-6"
+                                      className="h-6 w-6"
                                     >
                                       <path
                                         strokeLinecap="round"
@@ -263,7 +263,7 @@ function MessagesLayout() {
                             </TooltipProvider>
                           </div>
                         </DialogHeader>
-                        <ScrollArea className="w-full h-60 p-4">
+                        <ScrollArea className="h-60 w-full p-4">
                           {!userDetails?.length ? (
                             <div className="w-max">
                               <span className="text-sm font-semibold text-gray-600">
@@ -275,7 +275,7 @@ function MessagesLayout() {
                               <>
                                 <Card
                                   onClick={() => setReceiverName(v.username)}
-                                  className={`hover:cursor-pointer hover:bg-[#F5F5F5] shadow-none border-none ${
+                                  className={`border-none shadow-none hover:cursor-pointer hover:bg-[#F5F5F5] ${
                                     receiverName === v.username
                                       ? "bg-[#F5F5F5]"
                                       : ""
@@ -304,7 +304,7 @@ function MessagesLayout() {
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-4 h-4"
+                                            className="h-4 w-4"
                                           >
                                             <path
                                               strokeLinecap="round"
@@ -319,7 +319,7 @@ function MessagesLayout() {
                                       </div>
                                     </div>
                                     {receiverName === v.username && (
-                                      <CheckIcon className="w-5 h-5" />
+                                      <CheckIcon className="h-5 w-5" />
                                     )}
                                   </CardHeader>
                                 </Card>
@@ -334,10 +334,10 @@ function MessagesLayout() {
                               !userDetails?.find(
                                 (v) =>
                                   v.username.toLowerCase() ===
-                                  receiverName.toLowerCase()
+                                  receiverName.toLowerCase(),
                               ) || isPending
                             }
-                            className="w-full bg-gray-950 rounded-full p-5"
+                            className="w-full rounded-full bg-gray-950 p-5"
                           >
                             Chat
                           </Button>

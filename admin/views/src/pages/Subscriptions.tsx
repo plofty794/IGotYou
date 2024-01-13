@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 
-function Payments() {
+function Subscriptions() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, isPending } = useGetPendingPayments();
   const verifyPayment = useVerifyPayment();
@@ -28,7 +28,7 @@ function Payments() {
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4 overflow-clip">
         <div className="w-full flex justify-between">
-          <h1 className="font-bold text-3xl">Payments</h1>
+          <h1 className="font-bold text-3xl">Subscriptions</h1>
           <Button className="bg-gray-950">
             <Link to={"/verified-payments"}>View verified payments</Link>
           </Button>
@@ -53,9 +53,9 @@ function Payments() {
                                   loading="lazy"
                                 />
                               </DialogTrigger>
-                              <DialogContent className="h-screen p-0">
+                              <DialogContent className="max-w-3xl h-full p-0">
                                 <img
-                                  className="aspect-square object-cover h-full rounded-md "
+                                  className="object-cover rounded-md"
                                   src={v.paymentProofPhoto}
                                   alt=""
                                   loading="lazy"
@@ -79,13 +79,14 @@ function Payments() {
                             <Button
                               disabled={verifyPayment.isPending}
                               type="button"
+                              variant={"destructive"}
                               onClick={() =>
                                 verifyPayment.mutate({
                                   _id: v._id,
                                   paymentStatus: "reject",
                                 })
                               }
-                              className="bg-red-600 w-full"
+                              className="w-full"
                             >
                               Reject
                             </Button>
@@ -126,4 +127,4 @@ function Payments() {
   );
 }
 
-export default Payments;
+export default Subscriptions;

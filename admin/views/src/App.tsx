@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import { useContext } from "react";
 import { UserStateContextProvider } from "./context/UserStateContext";
 import Users from "./pages/Users";
-import Payments from "./pages/Payments";
+import Subscriptions from "./pages/Subscriptions";
 import VerifiedPayments from "./pages/VerifiedPayments";
 import IdentityPhotos from "./pages/IdentityPhotos";
 
@@ -46,10 +46,10 @@ function App() {
             }
           />
           <Route
-            path="payments"
+            path="subscriptions"
             element={
               state.state ?? isAdmin ? (
-                <Payments />
+                <Subscriptions />
               ) : (
                 <Navigate to={"/login"} replace />
               )

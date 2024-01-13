@@ -16,6 +16,7 @@ import { fadeIn, fadeOut } from "@cloudinary/url-gen/actions/effect";
 import { Cloudinary } from "@cloudinary/url-gen/index";
 import UpdateWishlist from "./UpdateWishlist";
 import { useState } from "react";
+import { TListing } from "@/root layouts/BecomeAHostLayout";
 
 const cld = new Cloudinary({
   cloud: {
@@ -23,17 +24,16 @@ const cld = new Cloudinary({
   },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function AssetsDrawer({ listing }: { listing: any }) {
+function AssetsDrawer({ listing }: { listing: TListing }) {
   const [viewListing, setViewListing] = useState("");
 
   return (
     <Drawer onClose={() => setViewListing("")}>
       <DrawerTrigger>
-        <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl h-80 overflow-hidden">
+        <div className="mt-4 grid h-80 grid-cols-2 gap-1 overflow-hidden rounded-xl">
           {listing.listingAssets[0].resource_type === "video" ? (
             <AdvancedImage
-              className="object-cover h-full w-full"
+              className="object-cover"
               cldImg={cld
                 .image(listing.listingAssets[0].public_id)
                 .setAssetType("video")
@@ -47,7 +47,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
             />
           ) : (
             <AdvancedImage
-              className="object-cover h-full w-full"
+              className="object-cover"
               cldImg={cld.image(listing.listingAssets[0].public_id)}
               plugins={[
                 lazyload(),
@@ -57,14 +57,14 @@ function AssetsDrawer({ listing }: { listing: any }) {
               ]}
             />
           )}
-          <div className="grid grid-cols-2 gap-1 h-full">
+          <div className="grid h-full grid-cols-2 gap-1">
             {listing.listingAssets.map(
               (asset: TListingAsset, i: number) =>
                 i != 0 &&
                 (asset.resource_type === "video" ? (
                   <AdvancedImage
                     key={asset._id}
-                    className="object-cover h-full w-full"
+                    className="h-40 w-full object-cover"
                     cldImg={cld
                       .image(asset.public_id)
                       .setAssetType("video")
@@ -78,7 +78,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
                   />
                 ) : (
                   <AdvancedImage
-                    className="object-cover  h-full w-full"
+                    className="h-40 w-full object-cover"
                     cldImg={cld.image(asset.public_id)}
                     plugins={[
                       lazyload(),
@@ -87,23 +87,23 @@ function AssetsDrawer({ listing }: { listing: any }) {
                       }),
                     ]}
                   />
-                ))
+                )),
             )}
           </div>
         </div>
       </DrawerTrigger>
       <DrawerContent className="p-0">
         <ScrollArea className="h-screen">
-          <DrawerHeader className="flex justify-between w-full">
+          <DrawerHeader className="flex w-full justify-between">
             <DrawerTitle className="text-3xl font-bold">
-              {listing.serviceDescription}'s Assets
+              {listing.serviceTitle}'s Assets
             </DrawerTitle>
             <div className="flex items-center justify-center gap-2 p-2">
               <p className="text-base font-semibold underline">Save</p>
-              <UpdateWishlist listingID={listing._id} />
+              <UpdateWishlist listingID={listing._id as string} />
             </div>
           </DrawerHeader>
-          <div className="flex flex-col items-center justify-center w-full gap-4 py-8">
+          <div className="flex w-full flex-col items-center justify-center gap-4 py-8">
             {listing.listingAssets.map((asset: TListingAsset) =>
               asset.resource_type === "video" ? (
                 <div
@@ -111,15 +111,16 @@ function AssetsDrawer({ listing }: { listing: any }) {
                     e.currentTarget.scrollIntoView({
                       behavior: "smooth",
                       block: "center",
+                      inline: "center",
                     });
                     setViewListing(asset.public_id);
                   }}
-                  className={`relative w-4/5 h-4/6 cursor-pointer ${
-                    asset.public_id === viewListing ? "outline rounded-2xl" : ""
+                  className={`relative h-4/6 w-4/5 cursor-pointer ${
+                    asset.public_id === viewListing ? "rounded-2xl outline" : ""
                   }`}
                 >
                   <AdvancedImage
-                    className="relative -z-10 object-contain w-full h-full mx-auto rounded-2xl border shadow-lg"
+                    className="relative -z-10 mx-auto h-full w-full rounded-2xl border object-contain shadow-lg"
                     cldImg={cld
                       .image(asset.public_id)
                       .setAssetType("video")
@@ -132,7 +133,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
                     ]}
                   />
                   <AdvancedVideo
-                    className="absolute opacity-0 top-0 left-[50%] translate-x-[-50%] z-0 h-full object-contain hover:opacity-100 hover:z-10 rounded-2xl border shadow-lg w-max"
+                    className="absolute left-[50%] top-0 z-0 h-full w-max translate-x-[-50%] rounded-2xl border object-contain opacity-0 shadow-lg hover:z-10 hover:opacity-100"
                     muted
                     onMouseOver={(e) => {
                       e.currentTarget.play();
@@ -164,15 +165,16 @@ function AssetsDrawer({ listing }: { listing: any }) {
                     e.currentTarget.scrollIntoView({
                       behavior: "smooth",
                       block: "center",
+                      inline: "center",
                     });
                     setViewListing(asset.public_id);
                   }}
-                  className={`w-3/5 h-4/6 cursor-pointer ${
-                    asset.public_id === viewListing ? "outline rounded-2xl" : ""
+                  className={`max-w-4xl cursor-pointer ${
+                    asset.public_id === viewListing ? "rounded-2xl outline" : ""
                   }`}
                 >
                   <AdvancedImage
-                    className="object-cover rounded-2xl border shadow-xl w-full"
+                    className="rounded-2xl border object-cover shadow-xl"
                     cldImg={cld.image(asset.public_id)}
                     plugins={[
                       lazyload(),
@@ -182,7 +184,7 @@ function AssetsDrawer({ listing }: { listing: any }) {
                     ]}
                   />
                 </span>
-              )
+              ),
             )}
           </div>
         </ScrollArea>

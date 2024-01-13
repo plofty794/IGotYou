@@ -17,8 +17,9 @@ function useVerifyEmail() {
   return useMutation({
     mutationFn: async (data: TUserUpdates) => {
       try {
-        await sendEmailVerification(auth.currentUser!);
-        if (data.emailVerified) {
+        if (!data.emailVerified) {
+          await sendEmailVerification(auth.currentUser!);
+        } else {
           axiosPrivateRoute.patch("/api/users/current-user/verify-email", {
             ...data,
           });

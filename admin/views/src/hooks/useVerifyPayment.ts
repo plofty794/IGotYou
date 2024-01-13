@@ -13,7 +13,7 @@ function useVerifyPayment() {
   return useMutation({
     mutationFn: async (data: TData) => {
       return await axiosPrivateRoute.patch(
-        "/api/payments/update-payment-status",
+        "/api/subscriptions/update-payment-status",
         { ...data }
       );
     },

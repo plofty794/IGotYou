@@ -5,7 +5,9 @@ function useGetPendingPayments() {
   return useInfiniteQuery({
     queryKey: ["pending-payments"],
     queryFn: async ({ pageParam }) => {
-      return await axiosPrivateRoute.get(`/api/payments/pending/${pageParam}`);
+      return await axiosPrivateRoute.get(
+        `/api/subscriptions/pending/${pageParam}`
+      );
     },
     getNextPageParam: (_, page) => page.length + 1,
     getPreviousPageParam: (_, page) => page.length - 1,

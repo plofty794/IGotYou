@@ -33,7 +33,7 @@ function DeclineReasons() {
       </DialogTrigger>
       <DialogContent className="gap-4">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold mb-2">
+          <DialogTitle className="mb-2 text-2xl font-bold">
             Why are you declining this request?
           </DialogTitle>
         </DialogHeader>
@@ -43,7 +43,7 @@ function DeclineReasons() {
               <>
                 <div
                   key={index}
-                  className="flex items-center justify-between h-max w-full py-2"
+                  className="flex h-max w-full items-center justify-between py-2"
                 >
                   <Label
                     htmlFor={reason}
@@ -52,7 +52,7 @@ function DeclineReasons() {
                     {reason}
                   </Label>
                   <RadioGroupItem
-                    className="w-6 h-6"
+                    className="h-6 w-6"
                     value={reason}
                     id={reason}
                   />
@@ -65,7 +65,7 @@ function DeclineReasons() {
         <DialogFooter>
           <Button
             disabled={!declineReason}
-            className="bg-gray-950 rounded-full p-6 text-lg"
+            className="rounded-full bg-gray-950 p-6 text-lg"
           >
             Submit
           </Button>

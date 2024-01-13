@@ -38,9 +38,12 @@ const listingSchema = new Schema(
       ],
       required: true,
     },
-    serviceDescription: {
+    serviceTitle: {
       type: String,
       required: true,
+    },
+    serviceDescription: {
+      type: String,
     },
     listingAssets: {
       type: [listingAssetsSchema],

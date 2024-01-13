@@ -22,6 +22,7 @@ import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import AssetsDrawer from "@/partials/components/AssetsDrawer";
 import UpdateWishlist from "@/partials/components/UpdateWishlist";
 import MessageHost from "@/partials/components/messages/MessageHost";
+import VisitListingAccordion from "@/partials/components/VisitListingAccordion";
 
 function VisitListing() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ function VisitListing() {
   return (
     <>
       <section className="mx-auto w-5/6">
-        <div className="pt-6 w-full flex justify-between items-center">
+        <div className="flex w-full items-center justify-between pt-6">
           <span className="flex items-center gap-1 text-2xl font-semibold">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +50,7 @@ function VisitListing() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"
@@ -57,7 +58,7 @@ function VisitListing() {
                 d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5"
               />
             </svg>
-            {listing.serviceDescription}
+            {listing.serviceTitle}
           </span>
           <div className="flex items-center justify-center gap-2 p-2">
             <p className="text-sm font-semibold underline">Save</p>
@@ -65,20 +66,23 @@ function VisitListing() {
           </div>
         </div>
         <AssetsDrawer listing={listing} />
-        <div className="mt-6 w-full flex gap-4 mb-4">
-          <div className="flex flex-col gap-2 w-full">
+        <div className="mb-4 mt-6 flex w-full gap-4">
+          <div className="flex w-full flex-col gap-2">
             <div className="flex flex-col gap-1">
               <div className="w-4/5 overflow-hidden text-ellipsis whitespace-nowrap">
-                <span className="text-xl font-semibold w-max">
+                <span className="w-max text-xl font-semibold">
                   {listing.serviceLocation}
                 </span>
               </div>
+              <span className="w-max text-base font-semibold text-gray-600">
+                {listing.serviceDescription ?? "No description"}
+              </span>
               <span className="flex items-center gap-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="w-5 h-5"
+                  className="h-5 w-5"
                 >
                   <path
                     fillRule="evenodd"
@@ -89,7 +93,7 @@ function VisitListing() {
                 {listing.host.rating.length ? (
                   listing.host.rating
                 ) : (
-                  <p className="font-semibold text-lg">No ratings yet</p>
+                  <p className="text-lg font-semibold">No ratings yet</p>
                 )}
               </span>
               <div className="flex items-center">
@@ -98,9 +102,9 @@ function VisitListing() {
             </div>
             <Card className="border-0 shadow-none">
               <Separator />
-              <CardHeader className="flex-row justify-between items-center w-full">
-                <div className="flex items-center justify-center gap-2 w-max">
-                  <Avatar className="w-12 h-12">
+              <CardHeader className="w-full flex-row items-center justify-between">
+                <div className="flex w-max items-center justify-center gap-2">
+                  <Avatar className="h-12 w-12">
                     <AvatarImage
                       className="max-w-full object-cover"
                       src={
@@ -118,8 +122,8 @@ function VisitListing() {
                       {formatDistanceToNow(
                         subDays(
                           new Date(listing.host.subscriptionExpiresAt),
-                          30
-                        )
+                          30,
+                        ),
                       )}{" "}
                       of hosting
                     </Badge>
@@ -128,10 +132,11 @@ function VisitListing() {
                 <MessageHost listing={listing} />
               </CardHeader>
               <Separator />
+              <VisitListingAccordion listing={listing} />
             </Card>
           </div>
-          <Card className="w-3/6 border-gray-300 shadow-xl">
-            <CardHeader className="flex-row justify-between w-full">
+          <Card className="h-max w-3/6 border-gray-300 shadow-xl">
+            <CardHeader className="w-full flex-row justify-between">
               <CardTitle className="text-xl font-semibold">
                 {formatValue({
                   value: String(listing.price),
@@ -140,30 +145,27 @@ function VisitListing() {
                     currency: "php",
                   },
                 })}{" "}
-                <span className="uppercase text-sm">service</span>
+                <span className="text-sm uppercase">service</span>
               </CardTitle>
-              {compareAsc(
-                new Date().setHours(0, 0, 0, 0),
-                new Date(listing.endsAt)
-              ) >= 0 && (
+              {listing.status === "Ended" && (
                 <Badge variant={"destructive"} className="w-max">
                   Listing ended
                 </Badge>
               )}
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 rounded-md border border-gray-400 w-full">
-                <div className="flex flex-col gap-1 p-2 border-r border-gray-400 ">
-                  <span className="text-xs uppercase font-bold">
+              <div className="grid w-full grid-cols-2 rounded-md border border-gray-400">
+                <div className="flex flex-col gap-1 border-r border-gray-400 p-2 ">
+                  <span className="text-xs font-bold uppercase">
                     Available at
                   </span>
-                  <span className="text-sm text-gray-600 font-bold">
+                  <span className="text-sm font-bold text-gray-600">
                     {new Date(listing.availableAt as Date).toDateString()}
                   </span>
                 </div>
-                <div className="p-2 flex flex-col gap-1">
-                  <span className="text-xs uppercase font-bold">Ends at</span>
-                  <span className="text-sm text-gray-600 font-bold">
+                <div className="flex flex-col gap-1 p-2">
+                  <span className="text-xs font-bold uppercase">Ends at</span>
+                  <span className="text-sm font-bold text-gray-600">
                     {new Date(listing.endsAt as Date).toDateString()}
                   </span>
                 </div>
@@ -173,13 +175,13 @@ function VisitListing() {
                   disabled={
                     compareAsc(
                       new Date().setHours(0, 0, 0, 0),
-                      new Date(listing.endsAt)
+                      new Date(listing.endsAt),
                     ) >= 0
                   }
-                  className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full"
+                  className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold"
                 >
                   {user?.bookingRequests.find(
-                    (v: { listingID: string }) => v.listingID === listing._id
+                    (v: { listingID: string }) => v.listingID === listing._id,
                   ) ? (
                     <Link className="w-full" to="/bookings">
                       Check request status
@@ -189,7 +191,7 @@ function VisitListing() {
                       className={`w-full ${
                         compareAsc(
                           new Date().setHours(0, 0, 0, 0),
-                          new Date(listing.endsAt)
+                          new Date(listing.endsAt),
                         ) >= 0
                           ? "pointer-events-none"
                           : ""
@@ -203,11 +205,11 @@ function VisitListing() {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button className="mt-6 w-full p-6 bg-gray-950 text-sm font-semibold rounded-full">
+                    <Button className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold">
                       Continue
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="p-0 gap-0">
+                  <AlertDialogContent className="gap-0 p-0">
                     <AlertDialogHeader>
                       <div className="flex items-center gap-2 p-6">
                         <CircleBackslashIcon
@@ -215,7 +217,7 @@ function VisitListing() {
                           width={25}
                           height={25}
                         />
-                        <AlertDialogTitle className="font-semibold text-base">
+                        <AlertDialogTitle className="text-base font-semibold">
                           Oops! Your email isn't verified yet.
                         </AlertDialogTitle>
                       </div>
@@ -248,7 +250,7 @@ function VisitListing() {
                     </div>
                     <Separator />
                     <AlertDialogFooter className="p-4">
-                      <AlertDialogCancel className="font-medium text-sm rounded-full">
+                      <AlertDialogCancel className="rounded-full text-sm font-medium">
                         Close
                       </AlertDialogCancel>
                       <AlertDialogAction
@@ -256,10 +258,10 @@ function VisitListing() {
                           navigate(
                             `/users/show/${
                               auth.currentUser && auth.currentUser.uid
-                            }`
+                            }`,
                           )
                         }
-                        className="font-medium text-sm bg-gray-950 text-white rounded-full"
+                        className="rounded-full bg-gray-950 text-sm font-medium text-white"
                       >
                         Go to your profile
                       </AlertDialogAction>
