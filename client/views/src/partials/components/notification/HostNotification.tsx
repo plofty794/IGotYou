@@ -103,7 +103,7 @@ function HostNotification() {
               </span>
               {notifications?.length < 1 && (
                 <>
-                  <span className="m-2 mx-auto w-max p-4 text-xs font-bold ">
+                  <span className="m-2 mx-auto w-max p-4 text-sm font-bold text-gray-600">
                     No notifications
                   </span>
                 </>

@@ -71,7 +71,7 @@ const listingSchema = new Schema(
     },
     cancellationPolicy: {
       type: String,
-      enum: ["Flexible", "Moderate", "Strict"],
+      enum: ["Flexible", "Moderate", "Strict", "Non-refundable"],
       required: true,
     },
     reservedDates: {

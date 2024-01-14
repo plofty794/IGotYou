@@ -46,7 +46,7 @@ function VisitListingAccordion({ listing }: { listing: TListing }) {
             See when this listing is already filled.
           </AccordionTrigger>
           <AccordionContent>
-            {listing.reservedDates.length > 0
+            {listing.reservedDates!.length > 0
               ? "Has reservations"
               : "This listing is clear for reservations."}
           </AccordionContent>

@@ -225,10 +225,13 @@ const columns: ColumnDef<TListings>[] = [
             ) : row.original.status === "Active" ? (
               <DisableListingDialog
                 listingID={row.original._id}
-                serviceDescription={row.original.serviceDescription}
+                serviceTitle={row.original.serviceTitle}
               />
             ) : (
-              <EnableListing listingID={row.original._id} />
+              <EnableListing
+                listingID={row.original._id}
+                availableAt={row.original.availableAt}
+              />
             )}
 
             <DropdownMenuItem className="p-0">
@@ -332,6 +335,7 @@ export type TListings = {
   updatedAt: string;
   _id: string;
   status: string;
+  serviceTitle: string;
 };
 
 type TListingAssets = {
