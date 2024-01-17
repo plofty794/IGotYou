@@ -120,7 +120,7 @@ export const getWishlists: RequestHandler = async (req, res, next) => {
       .select("wishlists")
       .populate({
         path: "wishlists",
-        select: ["listingAssets", "host", "serviceDescription", "serviceType"],
+        select: ["listingAssets", "host", "serviceTitle", "serviceType"],
         populate: {
           path: "host",
           select: "username",
@@ -177,7 +177,7 @@ export const updateWishlist: RequestHandler = async (req, res, next) => {
 
     res
       .status(201)
-      .json({ message: "Success", listingName: listing.serviceDescription });
+      .json({ message: "Success", listingName: listing.serviceTitle });
   } catch (error) {
     next(error);
   }

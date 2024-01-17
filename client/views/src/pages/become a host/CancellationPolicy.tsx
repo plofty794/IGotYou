@@ -143,7 +143,7 @@ function CancellationPolicy() {
               </HoverCardTrigger>
               <HoverCardContent className="mx-auto flex w-2/5 flex-col p-0">
                 <ScrollArea className="h-max p-4">
-                  <span className="font-bold uppercase text-red-600">
+                  <span className="font-bold uppercase text-red-800">
                     Strict
                   </span>
                   <p className="mt-2 text-sm font-semibold text-gray-600">
@@ -164,7 +164,6 @@ function CancellationPolicy() {
                 </ScrollArea>
               </HoverCardContent>
             </HoverCard>
-
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Button
@@ -186,10 +185,9 @@ function CancellationPolicy() {
               </HoverCardTrigger>
               <HoverCardContent className="mx-auto flex w-3/4 flex-col p-0">
                 <ScrollArea className="h-max p-4">
-                  <span className="font-bold uppercase text-gray-900">
+                  <span className="font-bold uppercase text-red-600">
                     Non-refundable
                   </span>
-
                   <p className="mt-2 text-sm font-semibold text-gray-600">
                     Guests pay 10% less, but you keep your payout no matter when
                     they cancel.

@@ -41,9 +41,13 @@ function HostNotification() {
   }, [hostNotifications.data?.data.hostNotifications]);
 
   useEffect(() => {
-    socket?.on("send-hostNotification", () => {
+    socket?.on("send-hostNotification", (data) => {
+      console.log(data);
       queryClient.invalidateQueries({
         queryKey: ["host-booking-requests"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["host-notifications"],
       });
     });
   }, [queryClient, socket]);
@@ -112,7 +116,7 @@ function HostNotification() {
             {notifications?.length > 0 && (
               <>
                 <Separator />
-                <ScrollArea className="h-80">
+                <ScrollArea className="h-max max-h-80">
                   <div className="flex flex-col items-center">
                     {notifications?.map((v) => (
                       <>

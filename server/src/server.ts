@@ -96,6 +96,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("send-bookingRequest-update", (data) => {
+    const activeUser = findActiveUser(data.receiverName);
+    if (activeUser) {
+      io.to(activeUser.socketId).emit(
+        "booking-requestUpdate",
+        data.bookingRequestID
+      );
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
     removeUser(socket.id);

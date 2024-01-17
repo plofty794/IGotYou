@@ -80,7 +80,7 @@ const listingSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Active", "Inactive", "Ended"],
+      enum: ["Active", "Inactive", "Ended", "Disabled"],
       default: "Active",
     },
   },

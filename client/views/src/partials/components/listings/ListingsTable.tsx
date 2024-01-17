@@ -164,17 +164,20 @@ const columns: ColumnDef<TListings>[] = [
     accessorKey: "cancellationPolicy",
     header: "Cancellation policy",
     cell: (props) => (
-      <p
+      <Badge
+        variant={"outline"}
         className={`font-bold ${
           props.getValue() === "Flexible"
             ? "text-green-600"
             : props.getValue() === "Moderate"
               ? "text-amber-600"
-              : "text-red-600"
+              : props.getValue() === "Non-refundable"
+                ? "text-red-600"
+                : "text-red-800"
         }`}
       >
         {props.getValue() as string}
-      </p>
+      </Badge>
     ),
   },
   {
@@ -193,13 +196,21 @@ const columns: ColumnDef<TListings>[] = [
     },
     cell: ({ row }) => (
       <Badge
-        variant={`${
-          row.original.status === "Active" ? "default" : "destructive"
+        className={`${
+          row.original.status === "Active"
+            ? "bg-green-500 hover:bg-green-600"
+            : row.original.status === "Inactive"
+              ? "bg-gray-500 hover:bg-slate-600"
+              : row.original.status === "Disabled"
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-gray-800 hover:bg-gray-900"
         }`}
       >
         {row.original.status}
       </Badge>
     ),
+    filterFn: (row, _, filterValue: string) =>
+      row.original.status === filterValue,
   },
   {
     id: "actions",
@@ -222,16 +233,14 @@ const columns: ColumnDef<TListings>[] = [
                 )}
                 listingID={row.original._id}
               />
-            ) : row.original.status === "Active" ? (
+            ) : row.original.status === "Active" ||
+              row.original.status === "Inactive" ? (
               <DisableListingDialog
                 listingID={row.original._id}
                 serviceTitle={row.original.serviceTitle}
               />
             ) : (
-              <EnableListing
-                listingID={row.original._id}
-                availableAt={row.original.availableAt}
-              />
+              <EnableListing listingID={row.original._id} />
             )}
 
             <DropdownMenuItem className="p-0">
@@ -326,9 +335,8 @@ export type TListings = {
   endsAt: string;
   host: THost;
   listingAssets: [TListingAssets];
-  listingPhotos: [TListingAssets];
   price: number;
-  serviceDescription: string;
+  serviceDescription?: string;
   serviceType: string;
   cancellationPolicy: string;
   serviceLocation: string;

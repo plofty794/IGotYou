@@ -421,7 +421,9 @@ function BecomeAHostLayout() {
                     className="rounded-full bg-gray-950 p-6 text-lg font-semibold"
                   >
                     <Link
-                      to={`/manage-your-service/${data?.data.newListingID}/details`}
+                      to={`/hosting-listings/edit/${data?.data.newListingID}`}
+                      reloadDocument
+                      replace
                     >
                       Check your listing
                     </Link>

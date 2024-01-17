@@ -18,10 +18,6 @@ const reservationsSchema = new Schema(
       type: Date,
       required: true,
     },
-    message: {
-      type: String,
-      required: true,
-    },
     listingID: {
       type: Types.ObjectId,
       ref: "Listings",
