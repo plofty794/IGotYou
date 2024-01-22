@@ -7,6 +7,9 @@ import HostNotifications from "../models/HostNotifications";
 import Listings from "../models/Listings";
 import createHttpError from "http-errors";
 import GuestNotifications from "../models/GuestNotifications";
+import { createTransport } from "nodemailer";
+import env from "../utils/envalid";
+import { emailBookingRequestAccepted } from "../utils/emails/emailBookingRequestAccepted";
 
 type TBookingRequest = {
   hostID: string;
@@ -34,7 +37,7 @@ export const getBookingRequestDetails: RequestHandler = async (
         {
           path: "guestID",
           select:
-            "username email photoUrl emailVerified identityVerified mobileVerified mobilePhone educationalAttainment address work funFact mobilePhone",
+            "username email photoUrl emailVerified identityVerified mobileVerified mobilePhone educationalAttainment address work funFact mobilePhone userStatus",
         },
         {
           path: "listingID",
@@ -86,8 +89,6 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
       guestID: id,
       hostID,
       listingID,
-      requestedBookingDateStartsAt,
-      requestedBookingDateEndsAt,
     });
 
     if (bookingRequestAlreadyExist) {
@@ -390,6 +391,13 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
   const { bookingRequestID } = req.params;
   const { receiverName } = req.body;
+  const transport = createTransport({
+    service: "gmail",
+    auth: {
+      user: env.ADMIN_EMAIL,
+      pass: env.APP_PASSWORD,
+    },
+  });
   try {
     if (!id) {
       clearCookieAndThrowError(
@@ -406,7 +414,7 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       {
         new: true,
       }
-    );
+    ).populate({ path: "guestID", select: "email username" });
 
     const newReservation = await Reservations.create({
       guestID: approvedBookingRequests?.guestID,
@@ -426,6 +434,14 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       recipientID: approvedBookingRequests?.guestID,
       data: approvedBookingRequests?._id,
       notificationType: "Booking-Approved",
+    });
+
+    await transport.sendMail({
+      to: (approvedBookingRequests?.guestID as { email: string }).email,
+      subject: "Booking Request Update",
+      html: emailBookingRequestAccepted(
+        (approvedBookingRequests?.guestID as { username: string }).username
+      ),
     });
 
     res

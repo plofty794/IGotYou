@@ -22,6 +22,7 @@ export type TGuestID = {
   funFact: string;
   address: string;
   mobilePhone: string;
+  userStatus: string;
 };
 
 function GuestInformation({ guestID }: { guestID: TGuestID }) {
@@ -41,6 +42,9 @@ function GuestInformation({ guestID }: { guestID: TGuestID }) {
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
+        <p className="mx-auto w-max text-base font-semibold capitalize text-gray-600">
+          {guestID.userStatus}
+        </p>
         <h2 className="text-xl font-semibold">
           {guestID.username}'s information
         </h2>

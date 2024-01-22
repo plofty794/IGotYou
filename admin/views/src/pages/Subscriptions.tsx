@@ -53,7 +53,7 @@ function Subscriptions() {
                                   loading="lazy"
                                 />
                               </DialogTrigger>
-                              <DialogContent className="max-w-3xl h-full p-0">
+                              <DialogContent className="max-w-3xl h-max max-h-[70%] p-0">
                                 <img
                                   className="object-cover rounded-md"
                                   src={v.paymentProofPhoto}

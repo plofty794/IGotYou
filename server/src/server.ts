@@ -15,6 +15,10 @@ import { notificationRoutes } from "./routes/notificationRoutes";
 import { identityRoutes } from "./routes/identityPhotoRoutes";
 import { reservationRoutes } from "./routes/reservationRoutes";
 import { bookingRequestRoutes } from "./routes/bookingRequestRoutes";
+import Users from "./models/Users";
+import { addDays } from "date-fns";
+import cron from "node-cron";
+import { createTransport } from "nodemailer";
 
 const app = express();
 const server = app
@@ -116,16 +120,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// import ipinfoMiddleware, { defaultIPSelector } from "ipinfo-express";
-// app.use(
-//   ipinfoMiddleware({
-//     token: env.IPINFO_TOKEN,
-//     ipSelector: defaultIPSelector,
-//     cache: null,
-//     timeout: 5000,
-//   })
-// );
-
 app.use(cookieParser());
 app.use(cors({ origin: [env.CLIENT_URL, env.ADMIN_URL], credentials: true }));
 app.use(express.json());
@@ -145,3 +139,36 @@ app.use("/api", identityRoutes);
 app.use("/api", reservationRoutes);
 app.use("/api", bookingRequestRoutes);
 app.use(errorHandler);
+
+cron.schedule("0 8 * * *", async () => {
+  const transport = createTransport({
+    service: "gmail",
+    auth: {
+      user: env.ADMIN_EMAIL,
+      pass: env.APP_PASSWORD,
+    },
+  });
+  try {
+    const fiveDaysFromNow = addDays(new Date().setHours(0, 0, 0, 0), 5);
+
+    const subscriptionEndsInFiveDays = await Users.find({
+      subscriptionExpiresAt: {
+        $lte: fiveDaysFromNow,
+      },
+    }).select("username email");
+
+    if (!subscriptionEndsInFiveDays.length) return;
+
+    await Promise.all(
+      subscriptionEndsInFiveDays.map(async (user) => {
+        await transport.sendMail({
+          to: user.email,
+          subject: "Subscription Status Update",
+          html: "<p>Hello, world</p>",
+        });
+      })
+    );
+  } catch (error) {
+    console.error(error);
+  }
+});

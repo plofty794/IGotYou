@@ -41,8 +41,7 @@ function HostNotification() {
   }, [hostNotifications.data?.data.hostNotifications]);
 
   useEffect(() => {
-    socket?.on("send-hostNotification", (data) => {
-      console.log(data);
+    socket?.on("send-hostNotification", () => {
       queryClient.invalidateQueries({
         queryKey: ["host-booking-requests"],
       });
@@ -134,10 +133,9 @@ function HostNotification() {
                                   .join(" ")}{" "}
                               </p>
                               <span className="text-xs font-semibold text-red-600">
-                                {formatDistanceToNow(
-                                  new Date(v.createdAt as string),
-                                  { addSuffix: true },
-                                )}
+                                {formatDistanceToNow(new Date(v.createdAt), {
+                                  addSuffix: true,
+                                })}
                               </span>
                             </div>
                             {!v.read && (

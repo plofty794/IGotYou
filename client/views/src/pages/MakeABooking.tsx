@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from "@/partials/components/DatePicker";
-import { differenceInDays, format, formatDistance } from "date-fns";
+import { compareAsc, differenceInDays, format, formatDistance } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { formatValue } from "react-currency-input-field";
 import { DateRange } from "react-day-picker";
@@ -49,7 +49,13 @@ function MakeABooking() {
   });
 
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(listing.availableAt),
+    from:
+      compareAsc(
+        new Date().setHours(0, 0, 0, 0),
+        new Date(listing.availableAt),
+      ) > 0
+        ? new Date(new Date().setHours(0, 0, 0, 0))
+        : new Date(listing.availableAt),
     to: new Date(listing.endsAt),
   });
 
@@ -175,6 +181,7 @@ function MakeABooking() {
                   </Badge>
                 </div>
                 <Textarea
+                  spellCheck="true"
                   {...register("message")}
                   placeholder="Type your message here."
                   id="message"

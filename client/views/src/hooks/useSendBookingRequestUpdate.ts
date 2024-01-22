@@ -27,7 +27,7 @@ function useSendBookingRequestUpdate() {
       });
       toast({
         title: "Success! 🎉",
-        description: "Booking request has been sent.",
+        description: "Booking request has been updated.",
         className: "bg-white",
       });
     },
