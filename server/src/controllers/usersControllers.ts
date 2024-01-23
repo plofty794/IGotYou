@@ -4,8 +4,6 @@ import Users from "../models/Users";
 import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
-
-import BookingRequests from "../models/BookingRequests";
 import { getAuth } from "firebase-admin/auth";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {
@@ -68,7 +66,7 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       );
     }
     const user = await Users.findById(id)
-      .populate(["listings", "bookingRequests"])
+      .populate("rating")
       .select("-password")
       .exec();
 

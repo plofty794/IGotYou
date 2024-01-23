@@ -335,7 +335,16 @@ function App() {
         </Route>
 
         {/* MESSAGES Route */}
-        <Route path="/messages" element={<MessagesLayout />}>
+        <Route
+          path="/messages"
+          element={
+            User ?? token ?? identifier ? (
+              <MessagesLayout />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
+        >
           <Route
             path="conversation/:conversationID"
             element={
@@ -349,7 +358,16 @@ function App() {
         </Route>
 
         {/* BOOKINGS Route */}
-        <Route path="/bookings" element={<BookingsLayout />}>
+        <Route
+          path="/bookings"
+          element={
+            User ?? token ?? identifier ? (
+              <BookingsLayout />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
+        >
           <Route path="all" element={<AllBookingRequests />} />
           <Route path="approved" element={<ApprovedBookingRequests />} />
           <Route path="pending" element={<PendingBookingRequests />} />

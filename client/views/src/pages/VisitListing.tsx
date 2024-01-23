@@ -30,9 +30,6 @@ function VisitListing() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     listing: { listing },
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    userProfileData: { user },
   } = useOutletContext();
 
   useEffect(() => {
@@ -132,6 +129,42 @@ function VisitListing() {
                 <MessageHost listing={listing} />
               </CardHeader>
               <Separator />
+              <CardContent className="flex flex-col gap-4 px-0 py-6">
+                <h2 className="text-xl font-semibold">Cancellation Policy</h2>
+                {listing.cancellationPolicy === "Flexible" && (
+                  <p className="text-sm font-medium">
+                    Book with peace of mind! Get a full refund if you need to
+                    cancel up to 24 hours before your scheduled service. Perfect
+                    for last-minute changes or unexpected travel hiccups.
+                  </p>
+                )}
+                {listing.cancellationPolicy === "Moderate" && (
+                  <p className="text-sm font-medium">
+                    Moderate: Enjoy some flexibility while protecting your
+                    plans. Receive a full refund for cancellations made at least
+                    3 days before your service date. A great option for those
+                    with tentative plans.
+                  </p>
+                )}
+                {listing.cancellationPolicy === "Strict" && (
+                  <p className="text-sm font-medium">
+                    Strict: Secure your booking with confidence. For
+                    cancellations made 5 or more days ahead, you'll get a full
+                    refund. For cancellations within 3-5 days, you'll receive a
+                    50% refund. Please note, cancellations within 3 days are
+                    non-refundable.
+                  </p>
+                )}
+                {listing.cancellationPolicy === "Non-refundable" && (
+                  <p className="text-sm font-medium">
+                    Non-refundable: Save 10% on your service! In return, you'll
+                    secure your booking with no refunds offered for
+                    cancellations, regardless of timing. Ideal for travelers on
+                    a budget with confirmed plans.
+                  </p>
+                )}
+              </CardContent>
+              <Separator />
               <VisitListingAccordion listing={listing} />
             </Card>
           </div>
@@ -171,22 +204,16 @@ function VisitListing() {
                 </div>
               </div>
               {auth.currentUser?.emailVerified ? (
-                <Button
-                  disabled={
-                    compareAsc(
-                      new Date().setHours(0, 0, 0, 0),
-                      new Date(listing.endsAt),
-                    ) >= 0
-                  }
-                  className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold"
-                >
-                  {user?.bookingRequests.find(
-                    (v: { listingID: string }) => v.listingID === listing._id,
-                  ) ? (
-                    <Link className="w-full" to="/bookings">
-                      Check request status
-                    </Link>
-                  ) : (
+                <div className="flex flex-col items-center gap-4">
+                  <Button
+                    disabled={
+                      compareAsc(
+                        new Date().setHours(0, 0, 0, 0),
+                        new Date(listing.endsAt),
+                      ) >= 0
+                    }
+                    className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold"
+                  >
                     <Link
                       className={`w-full ${
                         compareAsc(
@@ -200,8 +227,11 @@ function VisitListing() {
                     >
                       Continue
                     </Link>
-                  )}
-                </Button>
+                  </Button>
+                  <p className="text-sm font-medium text-gray-600">
+                    You won't be charged yet
+                  </p>
+                </div>
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
