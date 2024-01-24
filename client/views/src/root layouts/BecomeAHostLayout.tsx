@@ -39,11 +39,11 @@ export type TFileType = {
   public_id: string;
   secure_url: string;
   original_filename: string;
-  bytes: number;
+  bytes?: number;
   thumbnail_url: string;
   resource_type: string;
   format: string;
-  _id: string;
+  _id?: string;
 };
 
 export type TListing = {

@@ -149,7 +149,7 @@ function CancellationPolicy() {
                   <p className="mt-2 text-sm font-semibold text-gray-600">
                     Full refund for cancellations made if the service date is at
                     least 5 days away. 50% refund for cancellations made at
-                    least 3 days before service. No refunds for cancellations
+                    least 3-5 days before service. No refunds for cancellations
                     made within 3 days before service.
                   </p>
                   {differenceInDays(

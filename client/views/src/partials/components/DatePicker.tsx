@@ -17,6 +17,18 @@ function DatePicker({ availableAt, endsAt, date, setDate }: TProps) {
       initialFocus
       fromYear={2023}
       fromMonth={new Date()}
+      modifiersStyles={{
+        range_start: {
+          color: "white",
+        },
+        selected: {
+          backgroundColor: "#222222",
+        },
+        range_middle: {
+          backgroundColor: "gainsboro",
+        },
+      }}
+      disableNavigation
       disabled={{
         before:
           compareAsc(new Date().setHours(0, 0, 0, 0), new Date(availableAt)) > 0

@@ -101,6 +101,17 @@ function ListingDate() {
                 before: new Date(),
                 after: parseISO(userData?.data.user.subscriptionExpiresAt),
               }}
+              modifiersStyles={{
+                range_start: {
+                  color: "white",
+                },
+                selected: {
+                  backgroundColor: "#222222",
+                },
+                range_middle: {
+                  backgroundColor: "gainsboro",
+                },
+              }}
               fromYear={new Date().getFullYear()}
               defaultMonth={date?.from}
               selected={date}

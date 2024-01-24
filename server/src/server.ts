@@ -63,10 +63,6 @@ function removeUser(socketId: string) {
   ));
 }
 
-app.get("/", (req, res, next) => {
-  res.send("HEllo");
-});
-
 io.on("connection", (socket) => {
   socket.on("user-connect", (data) => {
     getActiveUsers({
@@ -118,6 +114,10 @@ io.on("connection", (socket) => {
       socket.disconnect();
     });
   });
+});
+
+app.get("/api", (req, res, next) => {
+  res.json({ message: "Hello" });
 });
 
 app.use(cookieParser());

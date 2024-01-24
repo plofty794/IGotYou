@@ -120,7 +120,9 @@ function MakeABooking() {
                     <span className="text-lg font-semibold">Dates</span>
                     <span
                       className={`${
-                        isNaN(totalPrice) ? "text-red-600" : "text-gray-600"
+                        date?.from == null || date?.to == null
+                          ? "text-red-600"
+                          : "text-gray-600"
                       } font-semibold`}
                     >
                       {date?.from ? (
@@ -276,32 +278,46 @@ function MakeABooking() {
                         ? listing.price +
                           " x " +
                           formatDistance(date.from, date.to)
-                        : "No dates"}
+                        : date?.from == null || date?.to == null
+                          ? "Invalid dates"
+                          : "No dates"}
                     </span>
                     <span className="font-semibold ">
-                      {listing.cancellationPolicy === "Non-refundable"
-                        ? formatValue({
-                            value: String(
-                              Math.abs(
-                                listing.price *
-                                  differenceInDays(
-                                    date?.from ?? 0,
-                                    date?.to ?? 0,
-                                  ),
+                      {listing.cancellationPolicy === "Non-refundable" ? (
+                        <>
+                          {date?.from != null &&
+                            date.to != null &&
+                            formatValue({
+                              value: String(
+                                Math.abs(
+                                  listing.price *
+                                    differenceInDays(
+                                      date?.from ?? 0,
+                                      date?.to ?? 0,
+                                    ),
+                                ),
                               ),
-                            ),
-                            intlConfig: {
-                              locale: "ph",
-                              currency: "php",
-                            },
-                          })
-                        : formatValue({
-                            value: String(totalPrice),
-                            intlConfig: {
-                              locale: "ph",
-                              currency: "php",
-                            },
-                          })}
+                              intlConfig: {
+                                locale: "ph",
+                                currency: "php",
+                              },
+                            })}
+                          {date?.from == null ||
+                            (date?.to == null && (
+                              <p className="text-base text-red-600">
+                                Pick 2 dates
+                              </p>
+                            ))}
+                        </>
+                      ) : (
+                        formatValue({
+                          value: String(totalPrice),
+                          intlConfig: {
+                            locale: "ph",
+                            currency: "php",
+                          },
+                        })
+                      )}
                     </span>
                   </div>
                   {listing.cancellationPolicy === "Non-refundable" && (
@@ -316,7 +332,7 @@ function MakeABooking() {
                   <div className="flex w-full items-center justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="font-semibold">
-                      {isNaN(totalPrice) ? (
+                      {date?.from == null || date.to == null ? (
                         <Badge variant={"destructive"}>
                           Invalid date range
                         </Badge>
