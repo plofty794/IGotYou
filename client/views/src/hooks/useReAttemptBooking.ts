@@ -3,29 +3,33 @@ import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 
-function useDisableListing() {
+function useReAttemptBooking() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
   return useMutation({
-    mutationFn: async ({ listingID }: { listingID: string }) => {
+    mutationFn: async ({ bookingRequestID }: { bookingRequestID: string }) => {
       return await axiosPrivateRoute.patch(
-        `/api/listings/disable-listing/${listingID}`,
+        `api/guest-reAttempt-booking-request/${bookingRequestID}`,
       );
     },
     onSuccess(data) {
+      queryClient.invalidateQueries({
+        queryKey: ["guest-cancelled-booking-requests"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["guest-booking-requests"],
+      });
       toast({
         title: "Success! 🎉",
         description: data.data.message,
         className: "bg-white",
       });
-      queryClient.invalidateQueries({
-        queryKey: ["host-listings"],
-      });
     },
     onError(error) {
-      if (error.message.includes("409")) {
+      if (error.message.includes("429")) {
         toast({
-          title: "Reservations exist!",
+          title: "Too many re-attempts!",
           description: ((error as AxiosError).response as AxiosResponse).data
             .error,
           variant: "destructive",
@@ -35,4 +39,4 @@ function useDisableListing() {
   });
 }
 
-export default useDisableListing;
+export default useReAttemptBooking;

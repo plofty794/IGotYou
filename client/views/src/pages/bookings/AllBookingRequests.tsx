@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { compareAsc, differenceInDays, formatDistance } from "date-fns";
+import { compareAsc, formatDistance } from "date-fns";
 import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
@@ -30,6 +30,7 @@ import useSearchGuestBookingRequests from "@/hooks/useSearchGuestBookingRequests
 import SearchResults from "./SearchResults";
 import { useQueryClient } from "@tanstack/react-query";
 import CancelRequestDialog from "./components/CancelRequestDialog";
+import useReAttemptBooking from "@/hooks/useReAttemptBooking";
 jelly.register();
 
 function AllBookingRequests() {
@@ -37,6 +38,7 @@ function AllBookingRequests() {
   const [search, setSearch] = useState("");
   const searchData = useSearchGuestBookingRequests(search);
   const queryClient = useQueryClient();
+  const reAttemptBooking = useReAttemptBooking();
 
   useEffect(() => {
     document.title = "All Booking Requests - IGotYou";
@@ -214,12 +216,7 @@ function AllBookingRequests() {
                       >
                         Total:{" "}
                         {formatValue({
-                          value: String(
-                            differenceInDays(
-                              new Date(v.requestedBookingDateEndsAt),
-                              new Date(v.requestedBookingDateStartsAt),
-                            ) * v.listingID.price,
-                          ),
+                          value: String(v.totalPrice),
                           intlConfig: {
                             locale: "PH",
                             currency: "php",
@@ -254,7 +251,15 @@ function AllBookingRequests() {
                   </div>
                   {v.status === "cancelled" && (
                     <>
-                      <Button variant={"outline"}>Request again</Button>
+                      <Button
+                        disabled={reAttemptBooking.isPending}
+                        onClick={() =>
+                          reAttemptBooking.mutate({ bookingRequestID: v._id })
+                        }
+                        variant={"outline"}
+                      >
+                        Request again
+                      </Button>
                       <Badge className="w-max" variant={"destructive"}>
                         Cancellation Reason -
                         <span className="ml-1 capitalize">

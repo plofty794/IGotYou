@@ -84,19 +84,20 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
     });
 
     if (!listingIsActive) {
-      throw createHttpError(400, "Listing has been disabled by the host");
+      throw createHttpError(400, "Listing has been disabled by the host.");
     }
 
     const bookingRequestAlreadyExist = await BookingRequests.findOne({
       guestID: id,
       hostID,
       listingID,
+      $or: [{ status: "pending" }, { status: "approved" }],
     });
 
     if (bookingRequestAlreadyExist) {
-      return res
-        .status(400)
-        .json({ error: "You've already sent a booking request" });
+      return res.status(400).json({
+        error: "You've already sent a booking request.",
+      });
     }
 
     const hasReservation = await Reservations.findOne({
@@ -113,7 +114,7 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
     });
 
     if (hasReservation) {
-      return res.status(400).json({ message: "Dates are already taken" });
+      return res.status(400).json({ error: "Dates are already taken" });
     }
 
     const newBookingRequest = await BookingRequests.create({
@@ -556,19 +557,46 @@ export const reAttemptBookingRequest: RequestHandler = async (
       );
     }
 
-    const bookingReattemptIsValid = await BookingRequests.findOne({
+    const bookingReattemptIsInvalid = await BookingRequests.findOne({
       _id: bookingRequestID,
       requestedBookingDateStartsAt: {
         $lte: new Date().setHours(0, 0, 0, 0),
       },
     });
 
-    if (bookingReattemptIsValid) {
-      const reAttemptBookingRequest = await BookingRequests.findByIdAndUpdate(
-        bookingRequestID,
-        { status: "pending", guestCancelReasons: undefined }
-      );
+    if (bookingReattemptIsInvalid) {
+      return res
+        .status(400)
+        .json({ message: "Requested starting date has ended." });
     }
+
+    const reAttemptBookingRequest = await BookingRequests.findByIdAndUpdate(
+      bookingRequestID,
+      { status: "pending", guestCancelReasons: undefined }
+    );
+
+    const reAttemptBookingRequestNotification =
+      await HostNotifications.findOneAndUpdate(
+        { data: reAttemptBookingRequest?._id },
+        {
+          notificationType: "Re-attempt-Request",
+          read: false,
+        }
+      );
+
+    await reAttemptBookingRequestNotification?.populate({
+      path: "recipientID",
+      select: "username",
+    });
+
+    res.status(200).json({
+      message: "Booking request re-attempt has been sent.",
+      receiverName: (
+        reAttemptBookingRequestNotification?.recipientID as {
+          username: string;
+        }
+      ).username,
+    });
   } catch (error) {
     next(error);
   }

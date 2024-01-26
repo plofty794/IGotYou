@@ -75,12 +75,14 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "No account with that id");
     }
 
-    const activeListings = await Listings.find({
+    const recentListings = await Listings.find({
       host: user._id,
-      endsAt: { $gte: new Date() },
-    });
+    })
+      .sort({ createdAt: "desc" })
+      .limit(5)
+      .exec();
 
-    res.status(200).json({ user, activeListings });
+    res.status(200).json({ user, recentListings });
   } catch (error) {
     next(error);
   }
@@ -90,8 +92,15 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
   try {
     const user = await Users.findById(id)
-      .populate("listings")
       .select("-password")
+      .populate({
+        path: "listings",
+        select: "listingAssets serviceTitle serviceType",
+        options: {
+          limit: 10,
+        },
+      })
+      .sort({ createdAt: "desc" })
       .exec();
 
     if (!user) {

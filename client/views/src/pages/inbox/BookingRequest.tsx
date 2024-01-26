@@ -98,35 +98,36 @@ function BookingRequest() {
                 <GuestInformation
                   guestID={data?.data.bookingRequest.guestID as TGuestID}
                 />
-                <div className="h-max w-max rounded-md border p-4 shadow-md">
+                <div className="h-max w-max rounded-md border p-3 shadow-md">
                   <div className="flex items-center justify-between gap-2">
                     <CardDescription className="text-sm font-semibold text-black">
                       Requested dates
                     </CardDescription>
-                    {compareAsc(
-                      new Date().setHours(0, 0, 0, 0),
-                      new Date(
-                        data?.data.bookingRequest.requestedBookingDateStartsAt,
-                      ),
-                    ) > 0 ? (
-                      <Badge variant={"destructive"}>Expired</Badge>
-                    ) : data?.data.bookingRequest.status !== "approved" ? (
+                    {data?.data.bookingRequest.status === "approved" ? (
                       <Badge
                         variant={"outline"}
                         className="font-bold text-green-600"
                       >
-                        Available
+                        Reserved
                       </Badge>
+                    ) : compareAsc(
+                        new Date().setHours(0, 0, 0, 0),
+                        new Date(
+                          data?.data.bookingRequest
+                            .requestedBookingDateStartsAt,
+                        ),
+                      ) > 0 ? (
+                      <Badge variant={"destructive"}>Expired</Badge>
                     ) : (
                       <Badge
                         variant={"outline"}
                         className="font-bold text-green-600"
                       >
-                        Approved
+                        Valid
                       </Badge>
                     )}
                   </div>
-                  <CardDescription className="mt-2 font-medium">
+                  <CardDescription className="mt-2 font-semibold">
                     {new Date(
                       data?.data.bookingRequest.requestedBookingDateStartsAt,
                     ).toDateString()}
@@ -135,6 +136,12 @@ function BookingRequest() {
                       data?.data.bookingRequest.requestedBookingDateEndsAt,
                     ).toDateString()}
                   </CardDescription>
+                  {data?.data.bookingRequest.guestCancelReasons && (
+                    <Badge variant={"destructive"} className="capitalize">
+                      Cancellation Reason -{" "}
+                      {data?.data.bookingRequest.guestCancelReasons}
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
@@ -203,7 +210,7 @@ function BookingRequest() {
                     <Link
                       reloadDocument
                       replace
-                      to={`/users/visit/${data?.data.bookingRequest.guestID._id}`}
+                      to={`/users/visit/show/${data?.data.bookingRequest.guestID._id}`}
                     >
                       View profile
                     </Link>
