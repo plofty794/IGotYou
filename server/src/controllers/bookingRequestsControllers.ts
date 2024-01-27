@@ -12,6 +12,7 @@ import env from "../utils/envalid";
 import { emailBookingRequestAccepted } from "../utils/emails/emailBookingRequestAccepted";
 import { compareAsc } from "date-fns";
 import { emailPendingServicePayment } from "../utils/emails/emailPendingServicePayment";
+import BlockedUsers from "../models/BlockedUsers";
 
 type TBookingRequest = {
   hostID: string;
@@ -71,6 +72,17 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
         res,
         "A _id cookie is required to access this resource."
       );
+    }
+
+    const isBlocked = await BlockedUsers.findOne({
+      blockerID: hostID,
+      blockedID: id,
+    });
+
+    if (isBlocked) {
+      return res.status(400).json({
+        error: "Host is unable to receive requests from you at this time.",
+      });
     }
 
     const listingIsActive = await Listings.findOne({
@@ -461,11 +473,26 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       pass: env.APP_PASSWORD,
     },
   });
+
   try {
     if (!id) {
       clearCookieAndThrowError(
         res,
         "A _id cookie is required to access this resource."
+      );
+    }
+
+    const receiver = await Users.findOne({ username: receiverName });
+
+    const isBlocker = await BlockedUsers.findOne({
+      blockedID: receiver?._id,
+      blockerID: id,
+    });
+
+    if (isBlocker) {
+      throw createHttpError(
+        400,
+        "Unblock this user if you want to accept their request."
       );
     }
 

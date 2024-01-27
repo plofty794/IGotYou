@@ -3,15 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 function useVisitProfile() {
-  const { id } = useParams();
+  const { userID } = useParams();
 
   return useQuery({
-    queryKey: ["visit-profile", id],
+    queryKey: ["visit-profile", userID],
     queryFn: async () =>
-      await axiosPrivateRoute.get(`/api/users/profile/visit/${id}`),
-    enabled: id != null,
+      await axiosPrivateRoute.get(`/api/users/profile/visit/${userID}`),
+    enabled: userID != null,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 }
 

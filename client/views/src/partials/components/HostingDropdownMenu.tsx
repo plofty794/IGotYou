@@ -49,10 +49,18 @@ function HostingDropdownMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 font-medium" align="end">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="p-4">Profile</DropdownMenuItem>
+          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
+            <Link
+              to={`/users/show/${auth.currentUser && auth.currentUser?.uid}`}
+              className="w-full"
+              replace
+            >
+              Profile
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem className="p-4">Account</DropdownMenuItem>
           <DropdownMenuItem className="p-4">
-            <Link to={"/messages"} className="relative w-full" replace>
+            <Link to={"/messages"} className="relative w-full">
               Messages
               {data?.data.guestNotifications.find(
                 (v: string) => v === "New-Message",

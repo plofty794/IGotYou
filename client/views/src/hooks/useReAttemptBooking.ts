@@ -34,6 +34,14 @@ function useReAttemptBooking() {
             .error,
           variant: "destructive",
         });
+      } else if (error.message.includes("400")) {
+        console.error(error);
+        toast({
+          title: "Oops! An error occurred.",
+          description: ((error as AxiosError).response as AxiosResponse).data
+            .message,
+          variant: "destructive",
+        });
       }
     },
   });

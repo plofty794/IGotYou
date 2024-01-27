@@ -5,6 +5,7 @@ import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
 import { getAuth } from "firebase-admin/auth";
+import BlockedUsers from "../models/BlockedUsers";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {
 //   const id = req.cookies["_&!d"];
@@ -89,10 +90,35 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
 };
 
 export const visitUserProfile: RequestHandler = async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.cookies["_&!d"];
+  const { userID } = req.params;
   try {
-    const user = await Users.findById(id)
-      .select("-password")
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const isBlocker = await BlockedUsers.findOne({
+      blockedID: userID,
+      blockerID: id,
+    });
+
+    const isBlocked = await BlockedUsers.findOne({
+      blockedID: id,
+      blockerID: userID,
+    });
+
+    if (isBlocked) {
+      throw createHttpError(403, "Forbidden");
+    }
+
+    const user = await Users.findById(userID)
+      .select(
+        "-password -providerId -uid -hostNotifications -guestNotifications -subscriptionStatus -bookingRequests -wishlists -identityVerificationStatus"
+      )
       .populate({
         path: "listings",
         select: "listingAssets serviceTitle serviceType",
@@ -106,7 +132,8 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw createHttpError(400, "No account with that id");
     }
-    res.status(200).json({ user });
+
+    res.status(200).json({ user, isBlocker: isBlocker != null });
   } catch (error) {
     next(error);
   }

@@ -286,6 +286,7 @@ type TListings = {
 };
 
 export type TUser = {
+  _id: string;
   email: string;
   emailVerified: boolean;
   listings: TListing[];

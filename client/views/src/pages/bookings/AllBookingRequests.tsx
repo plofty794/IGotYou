@@ -7,17 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { compareAsc, formatDistance } from "date-fns";
 import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
@@ -31,6 +21,13 @@ import SearchResults from "./SearchResults";
 import { useQueryClient } from "@tanstack/react-query";
 import CancelRequestDialog from "./components/CancelRequestDialog";
 import useReAttemptBooking from "@/hooks/useReAttemptBooking";
+import { Link } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 jelly.register();
 
 function AllBookingRequests() {
@@ -85,53 +82,34 @@ function AllBookingRequests() {
                       {v.hostID.username}
                     </Badge>
                   </CardTitle>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant={"outline"} className="rounded-full">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="h-6 w-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
-                          />
-                        </svg>
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <form className="flex flex-col gap-2" method="get">
-                        <DialogHeader>
-                          <DialogTitle className="text-lg font-semibold">
-                            New Message
-                          </DialogTitle>
-                          <div className="flex w-full flex-col items-center justify-center gap-2">
-                            <div className="flex w-full items-center justify-center gap-2">
-                              <Label className="text-sm font-semibold text-gray-600">
-                                To:{" "}
-                              </Label>
-                              <div className="mr-auto w-max">
-                                <span className="border-none p-2 text-sm font-semibold shadow-none outline-none focus-visible:border-none focus-visible:ring-0">
-                                  {v.hostID.username}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </DialogHeader>
-                        <Textarea minLength={1} />
-                        <DialogFooter className="mt-2">
-                          <Button className="rounded-full bg-gray-950">
-                            Send
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link to={"/messages"}>
+                          <Button variant={"outline"} className="rounded-full">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="h-6 w-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"
+                              />
+                            </svg>
                           </Button>
-                        </DialogFooter>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Chat {v.hostID.username}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
                   <CardDescription className="font-semibold">
                     View profile
                   </CardDescription>
@@ -231,7 +209,7 @@ function AllBookingRequests() {
                     </div>
                     {v.status === "pending" &&
                       compareAsc(
-                        new Date(v.requestedBookingDateEndsAt),
+                        new Date(v.requestedBookingDateStartsAt),
                         new Date().setHours(0, 0, 0, 0),
                       ) >= 0 && (
                         <Badge className="bg-green-600 hover:bg-green-500">
@@ -241,8 +219,12 @@ function AllBookingRequests() {
                     {v.status === "pending" &&
                       compareAsc(
                         new Date().setHours(0, 0, 0, 0),
-                        new Date(v.requestedBookingDateEndsAt),
-                      ) > 0 && <Badge variant={"destructive"}>Expired</Badge>}
+                        new Date(v.requestedBookingDateStartsAt),
+                      ) > 0 && (
+                        <Badge variant={"destructive"}>
+                          Expired booking request
+                        </Badge>
+                      )}
                     {v.status === "approved" && (
                       <Button size={"sm"} variant={"outline"}>
                         View reservation details

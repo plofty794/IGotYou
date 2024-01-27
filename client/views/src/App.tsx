@@ -50,6 +50,7 @@ const Messages = lazy(() => import("./pages/Messages"));
 const RootLayoutErrorBoundary = lazy(
   () => import("./partials/components/RootLayoutErrorBoundary"),
 );
+const PageUnavailable = lazy(() => import("./pages/PageUnavailable"));
 
 import { SocketContextProvider } from "./context/SocketContext";
 import ListingsLayout from "./root layouts/ListingsLayout";
@@ -123,7 +124,7 @@ function App() {
           />
 
           <Route
-            path="visit/show/:id"
+            path="visit/show/:userID"
             element={
               User ?? token ?? identifier ? (
                 <VisitProfile />
@@ -435,6 +436,8 @@ function App() {
             }
           />
           <Route path="*" element={<PageNotFound />} />
+
+          <Route path="/page-unavailable" element={<PageUnavailable />} />
         </Route>
       </>,
     ),
