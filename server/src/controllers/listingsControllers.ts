@@ -240,7 +240,12 @@ export const addListing: RequestHandler = async (req, res, next) => {
       { new: true }
     );
 
-    res.status(200).json({ message: "Listing created successfully." });
+    res
+      .status(200)
+      .json({
+        message: "Listing created successfully.",
+        newListingID: newListing?._id,
+      });
   } catch (error) {
     next(error);
   }

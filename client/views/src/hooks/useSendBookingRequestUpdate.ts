@@ -32,6 +32,7 @@ function useSendBookingRequestUpdate() {
       });
     },
     onError(e) {
+      console.log(e);
       const error = e as AxiosError;
       const response = error.response as AxiosResponse;
       toast({

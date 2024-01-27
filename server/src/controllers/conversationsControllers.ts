@@ -38,7 +38,7 @@ export const getCurrentUserConversations: RequestHandler = async (
             select: ["username", "photoUrl"],
           },
         },
-        { path: "participants", select: ["username", "_id", "photoUrl"] },
+        { path: "participants", select: "username _id photoUrl uid" },
       ])
       .sort({ updatedAt: "desc" })
       .exec();
@@ -75,7 +75,7 @@ export const getCurrentUserConversation: RequestHandler = async (
             select: ["username", "photoUrl"],
           },
         },
-        { path: "participants", select: ["username", "_id", "photoUrl"] },
+        { path: "participants", select: "username _id photoUrl uid" },
       ])
       .exec();
 
