@@ -13,6 +13,7 @@ import { emailBookingRequestAccepted } from "../utils/emails/emailBookingRequest
 import { compareAsc } from "date-fns";
 import { emailPendingServicePayment } from "../utils/emails/emailPendingServicePayment";
 import BlockedUsers from "../models/BlockedUsers";
+import BlockedDates from "../models/BlockedDates";
 
 type TBookingRequest = {
   hostID: string;
@@ -72,6 +73,19 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
         res,
         "A _id cookie is required to access this resource."
       );
+    }
+
+    const hostBlockedDates = await BlockedDates.findOne({
+      user: hostID,
+      blockedDates: {
+        $in: [requestedBookingDateStartsAt, requestedBookingDateEndsAt],
+      },
+    });
+
+    if (hostBlockedDates) {
+      return res.status(400).json({
+        error: "Host is not available with the requested dates.",
+      });
     }
 
     const isBlocked = await BlockedUsers.findOne({

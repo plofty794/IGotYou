@@ -6,6 +6,7 @@ import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import Listings from "../models/Listings";
 import { getAuth } from "firebase-admin/auth";
 import BlockedUsers from "../models/BlockedUsers";
+import BlockedDates from "../models/BlockedDates";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {
 //   const id = req.cookies["_&!d"];
@@ -455,7 +456,6 @@ export const logOutUser: RequestHandler = async (req, res, next) => {
 
 export const deleteUser: RequestHandler = async (req, res, next) => {
   const { id } = req.params;
-  console.log(req.cookies);
   try {
     if (!isValidObjectId(id)) {
       throw createHttpError(401, "Invalid userID");
@@ -470,10 +470,68 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-// declare module "express-serve-static-core" {
-//   interface Request {
-//     ipinfo?: {};
-//     user?: {};
-//     token: { decodedToken: DecodedIdToken };
-//   }
-// }
+export const getBlockedDates: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const blockedDates = await BlockedDates.find({ user: id });
+
+    const subscriptionExpiresAt = await Users.findById(id).select(
+      "subscriptionExpiresAt"
+    );
+
+    res.status(201).json({
+      blockedDates: blockedDates.flatMap((dates) => dates.blockedDates),
+      subscriptionExpiresAt,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changeAvailability: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { sortedDates } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const sortedDatesAreBlocked = await BlockedDates.findOne({
+      user: id,
+      blockedDates: {
+        $in: sortedDates,
+      },
+    });
+
+    if (sortedDatesAreBlocked) {
+      await BlockedDates.findOneAndDelete({
+        user: id,
+        blockedDates: {
+          $in: sortedDates,
+        },
+      });
+      return res.status(200).json({ message: "Availability updated." });
+    }
+
+    await BlockedDates.create({
+      user: id,
+      blockedDates: sortedDates,
+    });
+
+    res.status(201).json({ message: "Availability updated." });
+  } catch (error) {
+    next(error);
+  }
+};

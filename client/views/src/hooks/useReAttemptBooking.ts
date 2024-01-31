@@ -37,7 +37,7 @@ function useReAttemptBooking() {
       } else if (error.message.includes("400")) {
         console.error(error);
         toast({
-          title: "Oops! An error occurred.",
+          title: "Oops! Re-attempt failed.",
           description: ((error as AxiosError).response as AxiosResponse).data
             .message,
           variant: "destructive",

@@ -77,6 +77,7 @@ import DeclinedBookingRequests from "./pages/bookings/DeclinedBookingRequests";
 import CancelledBookingRequests from "./pages/bookings/CancelledBookingRequests";
 import BookingRequest from "./pages/inbox/BookingRequest";
 import ServiceTitle from "./pages/become a host/ServiceTitle";
+import HostCalendar from "./pages/HostCalendar";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -396,6 +397,7 @@ function App() {
               element={<PreviousReservations />}
             />
           </Route>
+          <Route path="hosting-calendar" element={<HostCalendar />} />
           <Route path="hosting-inbox" element={<Inbox />}>
             <Route path="booking-request/:id" element={<BookingRequest />} />
           </Route>

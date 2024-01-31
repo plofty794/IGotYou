@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import useGetBookingRequestDetails from "@/hooks/useGetBookingRequestDetails";
-import { compareAsc, formatDistance } from "date-fns";
+import { compareAsc, format, formatDistance } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 import { Link } from "react-router-dom";
 import DeclineReasons from "./DeclineReasons";
@@ -128,13 +128,24 @@ function BookingRequest() {
                     )}
                   </div>
                   <CardDescription className="mt-2 font-semibold">
-                    {new Date(
-                      data?.data.bookingRequest.requestedBookingDateStartsAt,
-                    ).toDateString()}
+                    {format(
+                      new Date(
+                        new Date(
+                          data?.data.bookingRequest
+                            .requestedBookingDateStartsAt,
+                        ),
+                      ),
+                      "EEE MMMM do",
+                    )}
                     {" - "}
-                    {new Date(
-                      data?.data.bookingRequest.requestedBookingDateEndsAt,
-                    ).toDateString()}
+                    {format(
+                      new Date(
+                        new Date(
+                          data?.data.bookingRequest.requestedBookingDateEndsAt,
+                        ),
+                      ),
+                      "EEE MMMM do",
+                    )}
                   </CardDescription>
                   {data?.data.bookingRequest.guestCancelReasons && (
                     <Badge variant={"destructive"} className="capitalize">

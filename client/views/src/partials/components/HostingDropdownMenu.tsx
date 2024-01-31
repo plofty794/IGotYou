@@ -58,8 +58,10 @@ function HostingDropdownMenu() {
               Profile
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="p-4">Account</DropdownMenuItem>
-          <DropdownMenuItem className="p-4">
+          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
+            Account
+          </DropdownMenuItem>
+          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
             <Link to={"/messages"} className="relative w-full">
               Messages
               {data?.data.guestNotifications.find(
@@ -69,14 +71,16 @@ function HostingDropdownMenu() {
               )}
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="p-4">
+          <DropdownMenuItem className="p-4 font-semibold text-gray-600">
             <Link className="w-full" to={"/"} replace reloadDocument>
               Switch to Guest
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
-        <DropdownMenuItem className="p-4">Log out</DropdownMenuItem>
+        <DropdownMenuItem className="p-4 font-semibold text-gray-600">
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
