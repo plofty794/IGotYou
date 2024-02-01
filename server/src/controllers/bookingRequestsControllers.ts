@@ -53,6 +53,18 @@ export const getBookingRequestDetails: RequestHandler = async (
       throw createHttpError(400, "Invalid booking request id");
     }
 
+    if (bookingRequest.status === "approved") {
+      const reservation = await Reservations.findOne({
+        bookingStartsAt: bookingRequest?.requestedBookingDateStartsAt,
+        bookingEndsAt: bookingRequest?.requestedBookingDateEndsAt,
+        guestID: (bookingRequest?.guestID as { _id: string })._id,
+        hostID: (bookingRequest?.hostID as { _id: string })._id,
+      });
+      return res
+        .status(200)
+        .json({ bookingRequest, reservationID: reservation?._id });
+    }
+
     res.status(200).json({ bookingRequest });
   } catch (error) {
     next(error);
@@ -496,6 +508,21 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       );
     }
 
+    const bookingRequest = await BookingRequests.findById(bookingRequestID);
+
+    const hasReservation = await Reservations.findOne({
+      hostID: id,
+      guestID: bookingRequest?.guestID,
+      bookingStartsAt: bookingRequest?.requestedBookingDateStartsAt,
+    });
+
+    if (hasReservation) {
+      throw createHttpError(
+        400,
+        "You have existing reservation for this dates."
+      );
+    }
+
     const receiver = await Users.findOne({ username: receiverName });
 
     const isBlocker = await BlockedUsers.findOne({
@@ -538,6 +565,9 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
           : "ongoing",
       paymentStatus: "pending",
       paymentAmount: approvedBookingRequests?.totalPrice,
+      bookingRequestDate: new Date(
+        approvedBookingRequests!.createdAt.setHours(0, 0, 0, 0)
+      ),
     });
 
     await Listings.findByIdAndUpdate(approvedBookingRequests?.listingID, {

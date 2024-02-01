@@ -385,6 +385,7 @@ type TUserLogIn = {
 
 export const logInUser: RequestHandler = async (req, res, next) => {
   const { email, password }: TUserLogIn = req.body;
+  console.log(req.body);
   try {
     const user = await Users.findOne({ email });
     if (!user) {
@@ -522,7 +523,9 @@ export const changeAvailability: RequestHandler = async (req, res, next) => {
           $in: sortedDates,
         },
       });
-      return res.status(200).json({ message: "Availability updated." });
+      return res
+        .status(200)
+        .json({ message: "Date availability has been updated." });
     }
 
     await BlockedDates.create({
@@ -530,7 +533,7 @@ export const changeAvailability: RequestHandler = async (req, res, next) => {
       blockedDates: sortedDates,
     });
 
-    res.status(201).json({ message: "Availability updated." });
+    res.status(201).json({ message: "Selected dates has been blocked." });
   } catch (error) {
     next(error);
   }

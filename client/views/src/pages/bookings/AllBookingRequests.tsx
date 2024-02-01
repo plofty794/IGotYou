@@ -1,12 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { compareAsc, formatDistance } from "date-fns";
 import Lottie from "lottie-react";
@@ -109,10 +103,11 @@ function AllBookingRequests() {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-
-                  <CardDescription className="font-semibold">
-                    View profile
-                  </CardDescription>
+                  <Button variant={"link"} className="p-0 text-xs">
+                    <Link to={`/users/visit/show/${v.hostID._id}`}>
+                      View profile
+                    </Link>
+                  </Button>
                 </div>
                 <Badge
                   className={`rounded-full font-bold uppercase ${
