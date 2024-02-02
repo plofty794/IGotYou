@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
-import { formatDistance } from "date-fns";
+import { format, formatDistance } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 
 function CurrentReservations() {
@@ -22,15 +22,15 @@ function CurrentReservations() {
     <>
       {isPending ? (
         <h1>Loading...</h1>
-      ) : data?.data.currentReservations?.length > 0 ? (
+      ) : data?.data.currentReservation.length > 0 ? (
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data?.data.currentReservations.map((v: any) => (
-          <Card className="my-2 w-full" key={v._id}>
+        data?.data.currentReservation.map((v: any) => (
+          <Card className="w-full" key={v._id}>
             <CardHeader className="flex-row justify-between p-4">
               <div className="flex items-center gap-2">
                 <CardTitle className="m-0">
                   <Badge className="rounded-full text-sm">
-                    {v.hostID.username}
+                    {v.guestID.username}
                   </Badge>
                 </CardTitle>
                 <TooltipProvider>
@@ -56,23 +56,25 @@ function CurrentReservations() {
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Chat {v.hostID.username}</p>
+                      <p>Chat {v.guestID.username}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <Button variant={"link"} className="p-0 text-xs">
-                  <Link to={`/users/visit/show/${v.hostID._id}`}>
+                  <Link to={`/users/visit/show/${v.guestID._id}`}>
                     View profile
                   </Link>
                 </Button>
               </div>
               <Badge
                 className={`rounded-full font-bold uppercase ${
-                  v.status === "pending"
-                    ? "text-amber-600"
-                    : v.status === "approved"
-                      ? "text-green-600"
-                      : "text-red-600"
+                  v.status === "scheduled"
+                    ? "text-blue-600"
+                    : v.status === "ongoing"
+                      ? "text-yellow-600"
+                      : v.status === "completed"
+                        ? "text-green-600"
+                        : "text-red-600"
                 }`}
                 variant={"outline"}
               >
@@ -84,7 +86,7 @@ function CurrentReservations() {
               <div className="flex gap-2">
                 <div className="h-full w-44 overflow-hidden rounded-md">
                   <img
-                    src={v.listingID.listingAssets[0].secure_url}
+                    src={v.listingID.listingAssets[0]?.secure_url}
                     alt="Image"
                     className="h-full w-full object-cover transition-transform hover:scale-110"
                   />
@@ -97,9 +99,9 @@ function CurrentReservations() {
                     {v.listingID.serviceType}
                   </span>
                   <span className="text-sm font-semibold">
-                    Requested date:{" "}
-                    {new Date(v.requestedBookingDateStartsAt).toDateString()} -{" "}
-                    {new Date(v.requestedBookingDateEndsAt).toDateString()}{" "}
+                    Requested dates:{" "}
+                    {format(new Date(v.bookingStartsAt), "iii MMMM do")} -{" "}
+                    {format(new Date(v.bookingEndsAt), "iii MMMM do")}
                   </span>
                   <Badge
                     variant={"outline"}
@@ -116,21 +118,28 @@ function CurrentReservations() {
                     Cancellation policy - {v.listingID.cancellationPolicy}
                   </Badge>
                   <Badge className="w-max">
-                    Duration{" "}
+                    Booking starts{" "}
                     {formatDistance(
-                      new Date(v.requestedBookingDateStartsAt).setHours(
-                        0,
-                        0,
-                        0,
-                        0,
-                      ),
-                      new Date(v.requestedBookingDateEndsAt).setHours(
-                        0,
-                        0,
-                        0,
-                        0,
-                      ),
-                    )}
+                      new Date(v.bookingStartsAt),
+                      new Date().setHours(0, 0, 0, 0),
+                      {
+                        addSuffix: true,
+                      },
+                    ) === "less than a minute ago" && "today"}
+                    {formatDistance(
+                      new Date(v.bookingStartsAt),
+                      new Date().setHours(0, 0, 0, 0),
+                      {
+                        addSuffix: true,
+                      },
+                    ) !== "less than a minute ago" &&
+                      formatDistance(
+                        new Date(v.bookingStartsAt),
+                        new Date().setHours(0, 0, 0, 0),
+                        {
+                          addSuffix: true,
+                        },
+                      )}
                   </Badge>
                 </div>
               </div>
@@ -143,7 +152,7 @@ function CurrentReservations() {
                     >
                       Total:{" "}
                       {formatValue({
-                        value: String(v.totalPrice),
+                        value: String(v.paymentAmount),
                         intlConfig: {
                           locale: "PH",
                           currency: "php",
@@ -152,7 +161,7 @@ function CurrentReservations() {
                     </Badge>
                   </div>
                 </div>
-                {v.status === "approved" && (
+                {v.status !== "cancelled" && (
                   <Button size={"sm"} variant={"outline"}>
                     View reservation details
                   </Button>

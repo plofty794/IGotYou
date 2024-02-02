@@ -13,31 +13,34 @@ export const getCurrentReservation: RequestHandler = async (req, res, next) => {
       );
     }
 
-    const currentReservation = await Reservations.find({
-      hostID: id,
-      $and: [
-        {
-          bookingStartsAt: {
-            $lte: new Date().setHours(0, 0, 0, 0),
+    const currentReservation = await Reservations.findOneAndUpdate(
+      {
+        hostID: id,
+        $and: [
+          {
+            bookingStartsAt: {
+              $eq: new Date().setHours(0, 0, 0, 0),
+            },
           },
-        },
-        {
-          bookingEndsAt: {
-            $gte: new Date().setHours(0, 0, 0, 0),
+          {
+            bookingEndsAt: {
+              $gt: new Date().setHours(0, 0, 0, 0),
+            },
           },
-        },
-      ],
-    })
+        ],
+      },
+      { status: "ongoing" }
+    )
       .populate([
         { path: "guestID", select: "username email" },
         {
           path: "listingID",
-          select: "serviceTitle serviceType listingAssets cancellationPolicy",
+          select: "serviceTitle serviceType listingAssets cancellationPolicy ",
         },
       ])
       .exec();
 
-    res.status(200).json({ currentReservation });
+    res.status(200).json({ currentReservation: [currentReservation] });
   } catch (error) {
     next(error);
   }
@@ -193,7 +196,8 @@ export const getCurrentReservationDetails: RequestHandler = async (
       },
       {
         path: "listingID",
-        select: "serviceTitle serviceType listingAssets cancellationPolicy",
+        select:
+          "serviceTitle serviceType listingAssets cancellationPolicy price",
       },
     ]);
 

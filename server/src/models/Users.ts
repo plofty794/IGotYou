@@ -17,6 +17,10 @@ const ratingSchema = new Schema(
     },
     feedback: {
       type: String,
+    },
+    reservationID: {
+      type: Types.ObjectId,
+      ref: "Reservations",
       required: true,
     },
   },

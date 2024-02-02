@@ -565,9 +565,6 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
           : "ongoing",
       paymentStatus: "pending",
       paymentAmount: approvedBookingRequests?.totalPrice,
-      bookingRequestDate: new Date(
-        approvedBookingRequests!.createdAt.setHours(0, 0, 0, 0)
-      ),
     });
 
     await Listings.findByIdAndUpdate(approvedBookingRequests?.listingID, {

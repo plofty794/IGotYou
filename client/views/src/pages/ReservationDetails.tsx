@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useGetReservationDetails from "@/hooks/useGetReservationDetails";
 import Loader from "@/partials/loaders/Loader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UserInformation from "./inbox/UserInformation";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
@@ -15,11 +15,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { formatValue } from "react-currency-input-field";
+import { Textarea } from "@/components/ui/textarea";
+import { Rating } from "react-custom-rating-component";
 
 function ReservationDetails() {
   const { data, isPending } = useGetReservationDetails();
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     document.title = "Reservation Details - IGotYou";
@@ -69,7 +73,7 @@ function ReservationDetails() {
             </Button>
             <h1 className="text-2xl font-bold">Reservation details</h1>
           </div>
-          <div className="flex w-full">
+          <div className="flex w-full gap-4">
             <div className="flex w-2/4 flex-col gap-4 px-4 py-6">
               {data?.data.isHost ? (
                 <Card className="flex w-full items-center justify-between">
@@ -302,22 +306,97 @@ function ReservationDetails() {
               <Separator />
               <div className="flex items-center justify-between">
                 <p className="text-sm font-bold text-gray-600">
-                  Booking request date
+                  Cancellation policy
                 </p>
                 <p className="text-sm font-bold ">
-                  {data?.data.reservationDetails.bookingRequestDate ?? "Empty"}
+                  {data?.data.reservationDetails.listingID.cancellationPolicy}
                 </p>
               </div>
             </div>
             <div className="flex w-2/4 flex-col gap-4 px-4 py-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>Payout</CardTitle>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Payout</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="mt-4 flex flex-col gap-2">
                     <div className="flex w-full items-center justify-between">
-                      <span className="font-semibold text-gray-600">Price</span>
+                      <span className="font-semibold text-gray-600">
+                        Amount per service
+                      </span>
+                      <span className="text-sm font-semibold">
+                        {formatValue({
+                          value: String(
+                            data?.data.reservationDetails.listingID.price,
+                          ),
+                          intlConfig: {
+                            locale: "PH",
+                            currency: "php",
+                          },
+                        })}
+                      </span>
+                    </div>
+                    <div className="flex w-full items-center justify-between">
+                      <span className="font-semibold text-gray-600">
+                        Service duration (
+                        {Math.abs(
+                          differenceInDays(
+                            new Date(
+                              data?.data.reservationDetails.bookingStartsAt,
+                            ),
+                            new Date(
+                              data?.data.reservationDetails.bookingEndsAt,
+                            ),
+                          ),
+                        )}
+                        )
+                      </span>
+                      <span className="text-sm font-semibold">
+                        {formatValue({
+                          value: String(
+                            data?.data.reservationDetails.listingID.price *
+                              Math.abs(
+                                differenceInDays(
+                                  new Date(
+                                    data?.data.reservationDetails
+                                      .bookingStartsAt,
+                                  ),
+                                  new Date(
+                                    data?.data.reservationDetails.bookingEndsAt,
+                                  ),
+                                ),
+                              ),
+                          ),
+                          intlConfig: {
+                            locale: "PH",
+                            currency: "php",
+                          },
+                        })}
+                      </span>
+                    </div>
+                    {data?.data.reservationDetails.listingID
+                      .cancellationPolicy === "Non-refundable" && (
+                      <div className="flex w-full items-center justify-between">
+                        <span className="font-semibold text-gray-600">
+                          Cancellation policy rules applied
+                        </span>
+                        <span className="font-semibold text-gray-600">
+                          {formatValue({
+                            value: String(
+                              data.data.reservationDetails.listingID.price,
+                            ),
+                            intlConfig: {
+                              locale: "ph",
+                              currency: "php",
+                            },
+                          })}{" "}
+                          - 10%
+                        </span>
+                      </div>
+                    )}
+                    <Separator />
+                    <div className="flex w-full items-center justify-between">
+                      <span className="font-semibold text-gray-600">Total</span>
                       <span className="text-sm font-semibold">
                         {formatValue({
                           value: String(
@@ -330,10 +409,46 @@ function ReservationDetails() {
                         })}
                       </span>
                     </div>
-                    <div className="flex w-full items-center justify-between"></div>
                   </div>
                 </CardContent>
               </Card>
+              <Separator />
+              <Button className="border-black" variant={"outline"}>
+                View transaction history
+              </Button>
+              <div className="flex flex-col gap-2 p-2">
+                <p className="text-sm font-semibold">
+                  Review {data?.data.isHost ? "guest" : "host"}
+                </p>
+                <Textarea
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  placeholder="Write a feedback"
+                />
+                <div
+                  aria-disabled
+                  className="flex flex-col items-center justify-center gap-2 py-2"
+                >
+                  <p className="text-sm font-semibold">
+                    How would you rate the{" "}
+                    {data?.data.isHost ? "guest" : "service"}?
+                  </p>
+                  <Rating
+                    defaultValue={0}
+                    precision={1}
+                    size="30px"
+                    spacing="10px"
+                    onChange={(value) => setRating(value)}
+                  />
+                </div>
+                <Button
+                  disabled={!feedback || !rating}
+                  size={"sm"}
+                  className="w-max rounded-full bg-gray-950"
+                >
+                  Leave a review
+                </Button>
+              </div>
             </div>
           </div>
         </section>
