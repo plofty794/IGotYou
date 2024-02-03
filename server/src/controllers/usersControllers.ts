@@ -7,6 +7,8 @@ import Listings from "../models/Listings";
 import { getAuth } from "firebase-admin/auth";
 import BlockedUsers from "../models/BlockedUsers";
 import BlockedDates from "../models/BlockedDates";
+import Ratings from "../models/Ratings";
+import Reservations from "../models/Reservations";
 
 // export const getHosts: RequestHandler = async (req, res, next) => {
 //   const id = req.cookies["_&!d"];
@@ -385,7 +387,6 @@ type TUserLogIn = {
 
 export const logInUser: RequestHandler = async (req, res, next) => {
   const { email, password }: TUserLogIn = req.body;
-  console.log(req.body);
   try {
     const user = await Users.findOne({ email });
     if (!user) {
@@ -534,6 +535,69 @@ export const changeAvailability: RequestHandler = async (req, res, next) => {
     });
 
     res.status(201).json({ message: "Selected dates has been blocked." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const rateUser: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { reservationID, hostID, guestID } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const ratingExist = await Ratings.findOne({
+      hostID,
+      guestID,
+      reservationID,
+    });
+
+    if (ratingExist) {
+      throw createHttpError(
+        400,
+        "You've already sent a rating to this service."
+      );
+    }
+
+    const reservationOngoing = await Reservations.findOne({
+      _id: reservationID,
+      bookingEndsAt: {
+        $gte: new Date().setHours(0, 0, 0, 0),
+      },
+      paymentStatus: {
+        $not: {
+          $eq: "fully-paid",
+        },
+      },
+    });
+
+    if (reservationOngoing) {
+      throw createHttpError(
+        400,
+        "Ratings takes effect once the service and payment is complete."
+      );
+    }
+
+    const newRating = await Ratings.create({
+      hostID,
+      guestID,
+      reservationID,
+      ...req.body,
+    });
+
+    await Users.findByIdAndUpdate(id, {
+      $push: {
+        rating: [newRating],
+      },
+    });
+
+    res.status(200).json({ message: "Thank you for submitting your review." });
   } catch (error) {
     next(error);
   }

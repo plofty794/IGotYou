@@ -83,6 +83,7 @@ import AllReservationsTab from "./partials/components/hosting/reservations page/
 import UpcomingReservationsTab from "./partials/components/hosting/reservations page/UpcomingReservationsTab";
 import PreviousReservationsTab from "./partials/components/hosting/reservations page/PreviousReservationsTab";
 import ReservationDetails from "./pages/ReservationDetails";
+import PaymentDetails from "./pages/PaymentDetails";
 
 function App() {
   const [User, setUser] = useState<User | null>();
@@ -368,6 +369,10 @@ function App() {
         <Route
           path="/reservation-details/:reservationID"
           element={<ReservationDetails />}
+        />
+        <Route
+          path="/reservation-details/:reservationID/payment-details"
+          element={<PaymentDetails />}
         />
 
         {/* BOOKINGS Route */}

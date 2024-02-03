@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import Reservations from "../models/Reservations";
+import Ratings from "../models/Ratings";
 
 export const getCurrentReservation: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
@@ -108,7 +109,7 @@ export const getPreviousReservations: RequestHandler = async (
     const previousReservations = await Reservations.find({
       hostID: id,
       bookingEndsAt: {
-        $lt: new Date(),
+        $lt: new Date().setHours(0, 0, 0, 0),
       },
     })
       .populate([
@@ -153,6 +154,7 @@ export const getReservations: RequestHandler = async (req, res, next) => {
           select: "serviceTitle serviceType listingAssets cancellationPolicy",
         },
       ])
+      .sort({ bookingStartsAt: "desc" })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
@@ -205,9 +207,12 @@ export const getCurrentReservationDetails: RequestHandler = async (
       throw createHttpError(400, "No reservation with that ID.");
     }
 
+    const hasRating = await Ratings.findById(reservationID);
+
     res.status(200).json({
       reservationDetails,
       isHost: (reservationDetails.hostID as { _id: string })._id == id,
+      hasRating: hasRating ?? null,
     });
   } catch (error) {
     next(error);

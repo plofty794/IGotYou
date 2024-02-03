@@ -139,7 +139,6 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
     }
 
     const hasReservation = await Reservations.findOne({
-      listingID,
       hostID,
       $and: [
         {

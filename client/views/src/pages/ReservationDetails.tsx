@@ -19,8 +19,10 @@ import { differenceInDays, format } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 import { Textarea } from "@/components/ui/textarea";
 import { Rating } from "react-custom-rating-component";
+import useRateUser from "@/hooks/useRateUser";
 
 function ReservationDetails() {
+  const { mutate } = useRateUser();
   const { data, isPending } = useGetReservationDetails();
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -138,12 +140,18 @@ function ReservationDetails() {
                 <Card className="flex w-full items-center justify-between">
                   <div>
                     <CardHeader className="px-6 py-4">
-                      <CardTitle>Host information</CardTitle>
+                      <CardTitle className="text-xl font-bold">
+                        Guest information
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p>{data?.data.reservationDetails.hostID.username}</p>
+                      <p className="text-sm font-semibold">
+                        {data?.data.reservationDetails.hostID.username}
+                      </p>
                       <div className="flex w-max items-center justify-center gap-2">
-                        <p>{data?.data.reservationDetails.hostID.email}</p>
+                        <p className="text-sm font-semibold">
+                          {data?.data.reservationDetails.hostID.email}
+                        </p>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
@@ -233,29 +241,13 @@ function ReservationDetails() {
                     Message
                   </Link>
                 </Button>
-                <Button
-                  disabled={
-                    data?.data.isHost
-                      ? data?.data.reservationDetails.guestID.mobilePhone ==
-                        null
-                      : data?.data.reservationDetails.hostID.mobilePhone == null
-                  }
-                  size={"sm"}
-                  className="w-full rounded-full bg-gray-950"
-                >
+                <Button size={"sm"} className="w-full rounded-full bg-gray-950">
                   <Link
-                    className={`w-full ${
-                      data?.data.reservationDetails.guestID.mobilePhone == null
-                        ? "pointer-events-none"
-                        : data?.data.reservationDetails.hostID.mobilePhone ==
-                            null
-                          ? "pointer-events-none"
-                          : ""
-                    }`}
+                    className="w-full"
                     to={"https://mail.google.com/mail/u/0/#inbox?compose=new"}
                     target="_blank"
                   >
-                    Call
+                    Email
                   </Link>
                 </Button>
               </div>
@@ -316,7 +308,9 @@ function ReservationDetails() {
             <div className="flex w-2/4 flex-col gap-4 px-4 py-6">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Payout</CardTitle>
+                  <CardTitle className="text-lg">
+                    {data?.data.isHost ? "Payout" : "Payment"}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="mt-4 flex flex-col gap-2">
@@ -352,26 +346,26 @@ function ReservationDetails() {
                         )
                       </span>
                       <span className="text-sm font-semibold">
+                        {Math.abs(
+                          differenceInDays(
+                            new Date(
+                              data?.data.reservationDetails.bookingStartsAt,
+                            ),
+                            new Date(
+                              data?.data.reservationDetails.bookingEndsAt,
+                            ),
+                          ),
+                        )}{" "}
+                        x{" "}
                         {formatValue({
                           value: String(
-                            data?.data.reservationDetails.listingID.price *
-                              Math.abs(
-                                differenceInDays(
-                                  new Date(
-                                    data?.data.reservationDetails
-                                      .bookingStartsAt,
-                                  ),
-                                  new Date(
-                                    data?.data.reservationDetails.bookingEndsAt,
-                                  ),
-                                ),
-                              ),
+                            data?.data.reservationDetails.listingID.price,
                           ),
                           intlConfig: {
                             locale: "PH",
                             currency: "php",
                           },
-                        })}
+                        })}{" "}
                       </span>
                     </div>
                     {data?.data.reservationDetails.listingID
@@ -414,7 +408,12 @@ function ReservationDetails() {
               </Card>
               <Separator />
               <Button className="border-black" variant={"outline"}>
-                View transaction history
+                <Link
+                  className="w-full"
+                  to={`/reservation-details/${data?.data.reservationDetails._id}/payment-details`}
+                >
+                  View payment details
+                </Link>
               </Button>
               <div className="flex flex-col gap-2 p-2">
                 <p className="text-sm font-semibold">
@@ -434,7 +433,11 @@ function ReservationDetails() {
                     {data?.data.isHost ? "guest" : "service"}?
                   </p>
                   <Rating
-                    defaultValue={0}
+                    defaultValue={
+                      data?.data.hasRating == null
+                        ? 0
+                        : data?.data.hasRating.userRating
+                    }
                     precision={1}
                     size="30px"
                     spacing="10px"
@@ -442,9 +445,19 @@ function ReservationDetails() {
                   />
                 </div>
                 <Button
+                  onClick={() => {
+                    mutate({
+                      reservationID: data?.data.reservationDetails._id,
+                      guestID: data?.data.reservationDetails.guestID._id,
+                      hostID: data?.data.reservationDetails.hostID._id,
+                      feedback,
+                      userRating: rating,
+                    });
+                    setFeedback("");
+                    setRating(0);
+                  }}
                   disabled={!feedback || !rating}
-                  size={"sm"}
-                  className="w-max rounded-full bg-gray-950"
+                  className="rounded-full bg-gray-950"
                 >
                   Leave a review
                 </Button>

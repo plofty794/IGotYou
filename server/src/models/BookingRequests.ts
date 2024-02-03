@@ -58,6 +58,10 @@ const bookingRequestsSchema = new Schema(
         "change of heart",
       ],
     },
+    reservationID: {
+      type: Types.ObjectId,
+      ref: "Reservations",
+    },
   },
   { timestamps: true }
 );

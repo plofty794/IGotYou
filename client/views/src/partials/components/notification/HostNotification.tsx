@@ -132,7 +132,7 @@ function HostNotification() {
             {notifications?.length > 0 && (
               <>
                 <Separator />
-                <ScrollArea className="h-max max-h-80">
+                <ScrollArea className="h-80">
                   <div className="flex flex-col items-center">
                     {notifications?.map((v) => (
                       <>

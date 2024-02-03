@@ -28,6 +28,10 @@ const reservationsSchema = new Schema(
       default: "pending",
       required: true,
     },
+    paymentType: {
+      type: String,
+      enum: ["full-payment", "partial-payment"],
+    },
     paymentAmount: {
       type: Number,
       required: true,
@@ -43,6 +47,12 @@ const reservationsSchema = new Schema(
     },
     balance: {
       type: Number,
+    },
+    paymentProofPhoto: {
+      type: String,
+    },
+    paymentRefNo: {
+      type: String,
     },
     status: {
       type: String,
