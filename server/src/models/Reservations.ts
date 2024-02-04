@@ -28,6 +28,14 @@ const reservationsSchema = new Schema(
       default: "pending",
       required: true,
     },
+    partialPaymentVerificationStatus: {
+      type: String,
+      enum: ["pending", "success", "rejected"],
+    },
+    fullPaymentVerificationStatus: {
+      type: String,
+      enum: ["pending", "success", "rejected"],
+    },
     paymentType: {
       type: String,
       enum: ["full-payment", "partial-payment"],
@@ -35,6 +43,12 @@ const reservationsSchema = new Schema(
     paymentAmount: {
       type: Number,
       required: true,
+    },
+    fullPaymentAmount: {
+      type: Number,
+    },
+    partialPaymentAmount: {
+      type: Number,
     },
     partialPaymentDate: {
       type: Date,
@@ -48,10 +62,36 @@ const reservationsSchema = new Schema(
     balance: {
       type: Number,
     },
-    paymentProofPhoto: {
+    partialPaymentProofPhoto: {
+      type: {
+        public_id: {
+          type: String,
+        },
+        secure_url: {
+          type: String,
+        },
+        thumbnail_url: {
+          type: String,
+        },
+      },
+    },
+    fullPaymentProofPhoto: {
+      type: {
+        public_id: {
+          type: String,
+        },
+        secure_url: {
+          type: String,
+        },
+        thumbnail_url: {
+          type: String,
+        },
+      },
+    },
+    partialPaymentRefNo: {
       type: String,
     },
-    paymentRefNo: {
+    fullPaymentRefNo: {
       type: String,
     },
     status: {

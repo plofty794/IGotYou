@@ -53,18 +53,6 @@ export const getBookingRequestDetails: RequestHandler = async (
       throw createHttpError(400, "Invalid booking request id");
     }
 
-    if (bookingRequest.status === "approved") {
-      const reservation = await Reservations.findOne({
-        bookingStartsAt: bookingRequest?.requestedBookingDateStartsAt,
-        bookingEndsAt: bookingRequest?.requestedBookingDateEndsAt,
-        guestID: (bookingRequest?.guestID as { _id: string })._id,
-        hostID: (bookingRequest?.hostID as { _id: string })._id,
-      });
-      return res
-        .status(200)
-        .json({ bookingRequest, reservationID: reservation?._id });
-    }
-
     res.status(200).json({ bookingRequest });
   } catch (error) {
     next(error);
@@ -564,6 +552,10 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
           : "ongoing",
       paymentStatus: "pending",
       paymentAmount: approvedBookingRequests?.totalPrice,
+    });
+
+    await approvedBookingRequests?.updateOne({
+      reservationID: newReservation?._id,
     });
 
     await Listings.findByIdAndUpdate(approvedBookingRequests?.listingID, {

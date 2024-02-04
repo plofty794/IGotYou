@@ -2,6 +2,8 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import Reservations from "../models/Reservations";
 import Ratings from "../models/Ratings";
+import { createTransport } from "nodemailer";
+import env from "../utils/envalid";
 
 export const getCurrentReservation: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
@@ -20,7 +22,7 @@ export const getCurrentReservation: RequestHandler = async (req, res, next) => {
         $and: [
           {
             bookingStartsAt: {
-              $eq: new Date().setHours(0, 0, 0, 0),
+              $lte: new Date().setHours(0, 0, 0, 0),
             },
           },
           {
@@ -41,7 +43,10 @@ export const getCurrentReservation: RequestHandler = async (req, res, next) => {
       ])
       .exec();
 
-    res.status(200).json({ currentReservation: [currentReservation] });
+    res.status(200).json({
+      currentReservation:
+        currentReservation != null ? [currentReservation] : [],
+    });
   } catch (error) {
     next(error);
   }
@@ -144,6 +149,18 @@ export const getReservations: RequestHandler = async (req, res, next) => {
       );
     }
 
+    await Reservations.updateMany(
+      {
+        bookingEndsAt: {
+          $lt: new Date().setHours(0, 0, 0, 0),
+        },
+        status: "ongoing",
+      },
+      {
+        status: "completed",
+      }
+    );
+
     const allReservations = await Reservations.find({
       hostID: id,
     })
@@ -214,6 +231,88 @@ export const getCurrentReservationDetails: RequestHandler = async (
       isHost: (reservationDetails.hostID as { _id: string })._id == id,
       hasRating: hasRating ?? null,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendReservationPaymentToAdmin: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const { reservationID } = req.params;
+  const { paymentType } = req.body;
+  const transport = createTransport({
+    service: "gmail",
+    auth: {
+      user: env.ADMIN_EMAIL,
+      pass: env.APP_PASSWORD,
+    },
+  });
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    if (paymentType === "partial-payment") {
+      const hasPreviousPartialPayment = await Reservations.findOne({
+        _id: reservationID,
+        paymentType: "partial-payment",
+      });
+
+      if (hasPreviousPartialPayment) {
+        await hasPreviousPartialPayment.updateOne({
+          fullPaymentAmount: req.body.expectedPaymentAmount,
+          fullPaymentDate: new Date(),
+          fullPaymentProofPhoto: req.body.paymentProofPhoto,
+          fullPaymentRefNo: req.body.paymentRefNo,
+          fullPaymentVerificationStatus: "pending",
+        });
+
+        return res.status(200).json({ message: "Hello" });
+      }
+
+      await Reservations.findByIdAndUpdate(reservationID, {
+        partialPaymentVerificationStatus: "pending",
+        partialPaymentAmount: req.body.expectedPaymentAmount,
+        partialPaymentDate: new Date(),
+        paymentType: "partial-payment",
+        partialPaymentProofPhoto: req.body.paymentProofPhoto,
+        partialPaymentRefNo: req.body.paymentRefNo,
+      });
+
+      await transport.sendMail({
+        to: env.ADMIN_EMAIL,
+        subject: "Service Partial Payment Update",
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Partial payment has been sent." });
+    }
+
+    await Reservations.findByIdAndUpdate(reservationID, {
+      fullPaymentVerificationStatus: "pending",
+      fullPaymentAmount: req.body.expectedPaymentAmount,
+      fullPaymentDate: new Date(),
+      paymentType: "full-payment",
+      balance: 0,
+      fullPaymentProofPhoto: req.body.paymentProofPhoto,
+      fullPaymentRefNo: req.body.paymentRefNo,
+    });
+
+    await transport.sendMail({
+      to: env.ADMIN_EMAIL,
+      subject: "Service Full Payment Update",
+    });
+
+    return res.status(201).json({ message: "Full payment has been sent." });
   } catch (error) {
     next(error);
   }

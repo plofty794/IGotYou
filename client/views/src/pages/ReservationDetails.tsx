@@ -141,7 +141,7 @@ function ReservationDetails() {
                   <div>
                     <CardHeader className="px-6 py-4">
                       <CardTitle className="text-xl font-bold">
-                        Guest information
+                        Host information
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -377,7 +377,21 @@ function ReservationDetails() {
                         <span className="font-semibold text-gray-600">
                           {formatValue({
                             value: String(
-                              data.data.reservationDetails.listingID.price,
+                              parseInt(
+                                data.data.reservationDetails.listingID.price,
+                              ) *
+                                Math.abs(
+                                  differenceInDays(
+                                    new Date(
+                                      data?.data.reservationDetails
+                                        .bookingStartsAt,
+                                    ),
+                                    new Date(
+                                      data?.data.reservationDetails
+                                        .bookingEndsAt,
+                                    ),
+                                  ),
+                                ),
                             ),
                             intlConfig: {
                               locale: "ph",

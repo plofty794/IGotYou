@@ -94,7 +94,7 @@ function UpcomingReservations() {
                       <img
                         src={v.listingID.listingAssets[0]?.secure_url}
                         alt="Image"
-                        className="h-full w-full object-cover transition-transform hover:scale-110"
+                        className="h-44 w-full object-cover transition-transform hover:scale-110"
                       />
                     </div>
                     <div className="flex flex-col gap-2">

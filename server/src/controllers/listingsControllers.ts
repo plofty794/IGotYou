@@ -32,24 +32,25 @@ export const getHostListings: RequestHandler = async (req, res, next) => {
       );
     }
 
-    await Listings.updateMany(
-      {
-        endsAt: {
-          $lte: new Date(),
+    await Promise.all([
+      Listings.updateMany(
+        {
+          availableAt: {
+            $lte: new Date(),
+          },
+          status: "Inactive",
         },
-      },
-      { status: "Ended" }
-    );
-
-    await Listings.updateMany(
-      {
-        availableAt: {
-          $lte: new Date(),
+        { status: "Active" }
+      ),
+      Listings.updateMany(
+        {
+          endsAt: {
+            $lte: new Date(),
+          },
         },
-        status: "Inactive",
-      },
-      { status: "Active" }
-    );
+        { status: "Ended" }
+      ),
+    ]);
 
     const hostListings = await Listings.find({
       host: id,
@@ -240,12 +241,10 @@ export const addListing: RequestHandler = async (req, res, next) => {
       { new: true }
     );
 
-    res
-      .status(200)
-      .json({
-        message: "Listing created successfully.",
-        newListingID: newListing?._id,
-      });
+    res.status(200).json({
+      message: "Listing created successfully.",
+      newListingID: newListing?._id,
+    });
   } catch (error) {
     next(error);
   }

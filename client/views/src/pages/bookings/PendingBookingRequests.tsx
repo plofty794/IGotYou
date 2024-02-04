@@ -92,11 +92,11 @@ function PendingBookingRequests() {
           <Separator />
           <CardContent className="flex w-full justify-between p-4">
             <div className="flex gap-2">
-              <div className="h-full w-44 overflow-hidden rounded-md">
+              <div className="h-44 w-44 overflow-hidden rounded-md">
                 <img
                   src={v.listingID.listingAssets[0].secure_url}
                   alt="Image"
-                  className="h-full w-full object-cover transition-transform hover:scale-110"
+                  className="h-44 w-full object-cover transition-transform hover:scale-110"
                 />
               </div>
               <div className="flex flex-col gap-2">

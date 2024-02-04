@@ -237,7 +237,9 @@ function BookingRequest() {
               <Separator />
               <CardFooter className="justify-between gap-2 p-4">
                 <Button size={"sm"} variant={"outline"}>
-                  <Link to={`/reservation-details/${data?.data.reservationID}`}>
+                  <Link
+                    to={`/reservation-details/${data?.data.bookingRequest.reservationID}`}
+                  >
                     {" "}
                     View reservation details
                   </Link>
