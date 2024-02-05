@@ -49,7 +49,6 @@ function GuestPaymentDetails({
   reservationDetails: TReservationDetails;
 }) {
   const sendReservationPaymentToAdmin = useSendReservationPaymentToAdmin();
-
   const removeAsset = useRemoveAsset();
   const [expectedPaymentAmount, setExpectedPaymentAmount] = useState<
     string | undefined
@@ -72,6 +71,7 @@ function GuestPaymentDetails({
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm<SendServicePaymentSchema>({
     defaultValues: {
       paymentRefNo: undefined,
@@ -120,13 +120,16 @@ function GuestPaymentDetails({
     }
     setHasSelectedPaymentType(true);
     setHasPaymentPhotoProof(true);
-
     sendReservationPaymentToAdmin.mutate({
       expectedPaymentAmount,
       paymentProofPhoto,
       paymentRefNo: paymentDetails.paymentRefNo,
       paymentType,
     });
+    setPaymentProofPhoto({ public_id: "", secure_url: "", thumbnail_url: "" });
+    setPaymentType("");
+    setExpectedPaymentAmount("");
+    reset();
   }
 
   return (
@@ -138,13 +141,17 @@ function GuestPaymentDetails({
             reservationDetails.fullPaymentVerificationStatus == null && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button size={"sm"} variant={"link"} className="p-0">
+                  <Button
+                    size={"sm"}
+                    variant={"link"}
+                    className="p-0 text-gray-600"
+                  >
                     Previous payment details
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Partial payment details</DialogTitle>
+                    <DialogTitle>Previous payment details</DialogTitle>
                   </DialogHeader>
                   <CardContent className="flex flex-col gap-2 p-4">
                     <div className="flex w-full items-center justify-between">

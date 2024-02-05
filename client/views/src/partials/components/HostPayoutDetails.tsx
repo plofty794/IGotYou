@@ -17,11 +17,14 @@ import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 function HostPayoutDetails({
   reservationDetails,
@@ -56,7 +59,7 @@ function HostPayoutDetails({
                   <Separator />
                   <div className="flex w-full items-center justify-between">
                     <p className="text-sm font-semibold text-gray-600">
-                      Amount sent
+                      Amount received
                     </p>
                     <p className="text-sm font-semibold ">
                       {formatValue({
@@ -143,7 +146,7 @@ function HostPayoutDetails({
                 <Separator />
                 <div className="flex w-full items-center justify-between">
                   <p className="text-sm font-semibold text-gray-600">
-                    Amount sent
+                    Amount received
                   </p>
                   <p className="text-sm font-semibold ">
                     {formatValue({
@@ -205,7 +208,7 @@ function HostPayoutDetails({
                 <Separator />
                 <div className="flex w-full items-center justify-between">
                   <p className="text-sm font-semibold text-gray-600">
-                    Amount sent
+                    Amount received
                   </p>
                   <p className="text-sm font-semibold ">
                     {formatValue({
@@ -257,24 +260,123 @@ function HostPayoutDetails({
           </Tabs>
           <CardFooter className="flex flex-col gap-2">
             <div className="flex w-full flex-col gap-2">
-              <Button
-                className="w-full gap-2 bg-green-500 hover:bg-green-600"
-                size={"lg"}
-              >
-                Request payout
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
+              {reservationDetails.status === "completed" &&
+              reservationDetails.fullPaymentVerificationStatus === "success" ? (
+                <Button
+                  className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                  size={"lg"}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Button>
+                  Request payout
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Button>
+              ) : (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                      size={"lg"}
+                    >
+                      Request payout
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-5 w-5"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-xl p-0">
+                    <DialogHeader className="p-4">
+                      <div className="flex items-center gap-2">
+                        <ExclamationTriangleIcon
+                          color="orange"
+                          width={25}
+                          height={25}
+                        />
+                        <DialogTitle className="text-base font-semibold">
+                          Oops! Request Payment Payout Blocked
+                        </DialogTitle>
+                      </div>
+                    </DialogHeader>
+                    <Separator />
+                    <DialogFooter>
+                      <ScrollArea className="max-h-64">
+                        <div className="flex flex-col gap-4 px-6 py-4">
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm ">
+                              To ensure that your experience meets your
+                              expectations, we've implemented a simple
+                              confirmation and payment process.
+                            </span>
+                          </div>
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm font-bold">
+                              Here's how it works:
+                            </span>
+                            <ul className="flex list-disc flex-col gap-1 px-6">
+                              <li className="text-sm">
+                                <span className="font-bold">
+                                  Confirmation of Service Completion:
+                                </span>{" "}
+                                After the service has concluded, the guest have
+                                the opportunity to confirm its completion. This
+                                step ensures that you are fully satisfied with
+                                the service before finalizing it.
+                              </li>
+                              <li className="text-sm ">
+                                <span className="font-bold">
+                                  Payment Fulfillment:
+                                </span>{" "}
+                                Before confirming the service's end, please
+                                ensure that all payments associated with the
+                                service have been fulfilled. This step helps us
+                                maintain a secure and transparent payment
+                                process, especially if you're using our escrow
+                                payment method.
+                              </li>
+                              <li className="text-sm ">
+                                <span className="font-bold">
+                                  Host Notification:
+                                </span>{" "}
+                                Once the guest has confirm the service's
+                                completion, we'll notify the host/provider about
+                                the confirmation. This allows them to proceed
+                                with requesting payment checkout.
+                              </li>
+                            </ul>
+                          </div>
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm">
+                              We strive to make this process as seamless as
+                              possible for you. Should you have any questions or
+                              concerns, feel free to reach out to our customer
+                              support team. We're here to assist you every step
+                              of the way.
+                            </span>
+                          </div>
+                        </div>
+                      </ScrollArea>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="flex w-full flex-col gap-2">
               <div className="flex w-full gap-2">
@@ -316,7 +418,9 @@ function HostPayoutDetails({
             </div>
             <Separator />
             <div className="flex w-full items-center justify-between">
-              <p className="text-sm font-semibold text-gray-600">Amount sent</p>
+              <p className="text-sm font-semibold text-gray-600">
+                Amount received
+              </p>
               <p className="text-sm font-semibold ">
                 {formatValue({
                   value: String(reservationDetails.fullPaymentAmount),
@@ -361,24 +465,123 @@ function HostPayoutDetails({
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
             <div className="flex w-full flex-col gap-2">
-              <Button
-                className="w-full gap-2 bg-green-500 hover:bg-green-600"
-                size={"lg"}
-              >
-                Request payout
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
+              {reservationDetails.status === "completed" &&
+              reservationDetails.fullPaymentVerificationStatus === "success" ? (
+                <Button
+                  className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                  size={"lg"}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Button>
+                  Request payout
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Button>
+              ) : (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                      size={"lg"}
+                    >
+                      Request payout
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-5 w-5"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-xl p-0">
+                    <DialogHeader className="p-4">
+                      <div className="flex items-center gap-2">
+                        <ExclamationTriangleIcon
+                          color="orange"
+                          width={25}
+                          height={25}
+                        />
+                        <DialogTitle className="text-base font-semibold">
+                          Oops! Request Payment Payout Blocked
+                        </DialogTitle>
+                      </div>
+                    </DialogHeader>
+                    <Separator />
+                    <DialogFooter>
+                      <ScrollArea className="max-h-64">
+                        <div className="flex flex-col gap-4 px-6 py-4">
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm ">
+                              To ensure that your experience meets your
+                              expectations, we've implemented a simple
+                              confirmation and payment process.
+                            </span>
+                          </div>
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm font-bold">
+                              Here's how it works:
+                            </span>
+                            <ul className="flex list-disc flex-col gap-1 px-6">
+                              <li className="text-sm">
+                                <span className="font-bold">
+                                  Confirmation of Service Completion:
+                                </span>{" "}
+                                After the service has concluded, the guest have
+                                the opportunity to confirm its completion. This
+                                step ensures that you are fully satisfied with
+                                the service before finalizing it.
+                              </li>
+                              <li className="text-sm ">
+                                <span className="font-bold">
+                                  Payment Fulfillment:
+                                </span>{" "}
+                                Before confirming the service's end, please
+                                ensure that all payments associated with the
+                                service have been fulfilled. This step helps us
+                                maintain a secure and transparent payment
+                                process, especially if you're using our escrow
+                                payment method.
+                              </li>
+                              <li className="text-sm ">
+                                <span className="font-bold">
+                                  Host Notification:
+                                </span>{" "}
+                                Once the guest has confirm the service's
+                                completion, we'll notify the host/provider about
+                                the confirmation. This allows them to proceed
+                                with requesting payment checkout.
+                              </li>
+                            </ul>
+                          </div>
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm">
+                              We strive to make this process as seamless as
+                              possible for you. Should you have any questions or
+                              concerns, feel free to reach out to our customer
+                              support team. We're here to assist you every step
+                              of the way.
+                            </span>
+                          </div>
+                        </div>
+                      </ScrollArea>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="flex w-full flex-col gap-2">
               <div className="flex w-full gap-2">
@@ -502,24 +705,123 @@ function HostPayoutDetails({
           </CardContent>
           <CardFooter className="flex flex-col gap-2">
             <div className="flex w-full flex-col gap-2">
-              <Button
-                className="w-full gap-2 bg-green-500 hover:bg-green-600"
-                size={"lg"}
-              >
-                Request payout
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
+              {reservationDetails.status === "completed" &&
+              reservationDetails.fullPaymentVerificationStatus === "success" ? (
+                <Button
+                  className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                  size={"lg"}
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Button>
+                  Request payout
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-5 w-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Button>
+              ) : (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="w-full gap-2 bg-green-500 hover:bg-green-600"
+                      size={"lg"}
+                    >
+                      Request payout
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-5 w-5"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M1 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4Zm12 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM4 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm13-1a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM1.75 14.5a.75.75 0 0 0 0 1.5c4.417 0 8.693.603 12.749 1.73 1.111.309 2.251-.512 2.251-1.696v-.784a.75.75 0 0 0-1.5 0v.784a.272.272 0 0 1-.35.25A49.043 49.043 0 0 0 1.75 14.5Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-xl p-0">
+                    <DialogHeader className="p-4">
+                      <div className="flex items-center gap-2">
+                        <ExclamationTriangleIcon
+                          color="orange"
+                          width={25}
+                          height={25}
+                        />
+                        <DialogTitle className="text-base font-semibold">
+                          Oops! Service Confirmation Blocked
+                        </DialogTitle>
+                      </div>
+                    </DialogHeader>
+                    <Separator />
+                    <DialogFooter>
+                      <ScrollArea className="max-h-64">
+                        <div className="flex flex-col gap-4 px-6 py-4">
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm ">
+                              To ensure that your experience meets your
+                              expectations, we've implemented a simple
+                              confirmation and payment process.
+                            </span>
+                          </div>
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm font-bold">
+                              Here's how it works:
+                            </span>
+                            <ul className="flex list-disc flex-col gap-1 px-6">
+                              <li className="text-sm">
+                                <span className="font-bold">
+                                  Confirmation of Service Completion:
+                                </span>{" "}
+                                After the service has concluded, the guest have
+                                the opportunity to confirm its completion. This
+                                step ensures that you are fully satisfied with
+                                the service before finalizing it.
+                              </li>
+                              <li className="text-sm ">
+                                <span className="font-bold">
+                                  Payment Fulfillment:
+                                </span>{" "}
+                                Before confirming the service's end, please
+                                ensure that all payments associated with the
+                                service have been fulfilled. This step helps us
+                                maintain a secure and transparent payment
+                                process, especially if you're using our escrow
+                                payment method.
+                              </li>
+                              <li className="text-sm ">
+                                <span className="font-bold">
+                                  Host Notification:
+                                </span>{" "}
+                                Once the guest has confirm the service's
+                                completion, we'll notify the host/provider about
+                                the confirmation. This allows them to proceed
+                                with requesting payment checkout.
+                              </li>
+                            </ul>
+                          </div>
+                          <div className="flex flex-col justify-center gap-2">
+                            <span className="text-sm">
+                              We strive to make this process as seamless as
+                              possible for you. Should you have any questions or
+                              concerns, feel free to reach out to our customer
+                              support team. We're here to assist you every step
+                              of the way.
+                            </span>
+                          </div>
+                        </div>
+                      </ScrollArea>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="flex w-full flex-col gap-2">
               <div className="flex w-full gap-2">

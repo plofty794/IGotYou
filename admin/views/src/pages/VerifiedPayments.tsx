@@ -110,7 +110,7 @@ function VerifiedPayments() {
                                   loading="lazy"
                                 />
                               </DialogTrigger>
-                              <DialogContent className="max-w-4xl p-0">
+                              <DialogContent className="max-w-4xl w-max p-0">
                                 <img
                                   className=" object-cover rounded-md"
                                   src={v.paymentProofPhoto}

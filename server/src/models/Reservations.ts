@@ -99,6 +99,21 @@ const reservationsSchema = new Schema(
       enum: ["scheduled", "ongoing", "completed", "cancelled"],
       required: true,
     },
+    confirmServiceEnded: {
+      type: Boolean,
+      default: false,
+    },
+    hostCancellationReason: {
+      type: String,
+      enum: [
+        "personal illness or emergency",
+        "unavailability of resources",
+        "natural disasters or weather events",
+        "payment issues",
+        "safety Concerns",
+        "disputes or conflicts",
+      ],
+    },
   },
   { timestamps: true }
 );

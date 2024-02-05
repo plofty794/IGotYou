@@ -1,10 +1,13 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 function useSendReservationPaymentToAdmin() {
   const { reservationID } = useParams();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+
   return useMutation({
     mutationFn: async ({
       paymentRefNo,
@@ -31,9 +34,14 @@ function useSendReservationPaymentToAdmin() {
         },
       );
     },
-    onSuccess() {
+    onSuccess(data) {
       queryClient.invalidateQueries({
         queryKey: ["reservation", reservationID],
+      });
+      toast({
+        title: "Payment success! 🎉",
+        description: data.data.message,
+        className: "bg-white",
       });
     },
     onError(error?) {

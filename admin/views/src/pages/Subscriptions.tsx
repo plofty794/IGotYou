@@ -16,12 +16,11 @@ import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 
 function Subscriptions() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, isPending } = useGetPendingPayments();
   const verifyPayment = useVerifyPayment();
 
   useEffect(() => {
-    document.title = "Payments - IGotYou";
+    document.title = "Subscriptions - IGotYou";
   }, []);
 
   return (

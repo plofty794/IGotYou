@@ -244,13 +244,6 @@ export const sendReservationPaymentToAdmin: RequestHandler = async (
   const id = req.cookies["_&!d"];
   const { reservationID } = req.params;
   const { paymentType } = req.body;
-  const transport = createTransport({
-    service: "gmail",
-    auth: {
-      user: env.ADMIN_EMAIL,
-      pass: env.APP_PASSWORD,
-    },
-  });
   try {
     if (!id) {
       res.clearCookie("_&!d");
@@ -275,7 +268,9 @@ export const sendReservationPaymentToAdmin: RequestHandler = async (
           fullPaymentVerificationStatus: "pending",
         });
 
-        return res.status(200).json({ message: "Hello" });
+        return res
+          .status(201)
+          .json({ message: "Partial payment has been sent." });
       }
 
       await Reservations.findByIdAndUpdate(reservationID, {
@@ -285,11 +280,6 @@ export const sendReservationPaymentToAdmin: RequestHandler = async (
         paymentType: "partial-payment",
         partialPaymentProofPhoto: req.body.paymentProofPhoto,
         partialPaymentRefNo: req.body.paymentRefNo,
-      });
-
-      await transport.sendMail({
-        to: env.ADMIN_EMAIL,
-        subject: "Service Partial Payment Update",
       });
 
       return res
@@ -302,17 +292,135 @@ export const sendReservationPaymentToAdmin: RequestHandler = async (
       fullPaymentAmount: req.body.expectedPaymentAmount,
       fullPaymentDate: new Date(),
       paymentType: "full-payment",
-      balance: 0,
       fullPaymentProofPhoto: req.body.paymentProofPhoto,
       fullPaymentRefNo: req.body.paymentRefNo,
     });
 
-    await transport.sendMail({
-      to: env.ADMIN_EMAIL,
-      subject: "Service Full Payment Update",
-    });
-
     return res.status(201).json({ message: "Full payment has been sent." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPendingServicePayments: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  const limit = 10;
+  const admin_id = req.cookies.admin_id;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const pendingServicePayments = await Reservations.find({
+      $or: [
+        { partialPaymentVerificationStatus: "pending" },
+        { fullPaymentVerificationStatus: "pending" },
+      ],
+    })
+      .populate([
+        {
+          path: "hostID",
+          select:
+            "username email photoUrl emailVerified identityVerified mobileVerified mobilePhone educationalAttainment address work funFact mobilePhone userStatus rating",
+        },
+        {
+          path: "guestID",
+          select:
+            "username email photoUrl emailVerified identityVerified mobileVerified mobilePhone educationalAttainment address work funFact mobilePhone userStatus rating",
+        },
+        {
+          path: "listingID",
+          select:
+            "serviceTitle serviceType listingAssets cancellationPolicy price",
+        },
+      ])
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const totalPages = Math.ceil(pendingServicePayments.length / limit);
+
+    res.status(200).json({ pendingServicePayments, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePendingServicePayment: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const admin_id = req.cookies.admin_id;
+  const { reservationID } = req.params;
+  const {
+    paymentType,
+    paymentStatus,
+    partialPaymentVerificationStatus,
+    fullPaymentVerificationStatus,
+    status,
+  } = req.body;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const reservation = await Reservations.findById(reservationID);
+
+    if (
+      paymentType === "partial-payment" &&
+      paymentStatus === "pending" &&
+      partialPaymentVerificationStatus === "pending" &&
+      status === "success"
+    ) {
+      await Reservations.findByIdAndUpdate(reservationID, {
+        partialPaymentVerificationStatus: "success",
+        paymentStatus: "partially-paid",
+        balance: reservation!.paymentAmount / 2,
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Partial payment has been verified." });
+    }
+
+    if (
+      paymentType === "partial-payment" &&
+      paymentStatus === "partially-paid" &&
+      partialPaymentVerificationStatus === "success" &&
+      status === "success"
+    ) {
+      await Reservations.findByIdAndUpdate(reservationID, {
+        fullPaymentVerificationStatus: "success",
+        paymentStatus: "fully-paid",
+        balance: 0,
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Partial payment has been verified." });
+    }
+
+    if (
+      paymentType === "full-payment" &&
+      paymentStatus === "pending" &&
+      fullPaymentVerificationStatus === "pending" &&
+      status === "success"
+    ) {
+      await Reservations.findByIdAndUpdate(reservationID, {
+        fullPaymentVerificationStatus: "success",
+        paymentStatus: "fully-paid",
+        balance: 0,
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Partial payment has been verified." });
+    }
   } catch (error) {
     next(error);
   }

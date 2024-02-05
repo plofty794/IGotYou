@@ -20,6 +20,7 @@ import { formatValue } from "react-currency-input-field";
 import { Textarea } from "@/components/ui/textarea";
 import { Rating } from "react-custom-rating-component";
 import useRateUser from "@/hooks/useRateUser";
+import ReservationCancellationDialog from "@/partials/components/ReservationCancellationDialog";
 
 function ReservationDetails() {
   const { mutate } = useRateUser();
@@ -300,7 +301,20 @@ function ReservationDetails() {
                 <p className="text-sm font-bold text-gray-600">
                   Cancellation policy
                 </p>
-                <p className="text-sm font-bold ">
+                <p
+                  className={`w-max text-sm font-bold ${
+                    data?.data.reservationDetails.listingID
+                      .cancellationPolicy === "Flexible"
+                      ? "text-green-600"
+                      : data?.data.reservationDetails.listingID
+                            .cancellationPolicy === "Moderate"
+                        ? "text-amber-600"
+                        : data?.data.reservationDetails.listingID
+                              .cancellationPolicy === "Non-refundable"
+                          ? "text-red-600"
+                          : " text-red-800"
+                  }`}
+                >
                   {data?.data.reservationDetails.listingID.cancellationPolicy}
                 </p>
               </div>
@@ -374,7 +388,7 @@ function ReservationDetails() {
                         <span className="font-semibold text-gray-600">
                           Cancellation policy rules applied
                         </span>
-                        <span className="font-semibold text-gray-600">
+                        <span className="text-sm font-semibold">
                           {formatValue({
                             value: String(
                               parseInt(
@@ -471,10 +485,15 @@ function ReservationDetails() {
                     setRating(0);
                   }}
                   disabled={!feedback || !rating}
-                  className="rounded-full bg-gray-950"
+                  className=" bg-gray-950"
                 >
                   Leave a review
                 </Button>
+                {data?.data.isHost && (
+                  <ReservationCancellationDialog
+                    reservationDetails={data.data.reservationDetails}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -12,7 +12,6 @@ function useGetReservationDetails() {
         `/api/reservation-details/${reservationID}`,
       );
     },
-    refetchOnWindowFocus: false,
     enabled: reservationID != null,
   });
 }

@@ -14,6 +14,7 @@ import Users from "./pages/Users";
 import Subscriptions from "./pages/Subscriptions";
 import VerifiedPayments from "./pages/VerifiedPayments";
 import IdentityPhotos from "./pages/IdentityPhotos";
+import Reservations from "./pages/Reservations";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
@@ -30,6 +31,16 @@ function App() {
             element={
               state.state ?? isAdmin ? (
                 <Dashboard />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="reservations"
+            element={
+              state.state ?? isAdmin ? (
+                <Reservations />
               ) : (
                 <Navigate to={"/login"} replace />
               )
@@ -66,7 +77,6 @@ function App() {
             }
           />
         </Route>
-
         <Route>
           <Route
             path="/verified-payments"

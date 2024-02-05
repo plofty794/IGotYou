@@ -222,7 +222,10 @@ function AllBookingRequests() {
                       )}
                     {v.status === "approved" && (
                       <Button size={"sm"} variant={"outline"}>
-                        View reservation details
+                        <Link to={`/reservation-details/${v.reservationID}`}>
+                          {" "}
+                          View reservation details
+                        </Link>
                       </Button>
                     )}
                   </div>

@@ -258,9 +258,9 @@ const columns: ColumnDef<TReservations>[] = [
                   new Date(row.original.bookingStartsAt).setHours(0, 0, 0, 0)
                 }
                 variant={"ghost"}
-                className="w-full justify-start text-sm font-semibold text-red-600 hover:text-red-500"
+                className="w-full justify-start text-red-600 hover:text-red-500"
               >
-                Cancel reservation
+                Cancel service
               </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>

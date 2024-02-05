@@ -15,8 +15,11 @@ function Navigation() {
           <NavLink className="font-bold opacity-70" to={"/identity-photos"}>
             ID's
           </NavLink>
-          <NavLink className="font-bold opacity-70" to={"/Subscriptions"}>
+          <NavLink className="font-bold opacity-70" to={"/subscriptions"}>
             Subscriptions
+          </NavLink>
+          <NavLink className="font-bold opacity-70" to={"/reservations"}>
+            Reservations
           </NavLink>
           <NavLink className="font-bold opacity-70" to={"/settings"}>
             Settings
