@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
-import { format, formatDistance } from "date-fns";
+import { format } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 
 function CurrentReservations() {
@@ -117,30 +117,6 @@ function CurrentReservations() {
                   >
                     Cancellation policy - {v.listingID.cancellationPolicy}
                   </Badge>
-                  <Badge className="w-max">
-                    Booking starts{" "}
-                    {formatDistance(
-                      new Date(v.bookingStartsAt),
-                      new Date().setHours(0, 0, 0, 0),
-                      {
-                        addSuffix: true,
-                      },
-                    ) === "less than a minute ago" && "today"}
-                    {formatDistance(
-                      new Date(v.bookingStartsAt),
-                      new Date().setHours(0, 0, 0, 0),
-                      {
-                        addSuffix: true,
-                      },
-                    ) !== "less than a minute ago" &&
-                      formatDistance(
-                        new Date(v.bookingStartsAt),
-                        new Date().setHours(0, 0, 0, 0),
-                        {
-                          addSuffix: true,
-                        },
-                      )}
-                  </Badge>
                 </div>
               </div>
               <div className="flex flex-col items-end justify-between gap-2">
@@ -163,7 +139,10 @@ function CurrentReservations() {
                 </div>
                 {v.status !== "cancelled" && (
                   <Button size={"sm"} variant={"outline"}>
-                    View reservation details
+                    <Link to={`/reservation-details/${v._id}`}>
+                      {" "}
+                      View reservation details
+                    </Link>
                   </Button>
                 )}
               </div>

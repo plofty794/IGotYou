@@ -6,6 +6,7 @@ import {
   getPreviousReservations,
   getReservations,
   getUpcomingReservations,
+  requestServiceCancellation,
   sendReservationPaymentToAdmin,
   updatePendingServicePayment,
 } from "../controllers/reservationControllers";
@@ -27,6 +28,11 @@ router.post(
   "/reservations/send-payment/:reservationID",
   authToken,
   sendReservationPaymentToAdmin
+);
+router.post(
+  "/reservations/request-service-cancellation/:reservationID",
+  authToken,
+  requestServiceCancellation
 );
 router.patch(
   "/reservations/update-payment/:reservationID",

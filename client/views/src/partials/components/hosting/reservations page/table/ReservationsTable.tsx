@@ -253,10 +253,6 @@ const columns: ColumnDef<TReservations>[] = [
             </DropdownMenuItem>
             <DropdownMenuItem className="px-0">
               <Button
-                disabled={
-                  new Date().setHours(0, 0, 0, 0) ===
-                  new Date(row.original.bookingStartsAt).setHours(0, 0, 0, 0)
-                }
                 variant={"ghost"}
                 className="w-full justify-start text-red-600 hover:text-red-500"
               >

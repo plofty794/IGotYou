@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import { compareAsc, differenceInDays, formatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
@@ -17,6 +17,14 @@ import useGetGuestDeclinedBookingRequests from "@/hooks/useGetGuestDeclinedBooki
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 jelly.register();
+import { Cloudinary } from "@cloudinary/url-gen/index";
+import { AdvancedImage } from "@cloudinary/react";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dop5kqpod",
+  },
+});
 
 function DeclinedBookingRequests() {
   const { data, isPending } = useGetGuestDeclinedBookingRequests();
@@ -81,7 +89,9 @@ function DeclinedBookingRequests() {
                   ? "text-amber-600"
                   : v.status === "approved"
                     ? "text-green-600"
-                    : "text-red-600"
+                    : v.status === "cancelled"
+                      ? "text-red-600"
+                      : "text-red-800"
               }`}
               variant={"outline"}
             >
@@ -92,15 +102,24 @@ function DeclinedBookingRequests() {
           <CardContent className="flex w-full justify-between px-6 py-4">
             <div className="flex gap-2">
               <div className="h-44 w-44 overflow-hidden rounded-md">
-                <img
-                  src={v.listingID.listingAssets[0].secure_url}
-                  alt="Image"
-                  className="h-44 w-full object-cover transition-transform hover:scale-110"
-                />
+                {v.listingID.listingAssets[0]?.resource_type === "video" ? (
+                  <AdvancedImage
+                    className="h-44 w-44 object-cover transition-transform hover:scale-110"
+                    cldImg={cld
+                      .image(v.listingID.listingAssets[0]?.public_id)
+                      .setAssetType("video")
+                      .format("auto:image")}
+                  />
+                ) : (
+                  <AdvancedImage
+                    className="h-44 w-44 object-cover transition-transform hover:scale-110"
+                    cldImg={cld.image(v.listingID.listingAssets[0].public_id)}
+                  />
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-lg font-bold ">
-                  {v.listingID.serviceDescription}
+                  {v.listingID.serviceTitle}
                 </span>
                 <span className="text-sm font-semibold ">
                   {v.listingID.serviceType}
@@ -110,15 +129,20 @@ function DeclinedBookingRequests() {
                   {new Date(v.requestedBookingDateStartsAt).toDateString()} -{" "}
                   {new Date(v.requestedBookingDateEndsAt).toDateString()}{" "}
                 </span>
-                <span className="font-bold">
-                  {formatValue({
-                    value: v.listingID.price.toString(),
-                    intlConfig: {
-                      locale: "PH",
-                      currency: "php",
-                    },
-                  })}
-                </span>
+                <Badge
+                  variant={"outline"}
+                  className={`w-max font-bold ${
+                    v.listingID.cancellationPolicy === "Flexible"
+                      ? "text-green-600"
+                      : v.listingID.cancellationPolicy === "Moderate"
+                        ? "text-amber-600"
+                        : v.listingID.cancellationPolicy === "Non-refundable"
+                          ? "text-red-600"
+                          : " text-red-800"
+                  }`}
+                >
+                  Cancellation policy - {v.listingID.cancellationPolicy}
+                </Badge>
                 <Badge className="w-max">
                   Duration{" "}
                   {formatDistance(
@@ -133,38 +157,35 @@ function DeclinedBookingRequests() {
                 </Badge>
               </div>
             </div>
+
             <div className="flex flex-col items-end justify-between gap-2">
-              {v.status === "pending" &&
-              compareAsc(
-                new Date(v.requestedBookingDateStartsAt),
-                new Date().setHours(0, 0, 0, 0),
-              ) < 0 ? (
-                <Badge variant={"destructive"}>Expired booking request</Badge>
-              ) : (
-                <Badge className="bg-green-600 hover:bg-green-500">
-                  Awaiting host approval
-                </Badge>
-              )}
-              <div className="flex flex-col">
-                <Badge variant={"secondary"} className="text-base font-bold">
-                  Total:{" "}
-                  {formatValue({
-                    value: String(
-                      differenceInDays(
-                        new Date(v.requestedBookingDateEndsAt),
-                        new Date(v.requestedBookingDateStartsAt),
-                      ) * v.listingID.price,
-                    ),
-                    intlConfig: {
-                      locale: "PH",
-                      currency: "php",
-                    },
-                  })}
-                </Badge>
-                <Button className="p-0 text-red-600" variant={"link"}>
-                  Cancel request
-                </Button>
+              <div className="flex h-full flex-col items-end justify-between">
+                <div className="flex flex-col">
+                  <Badge
+                    variant={"secondary"}
+                    className="w-max text-base font-bold"
+                  >
+                    Total:{" "}
+                    {formatValue({
+                      value: String(v.totalPrice),
+                      intlConfig: {
+                        locale: "PH",
+                        currency: "php",
+                      },
+                    })}
+                  </Badge>
+                </div>
               </div>
+              {v.status === "declined" && (
+                <>
+                  <Badge className="w-max" variant={"destructive"}>
+                    Decline Reason -
+                    <span className="ml-1 capitalize">
+                      {v.hostDeclineReasons}
+                    </span>
+                  </Badge>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>

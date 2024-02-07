@@ -567,14 +567,8 @@ export const rateUser: RequestHandler = async (req, res, next) => {
 
     const reservationOngoing = await Reservations.findOne({
       _id: reservationID,
-      bookingEndsAt: {
-        $gte: new Date().setHours(0, 0, 0, 0),
-      },
-      paymentStatus: {
-        $not: {
-          $eq: "fully-paid",
-        },
-      },
+      confirmServiceEnded: false,
+      status: "ongoing",
     });
 
     if (reservationOngoing) {

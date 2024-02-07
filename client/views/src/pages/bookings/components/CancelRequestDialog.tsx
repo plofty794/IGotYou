@@ -39,7 +39,7 @@ function CancelRequestDialog({
 }: {
   bookingRequestID: string;
 }) {
-  const [declineReason, setDeclineReason] = useState("");
+  const [cancelReason, setCancelReason] = useState("");
   const { mutate, isPending } = useCancelBookingRequest();
 
   return (
@@ -56,7 +56,7 @@ function CancelRequestDialog({
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-72 pr-4">
-          <RadioGroup onValueChange={(v) => setDeclineReason(v)}>
+          <RadioGroup onValueChange={(v) => setCancelReason(v)}>
             {REASONS.map((reason, index) => (
               <>
                 <div
@@ -84,7 +84,7 @@ function CancelRequestDialog({
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
-                disabled={!declineReason}
+                disabled={!cancelReason}
                 className="rounded-full bg-gray-950 p-6 text-lg"
               >
                 Submit
@@ -109,7 +109,7 @@ function CancelRequestDialog({
                   onClick={() =>
                     mutate({
                       bookingRequestID,
-                      guestCancelReasons: declineReason,
+                      guestCancelReasons: cancelReason,
                     })
                   }
                   className="rounded-full bg-gray-950"

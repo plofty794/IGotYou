@@ -2,8 +2,8 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import Reservations from "../models/Reservations";
 import Ratings from "../models/Ratings";
-import { createTransport } from "nodemailer";
-import env from "../utils/envalid";
+import BookingRequests from "../models/BookingRequests";
+import HostNotifications from "../models/HostNotifications";
 
 export const getCurrentReservation: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
@@ -19,6 +19,7 @@ export const getCurrentReservation: RequestHandler = async (req, res, next) => {
     const currentReservation = await Reservations.findOneAndUpdate(
       {
         hostID: id,
+        confirmServiceEnded: false,
         $and: [
           {
             bookingStartsAt: {
@@ -27,7 +28,7 @@ export const getCurrentReservation: RequestHandler = async (req, res, next) => {
           },
           {
             bookingEndsAt: {
-              $gt: new Date().setHours(0, 0, 0, 0),
+              $gte: new Date().setHours(0, 0, 0, 0),
             },
           },
         ],
@@ -155,6 +156,7 @@ export const getReservations: RequestHandler = async (req, res, next) => {
           $lt: new Date().setHours(0, 0, 0, 0),
         },
         status: "ongoing",
+        confirmServiceEnded: false,
       },
       {
         status: "completed",
@@ -421,6 +423,65 @@ export const updatePendingServicePayment: RequestHandler = async (
         .status(201)
         .json({ message: "Partial payment has been verified." });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const requestServiceCancellation: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const { reservationID } = req.params;
+  const { guestCancelReasons } = req.body;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const reservation = await BookingRequests.findOne({ reservationID });
+
+    if (!reservation) {
+      throw createHttpError(400, "No reservation with that ID");
+    }
+
+    const newServiceCancellationRequest = await BookingRequests.create({
+      guestID: id,
+      hostID: reservation?.hostID,
+      type: "Service-Cancellation-Request",
+      guestCancelReasons,
+      listingID: reservation?.listingID,
+      reservationID,
+    });
+
+    const newHostNotification = await HostNotifications.create({
+      senderID: id,
+      recipientID: reservation?.hostID,
+      notificationType: "Service-Cancellation-Request",
+      data: newServiceCancellationRequest?._id,
+    });
+
+    await newHostNotification.populate([
+      {
+        path: "senderID",
+        select: "username",
+      },
+      {
+        path: "recipientID",
+        select: "username",
+      },
+    ]);
+
+    res.status(201).json({
+      receiverName: (newHostNotification.recipientID as { username: string })
+        .username,
+    });
   } catch (error) {
     next(error);
   }

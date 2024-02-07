@@ -190,7 +190,12 @@ export const getGuestBookingRequests: RequestHandler = async (
       );
     }
 
-    const bookingRequests = await BookingRequests.find({ guestID: id })
+    const bookingRequests = await BookingRequests.find({
+      guestID: id,
+      message: {
+        $ne: null || undefined,
+      },
+    })
       .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
       .limit(limit)
@@ -258,6 +263,9 @@ export const getGuestApprovedBookingRequests: RequestHandler = async (
     const approvedBookingRequests = await BookingRequests.find({
       guestID: id,
       status: "approved",
+      message: {
+        $ne: null || undefined,
+      },
     })
       .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
@@ -290,6 +298,9 @@ export const searchGuestBookingRequest: RequestHandler = async (
 
     const bookingRequest = await BookingRequests.find({
       guestID: id,
+      message: {
+        $ne: null || undefined,
+      },
     })
       .populate([
         {
@@ -337,6 +348,9 @@ export const getGuestPendingBookingRequests: RequestHandler = async (
     const pendingBookingRequests = await BookingRequests.find({
       guestID: id,
       status: "pending",
+      message: {
+        $ne: null || undefined,
+      },
     })
       .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
@@ -415,6 +429,53 @@ export const getGuestCancelledBookingRequests: RequestHandler = async (
     const totalPages = Math.ceil(cancelledBookingRequests.length / limit);
 
     res.status(200).json({ cancelledBookingRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const declineBookingRequest: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { bookingRequestID } = req.params;
+  const { hostDeclineReasons } = req.body;
+  try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const bookingRequest = await BookingRequests.findOne({
+      _id: bookingRequestID,
+    });
+
+    const declinedBookingRequests = await GuestNotifications.create({
+      senderID: id,
+      recipientID: bookingRequest?.guestID,
+      data: bookingRequestID,
+      read: false,
+      notificationType: "Booking-Declined",
+    });
+
+    await declinedBookingRequests.populate({
+      path: "senderID",
+      select: "username",
+    });
+
+    await bookingRequest?.updateOne({
+      hostDeclineReasons,
+      status: "declined",
+    });
+
+    res.status(200).json({
+      message: "Booking request has been declined.",
+      receiverName: (
+        declinedBookingRequests?.recipientID as {
+          username: string;
+        }
+      ).username,
+    });
   } catch (error) {
     next(error);
   }
@@ -545,7 +606,7 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       listingID: approvedBookingRequests?.listingID,
       status:
         compareAsc(
-          approvedBookingRequests!.requestedBookingDateStartsAt,
+          approvedBookingRequests?.requestedBookingDateStartsAt!,
           new Date().setHours(0, 0, 0, 0)
         ) > 0
           ? "scheduled"

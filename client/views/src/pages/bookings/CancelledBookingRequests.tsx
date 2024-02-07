@@ -18,6 +18,14 @@ import { useEffect } from "react";
 import useReAttemptBooking from "@/hooks/useReAttemptBooking";
 import { Link } from "react-router-dom";
 jelly.register();
+import { Cloudinary } from "@cloudinary/url-gen/index";
+import { AdvancedImage } from "@cloudinary/react";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dop5kqpod",
+  },
+});
 
 function CancelledBookingRequests() {
   const { data, isPending } = useGetGuestCancelledBookingRequests();
@@ -94,11 +102,20 @@ function CancelledBookingRequests() {
           <CardContent className="flex w-full justify-between p-4">
             <div className="flex gap-2">
               <div className="h-44 w-44 overflow-hidden rounded-md">
-                <img
-                  src={v.listingID.listingAssets[0].secure_url}
-                  alt="Image"
-                  className="h-44 w-full object-cover transition-transform hover:scale-110"
-                />
+                {v.listingID.listingAssets[0]?.resource_type === "video" ? (
+                  <AdvancedImage
+                    className="h-44 w-44 object-cover transition-transform hover:scale-110"
+                    cldImg={cld
+                      .image(v.listingID.listingAssets[0]?.public_id)
+                      .setAssetType("video")
+                      .format("auto:image")}
+                  />
+                ) : (
+                  <AdvancedImage
+                    className="h-44 w-44 object-cover transition-transform hover:scale-110"
+                    cldImg={cld.image(v.listingID.listingAssets[0].public_id)}
+                  />
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-lg font-bold ">

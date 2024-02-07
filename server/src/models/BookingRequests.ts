@@ -12,15 +12,12 @@ const bookingRequestsSchema = new Schema(
     },
     requestedBookingDateStartsAt: {
       type: Date,
-      required: true,
     },
     requestedBookingDateEndsAt: {
       type: Date,
-      required: true,
     },
     message: {
       type: String,
-      required: true,
     },
     status: {
       type: String,
@@ -33,7 +30,6 @@ const bookingRequestsSchema = new Schema(
     },
     totalPrice: {
       type: Number,
-      required: true,
     },
     hostDeclineReasons: {
       type: String,
@@ -45,6 +41,10 @@ const bookingRequestsSchema = new Schema(
         "no reviews",
         "negative reviews",
       ],
+    },
+    type: {
+      type: String,
+      enum: ["Service-Cancellation-Request"],
     },
     guestCancelReasons: {
       type: String,

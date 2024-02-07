@@ -6,7 +6,7 @@ function useGetHostListings() {
     queryKey: ["host-listings"],
     queryFn: async ({ pageParam }) => {
       return await axiosPrivateRoute.get(
-        `/api/listings/host-listings/${pageParam}`
+        `/api/listings/host-listings/${pageParam}`,
       );
     },
     initialPageParam: 1,

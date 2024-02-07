@@ -38,10 +38,25 @@ import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import useRequestServiceCancellation from "@/hooks/useRequestServiceCancellation";
 
 function GuestPaymentDetails({
   reservationDetails,
@@ -89,7 +104,7 @@ function GuestPaymentDetails({
         cloudName: "dop5kqpod",
         uploadPreset: "s6lymwwh",
         folder: "IGotYou-Service-Payments",
-        resourceType: "auto",
+        resourceType: "image",
         multiple: true,
       },
       (_: unknown, result: CloudinaryUploadResult) => {
@@ -366,21 +381,7 @@ function GuestPaymentDetails({
             </Tabs>
             <CardFooter>
               <div className="flex w-full flex-col gap-2">
-                <Button variant={"destructive"} className="gap-2" size={"lg"}>
-                  Request a service cancellation
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Button>
+                <ServiceCancelRequestDialog />
                 <div className="flex w-full gap-2">
                   {" "}
                   <Button size={"sm"} className="w-full bg-gray-950">
@@ -459,21 +460,7 @@ function GuestPaymentDetails({
             </CardContent>
             <CardFooter>
               <div className="flex w-full flex-col gap-2">
-                <Button variant={"destructive"} className="gap-2" size={"lg"}>
-                  Request a service cancellation
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Button>
+                <ServiceCancelRequestDialog />
                 <div className="flex w-full gap-2">
                   {" "}
                   <Button size={"sm"} className="w-full bg-gray-950">
@@ -740,6 +727,112 @@ function GuestPaymentDetails({
         )}
       </Card>
     </>
+  );
+}
+
+function ServiceCancelRequestDialog() {
+  const [cancelReason, setCancelReason] = useState("");
+  const { mutate } = useRequestServiceCancellation();
+
+  const REASONS = [
+    "unverified identity",
+    "unexpected events",
+    "mismatched expectations",
+    "safety concerns",
+    "no reviews",
+    "negative reviews",
+    "change of heart",
+  ];
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant={"destructive"} className="gap-2" size={"lg"}>
+          Request a service cancellation
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-6 w-6"
+          >
+            <path
+              fillRule="evenodd"
+              d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6Zm-5.03 4.72a.75.75 0 0 0 0 1.06l1.72 1.72H2.25a.75.75 0 0 0 0 1.5h10.94l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 0 0-1.06 0Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="gap-4">
+        <DialogHeader>
+          <DialogTitle className="mb-2 text-2xl font-bold">
+            Why are you cancelling?
+          </DialogTitle>
+        </DialogHeader>
+        <ScrollArea className="h-72 pr-4">
+          <RadioGroup onValueChange={(v) => setCancelReason(v)}>
+            {REASONS.map((reason, index) => (
+              <>
+                <div
+                  key={index}
+                  className="flex h-max w-full items-center justify-between py-2"
+                >
+                  <Label
+                    htmlFor={reason}
+                    className="text-base font-medium capitalize"
+                  >
+                    {reason}
+                  </Label>
+                  <RadioGroupItem
+                    className="h-6 w-6"
+                    value={reason}
+                    id={reason}
+                  />
+                </div>
+                <Separator />
+              </>
+            ))}
+          </RadioGroup>
+        </ScrollArea>
+        <DialogFooter>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={!cancelReason}
+                className="rounded-full bg-gray-950 p-6 text-lg"
+              >
+                Submit
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Are you sure you want to cancel?
+                </AlertDialogTitle>
+              </AlertDialogHeader>
+              <p className="text-sm font-semibold text-gray-600">
+                Please be informed that simply sending a cancellation request
+                does not automatically halt the service. To ensure a smooth
+                process, kindly communicate directly with your host regarding
+                your cancellation intentions.
+              </p>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel className="rounded-full">
+                  Close
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => mutate({ guestCancelReasons: cancelReason })}
+                  className="rounded-full bg-gray-950"
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

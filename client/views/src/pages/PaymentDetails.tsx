@@ -25,6 +25,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 function PaymentDetails() {
   const { data, isPending } = useGetReservationDetails();
@@ -327,15 +338,15 @@ function PaymentDetails() {
                               }
                             </Badge>
                           </div>
-                          {!data?.data.isHost ? (
+                          {!data?.data.isHost && (
                             <>
-                              {data?.data.reservationDetails.status ===
-                                "completed" &&
-                              data.data.reservationDetails
+                              {new Date().setHours(0, 0, 0, 0) ===
+                                new Date(
+                                  data?.data.reservationDetails.bookingEndsAt,
+                                ).setHours(0, 0, 0, 0) &&
+                              data?.data.reservationDetails
                                 .fullPaymentVerificationStatus === "success" ? (
-                                <Button className="mt-2 bg-green-500 hover:bg-green-600">
-                                  Confirm service ended
-                                </Button>
+                                <ConfirmServiceEndedAlertDialog />
                               ) : (
                                 <Dialog>
                                   <DialogTrigger asChild>
@@ -429,8 +440,6 @@ function PaymentDetails() {
                                 </Dialog>
                               )}
                             </>
-                          ) : (
-                            <></>
                           )}
                         </div>
                       </TabsContent>
@@ -554,16 +563,15 @@ function PaymentDetails() {
                               }
                             </Badge>
                           </div>
-
-                          {!data?.data.isHost ? (
+                          {!data?.data.isHost && (
                             <>
-                              {data?.data.reservationDetails.status ===
-                                "completed" &&
-                              data.data.reservationDetails
+                              {new Date().setHours(0, 0, 0, 0) ===
+                                new Date(
+                                  data?.data.reservationDetails.bookingEndsAt,
+                                ).setHours(0, 0, 0, 0) &&
+                              data?.data.reservationDetails
                                 .fullPaymentVerificationStatus === "success" ? (
-                                <Button className="mt-2 bg-green-500 hover:bg-green-600">
-                                  Confirm service ended
-                                </Button>
+                                <ConfirmServiceEndedAlertDialog />
                               ) : (
                                 <Dialog>
                                   <DialogTrigger asChild>
@@ -657,8 +665,6 @@ function PaymentDetails() {
                                 </Dialog>
                               )}
                             </>
-                          ) : (
-                            <></>
                           )}
                         </div>
                       </TabsContent>
@@ -786,15 +792,15 @@ function PaymentDetails() {
                             }
                           </Badge>
                         </div>
-                        {!data?.data.isHost ? (
+                        {!data?.data.isHost && (
                           <>
-                            {data?.data.reservationDetails.status ===
-                              "completed" &&
-                            data.data.reservationDetails
+                            {new Date().setHours(0, 0, 0, 0) ===
+                              new Date(
+                                data?.data.reservationDetails.bookingEndsAt,
+                              ).setHours(0, 0, 0, 0) &&
+                            data?.data.reservationDetails
                               .fullPaymentVerificationStatus === "success" ? (
-                              <Button className="mt-2 bg-green-500 hover:bg-green-600">
-                                Confirm service ended
-                              </Button>
+                              <ConfirmServiceEndedAlertDialog />
                             ) : (
                               <Dialog>
                                 <DialogTrigger asChild>
@@ -887,8 +893,6 @@ function PaymentDetails() {
                               </Dialog>
                             )}
                           </>
-                        ) : (
-                          <></>
                         )}
                       </div>
                     </>
@@ -1017,15 +1021,15 @@ function PaymentDetails() {
                             }
                           </Badge>
                         </div>
-                        {!data?.data.isHost ? (
+                        {!data?.data.isHost && (
                           <>
-                            {data?.data.reservationDetails.status ===
-                              "completed" &&
-                            data.data.reservationDetails
+                            {new Date().setHours(0, 0, 0, 0) ===
+                              new Date(
+                                data?.data.reservationDetails.bookingEndsAt,
+                              ).setHours(0, 0, 0, 0) &&
+                            data?.data.reservationDetails
                               .fullPaymentVerificationStatus === "success" ? (
-                              <Button className="mt-2 bg-green-500 hover:bg-green-600">
-                                Confirm service ended
-                              </Button>
+                              <ConfirmServiceEndedAlertDialog />
                             ) : (
                               <Dialog>
                                 <DialogTrigger asChild>
@@ -1118,8 +1122,6 @@ function PaymentDetails() {
                               </Dialog>
                             )}
                           </>
-                        ) : (
-                          <></>
                         )}
                       </div>
                     </>
@@ -1135,6 +1137,35 @@ function PaymentDetails() {
         </>
       )}
     </>
+  );
+}
+
+function ConfirmServiceEndedAlertDialog() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="mt-2 bg-green-500 hover:bg-green-600">
+          Confirm service ended
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Are you all set and ready to end the service?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. Kindly confirm that you are no longer
+            in need of further assistance so we can finalize the service.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+          <AlertDialogAction className="rounded-full bg-green-500 hover:bg-green-600">
+            Confirm
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
@@ -1172,4 +1203,5 @@ export type TReservationDetails = {
   partialPaymentVerificationStatus: "pending" | "success" | "rejected";
   fullPaymentVerificationStatus: "pending" | "success" | "rejected";
   balance: number;
+  confirmServiceEnded: boolean;
 };
