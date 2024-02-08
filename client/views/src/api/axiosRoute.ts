@@ -5,3 +5,7 @@ export const axiosPrivateRoute = axios.create({
   withCredentials: true,
   headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
+
+export const axiosRoute = axios.create({
+  baseURL: "http://localhost:5050",
+});

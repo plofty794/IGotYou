@@ -1,4 +1,3 @@
-import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import env from "./utils/envalid";
@@ -20,6 +19,8 @@ import { addDays } from "date-fns";
 import cron from "node-cron";
 import { createTransport } from "nodemailer";
 import { blockedUsersRoutes } from "./routes/blockUsersRoutes";
+import serverless from "serverless-http";
+import express from "express";
 
 const app = express();
 const server = app
@@ -143,8 +144,8 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/api", (req, res, next) => {
-  res.json({ message: "Hello" });
+app.get("/", (_, res, __) => {
+  res.send({ message: "Hello" });
 });
 
 app.use(cookieParser());
@@ -209,3 +210,5 @@ cron.schedule("0 8 * * *", async () => {
     console.error(error);
   }
 });
+
+export const handler = serverless(app);
