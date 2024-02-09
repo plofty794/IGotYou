@@ -34,9 +34,9 @@ const server = app
 const io = new Server(server, {
   cors: {
     origin: [
-      env.CLIENT_URL,
-      env.ADMIN_URL,
-      "https://i-got-you-client.vercel.app",
+      "https://i-got-you-client-nxqt.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:5174",
     ],
     credentials: true,
   },
@@ -151,11 +151,7 @@ app.get("/", (_, res, __) => {
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      env.CLIENT_URL,
-      env.ADMIN_URL,
-      "https://i-got-you-client.vercel.app",
-    ],
+    origin: ["http://localhost:5173", "http://localhost:5174", env.CLIENT_URL],
     credentials: true,
   })
 );

@@ -75,7 +75,7 @@ function HostingLayout() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
                   <DropdownMenuItem className="p-4 font-medium text-gray-600">
-                    Insights
+                    <Link to={"/hosting-reviews"}>Reviews</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="p-4 font-medium text-gray-600">
                     <Link to={"/hosting-reservations"}>Reservations</Link>

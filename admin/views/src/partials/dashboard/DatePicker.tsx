@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 
 function DatePicker() {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -16,11 +17,13 @@ function DatePicker() {
     to: undefined,
   });
 
+  const search = useSearchParams();
+
   return (
     <div className="grid gap-2">
       <Popover>
-        <PopoverTrigger asChild>
-          <form className="flex items-center justify-center w-max gap-2">
+        <div className="flex items-center justify-center gap-1">
+          <PopoverTrigger asChild>
             <Button
               type="button"
               id="date"
@@ -41,11 +44,35 @@ function DatePicker() {
                 <span className="font-normal text-gray-500">Pick a date</span>
               )}
             </Button>
-            <Button disabled={!date?.from && !date?.to} className="bg-gray-950">
-              Set date
-            </Button>
-          </form>
-        </PopoverTrigger>
+          </PopoverTrigger>
+          <Button
+            onClick={() => {
+              const params = createSearchParams([
+                ["dateFrom", date!.from!.toDateString()],
+                ["dateTo", date!.to!.toDateString()],
+              ]);
+              search[1](params);
+              setTimeout(() => document.location.reload(), 200);
+            }}
+            type="button"
+            disabled={!date?.from && !date?.to}
+            className="bg-gray-950"
+          >
+            Set date
+          </Button>
+          <Button
+            onClick={() => {
+              search[1]("");
+              setTimeout(() => document.location.reload(), 200);
+            }}
+            type="button"
+            disabled={!location.search}
+            className="bg-gray-950"
+          >
+            Clear
+          </Button>
+        </div>
+
         <PopoverContent className="w-auto p-0" align="end">
           <Calendar
             initialFocus

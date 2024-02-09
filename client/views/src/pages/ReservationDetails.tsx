@@ -491,7 +491,7 @@ function ReservationDetails() {
                 </Button>
                 {data?.data.isHost && (
                   <ReservationCancellationDialog
-                    reservationDetails={data.data.reservationDetails}
+                    status={data.data.reservationDetails.status}
                   />
                 )}
               </div>

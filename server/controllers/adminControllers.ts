@@ -98,3 +98,50 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAdminOverview: RequestHandler = async (req, res, next) => {
+  const admin_id = req.cookies.admin_id;
+  const { dateFrom, dateTo } = req.query;
+  console.log(req.query);
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    if (dateFrom != "" || dateTo != "") {
+      const allUsers = await Users.find({
+        $and: [
+          {
+            createdAt: {
+              $lte: new Date(dateTo.toString()),
+            },
+          },
+          {
+            createdAt: {
+              $gte: new Date(dateFrom.toString()),
+            },
+          },
+        ],
+      });
+      const subscribedUsers = await Users.find({
+        userStatus: "host",
+        subscriptionStatus: "active",
+        subscriptionExpiresAt: {
+          $gte: new Date(dateTo.toString()),
+        },
+      });
+
+      return res.status(200).json({ allUsers, subscribedUsers });
+    }
+
+    const allUsers = await Users.find();
+    const subscribedUsers = await Users.find({
+      userStatus: "host",
+      subscriptionStatus: "active",
+    });
+
+    res.status(200).json({ allUsers, subscribedUsers });
+  } catch (error) {
+    next(error);
+  }
+};

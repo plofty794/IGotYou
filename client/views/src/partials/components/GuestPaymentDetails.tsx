@@ -689,23 +689,28 @@ function GuestPaymentDetails({
                       />
                     </svg>
                   </Button>
-                  <div className="flex w-full gap-2">
-                    {" "}
-                    <Button size={"sm"} className="w-full bg-gray-950">
-                      <Link
-                        className="w-full"
-                        to={
-                          "https://mail.google.com/mail/u/0/#inbox?compose=new"
-                        }
-                        target="_blank"
-                      >
-                        Email
-                      </Link>
-                    </Button>
-                    <Button size={"sm"} className="w-full bg-gray-950">
-                      Message
-                    </Button>
-                  </div>
+                  <CardFooter className="px-0">
+                    <div className="flex w-full flex-col gap-2">
+                      <ServiceCancelRequestDialog />
+                      <div className="flex w-full gap-2">
+                        {" "}
+                        <Button size={"sm"} className="w-full bg-gray-950">
+                          <Link
+                            className="w-full"
+                            to={
+                              "https://mail.google.com/mail/u/0/#inbox?compose=new"
+                            }
+                            target="_blank"
+                          >
+                            Email
+                          </Link>
+                        </Button>
+                        <Button size={"sm"} className="w-full bg-gray-950">
+                          Message
+                        </Button>
+                      </div>
+                    </div>
+                  </CardFooter>
                 </div>
               </CardFooter>
             </form>

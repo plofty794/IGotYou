@@ -9,6 +9,7 @@ import {
   getUpcomingReservations,
   requestServiceCancellation,
   sendReservationPaymentToAdmin,
+  serviceCancellationRequestApproval,
   updatePendingServicePayment,
 } from "../controllers/reservationControllers";
 import { authToken } from "../middlewares/authToken";
@@ -43,6 +44,10 @@ router.post(
 router.patch(
   "/reservations/update-payment/:reservationID",
   updatePendingServicePayment
+);
+router.patch(
+  "/reservations/service-cancellation-request-approval/:reservationID",
+  serviceCancellationRequestApproval
 );
 
 export { router as reservationRoutes };
