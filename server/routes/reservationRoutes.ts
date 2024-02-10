@@ -8,6 +8,7 @@ import {
   getReservations,
   getUpcomingReservations,
   requestServiceCancellation,
+  sendRequestPayout,
   sendReservationPaymentToAdmin,
   serviceCancellationRequestApproval,
   updatePendingServicePayment,
@@ -40,6 +41,11 @@ router.post(
   "/reservations/confirm-service-ended/:reservationID",
   authToken,
   confirmServiceEnded
+);
+router.post(
+  "/reservations/request-service-payout/:reservationID",
+  authToken,
+  sendRequestPayout
 );
 router.patch(
   "/reservations/update-payment/:reservationID",

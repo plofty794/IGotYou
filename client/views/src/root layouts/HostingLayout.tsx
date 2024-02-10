@@ -80,9 +80,9 @@ function HostingLayout() {
                   <DropdownMenuItem className="p-4 font-medium text-gray-600">
                     <Link to={"/hosting-reservations"}>Reservations</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="p-4 font-medium text-gray-600">
+                  {/* <DropdownMenuItem className="p-4 font-medium text-gray-600">
                     Earnings
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem className="p-4 font-medium text-gray-600">
                     <Link
                       to={`/become-a-host/${userProfileData.data?.data.user.uid}`}

@@ -21,6 +21,7 @@ import { createTransport } from "nodemailer";
 import { blockedUsersRoutes } from "./routes/blockUsersRoutes";
 import serverless from "serverless-http";
 import express from "express";
+import { ratingRoutes } from "./routes/ratingRoutes";
 
 const app = express();
 const server = app
@@ -172,6 +173,7 @@ app.use("/api", identityRoutes);
 app.use("/api", reservationRoutes);
 app.use("/api", bookingRequestRoutes);
 app.use("/api", blockedUsersRoutes);
+app.use("/api", ratingRoutes);
 app.use(errorHandler);
 
 cron.schedule("0 8 * * *", async () => {

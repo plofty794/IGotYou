@@ -229,7 +229,7 @@ export const getCurrentReservationDetails: RequestHandler = async (
       throw createHttpError(400, "No reservation with that ID.");
     }
 
-    const hasRating = await Ratings.findById(reservationID);
+    const hasRating = await Ratings.findOne({ reservationID });
 
     res.status(200).json({
       reservationDetails,
@@ -600,11 +600,65 @@ export const confirmServiceEnded: RequestHandler = async (req, res, next) => {
       );
     }
 
+    const serviceOngoing = await Reservations.findOne({
+      _id: reservationID,
+      fullPaymentVerificationStatus: "pending",
+    });
+
+    if (serviceOngoing) {
+      throw createHttpError(400, "Your payment is not still not verified.");
+    }
+
     await Reservations.findByIdAndUpdate(reservationID, {
       confirmServiceEnded: true,
+      status: "completed",
     });
 
     res.status(200).json({ message: "Service is now confirmed done." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendRequestPayout: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { reservationID } = req.params;
+  const transport = createTransport({
+    service: "gmail",
+    auth: {
+      user: env.ADMIN_EMAIL,
+      pass: env.APP_PASSWORD,
+    },
+  });
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const reservation = await Reservations.findById(reservationID).populate([
+      {
+        path: "hostID",
+        select: "username email",
+      },
+      {
+        path: "listingID",
+        select: "serviceTitle",
+      },
+    ]);
+
+    await transport.sendMail({
+      subject: `Service Payout Request for ${
+        (reservation.listingID as { serviceTitle: string }).serviceTitle
+      }`,
+      to: env.ADMIN_EMAIL,
+      html: emailServiceCancellationApproval(),
+    });
+
+    res.status(200).json({ message: "Service request payout has been sent." });
   } catch (error) {
     next(error);
   }

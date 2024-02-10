@@ -529,6 +529,7 @@ function GuestPaymentDetails({
                 )}
                 <Input
                   {...register("paymentRefNo")}
+                  autoComplete="off"
                   className="font-medium"
                   placeholder="Reference no. XXXX XXX XXXXXX"
                 />
