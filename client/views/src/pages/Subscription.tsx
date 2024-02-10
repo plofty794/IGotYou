@@ -113,10 +113,7 @@ function Subscription() {
                 0,
                 0,
               ),
-              subDays(
-                new Date(profileData!.data.user.subscriptionExpiresAt),
-                30,
-              ).setHours(0, 0, 0, 0),
+              new Date().setHours(0, 0, 0, 0),
             )}{" "}
             <span className="text-lg font-bold">
               {" "}

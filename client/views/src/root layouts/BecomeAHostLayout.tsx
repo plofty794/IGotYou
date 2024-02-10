@@ -63,6 +63,7 @@ export type TListing = {
   host?: {
     subscriptionExpiresAt: string;
     uid?: string;
+    username?: string;
   };
 };
 

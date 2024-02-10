@@ -4,6 +4,7 @@ import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import Users from "../models/Users";
 import Reservations from "../models/Reservations";
+import SubscriptionPayments from "../models/SubscriptionPayments";
 
 export const getActiveUsers: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -102,7 +103,6 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
 export const getAdminOverview: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
   const { dateFrom, dateTo } = req.query;
-  console.log(req.query);
   try {
     if (!admin_id) {
       throw createHttpError(401, "This action requires an identifier");
@@ -122,23 +122,39 @@ export const getAdminOverview: RequestHandler = async (req, res, next) => {
             },
           },
         ],
-      });
-      const subscribedUsers = await Users.find({
-        userStatus: "host",
-        subscriptionStatus: "active",
-        subscriptionExpiresAt: {
-          $gte: new Date(dateTo.toString()),
-        },
-      });
+      }).select("userStatus");
+      const subscribedUsers = await SubscriptionPayments.find({
+        $and: [
+          {
+            createdAt: {
+              $gte: new Date(dateFrom.toString()),
+            },
+          },
+          {
+            createdAt: {
+              $lte: new Date(dateTo.toString()),
+            },
+          },
+        ],
+      })
+        .populate({
+          path: "user",
+          select: "subscriptionExpiresAt photoUrl username email",
+        })
+        .sort({ createdAt: "desc" })
+        .limit(5);
 
       return res.status(200).json({ allUsers, subscribedUsers });
     }
 
-    const allUsers = await Users.find();
-    const subscribedUsers = await Users.find({
-      userStatus: "host",
-      subscriptionStatus: "active",
-    });
+    const allUsers = await Users.find().select("userStatus");
+    const subscribedUsers = await SubscriptionPayments.find({})
+      .populate({
+        path: "user",
+        select: "subscriptionExpiresAt photoUrl username email",
+      })
+      .sort({ createdAt: "desc" })
+      .limit(5);
 
     res.status(200).json({ allUsers, subscribedUsers });
   } catch (error) {
