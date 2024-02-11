@@ -34,9 +34,7 @@ const server = app
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://ec2-13-236-193-133.ap-southeast-2.compute.amazonaws.com/api/",
-    ],
+    origin: ["http://ec2-13-236-193-133.ap-southeast-2.compute.amazonaws.com/"],
     credentials: true,
   },
 });
