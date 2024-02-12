@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const axiosPrivateRoute = axios.create({
-  baseURL:
-    "http://ec2-13-236-193-133.ap-southeast-2.compute.amazonaws.com/api/",
+  baseURL: "https://igot-you.online/api/",
   withCredentials: true,
 });

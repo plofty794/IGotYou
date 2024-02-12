@@ -11,10 +11,9 @@ function SocketContext({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const _socket = io(
-      "http://ec2-13-236-193-133.ap-southeast-2.compute.amazonaws.com/api/",
-      { withCredentials: true }
-    );
+    const _socket = io("https://igot-you.online/api/", {
+      withCredentials: true,
+    });
     setSocket(_socket);
   }, []);
 
