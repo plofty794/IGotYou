@@ -11,7 +11,8 @@ function SocketContext({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const _socket = io("https://igot-you.online/api/", {
+    const _socket = io("https://igot-you.online/", {
+      path: "/api/socket.io/",
       withCredentials: true,
     });
     setSocket(_socket);
