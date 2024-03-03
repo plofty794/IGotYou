@@ -22,6 +22,7 @@ import { blockedUsersRoutes } from "./routes/blockUsersRoutes";
 import serverless from "serverless-http";
 import express from "express";
 import { ratingRoutes } from "./routes/ratingRoutes";
+import path from "path";
 
 const app = express();
 const server = app
@@ -34,7 +35,7 @@ const server = app
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://igot-you.online/"],
     credentials: true,
   },
 });
@@ -141,14 +142,10 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/", (_, res, __) => {
-  res.send({ message: "Hello" });
-});
-
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://igot-you.online/"],
     credentials: true,
   })
 );
@@ -171,6 +168,9 @@ app.use("/api", bookingRequestRoutes);
 app.use("/api", blockedUsersRoutes);
 app.use("/api", ratingRoutes);
 app.use(errorHandler);
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/dist/index.html"));
+});
 
 cron.schedule("0 8 * * *", async () => {
   const transport = createTransport({
