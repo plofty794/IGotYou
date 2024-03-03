@@ -168,7 +168,7 @@ app.use("/api", bookingRequestRoutes);
 app.use("/api", blockedUsersRoutes);
 app.use("/api", ratingRoutes);
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/client/dist/index.html"));
+  res.sendFile(path.join(__dirname + "/client/views/dist/index.html"));
 });
 app.use(errorHandler);
 
