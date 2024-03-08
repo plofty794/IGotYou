@@ -156,14 +156,6 @@ app.use(
   })
 );
 
-app.use(
-  express.static(
-    path.join(
-      "C:/Users/Administrator01/Desktop/IGotYou/client/views/dist/index.html"
-    )
-  )
-);
-
 app.use("/api", userRoutes);
 app.use("/api", listingRoutes);
 app.use("/api", assetRoutes);
@@ -176,15 +168,13 @@ app.use("/api", reservationRoutes);
 app.use("/api", bookingRequestRoutes);
 app.use("/api", blockedUsersRoutes);
 app.use("/api", ratingRoutes);
+
 app.get("*", (req, res) => {
-  return res.sendFile(
-    path.resolve(
-      "C:/Users/Administrator01/Desktop/IGotYou/client/views/dist/index.html"
-    )
-  );
+  res.sendFile("/usr/share/caddy/index.html");
 });
 
 app.use(errorHandler);
+
 cron.schedule("0 8 * * *", async () => {
   const transport = createTransport({
     service: "gmail",
