@@ -18,8 +18,11 @@ function Navigation() {
           <NavLink className="font-bold opacity-70" to={"/subscriptions"}>
             Subscriptions
           </NavLink>
-          <NavLink className="font-bold opacity-70" to={"/reservations"}>
-            Reservations
+          <NavLink className="font-bold opacity-70" to={"/payments"}>
+            Payments
+          </NavLink>
+          <NavLink className="font-bold opacity-70" to={"/reports"}>
+            Reports
           </NavLink>
         </ul>
       </div>

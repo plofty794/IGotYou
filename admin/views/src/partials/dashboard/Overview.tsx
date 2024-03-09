@@ -183,34 +183,39 @@ function Overview() {
                 </CardTitle>
               </CardHeader>
               <div className="flex flex-col gap-2">
-                {data?.data.subscribedUsers.map((user: { user: TUser }) => (
-                  <CardContent className="w-full flex justify-between items-center">
-                    <div className="flex items-center justify-center gap-4">
-                      <Avatar>
-                        <AvatarImage src={user.user.photoUrl} />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <p className="text-sm font-bold">
-                          {user.user.username}
-                        </p>
-                        <p className="text-sm font-semibold text-gray-600">
-                          {user.user.email}
-                        </p>
+                {data?.data.subscribedUsers.length > 0 ? (
+                  data?.data.subscribedUsers.map((user: { user: TUser }) => (
+                    <CardContent className="w-full flex justify-between items-center">
+                      <div className="flex items-center justify-center gap-4">
+                        <Avatar>
+                          <AvatarImage src={user.user.photoUrl} />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-bold">
+                            {user.user.username}
+                          </p>
+                          <p className="text-sm font-semibold text-gray-600">
+                            {user.user.email}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-
-                    <p className="font-bold text-lg">
-                      {formatValue({
-                        value: "50",
-                        intlConfig: {
-                          locale: "ph",
-                          currency: "php",
-                        },
-                      })}
-                    </p>
-                  </CardContent>
-                ))}
+                      <p className="font-bold text-lg">
+                        {formatValue({
+                          value: "50",
+                          intlConfig: {
+                            locale: "ph",
+                            currency: "php",
+                          },
+                        })}
+                      </p>
+                    </CardContent>
+                  ))
+                ) : (
+                  <p className="mt-10 text-center text-base font-bold text-gray-600">
+                    No users to show
+                  </p>
+                )}
               </div>
             </Card>
           </div>

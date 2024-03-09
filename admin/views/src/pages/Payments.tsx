@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import Lottie from "lottie-react";
 import noPendingPayment from "../assets/no-pending-payments.json";
-import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
@@ -18,23 +17,18 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 
-function Reservations() {
+function Payments() {
   const { data, isPending } = useGetPendingServicePayments();
   const { mutate } = useUpdateServicePayment();
 
   useEffect(() => {
-    document.title = "Reservations - Admin";
+    document.title = "Payments - Admin IGotYou";
   }, []);
 
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4 overflow-clip">
-        <div className="w-full flex justify-between">
-          <h1 className="font-bold text-3xl">Reservations</h1>
-          <Button className="bg-gray-950">
-            <Link to={"/verified-payments"}>View verified reservations</Link>
-          </Button>
-        </div>
+        <h1 className="font-bold text-3xl">Payments</h1>
         {data?.pages[0].data.pendingServicePayments.length > 0 ? (
           <div key={"1234"} className="grid grid-cols-3 gap-2">
             {isPending
@@ -561,7 +555,7 @@ function Reservations() {
               className="w-56 h-56"
             />
             <span className="text-gray-600 font-semibold text-lg">
-              No pending reservation payments.
+              No pending payments.
             </span>
           </div>
         )}
@@ -570,4 +564,4 @@ function Reservations() {
   );
 }
 
-export default Reservations;
+export default Payments;

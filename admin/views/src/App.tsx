@@ -14,7 +14,8 @@ import Users from "./pages/Users";
 import Subscriptions from "./pages/Subscriptions";
 import VerifiedPayments from "./pages/VerifiedPayments";
 import IdentityPhotos from "./pages/IdentityPhotos";
-import Reservations from "./pages/Reservations";
+import Reports from "./pages/Reports";
+import Payments from "./pages/Payments";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
@@ -37,10 +38,10 @@ function App() {
             }
           />
           <Route
-            path="reservations"
+            path="payments"
             element={
               state.state ?? isAdmin ? (
-                <Reservations />
+                <Payments />
               ) : (
                 <Navigate to={"/login"} replace />
               )
@@ -61,6 +62,16 @@ function App() {
             element={
               state.state ?? isAdmin ? (
                 <Subscriptions />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="reports"
+            element={
+              state.state ?? isAdmin ? (
+                <Reports />
               ) : (
                 <Navigate to={"/login"} replace />
               )

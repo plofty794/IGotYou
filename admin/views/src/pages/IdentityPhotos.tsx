@@ -20,7 +20,7 @@ function IdentityPhotos() {
   const verifyIdentityPhoto = useVerifyIdentityPhoto();
 
   useEffect(() => {
-    document.title = "Identity Photos - IGotYou";
+    document.title = "Identity Photos - Admin IGotYou";
   }, []);
 
   return (

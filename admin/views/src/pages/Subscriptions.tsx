@@ -20,7 +20,7 @@ function Subscriptions() {
   const verifyPayment = useVerifyPayment();
 
   useEffect(() => {
-    document.title = "Subscriptions - IGotYou";
+    document.title = "Subscriptions - Admin IGotYou";
   }, []);
 
   return (

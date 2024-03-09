@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 function Dashboard() {
   useEffect(() => {
-    document.title = "IGotYou - Admin Dashboard";
+    document.title = "Dashboard - Admin IGotYou";
   }, []);
 
   return (

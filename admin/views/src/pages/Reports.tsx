@@ -1,8 +1,7 @@
-import useGetUsers from "@/hooks/useGetUsers";
-import UsersTable from "@/partials/UsersTable";
-import { ColumnDef } from "@tanstack/react-table";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import useGetUserReports from "@/hooks/useGetUserReports";
+import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,66 +9,103 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CheckCircledIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import ReportsTable from "@/partials/ReportsTable";
 
-type User = {
+type TUser = {
+  _id: string;
   email: string;
   username: string;
   userStatus: string;
   emailVerified: boolean;
   identityVerified: boolean;
+  reports: [];
 };
 
-const columns: ColumnDef<User>[] = [
+type TEvidence = {
+  public_id: string;
+  secure_url: string;
+  original_filename: string;
+  thumbnail_url: string;
+  resource_type: string;
+  format: string;
+};
+
+type TReports = {
+  reporter: TUser;
+  reportedUser: TUser;
+  reason: string;
+  evidence: TEvidence;
+  createdAt: string;
+};
+
+const columns: ColumnDef<TReports>[] = [
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "reporter",
+    header: "Reporter",
+    cell: ({ row }) => (
+      <p className="text-sm font-semibold">{row.original.reporter.username}</p>
+    ),
   },
   {
-    accessorKey: "username",
-    header: "Username",
+    accessorKey: "reportedUser",
+    header: "Reported user",
+    cell: ({ row }) => (
+      <p className="text-sm font-semibold">
+        {row.original.reportedUser.username}
+      </p>
+    ),
   },
   {
-    accessorKey: "userStatus",
-    header: "User status",
+    header: "Reported user status",
+    cell: ({ row }) => (
+      <p className="text-sm font-semibold capitalize">
+        {row.original.reportedUser.userStatus}
+      </p>
+    ),
+  },
+  {
+    accessorKey: "reason",
+    header: "Reason",
     cell: (props) => (
-      <Badge className="capitalize">{props.getValue() as string}</Badge>
+      <Badge variant={"destructive"} className="capitalize">
+        {props.getValue() as string}
+      </Badge>
     ),
   },
   {
     accessorKey: "createdAt",
-    header: "Created",
+    header: "Submitted at",
     cell: (props) => (
-      <p>{new Date(props.getValue() as string).toDateString()}</p>
+      <p className="text-sm font-semibold capitalize">
+        {new Date(props.getValue() as string).toDateString()}
+      </p>
     ),
   },
   {
-    accessorKey: "identityVerified",
-    header: "Identity verified",
-    cell: (props) => (
-      <Badge
-        variant={`${
-          String(props.getValue()) === "true" ? "default" : "destructive"
-        }`}
-        className="capitalize"
-      >
-        {String(props.getValue())}
-      </Badge>
+    header: "Total reports",
+    cell: ({ row }) => (
+      <p className="text-sm font-semibold">
+        {row.original.reportedUser.reports.length}
+      </p>
     ),
   },
   {
-    accessorKey: "emailVerified",
-    header: "Email verified",
-    cell: (props) => (
-      <Badge
-        variant={`${
-          String(props.getValue()) === "true" ? "default" : "destructive"
-        }`}
-        className="capitalize"
+    accessorKey: "evidence",
+    header: "Photo evidence",
+    cell: ({ row }) => (
+      <a
+        href={row.original.evidence.secure_url}
+        className="cursor-zoom-in"
+        target="_blank"
       >
-        {String(props.getValue())}
-      </Badge>
+        <img
+          className="rounded-lg"
+          src={row.original.evidence.thumbnail_url}
+          loading="lazy"
+        />
+      </a>
     ),
   },
   {
@@ -87,7 +123,7 @@ const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="center">
             <DropdownMenuItem
               className="cursor-pointer flex items-center justify-center gap-2 w-full"
-              onClick={() => copyToClipboard(row.original.email)}
+              onClick={() => copyToClipboard(row.original.reportedUser.email)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -138,11 +174,13 @@ async function copyToClipboard(email: string) {
   }
 }
 
-function Users() {
-  const users = useGetUsers();
+function Reports() {
+  const { data, isPending, fetchNextPage } = useGetUserReports();
+
+  console.log(data);
 
   useEffect(() => {
-    document.title = "Users - Admin IGotYou";
+    document.title = "Reports - Admin IGotYou";
   }, []);
 
   return (
@@ -151,21 +189,19 @@ function Users() {
         <div className="w-full flex items-center justify-between">
           <span className="font-bold text-3xl">Users</span>
           <span className="font-bold text-lg ">
-            # of users:{" "}
-            {users.data?.pages.flatMap((page) => page.data.totalUsers)[0]}
+            # of reports:{" "}
+            {data?.pages.flatMap((page) => page.data.totalReports)}
           </span>
         </div>
-        {users.isPending ? (
+        {isPending ? (
           "Loading..."
         ) : (
-          <UsersTable
+          <ReportsTable
             columns={columns}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data={users.data?.pages.flatMap((page) => page.data.users) as any[]}
-            totalPages={
-              users.data?.pages.flatMap((page) => page.data.totalPages)[0]
-            }
-            fetchNextPage={users.fetchNextPage}
+            data={data?.pages.flatMap((page) => page.data.userReports) as any[]}
+            totalPages={data?.pages.flatMap((page) => page.data.totalPages)[0]}
+            fetchNextPage={fetchNextPage}
           />
         )}
       </div>
@@ -173,4 +209,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default Reports;
