@@ -314,11 +314,10 @@ function Payments() {
                           <Card key={v._id}>
                             <CardHeader className="p-0">
                               <Dialog>
-                                <DialogTrigger className="overflow-hidden rounded-md ">
+                                <DialogTrigger className="overflow-hidden rounded-md">
                                   <img
                                     className="aspect-square object-cover hover:scale-105 transition-transform"
                                     src={v.partialPaymentProofPhoto.secure_url}
-                                    alt=""
                                     loading="lazy"
                                   />
                                 </DialogTrigger>
@@ -326,7 +325,6 @@ function Payments() {
                                   <img
                                     className="object-cover rounded-md"
                                     src={v.partialPaymentProofPhoto.secure_url}
-                                    alt=""
                                     loading="lazy"
                                   />
                                 </DialogContent>
@@ -427,9 +425,9 @@ function Payments() {
                         <Card key={v._id}>
                           <CardHeader className="p-0">
                             <Dialog>
-                              <DialogTrigger className="overflow-hidden rounded-md ">
+                              <DialogTrigger className="overflow-hidden rounded-md">
                                 <img
-                                  className="aspect-square object-cover hover:scale-105 transition-transform"
+                                  className="object-cover hover:scale-105 transition-transform"
                                   src={v.fullPaymentProofPhoto.secure_url}
                                   alt=""
                                   loading="lazy"

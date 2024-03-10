@@ -10,7 +10,6 @@ import {
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import useGetPendingIdentityVerificationRequests from "@/hooks/useGetPendingIdentityVerificationRequests";
 import Lottie from "lottie-react";
-import { Link } from "react-router-dom";
 import noPendingPayment from "../assets/no-pending-payments.json";
 import useVerifyIdentityPhoto from "@/hooks/useVerifyIdentityPhoto";
 import { useEffect } from "react";
@@ -26,12 +25,7 @@ function IdentityPhotos() {
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4 overflow-clip">
-        <div className="w-full flex justify-between">
-          <h1 className="font-bold text-2xl">ID Verification Requests</h1>
-          <Button className="bg-gray-950">
-            <Link to={"/verified-identities"}>View verified ID requests</Link>
-          </Button>
-        </div>
+        <h1 className="font-bold text-2xl">ID Verification Requests</h1>
         {data?.pages[0].data.pendingIdentityVerificationRequests.length > 0 ? (
           <div key={"1234"} className="grid grid-cols-4 gap-2">
             {isPending

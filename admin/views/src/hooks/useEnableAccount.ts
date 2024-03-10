@@ -1,0 +1,29 @@
+import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+function useEnableAccount() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (userUID: string) => {
+      return await axiosPrivateRoute.patch(`/api/admin/enable-user/${userUID}`);
+    },
+    onSuccess(data) {
+      toast({
+        title: "Success! 🎉",
+        description: data.data.message,
+        className: "bg-white",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["user-reports"],
+      });
+    },
+  });
+}
+
+export default useEnableAccount;
