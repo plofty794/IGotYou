@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const axiosPrivateRoute = axios.create({
-  baseURL: "http://localhost:5040",
+  baseURL: "https://igot-you.online/api",
   withCredentials: true,
 });
