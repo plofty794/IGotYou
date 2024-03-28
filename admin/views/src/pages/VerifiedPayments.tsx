@@ -34,7 +34,7 @@ function VerifiedPayments() {
     if (username == null) return;
     (async () => {
       const { data } = await axiosPrivateRoute.get(
-        `/api/payments/verified/search/${username}`
+        `/api/subscriptions/verified/search/${username}`
       );
       setTimeout(() => {
         setVerifiedPayments(data.verifiedPayments);

@@ -34,7 +34,7 @@ const columns: ColumnDef<User>[] = [
       <>
         <p className="font-semibold text-sm">{row.original.email}</p>
         {row.original.isDisabled && (
-          <Badge className="mt-2 rounded-full" variant={"outline"}>
+          <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
             Disabled
           </Badge>
         )}
