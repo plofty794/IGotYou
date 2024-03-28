@@ -54,7 +54,7 @@ const columns: ColumnDef<TReports>[] = [
           {row.original.reportedUser.username}
         </p>
         {row.original.reportedUser.isDisabled && (
-          <Badge className="mt-2 rounded-full" variant={"outline"}>
+          <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
             Disabled
           </Badge>
         )}
