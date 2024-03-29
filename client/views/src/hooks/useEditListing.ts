@@ -4,6 +4,7 @@ import { TFileType } from "@/root layouts/BecomeAHostLayout";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 type TEditListing = {
   _id?: string | undefined;
@@ -31,14 +32,12 @@ function useEditListing() {
         ...data,
       });
     },
-    onSuccess(data) {
+    onSuccess() {
       queryClient.invalidateQueries({
         queryKey: ["listing", listingID],
       });
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
+      sonnerToast.success("Listing has been updated", {
+        duration: 1000,
       });
     },
     onError(error) {

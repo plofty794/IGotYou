@@ -1,17 +1,16 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
-import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 function useUpdateUserEmail() {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const id = auth.currentUser?.uid;
   return useMutation({
     mutationFn: async (email: string) => {
       return await axiosPrivateRoute.patch(
         "/api/users/current-user/update-email",
-        { email, id }
+        { email, id },
       );
     },
     onSuccess(_, variables) {
@@ -28,10 +27,8 @@ function useUpdateUserEmail() {
         };
       });
       queryClient.invalidateQueries({ queryKey: ["profile", id] });
-      toast({
-        title: "Success! 🎉",
-        description: "Your profile has been updated.",
-        className: "bg-[#FFF] font-bold",
+      toast.success("Your email has been updated.", {
+        duration: 1000,
       });
     },
   });

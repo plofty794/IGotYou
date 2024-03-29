@@ -52,7 +52,7 @@ function EditListingAssetsDialog({
         sources: ["local", "google_drive"],
       },
       (_: unknown, result: CloudinaryUploadResult) => {
-        if (result.event === "success") {
+        if (result.event === "info") {
           setListingsAssetsCopy((prev) => [
             ...prev!,
             {
@@ -65,7 +65,7 @@ function EditListingAssetsDialog({
               format: result.info.format,
             },
           ]);
-          toast.success("Asset has been uploaded!", {
+          toast.info("Asset has been uploaded!", {
             dismissible: true,
             duration: 1000,
           });
@@ -132,7 +132,7 @@ function EditListingAssetsDialog({
                       setListingsAssetsCopy(
                         (prev) => prev?.filter((v) => v !== asset),
                       );
-                      toast.success("Asset has been removed!", {
+                      toast.info("Asset has been removed!", {
                         dismissible: true,
                         duration: 1000,
                       });
@@ -168,7 +168,7 @@ function EditListingAssetsDialog({
                       setListingsAssetsCopy(
                         (prev) => prev?.filter((v) => v !== asset),
                       );
-                      toast.success("Asset has been removed!", {
+                      toast.info("Asset has been removed!", {
                         dismissible: true,
                         duration: 1000,
                       });
@@ -206,7 +206,7 @@ function EditListingAssetsDialog({
                       setListingsAssetsCopy(
                         (prev) => prev?.filter((v) => v !== asset),
                       );
-                      toast.success("Asset has been removed!", {
+                      toast.info("Asset has been removed!", {
                         dismissible: true,
                         duration: 1000,
                       });
