@@ -34,7 +34,6 @@ function useChatMessage() {
       });
       queryClient.invalidateQueries({
         queryKey: ["conversation", conversationID],
-        refetchType: "all",
       });
     },
     onError(error) {

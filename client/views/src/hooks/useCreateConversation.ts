@@ -2,9 +2,12 @@ import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useCreateConversation() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (receiverName: string) => {
@@ -14,13 +17,11 @@ function useCreateConversation() {
       );
     },
     onSuccess(data) {
-      console.log(data.data);
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
-      return toast({
-        title: "Success! 🎉",
-        description: "Conversation has been created.",
-        className: "bg-white font-bold",
+      sonnerToast.success("Conversation has been created.", {
+        duration: 1000,
       });
+      navigate(`/messages/conversation/${data.data.newConversation[0]._id}`);
     },
     onError(err) {
       const error = err as AxiosError;

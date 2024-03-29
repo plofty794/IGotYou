@@ -13,8 +13,6 @@ function useGetConversation() {
       );
     },
     enabled: conversationID != null,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
   });
 }
 
