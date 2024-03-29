@@ -54,6 +54,7 @@ function HostingDropdownMenu() {
           <DropdownMenuItem className="p-4 font-semibold text-gray-600">
             <Link
               to={`/users/show/${auth.currentUser && auth.currentUser?.uid}`}
+              reloadDocument
               className="w-full"
             >
               Profile

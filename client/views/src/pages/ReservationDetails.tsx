@@ -21,7 +21,6 @@ import { Rating } from "react-custom-rating-component";
 import useRateUser from "@/hooks/useRateUser";
 import ReservationCancellationDialog from "@/partials/components/ReservationCancellationDialog";
 import { toast } from "sonner";
-import { CheckCircledIcon } from "@radix-ui/react-icons";
 
 function ReservationDetails() {
   const { mutate } = useRateUser();
@@ -36,17 +35,11 @@ function ReservationDetails() {
   async function copyToClipboard(email: string) {
     try {
       await navigator.clipboard.writeText(email);
-      toast("Email copied to clipboard!", {
+      toast.info("Email copied to clipboard!", {
         duration: 1000,
-        icon: (
-          <CheckCircledIcon
-            color="#FFF"
-            className="inline-block rounded-full bg-[#39c152]"
-          />
-        ),
       });
     } catch (error) {
-      toast("Oops! Something went wrong", {
+      toast.error("Oops! Something went wrong", {
         description: (error as Error).message as string,
       });
     }

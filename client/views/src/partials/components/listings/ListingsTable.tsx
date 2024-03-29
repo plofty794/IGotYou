@@ -28,7 +28,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
-import DeleteListingDialog from "./partials/DeleteListingDialog";
 import RenewListingDialog from "./partials/RenewListingDialog";
 import DisableListingDialog from "./partials/DisableListingDialog";
 import { differenceInDays } from "date-fns";
@@ -257,12 +256,15 @@ const columns: ColumnDef<TListings>[] = [
                 variant={"ghost"}
                 className="w-full p-2 text-sm font-semibold text-gray-600"
               >
-                <Link replace to={`/hosting-listings/edit/${row.original._id}`}>
+                <Link
+                  className="text-blue-600"
+                  replace
+                  to={`/hosting-listings/edit/${row.original._id}`}
+                >
                   Edit listing
                 </Link>
               </Button>
             </DropdownMenuItem>
-            <DeleteListingDialog />
           </DropdownMenuContent>
         </DropdownMenu>
       );

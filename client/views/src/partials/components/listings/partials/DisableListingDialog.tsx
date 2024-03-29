@@ -31,7 +31,10 @@ function DisableListingDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" className="w-full font-semibold text-gray-600">
+        <Button
+          variant="ghost"
+          className="w-full font-semibold text-red-800 hover:text-red-600"
+        >
           Disable listing
         </Button>
       </AlertDialogTrigger>

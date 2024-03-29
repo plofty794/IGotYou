@@ -1,10 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  CaretSortIcon,
-  CheckCircledIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   flexRender,
@@ -38,6 +34,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import MessageGuest from "@/partials/components/messages/MessageGuest";
 
 type TPreviousReservations = {
   _id: string;
@@ -78,7 +75,7 @@ const columns: ColumnDef<TPreviousReservations>[] = [
     },
     cell: ({ row }) => (
       <Badge
-        className="rounded-full font-bold uppercase text-blue-600"
+        className="rounded-full font-bold uppercase text-green-600"
         variant={"outline"}
       >
         {row.original.status}
@@ -173,6 +170,13 @@ const columns: ColumnDef<TPreviousReservations>[] = [
     ),
   },
   {
+    id: "message",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return <MessageGuest id={row.original.guestID._id} />;
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -198,24 +202,14 @@ const columns: ColumnDef<TPreviousReservations>[] = [
             <DropdownMenuItem className="px-0">
               <Button
                 variant={"ghost"}
-                className="w-full justify-start text-sm font-semibold text-gray-600"
-              >
-                <Link to={"/messages"}>
-                  Message {row.original.guestID.username}
-                </Link>
-              </Button>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="px-0">
-              <Button
-                variant={"ghost"}
                 className="w-full justify-start gap-4 text-sm font-semibold text-gray-600"
               >
-                <Link
-                  to={"https://mail.google.com/mail/u/0/#inbox?compose=new"}
+                <a
+                  href={`mailto:${row.original.guestID.email}`}
                   target="_blank"
                 >
                   Email {row.original.guestID.username}
-                </Link>
+                </a>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -257,17 +251,11 @@ const columns: ColumnDef<TPreviousReservations>[] = [
 async function copyToClipboard(email: string) {
   try {
     await navigator.clipboard.writeText(email);
-    toast("Email copied to clipboard!", {
+    toast.info("Email copied to clipboard!", {
       duration: 1000,
-      icon: (
-        <CheckCircledIcon
-          color="#FFF"
-          className="inline-block rounded-full bg-[#39c152]"
-        />
-      ),
     });
   } catch (error) {
-    toast("Oops! Something went wrong", {
+    toast.error("Oops! Something went wrong", {
       description: (error as Error).message as string,
     });
   }
