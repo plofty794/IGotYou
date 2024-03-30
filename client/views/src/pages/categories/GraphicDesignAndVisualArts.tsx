@@ -142,7 +142,7 @@ function GraphicDesignAndVisualArts() {
                       <CardContent className="mt-2 flex justify-between p-0">
                         <div className="flex flex-col">
                           <span className="text-base font-semibold">
-                            {v.serviceTitle} 
+                            {v.serviceTitle}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
                             {v.host?.username}
@@ -351,15 +351,12 @@ function GraphicDesignAndVisualArts() {
               </div>
             </>
           ) : (
-            <div className="mt-16 flex flex-col items-center justify-center">
+            <div className="mx-auto mt-16 w-max">
               <Lottie
                 loop={false}
                 animationData={noListing}
                 className="h-64 w-64"
               />
-              <span className="text-xl font-bold text-gray-600">
-                No listings to show
-              </span>
             </div>
           )
         ) : (
@@ -373,7 +370,7 @@ function GraphicDesignAndVisualArts() {
           </div>
         )}
         {error && (
-          <div className="mx-auto w-max p-8">
+          <div className="mx-auto w-max">
             <Badge>
               {((error as AxiosError).response as AxiosResponse).data.message}
             </Badge>

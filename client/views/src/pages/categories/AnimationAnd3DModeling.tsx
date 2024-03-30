@@ -351,15 +351,12 @@ function AnimationAnd3DModeling() {
               </div>
             </>
           ) : (
-            <div className="mt-16 flex flex-col items-center justify-center">
+            <div className="mx-auto mt-16 w-max">
               <Lottie
                 loop={false}
                 animationData={noListing}
                 className="h-64 w-64"
               />
-              <span className="text-xl font-bold text-gray-600">
-                No listings to show
-              </span>
             </div>
           )
         ) : (
