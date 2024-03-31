@@ -52,7 +52,7 @@ function MessageDialogFilter({
         }
       }}
     >
-      <DialogTrigger>
+      <DialogTrigger className="max-lg:ml-auto">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -62,7 +62,7 @@ function MessageDialogFilter({
                 viewBox="0 0 24 24"
                 strokeWidth={2}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="h-6 w-6"
               >
                 <path
                   strokeLinecap="round"
@@ -83,7 +83,7 @@ function MessageDialogFilter({
             New message
           </DialogTitle>
           <div className="flex w-full items-center justify-center gap-2">
-            <Label htmlFor="username" className="font-semibold text-sm">
+            <Label htmlFor="username" className="text-sm font-semibold">
               To:
             </Label>
             <Input
@@ -91,7 +91,7 @@ function MessageDialogFilter({
               onChange={(e) => setReceiverName(e.target.value)}
               autoComplete="off"
               placeholder="Search username"
-              className="text-sm font-medium p-2"
+              className="p-2 text-sm font-medium"
               id="username"
             />
             <TooltipProvider>
@@ -112,7 +112,7 @@ function MessageDialogFilter({
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="w-6 h-6"
+                      className="h-6 w-6"
                     >
                       <path
                         strokeLinecap="round"
@@ -129,7 +129,7 @@ function MessageDialogFilter({
             </TooltipProvider>
           </div>
         </DialogHeader>
-        <ScrollArea className="bg-[#F5F5F5] w-full h-60 p-4">
+        <ScrollArea className="h-60 w-full bg-[#F5F5F5] p-4">
           {!userDetails?.length ? (
             <div className="w-max">
               <span className="text-sm font-semibold text-gray-600">
@@ -141,7 +141,7 @@ function MessageDialogFilter({
               {userDetails.map((v) => (
                 <Card
                   onClick={() => setReceiverName(v.username)}
-                  className={`hover:cursor-pointer shadow-none ${
+                  className={`shadow-none hover:cursor-pointer ${
                     receiverName === v.username ? "border" : ""
                   }`}
                   key={v._id}
@@ -168,7 +168,7 @@ function MessageDialogFilter({
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-4 h-4"
+                            className="h-4 w-4"
                           >
                             <path
                               strokeLinecap="round"
@@ -182,7 +182,7 @@ function MessageDialogFilter({
                       </div>
                     </div>
                     {receiverName === v.username && (
-                      <CheckIcon className="w-5 h-5" />
+                      <CheckIcon className="h-5 w-5" />
                     )}
                   </CardHeader>
                 </Card>
@@ -199,10 +199,10 @@ function MessageDialogFilter({
             }}
             disabled={
               userDetails?.find(
-                (v) => v.username.toLowerCase() === receiverName.toLowerCase()
+                (v) => v.username.toLowerCase() === receiverName.toLowerCase(),
               ) == null
             }
-            className="w-full bg-gray-950 rounded-full p-5"
+            className="w-full rounded-full bg-gray-950 p-5"
           >
             Chat
           </Button>

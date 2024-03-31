@@ -30,19 +30,21 @@ function WriteAFeedback() {
   }, [isError, isSuccess]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
+    <main className="flex min-h-screen flex-col items-center justify-center max-md:px-8">
       <Lottie loop={true} animationData={feedbackIcon} className="h-32 w-32" />
       <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">Write a feedback</CardTitle>
-          <CardDescription className="text-lg font-semibold text-gray-600">
+        <CardHeader className="max-md:p-4">
+          <CardTitle className="text-3xl font-bold max-md:text-2xl">
+            Write a feedback
+          </CardTitle>
+          <CardDescription className="text-lg font-semibold text-gray-600 max-md:text-base">
             Got an idea, suggestion or general feedback? Share it here!
           </CardDescription>
-          <CardDescription className="font-semibold">
+          <CardDescription className="font-semibold max-md:text-xs max-md:font-bold">
             Note that we cannot respond to the comments you submit.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="max-md:p-4 max-md:pt-2">
           <Textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}

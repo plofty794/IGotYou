@@ -40,7 +40,7 @@ function BookingRequestsFilter() {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="rounded-full p-2" variant={"ghost"}>
+        <Button className="rounded-full p-2 max-lg:w-full" variant={"outline"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

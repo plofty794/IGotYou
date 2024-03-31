@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import confetti from "../../../assets/confetti.json";
 import Lottie from "lottie-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 function Success() {
   const [isFadingIn, setIsFadingIn] = useState(true);
@@ -15,19 +14,21 @@ function Success() {
 
   return (
     <>
-      <ScrollArea
-        className={`w-full h-[450px] rounded-md border transition-opacity ${
+      <div
+        className={`w-full transition-opacity ${
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-24 h-max flex gap-2 items-center justify-center">
-          <span className="text-[#222222] text-7xl font-bold">
+        <section className="my-8 flex h-[70vh] items-center justify-center gap-28 max-lg:gap-20 max-md:flex-col max-md:gap-12 max-sm:gap-2">
+          <h1 className="text-7xl font-bold max-lg:text-5xl max-md:text-3xl">
             {isFadingIn ? "Loading..." : "Congratulations!"}
-          </span>
-
-          <Lottie animationData={confetti} className="w-[250px] h-[250px]" />
+          </h1>
+          <Lottie
+            animationData={confetti}
+            className="h-[250px] w-[250px] max-md:h-[150px] max-md:w-[150px]"
+          />
         </section>
-      </ScrollArea>
+      </div>
     </>
   );
 }

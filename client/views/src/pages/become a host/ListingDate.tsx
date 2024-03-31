@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Dispatch, useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -17,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { auth } from "@/firebase config/config";
 import { AxiosResponse } from "axios";
 import { TListing } from "@/root layouts/BecomeAHostLayout";
+import { useMediaQuery } from "usehooks-ts";
 
 type TSetServiceProps = {
   setService: Dispatch<React.SetStateAction<TListing>>;
@@ -24,6 +24,7 @@ type TSetServiceProps = {
 };
 
 function ListingDate() {
+  const matches = useMediaQuery("(max-width: 768px)");
   const queryClient = useQueryClient();
   const userData = queryClient.getQueryData<AxiosResponse>([
     "profile",
@@ -49,17 +50,21 @@ function ListingDate() {
   }, []);
 
   return (
-    <ScrollArea
-      className={`h-[450px] w-full rounded-md border transition-opacity ${
+    <div
+      className={`w-full transition-opacity ${
         isFadingIn ? "opacity-0" : "opacity-100"
       }`}
     >
-      <section className="flex h-[400px] flex-col items-center justify-center gap-4">
-        <Lottie loop={false} animationData={pickADate} className="h-52 w-52" />
-        <span className="w-3/4 text-center text-5xl font-bold">
+      <section className="flex h-[70vh] flex-col items-center justify-center gap-4">
+        <Lottie
+          loop={false}
+          animationData={pickADate}
+          className="h-52 w-52 max-md:h-40 max-md:w-40"
+        />
+        <span className="w-3/4 text-center text-5xl font-bold max-lg:text-3xl max-md:text-xl max-sm:text-lg">
           It's time to set the availability dates for your fantastic listing.
         </span>
-        <span className="w-2/4 text-center text-lg font-semibold text-gray-600">
+        <span className="text-center text-lg font-semibold text-gray-600 max-md:text-sm">
           Choose the start and end dates for when your listing will be
           available.
         </span>
@@ -94,34 +99,61 @@ function ListingDate() {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              initialFocus
-              mode="range"
-              disabled={{
-                before: new Date(),
-                after: parseISO(userData?.data.user.subscriptionExpiresAt),
-              }}
-              modifiersStyles={{
-                range_start: {
-                  color: "white",
-                },
-                selected: {
-                  backgroundColor: "#222222",
-                },
-                range_middle: {
-                  backgroundColor: "gainsboro",
-                },
-              }}
-              fromYear={new Date().getFullYear()}
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={setDate}
-              numberOfMonths={2}
-            />
+            {matches ? (
+              <Calendar
+                initialFocus
+                mode="range"
+                disabled={{
+                  before: new Date(),
+                  after: parseISO(userData?.data.user.subscriptionExpiresAt),
+                }}
+                modifiersStyles={{
+                  range_start: {
+                    color: "white",
+                  },
+                  selected: {
+                    backgroundColor: "#222222",
+                  },
+                  range_middle: {
+                    backgroundColor: "gainsboro",
+                  },
+                }}
+                fromYear={new Date().getFullYear()}
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={1}
+              />
+            ) : (
+              <Calendar
+                initialFocus
+                mode="range"
+                disabled={{
+                  before: new Date(),
+                  after: parseISO(userData?.data.user.subscriptionExpiresAt),
+                }}
+                modifiersStyles={{
+                  range_start: {
+                    color: "white",
+                  },
+                  selected: {
+                    backgroundColor: "#222222",
+                  },
+                  range_middle: {
+                    backgroundColor: "gainsboro",
+                  },
+                }}
+                fromYear={new Date().getFullYear()}
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={2}
+              />
+            )}
           </PopoverContent>
         </Popover>
       </section>
-    </ScrollArea>
+    </div>
   );
 }
 

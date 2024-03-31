@@ -50,7 +50,9 @@
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
     "embla-carousel-react": "^8.0.0-rc21",
+    "emoji-picker-react": "^4.9.2",
     "firebase": "^10.5.2",
+    "insert-text-at-cursor": "^0.3.0",
     "ldrs": "^1.0.1",
     "libphonenumber-js": "^1.10.49",
     "lottie-react": "^2.4.0",
@@ -77,6 +79,7 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@types/insert-text-at-cursor": "^0.3.2",
     "@types/node": "^20.8.10",
     "@types/react": "^18.2.34",
     "@types/react-dom": "^18.2.14",

@@ -1,4 +1,3 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dispatch, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import CurrencyInput, { formatValue } from "react-currency-input-field";
@@ -39,23 +38,23 @@ function Price() {
 
   return (
     <>
-      <ScrollArea
-        className={`h-[450px] w-full rounded-md border transition-opacity ${
+      <div
+        className={`w-full transition-opacity ${
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-8 flex h-[400px] flex-col flex-wrap items-center justify-center gap-4">
+        <section className="flex h-[70vh] flex-col items-center justify-center gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="text-5xl font-bold">
+            <h1 className="text-5xl font-semibold max-lg:text-3xl max-md:text-xl max-sm:text-lg">
               Now, set your price per day of service.
             </h1>
-            <span className="text-center text-lg font-semibold text-gray-600">
+            <span className="text-lg font-medium text-gray-600 max-md:text-sm">
               You can change it anytime.
             </span>
           </div>
           <CurrencyInput
             autoFocus
-            className="w-1/3 rounded border-none text-6xl font-semibold focus:outline-none"
+            className="w-1/3 rounded border-none text-6xl font-semibold focus:outline-none max-lg:text-4xl max-md:text-2xl max-sm:text-xl"
             prefix="₱"
             allowNegativeValue={false}
             decimalsLimit={2}
@@ -74,7 +73,7 @@ function Price() {
             </div>
           )}
         </section>
-      </ScrollArea>
+      </div>
     </>
   );
 }

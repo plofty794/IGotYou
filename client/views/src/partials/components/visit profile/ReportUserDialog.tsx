@@ -121,7 +121,7 @@ function ReportUserDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl gap-4">
-        <div className="flex w-full gap-1">
+        <div className="flex w-full gap-1 max-md:flex-col">
           <div className="w-full">
             <DialogHeader>
               <DialogTitle className="mb-4 text-xl font-bold">
@@ -154,7 +154,7 @@ function ReportUserDialog({
               </RadioGroup>
             </ScrollArea>
           </div>
-          <div className="w-full px-4 py-8">
+          <div className="w-full px-4 py-8 max-md:p-2 max-md:py-4">
             {evidence ? (
               <div className="relative h-72 rounded-xl border bg-gray-950">
                 <a href={evidence.secure_url} target="_blank">
@@ -230,7 +230,7 @@ function ReportUserDialog({
             )}
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="max-md:mt-4">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button

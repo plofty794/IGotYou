@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useMediaQuery } from "usehooks-ts";
 
 function BookingRequestDatesCalendar({
   date,
@@ -17,6 +18,8 @@ function BookingRequestDatesCalendar({
   date: DateRange | undefined;
   setDate: Dispatch<React.SetStateAction<DateRange | undefined>>;
 }) {
+  const matches = useMediaQuery("(max-width: 768px)");
+
   return (
     <Popover>
       <PopoverTrigger className="w-full p-6" asChild>
@@ -46,15 +49,27 @@ function BookingRequestDatesCalendar({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          initialFocus
-          mode="range"
-          defaultMonth={date?.from}
-          selected={date}
-          onSelect={setDate}
-          numberOfMonths={2}
-          fromYear={2024}
-        />
+        {matches ? (
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={setDate}
+            numberOfMonths={1}
+            fromYear={2024}
+          />
+        ) : (
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={setDate}
+            numberOfMonths={2}
+            fromYear={2024}
+          />
+        )}
       </PopoverContent>
     </Popover>
   );

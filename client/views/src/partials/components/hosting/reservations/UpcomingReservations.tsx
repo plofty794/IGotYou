@@ -16,9 +16,11 @@ import { format, formatDistance } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MessageGuest from "../../messages/MessageGuest";
+import { useMediaQuery } from "usehooks-ts";
 
 function UpcomingReservations() {
   const { data, isPending } = useGetUpcomingReservations();
+  const matches = useMediaQuery("(max-width: 640px)");
 
   return (
     <>
@@ -30,7 +32,7 @@ function UpcomingReservations() {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             page.data.upcomingReservations.map((v: any) => (
               <Card className="w-full" key={v._id}>
-                <CardHeader className="flex-row justify-between p-4">
+                <CardHeader className="flex-row justify-between p-4 max-md:justify-normal">
                   <div className="flex items-center gap-2">
                     <CardTitle className="m-0">
                       <Badge className="rounded-full text-sm">
@@ -54,7 +56,7 @@ function UpcomingReservations() {
                     </Button>
                   </div>
                   <Badge
-                    className={`rounded-full font-bold uppercase ${
+                    className={`rounded-full font-bold uppercase max-md:ml-auto ${
                       v.status === "scheduled"
                         ? "text-blue-600"
                         : v.status === "ongoing"
@@ -71,7 +73,7 @@ function UpcomingReservations() {
                 <Separator />
                 <CardContent className="flex w-full justify-between p-4">
                   <div className="flex gap-2">
-                    <div className="h-full w-44 overflow-hidden rounded-md">
+                    <div className="h-44 w-44 overflow-hidden rounded-md max-md:w-full">
                       <img
                         src={v.listingID.listingAssets[0]?.secure_url}
                         alt="Image"
@@ -79,20 +81,20 @@ function UpcomingReservations() {
                       />
                     </div>
                     <div className="flex flex-col gap-2">
-                      <span className="text-lg font-bold ">
+                      <span className="text-lg font-bold max-md:hidden">
                         {v.listingID.serviceTitle}
                       </span>
                       <span className="text-sm font-semibold ">
                         {v.listingID.serviceType}
                       </span>
-                      <span className="text-sm font-semibold">
+                      <span className="text-sm font-semibold max-md:hidden">
                         Requested dates:{" "}
                         {format(new Date(v.bookingStartsAt), "iii MMMM do")} -{" "}
                         {format(new Date(v.bookingEndsAt), "iii MMMM do")}
                       </span>
                       <Badge
                         variant={"outline"}
-                        className={`w-max font-bold ${
+                        className={` w-max font-bold max-md:hidden ${
                           v.listingID.cancellationPolicy === "Flexible"
                             ? "text-green-600"
                             : v.listingID.cancellationPolicy === "Moderate"
@@ -105,7 +107,7 @@ function UpcomingReservations() {
                       >
                         Cancellation policy - {v.listingID.cancellationPolicy}
                       </Badge>
-                      <Badge className="w-max">
+                      <Badge className="w-max max-md:hidden">
                         Booking starts{" "}
                         {formatDistance(
                           new Date(v.bookingStartsAt),
@@ -136,7 +138,7 @@ function UpcomingReservations() {
                       <div className="flex flex-col">
                         <Badge
                           variant={"secondary"}
-                          className="text-base font-bold"
+                          className="text-base font-bold max-md:text-sm max-sm:text-xs"
                         >
                           Total:{" "}
                           {formatValue({
@@ -152,8 +154,7 @@ function UpcomingReservations() {
                     {v.status !== "cancelled" && (
                       <Button size={"sm"} variant={"outline"}>
                         <Link to={`/reservation-details/${v._id}`}>
-                          {" "}
-                          View reservation details
+                          {matches ? "Details" : "View reservation details"}
                         </Link>
                       </Button>
                     )}

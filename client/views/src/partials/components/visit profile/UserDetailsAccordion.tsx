@@ -8,7 +8,7 @@ import { TUser } from "@/pages/Home";
 
 function UserDetailsAccordion({ user }: { user?: TUser }) {
   return (
-    <div className="flex gap-4 py-6 max-xl:mx-auto max-xl:w-2/4 max-xl:flex-col">
+    <div className="flex gap-4 py-6 max-xl:mx-auto max-xl:w-full max-xl:flex-col">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-2">
           <AccordionTrigger>

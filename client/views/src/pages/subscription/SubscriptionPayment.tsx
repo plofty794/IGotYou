@@ -21,43 +21,45 @@ function SubscriptionPayment() {
     <div
       className={`${
         isFadingIn ? "opacity-0" : "opacity-100"
-      } transition-opacity w-full flex items-center justify-evenly p-8`}
+      } flex w-full items-center justify-evenly transition-opacity max-md:flex-col`}
     >
       <Lottie
         animationData={sendMoney}
-        className="w-[420px] h-[420px] max-w-full"
+        className="h-[420px] w-[420px] max-w-full max-md:h-52 max-md:w-52"
       />
       <Card className="w-2/4 border-0 shadow-none">
-        <CardHeader className="text-center w-full">
+        <CardHeader className="w-full text-center max-md:p-0">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-2xl font-semibold">
+            <span className="text-2xl font-semibold max-md:text-lg">
               Send your payment to{" "}
             </span>
             <img
-              className="w-[50px] h-[50px] max-w-full max-h-full block object-cover"
+              className="block h-[50px] max-h-full w-[50px] max-w-full object-cover"
               loading="lazy"
               src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgetcash.ph%2Fwp-content%2Fuploads%2F2021%2F01%2FTransparent-1280-x-720.png&f=1&nofb=1&ipt=33a2060d0cc021ca3c2c7219f24a31fb9d179ffd57aace81159c48c11a8adc41&ipo=images"
               alt=""
             />
           </div>
-          <CardDescription className="text-lg text-gray-600 font-semibold">
+          <CardDescription className="text-lg font-semibold text-gray-600 max-md:hidden">
             You can send your payment through Express Send or through scanning
             our QR code via GCash.
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
-          <div className="flex items-center justify-center max-md:flex-col gap-6">
-            <div className="shadow border rounded-lg overflow-hidden">
+        <CardContent className="w-full p-0">
+          <div className="flex items-center justify-center gap-6 max-md:flex-col max-md:gap-2">
+            <div className="overflow-hidden rounded-lg border shadow">
               <img
                 src="/QRCode.jpg"
-                className="w-[150px] h-[150px] max-w-full max-h-full block object-cover"
+                className="h-[150px] w-[150px] object-cover max-md:h-20 max-md:w-20"
               />
             </div>
             <span className="text-sm font-semibold">OR</span>
-            <div className="flex flex-col gap-4 items-center justify-center">
+            <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex items-center justify-center gap-2">
                 <PaperPlaneIcon width={25} height={25} color="#005FE7" />
-                <span className="text-xl font-semibold">+639079251189</span>
+                <span className="text-xl font-semibold max-md:text-sm">
+                  +639079251189
+                </span>
               </div>
             </div>
           </div>

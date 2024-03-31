@@ -445,7 +445,7 @@ function Home() {
           </div>
         )}
         {error && (
-          <div className="mx-auto w-max">
+          <div className="mx-auto w-max p-8">
             <Badge>
               {((error as AxiosError).response as AxiosResponse).data.message}
             </Badge>

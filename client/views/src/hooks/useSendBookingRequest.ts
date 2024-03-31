@@ -25,6 +25,7 @@ function useSendBookingRequest() {
       );
     },
     onSuccess(data) {
+      console.log(data);
       socket?.emit("send-bookingRequest", {
         newHostNotification: data.data.newHostNotification,
         receiverName: data.data.receiverName,

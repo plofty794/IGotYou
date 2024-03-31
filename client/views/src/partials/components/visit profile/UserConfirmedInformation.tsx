@@ -5,9 +5,9 @@ import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 
 function UserConfirmedInformation({ user }: { user?: TUser }) {
   return (
-    <Card className="w-[400px] shadow-lg">
-      <CardHeader>
-        <span className="text-xl font-semibold">
+    <Card className="w-[400px] shadow-lg max-xl:w-full">
+      <CardHeader className="max-md:p-4">
+        <span className="text-xl font-semibold max-md:text-base">
           {user?.username ? (
             user?.username + "'s confirmed information"
           ) : (
@@ -15,7 +15,7 @@ function UserConfirmedInformation({ user }: { user?: TUser }) {
           )}
         </span>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      <CardContent className="flex flex-col gap-2 max-md:px-4">
         {user?.identityVerified ? (
           <div className="font-medium">
             <CheckCircledIcon

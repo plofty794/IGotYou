@@ -127,8 +127,8 @@ function BecomeAHostLayout() {
               replace
             />
           }
-          <nav className="sticky top-0 z-10 flex items-center justify-between bg-white px-16 py-8">
-            <Link to={"/hosting"}>
+          <nav className="sticky top-0 z-20 mx-auto flex w-full max-w-screen-2xl items-center justify-between bg-white px-28 py-5 shadow-md max-md:px-12 2xl:rounded-b-lg">
+            <Link to={"/hosting"} className="max-md:hidden">
               <span>
                 <img
                   className="max-h-full w-[30px] max-w-full object-cover"
@@ -138,7 +138,7 @@ function BecomeAHostLayout() {
                 />
               </span>
             </Link>
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center justify-center gap-6 max-md:w-full max-md:justify-between">
               <HostNotification />
               <HostingDropdownMenu />
             </div>
@@ -448,22 +448,22 @@ function BecomeAHostLayout() {
           <Pending user={userProfile.data.data.user} />
         </Suspense>
       ) : (
-        <section className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F5F5F5]">
-          <Card className="w-2/4">
-            <CardHeader>
-              <CardTitle className="text-3xl font-bold ">
+        <section className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F5F5F5] max-lg:px-6">
+          <Card className="w-2/4 max-lg:w-3/4 max-md:w-full">
+            <CardHeader className="max-lg:p-4">
+              <CardTitle className="text-3xl font-bold max-md:text-2xl">
                 Unlock your potential!
-                <span className="block text-base text-gray-700">
+                <span className="block text-base text-gray-700 max-lg:text-sm">
                   Subscribe now and unlock the ability to create and share your
                   listings with the world.
                 </span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-2">
+            <CardContent className="flex flex-col gap-2 max-lg:px-4 max-lg:pb-4">
               <span className="text-base font-bold text-gray-700">
                 Hello {userProfile.data?.data.user.username},
               </span>
-              <span className="text-sm font-semibold text-gray-600">
+              <span className="text-sm font-semibold text-gray-600 max-md:text-xs">
                 Hey there! We've noticed you haven't subscribed yet. Don't miss
                 out on all the fantastic listing opportunities waiting for you.
                 Subscribe now and start showcasing your listings to the world!

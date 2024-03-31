@@ -94,7 +94,7 @@ function ServiceUploader() {
           </svg>
         </Button>
       )}
-      <section className="profile-sheet h-[250px] w-[600px] overflow-auto rounded border-2 border-dashed border-zinc-400 scrollbar-none hover:border-zinc-500">
+      <section className="profile-sheet h-[250px] w-4/5 overflow-auto rounded border-2 border-dashed border-zinc-400 scrollbar-none hover:border-zinc-500 max-md:w-[90%] max-sm:w-[60%]">
         {service.listingAssets.length > 0 ? (
           <>
             <Table>
@@ -169,7 +169,7 @@ function ServiceUploader() {
               onClick={() => cloudinaryWidget?.open()}
             >
               <LiaCloudUploadAltSolid />
-              <span className="w-[195px] text-base font-semibold text-gray-600">
+              <span className="mx-auto w-max text-base font-semibold text-gray-600">
                 Click to upload your works
               </span>
             </Button>

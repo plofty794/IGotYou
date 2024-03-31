@@ -7,11 +7,16 @@ import useChangeAvailability from "@/hooks/useChangeAvailability";
 import useGetBlockedDates from "@/hooks/useGetBlockedDates";
 import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
+import { useMediaQuery } from "usehooks-ts";
 
 function HostCalendar() {
   const { data, isPending } = useGetBlockedDates();
   const { mutate } = useChangeAvailability();
   const [dates, setDates] = useState<Date[] | undefined>();
+  const laptop = useMediaQuery("(max-width: 1024px)");
+  const tablet = useMediaQuery("(max-width: 768px)");
+  const cellphone = useMediaQuery("(max-width: 640px)");
+  const cellphone2 = useMediaQuery("(max-width: 480px)");
 
   useEffect(() => {
     document.title = "Host Calendar - IGotYou";
@@ -29,77 +34,349 @@ function HostCalendar() {
   }, [dates]);
 
   return (
-    <div className="flex w-full justify-center gap-2 p-4">
-      <ScrollArea className="h-[500px] w-full max-w-4xl">
+    <div className="max flex w-full justify-center gap-2 p-4 max-lg:flex-col max-lg:items-center">
+      <ScrollArea className="h-screen max-lg:h-max">
         {isPending ? (
           "Loading"
         ) : (
-          <Calendar
-            initialFocus
-            fromDate={new Date()}
-            selected={dates}
-            onSelect={setDates}
-            styles={{
-              nav_button_next: {
-                width: "40px",
-                height: "40px",
-                outline: "2px solid black",
-              },
-              nav_button_previous: {
-                width: "40px",
-                height: "40px",
-                outline: "2px solid black",
-              },
+          <>
+            {cellphone2 ? (
+              <Calendar
+                className="flex w-full max-lg:items-center max-lg:justify-center"
+                initialFocus
+                fromDate={new Date()}
+                selected={dates}
+                onSelect={setDates}
+                styles={{
+                  nav_button_next: {
+                    width: "20px",
+                    height: "20px",
+                    outline: "2px solid black",
+                  },
+                  nav_button_previous: {
+                    width: "20px",
+                    height: "20px",
+                    outline: "2px solid black",
+                  },
+                  head_cell: {
+                    width: "100%",
+                    fontSize: "0.8rem",
+                    color: "black",
+                  },
+                  day: {
+                    margin: "1px",
+                    fontWeight: "bold",
+                    width: "40px",
+                    height: "40px",
+                  },
+                  table: {
+                    marginTop: "15px",
+                  },
+                }}
+                modifiers={{
+                  blockedDates,
+                  subscriptionExpiresAt: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                modifiersStyles={{
+                  selected: {
+                    color: "white",
+                    backgroundColor: "#222222",
+                  },
+                  blockedDates: {
+                    textDecoration: "line-through",
+                    fontWeight: "bold",
+                    color: "red",
+                  },
+                  today: {
+                    outline: "2px solid black",
+                  },
+                  subscriptionExpiresAt: {
+                    outline: "2px dashed #FF385C",
+                  },
+                }}
+                disabled={{
+                  before: new Date(),
+                  after: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                mode="multiple"
+              />
+            ) : cellphone ? (
+              <Calendar
+                className="flex w-full max-lg:items-center max-lg:justify-center"
+                initialFocus
+                fromDate={new Date()}
+                selected={dates}
+                onSelect={setDates}
+                styles={{
+                  nav_button_next: {
+                    width: "30px",
+                    height: "30px",
+                    outline: "2px solid black",
+                  },
+                  nav_button_previous: {
+                    width: "30px",
+                    height: "30px",
+                    outline: "2px solid black",
+                  },
+                  head_cell: {
+                    width: "100%",
+                    fontSize: "0.8rem",
+                    color: "black",
+                  },
+                  day: {
+                    margin: "1px",
+                    fontWeight: "bold",
+                    width: "60px",
+                    height: "60px",
+                  },
+                  table: {
+                    marginTop: "15px",
+                  },
+                }}
+                modifiers={{
+                  blockedDates,
+                  subscriptionExpiresAt: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                modifiersStyles={{
+                  selected: {
+                    color: "white",
+                    backgroundColor: "#222222",
+                  },
+                  blockedDates: {
+                    textDecoration: "line-through",
+                    fontWeight: "bold",
+                    color: "red",
+                  },
+                  today: {
+                    outline: "2px solid black",
+                  },
+                  subscriptionExpiresAt: {
+                    outline: "2px dashed #FF385C",
+                  },
+                }}
+                disabled={{
+                  before: new Date(),
+                  after: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                mode="multiple"
+              />
+            ) : tablet ? (
+              <Calendar
+                className="flex w-full max-lg:items-center max-lg:justify-center"
+                initialFocus
+                fromDate={new Date()}
+                selected={dates}
+                onSelect={setDates}
+                styles={{
+                  nav_button_next: {
+                    width: "30px",
+                    height: "30px",
+                    outline: "2px solid black",
+                  },
+                  nav_button_previous: {
+                    width: "35px",
+                    height: "35px",
+                    outline: "2px solid black",
+                  },
+                  head_cell: {
+                    width: "100%",
+                    fontSize: "0.8rem",
+                    color: "black",
+                  },
+                  day: {
+                    margin: "1px",
+                    fontWeight: "bold",
+                    width: "80px",
+                    height: "80px",
+                  },
+                  table: {
+                    marginTop: "20px",
+                  },
+                }}
+                modifiers={{
+                  blockedDates,
+                  subscriptionExpiresAt: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                modifiersStyles={{
+                  selected: {
+                    color: "white",
+                    backgroundColor: "#222222",
+                  },
+                  blockedDates: {
+                    textDecoration: "line-through",
+                    fontWeight: "bold",
+                    color: "red",
+                  },
+                  today: {
+                    outline: "2px solid black",
+                  },
+                  subscriptionExpiresAt: {
+                    outline: "2px dashed #FF385C",
+                  },
+                }}
+                disabled={{
+                  before: new Date(),
+                  after: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                mode="multiple"
+              />
+            ) : laptop ? (
+              <Calendar
+                className="flex w-full max-lg:items-center max-lg:justify-center"
+                initialFocus
+                fromDate={new Date()}
+                selected={dates}
+                onSelect={setDates}
+                styles={{
+                  nav_button_next: {
+                    width: "30px",
+                    height: "30px",
+                    outline: "2px solid black",
+                  },
+                  nav_button_previous: {
+                    width: "20px",
+                    height: "20px",
+                    outline: "2px solid black",
+                  },
+                  head_cell: {
+                    width: "100%",
+                    fontSize: "0.8rem",
+                    color: "black",
+                  },
+                  day: {
+                    margin: "1px",
+                    fontWeight: "bold",
+                    width: "100px",
+                    height: "100px",
+                  },
+                  table: {
+                    marginTop: "30px",
+                  },
+                }}
+                modifiers={{
+                  blockedDates,
+                  subscriptionExpiresAt: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                modifiersStyles={{
+                  selected: {
+                    color: "white",
+                    backgroundColor: "#222222",
+                  },
+                  blockedDates: {
+                    textDecoration: "line-through",
+                    fontWeight: "bold",
+                    color: "red",
+                  },
+                  today: {
+                    outline: "2px solid black",
+                  },
+                  subscriptionExpiresAt: {
+                    outline: "2px dashed #FF385C",
+                  },
+                }}
+                disabled={{
+                  before: new Date(),
+                  after: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                mode="multiple"
+              />
+            ) : (
+              <Calendar
+                initialFocus
+                fromDate={new Date()}
+                selected={dates}
+                onSelect={setDates}
+                styles={{
+                  nav_button_next: {
+                    width: "40px",
+                    height: "40px",
+                    outline: "2px solid black",
+                  },
+                  nav_button_previous: {
+                    width: "40px",
+                    height: "40px",
+                    outline: "2px solid black",
+                  },
+                  head_cell: {
+                    width: "100%",
+                    fontSize: "1.1rem",
+                    color: "black",
+                  },
+                  day: {
+                    margin: "1px",
+                    fontWeight: "bold",
+                    width: "120px",
+                    height: "120px",
 
-              head_cell: {
-                width: "100%",
-                fontSize: "1.1rem",
-                color: "black",
-              },
-              day: {
-                width: "120px",
-                height: "120px",
-                margin: "1px",
-                fontWeight: "bold",
-              },
-              table: {
-                marginTop: "40px",
-              },
-            }}
-            modifiers={{
-              blockedDates,
-              subscriptionExpiresAt: new Date(
-                data?.data.subscriptionExpiresAt.subscriptionExpiresAt as Date,
-              ),
-            }}
-            modifiersStyles={{
-              selected: {
-                color: "white",
-                backgroundColor: "#222222",
-              },
-              blockedDates: {
-                textDecoration: "line-through",
-                fontWeight: "bold",
-                color: "red",
-              },
-              today: {
-                outline: "2px solid black",
-              },
-              subscriptionExpiresAt: {
-                outline: "2px dashed #FF385C",
-              },
-            }}
-            disabled={{
-              before: new Date(),
-              after: new Date(
-                data?.data.subscriptionExpiresAt.subscriptionExpiresAt as Date,
-              ),
-            }}
-            mode="multiple"
-          />
+                    minHeight: "20px",
+                    minWidth: "20px",
+                  },
+                  table: {
+                    marginTop: "40px",
+                  },
+                }}
+                modifiers={{
+                  blockedDates,
+                  subscriptionExpiresAt: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                modifiersStyles={{
+                  selected: {
+                    color: "white",
+                    backgroundColor: "#222222",
+                  },
+                  blockedDates: {
+                    textDecoration: "line-through",
+                    fontWeight: "bold",
+                    color: "red",
+                  },
+                  today: {
+                    outline: "2px solid black",
+                  },
+                  subscriptionExpiresAt: {
+                    outline: "2px dashed #FF385C",
+                  },
+                }}
+                disabled={{
+                  before: new Date(),
+                  after: new Date(
+                    data?.data.subscriptionExpiresAt
+                      .subscriptionExpiresAt as Date,
+                  ),
+                }}
+                mode="multiple"
+              />
+            )}
+          </>
         )}
       </ScrollArea>
-      <div className="h-max w-2/4 max-w-lg">
+      <div className="w-2/4 rounded-lg border max-lg:w-full">
         <div className="p-4">
           <h1 className="text-2xl font-semibold">Your calendar</h1>
           <div className="py-4">
@@ -119,9 +396,8 @@ function HostCalendar() {
             )}
           </div>
         </div>
-
-        <Card>
-          <CardHeader>
+        <Card className="border-none">
+          <CardHeader className="max-lg:p-4">
             <CardTitle className="text-2xl font-semibold">
               Manage your availability
             </CardTitle>

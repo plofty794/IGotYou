@@ -1,4 +1,3 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import ServiceUploader from "@/pages/become a host/ServiceUploader";
 import { useEffect, useState } from "react";
 
@@ -14,24 +13,26 @@ function ServiceAssets() {
 
   return (
     <>
-      <ScrollArea
-        className={`w-full h-[450px] rounded-md border transition-opacity ${
+      <div
+        className={`w-full transition-opacity ${
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-14 h-max flex flex-col items-center justify-center gap-4">
-          <div className="text-center w-[1024px]">
-            <h1 className="text-4xl font-semibold">Upload your works</h1>
-            <p className="text-gray-600 font-semibold text-lg">
+        <section className="flex h-[70vh] flex-col items-center justify-center gap-8 max-md:gap-4 max-sm:px-4">
+          <div className="w-full text-center">
+            <h1 className="text-4xl font-semibold max-lg:text-2xl max-md:text-xl">
+              Upload your works
+            </h1>
+            <p className="text-center text-lg font-semibold text-zinc-500 max-md:text-base">
               You'll need 5 images/videos/audio to start. You can add more and
               make changes later.
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2 w-[600px]">
+          <div className="flex w-[600px] flex-col items-center gap-2">
             <ServiceUploader />
           </div>
         </section>
-      </ScrollArea>
+      </div>
     </>
   );
 }

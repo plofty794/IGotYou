@@ -13,28 +13,9 @@ function HostReviews() {
   }, []);
 
   return (
-    <div className="flex justify-center gap-4 p-12">
-      <div className="flex w-[600px] flex-col items-center justify-center gap-2">
+    <div className="flex justify-center gap-4 p-12 max-md:p-6">
+      <div className="flex flex-col items-center justify-center gap-2">
         <h1 className="text-3xl font-bold">Reviews</h1>
-        {/* <div className="relative w-full">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="absolute left-1 top-2 h-5 w-5"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-              clipRule="evenodd"
-            />
-          </svg>
-
-          <Input
-            placeholder="Search reviews"
-            className="w-full rounded-full pl-8"
-          />
-        </div> */}
         {isPending ? (
           "Loading..."
         ) : !data?.pages.flatMap(
@@ -71,9 +52,9 @@ function HostReviews() {
                 page.data.hostRatings?.map((v: TRating) => (
                   <Card
                     key={v._id}
-                    className="mt-8 flex w-full items-center justify-between border shadow-lg"
+                    className="mt-6 flex w-full max-w-lg items-center justify-between border shadow-lg max-sm:flex-col"
                   >
-                    <CardHeader className="flex flex-row items-center justify-center gap-4">
+                    <CardHeader className="flex flex-row items-center justify-center gap-4 max-md:p-4">
                       <Link to={`/users/visit/show/${v.guestID._id}`}>
                         {" "}
                         <Avatar className="h-16 w-16">
@@ -128,8 +109,14 @@ function HostReviews() {
                         </div>
                       </div>
                     </CardHeader>
-                    <Link to={`/reservation-details/${v.reservationID._id}`}>
-                      <Button size={"sm"} className="mr-6 bg-gray-950">
+                    <Link
+                      className="max-sm:pb-4"
+                      to={`/reservation-details/${v.reservationID._id}`}
+                    >
+                      <Button
+                        size={"sm"}
+                        className="mr-6 bg-gray-950 max-sm:mr-0"
+                      >
                         View reservation
                       </Button>
                     </Link>

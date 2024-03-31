@@ -73,13 +73,12 @@ function SubscriptionLayout() {
   return (
     <>
       {<Navigate to={`/subscription/${id}/${step}`} replace />}
-      <section className="relative min-h-screen">
-        <form className="absolute bottom-0 w-full" onSubmit={handleFormSubmit}>
+      <section className="flex min-h-screen items-center justify-center">
+        <form className="w-full" onSubmit={handleFormSubmit}>
           {<Outlet context={{ paymentProof, setPaymentProof }} />}
-          <div className="flex justify-between gap-4 border-t-2 p-8">
+          <div className="absolute bottom-0 z-10 flex w-full justify-between gap-4 border-t-2 bg-white p-8">
             {isFirstPage && (
               <>
-                {" "}
                 <Link to={"/"} replace>
                   <Button
                     type="button"

@@ -16,9 +16,9 @@ function RootLayout() {
     <>
       {auth.currentUser ? (
         <main className="min-h-screen">
-          <nav className="sticky top-0 z-20 flex items-center justify-between bg-white px-20 py-5 shadow-md">
+          <nav className="sticky top-0 z-20 flex items-center justify-between bg-white px-20 py-5 shadow-md max-md:px-12 max-sm:justify-center max-sm:px-8">
             <Link to={"/"}>
-              <span className="h-full w-full">
+              <span className="h-full w-full max-[368px]:hidden">
                 <img
                   className="max-h-full w-[30px] max-w-full object-cover"
                   loading="lazy"
@@ -34,7 +34,12 @@ function RootLayout() {
                   className="rounded-full font-semibold"
                   variant={"ghost"}
                 >
-                  <Link to={"/hosting"} replace reloadDocument>
+                  <Link
+                    to={"/hosting"}
+                    className="max-md:text-xs"
+                    replace
+                    reloadDocument
+                  >
                     {" "}
                     Switch to hosting
                   </Link>
@@ -44,7 +49,6 @@ function RootLayout() {
                   <AlertVerifyEmail User={auth.currentUser} />
                 </Suspense>
               )}
-
               <UserDropDownButton />
             </span>
           </nav>

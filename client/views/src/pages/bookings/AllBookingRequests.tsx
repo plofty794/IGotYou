@@ -57,7 +57,7 @@ function AllBookingRequests() {
       <span className="relative">
         <Input
           autoFocus
-          className="sticky top-2 mx-auto mt-4 w-1/3 bg-white font-medium shadow-xl focus-visible:ring-0"
+          className="sticky top-2 mx-auto mt-4 w-1/3 bg-white font-medium shadow-xl focus-visible:ring-0 max-md:w-full"
           value={search}
           placeholder="You can search by Service name or Host name"
           onChange={(e) => setSearch(e.target.value)}
@@ -80,7 +80,7 @@ function AllBookingRequests() {
               <CardHeader className="flex-row justify-between p-4">
                 <div className="flex items-center gap-2">
                   <CardTitle className="m-0">
-                    <Badge className="rounded-full text-sm">
+                    <Badge className="rounded-full text-sm max-sm:bg-white max-sm:p-0 max-sm:text-xs max-sm:font-semibold max-sm:text-black">
                       {v.hostID.username}
                     </Badge>
                   </CardTitle>
@@ -133,9 +133,9 @@ function AllBookingRequests() {
                 </Badge>
               </CardHeader>
               <Separator />
-              <CardContent className="flex w-full justify-between p-4">
+              <CardContent className="flex w-full justify-between p-4 max-md:flex-col">
                 <div className="flex gap-2">
-                  <div className="h-44 w-44 overflow-hidden rounded-md">
+                  <div className="h-44 w-44 overflow-hidden rounded-md max-md:h-32 max-md:w-32 max-sm:hidden">
                     {v.listingID.listingAssets[0]?.format === "mp4" ? (
                       <AdvancedImage
                         className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"

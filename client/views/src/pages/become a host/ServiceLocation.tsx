@@ -1,4 +1,3 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { GEOAPIFY_KEY } from "@/constants/API_Keys";
 import { TListing } from "@/root layouts/BecomeAHostLayout";
 import {
@@ -32,22 +31,22 @@ function ServiceLocation() {
 
   return (
     <>
-      <ScrollArea
-        className={`h-[450px] w-full rounded-md border transition-opacity ${
+      <div
+        className={`w-full transition-opacity ${
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
-        <section className="my-28 flex flex-col items-center justify-center gap-4">
+        <section className="flex h-[70vh] flex-col items-center justify-center gap-4">
           <div className="flex w-2/4 flex-col gap-2 text-center">
-            <h1 className="text-4xl font-semibold">
+            <h1 className="text-4xl font-semibold max-lg:text-2xl max-md:text-xl max-sm:text-lg">
               Where's your service located?
             </h1>
-            <span className="text-lg font-medium text-gray-600">
+            <span className="text-lg font-medium text-gray-600 max-md:text-sm">
               Your service address is shared with guests across the platform.
             </span>
           </div>
           <GeoapifyContext apiKey={GEOAPIFY_KEY}>
-            <div className="geo service-location mb-1 w-2/5">
+            <div className="geo service-location mb-1 w-2/5 px-4 py-8 text-xl font-medium max-lg:w-2/4 max-lg:text-lg max-md:w-2/3 max-md:py-6 max-md:text-base max-sm:w-[90%] max-sm:px-2 max-sm:py-4">
               <GeoapifyGeocoderAutocomplete
                 addDetails
                 limit={10}
@@ -71,7 +70,7 @@ function ServiceLocation() {
             </div>
           </GeoapifyContext>
         </section>
-      </ScrollArea>
+      </div>
     </>
   );
 }

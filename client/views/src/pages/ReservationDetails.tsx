@@ -74,17 +74,17 @@ function ReservationDetails() {
             </Button>
             <h1 className="text-2xl font-bold">Reservation details</h1>
           </div>
-          <div className="flex w-full gap-4">
-            <div className="flex w-2/4 flex-col gap-4 px-4 py-6">
+          <div className="flex w-full gap-4 max-lg:flex-col max-lg:gap-0">
+            <div className="flex w-2/4 flex-col gap-4 px-4 py-6 max-lg:w-full">
               {data?.data.isHost ? (
-                <Card className="flex w-full items-center justify-between">
+                <Card className="flex w-full items-center justify-between max-lg:flex-col-reverse max-lg:p-2">
                   <div>
-                    <CardHeader className="px-6 py-4">
-                      <CardTitle className="text-xl font-bold">
+                    <CardHeader className="px-6 py-4 max-lg:p-4">
+                      <CardTitle className="text-center text-xl font-bold">
                         Guest information
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex flex-col max-lg:items-center max-lg:pb-4">
                       <p className="text-sm font-semibold">
                         {data?.data.reservationDetails.guestID.username}
                       </p>
@@ -136,14 +136,14 @@ function ReservationDetails() {
                   </Avatar>
                 </Card>
               ) : (
-                <Card className="flex w-full items-center justify-between">
+                <Card className="flex w-full items-center justify-between max-lg:flex-col-reverse max-lg:p-2">
                   <div>
-                    <CardHeader className="px-6 py-4">
-                      <CardTitle className="text-xl font-bold">
+                    <CardHeader className="px-6 py-4 max-lg:p-4">
+                      <CardTitle className="text-center text-xl font-bold">
                         Host information
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex flex-col max-lg:items-center max-lg:pb-4">
                       <p className="text-sm font-semibold">
                         {data?.data.reservationDetails.hostID.username}
                       </p>
@@ -234,7 +234,7 @@ function ReservationDetails() {
                 </Button>
               </div>
               <Separator />
-              <div className="flex w-full items-center gap-4">
+              <div className="flex w-full items-center gap-4 max-lg:flex-col">
                 <Button size={"sm"} className="w-full rounded-full bg-gray-950">
                   <Link className="w-full" to={"/messages"}>
                     Message
@@ -316,7 +316,7 @@ function ReservationDetails() {
                 </p>
               </div>
             </div>
-            <div className="flex w-2/4 flex-col gap-4 px-4 py-6">
+            <div className="flex w-2/4 flex-col gap-4 px-4 py-6 max-lg:w-full max-lg:p-2">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">
@@ -326,10 +326,10 @@ function ReservationDetails() {
                 <CardContent>
                   <div className="mt-4 flex flex-col gap-2">
                     <div className="flex w-full items-center justify-between">
-                      <span className="font-semibold text-gray-600">
+                      <span className="font-semibold text-gray-600 max-lg:text-xs">
                         Amount per service
                       </span>
-                      <span className="text-sm font-semibold">
+                      <span className="text-sm font-semibold max-lg:text-xs">
                         {formatValue({
                           value: String(
                             data?.data.reservationDetails.listingID.price,
@@ -342,7 +342,7 @@ function ReservationDetails() {
                       </span>
                     </div>
                     <div className="flex w-full items-center justify-between">
-                      <span className="font-semibold text-gray-600">
+                      <span className="font-semibold text-gray-600 max-lg:text-xs">
                         Service duration (
                         {Math.abs(
                           differenceInDays(
@@ -356,7 +356,7 @@ function ReservationDetails() {
                         )}
                         )
                       </span>
-                      <span className="text-sm font-semibold">
+                      <span className="text-sm font-semibold max-lg:text-xs">
                         {Math.abs(
                           differenceInDays(
                             new Date(
@@ -382,10 +382,10 @@ function ReservationDetails() {
                     {data?.data.reservationDetails.listingID
                       .cancellationPolicy === "Non-refundable" && (
                       <div className="flex w-full items-center justify-between">
-                        <span className="font-semibold text-gray-600">
+                        <span className="font-semibold text-gray-600 max-lg:text-xs">
                           Cancellation policy rules applied
                         </span>
-                        <span className="text-sm font-semibold">
+                        <span className="text-sm font-semibold max-lg:text-xs">
                           {formatValue({
                             value: String(
                               parseInt(
@@ -415,8 +415,10 @@ function ReservationDetails() {
                     )}
                     <Separator />
                     <div className="flex w-full items-center justify-between">
-                      <span className="font-semibold text-gray-600">Total</span>
-                      <span className="text-sm font-semibold">
+                      <span className="font-semibold text-gray-600 max-lg:text-xs">
+                        Total
+                      </span>
+                      <span className="text-sm font-semibold max-lg:text-xs">
                         {formatValue({
                           value: String(
                             data?.data.reservationDetails.paymentAmount,

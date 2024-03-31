@@ -118,7 +118,7 @@ function UserInformation({ userID }: { userID: TUserID }) {
             </AccordionItem>
           </Accordion>
         </div>
-        <div className="mx-auto mt-4 flex w-max items-center justify-between gap-2">
+        <div className="mx-auto mt-4 flex w-max items-center justify-between gap-2 max-md:flex-col">
           {userID.emailVerified ? (
             <div className="flex w-max items-center justify-center gap-2 rounded-lg border p-4 shadow-md">
               {" "}

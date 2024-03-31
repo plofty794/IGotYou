@@ -9,7 +9,7 @@ import RootLayout from "../root layouts/RootLayout";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
 import PageNotFound from "../pages/PageNotFound";
-import { lazy, useContext, useEffect, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useState } from "react";
 import { verifyPhoneLoader } from "../constants/loaders/verifyPhoneLoader";
 import HeroLayout from "../root layouts/HeroLayout";
 import DigitalVideoServices from "../pages/categories/DigitalVideoServices";
@@ -89,6 +89,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { UserStateContextProvider } from "@/context/UserStateContext";
 import { auth } from "@/firebase config/config";
 import { SocketContextProvider } from "@/context/SocketContext";
+import ListingsLoader from "@/partials/loaders/ListingsLoader";
 
 function Router() {
   const logOut = useLogOutUser();
@@ -108,9 +109,9 @@ function Router() {
         !window.location.pathname.includes("account-disabled")
       ) {
         if (window.location.pathname == "/login") {
+          localStorage.clear();
           return setUser(null);
         } else {
-          localStorage.clear();
           await logOut();
           window.location.href = "/login";
           return setUser(null);
@@ -142,20 +143,50 @@ function Router() {
         {/* USER PROFILE & PHONE VERIFICATION Routes */}
         <Route path="/users" element={<ProfileLayout />}>
           <Route path="wishlists" element={<Wishlists />} />
-          <Route path="show/:id" element={<Profile />} />
+          <Route
+            path="show/:id"
+            element={
+              User ?? token ?? identifier ? (
+                <Profile />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
 
-          <Route path="visit/show/:userID" element={<VisitProfile />} />
+          <Route
+            path="visit/show/:userID"
+            element={
+              User ?? token ?? identifier ? (
+                <VisitProfile />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
 
           <Route
             path="identity-verification/:id"
-            element={<IdentityVerification />}
+            element={
+              User ?? token ?? identifier ? (
+                <IdentityVerification />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
         </Route>
 
         <Route
           path="account/verify-phone/:id"
           loader={verifyPhoneLoader}
-          element={<VerifyPhone />}
+          element={
+            User ?? token ?? identifier ? (
+              <VerifyPhone />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
         />
 
         {/* HOME & CATEGORIES Routes */}
@@ -163,34 +194,87 @@ function Router() {
           errorElement={<RootLayoutErrorBoundary />}
           element={<RootLayout />}
         >
-          <Route index element={<Home />} />
+          <Route
+            index
+            element={
+              User ?? token ?? identifier ? (
+                <Suspense fallback={<ListingsLoader />}>
+                  <Home />
+                </Suspense>
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
           <Route
             path="/digital-video-services"
-            element={<DigitalVideoServices />}
+            element={
+              User ?? token ?? identifier ? (
+                <DigitalVideoServices />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="/digital-audio-services"
-            element={<DigitalAudioServices />}
+            element={
+              User ?? token ?? identifier ? (
+                <DigitalAudioServices />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="/graphic-design&visual-arts"
-            element={<GraphicDesignAndVisualArts />}
+            element={
+              User ?? token ?? identifier ? (
+                <GraphicDesignAndVisualArts />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="/photography-services"
-            element={<PhotographyServices />}
+            element={
+              User ?? token ?? identifier ? (
+                <PhotographyServices />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="/animation&3d-modeling"
-            element={<AnimationAnd3DModeling />}
+            element={
+              User ?? token ?? identifier ? (
+                <AnimationAnd3DModeling />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="/live-events&concerts"
-            element={<LiveEventsAndConcerts />}
+            element={
+              User ?? token ?? identifier ? (
+                <LiveEventsAndConcerts />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
           <Route
             path="/digital-advertising&marketing"
-            element={<DigitalAdvertisingAndMarketing />}
+            element={
+              User ?? token ?? identifier ? (
+                <DigitalAdvertisingAndMarketing />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
           />
         </Route>
 
@@ -198,30 +282,162 @@ function Router() {
         <Route
           errorElement={<RootLayoutErrorBoundary />}
           path="/become-a-host/:id"
-          element={<BecomeAHostLayout />}
+          element={
+            User ?? token ?? identifier ? (
+              <BecomeAHostLayout />
+            ) : (
+              <Navigate to={"/login"} replace />
+            )
+          }
         >
-          <Route path="overview" element={<BecomeAHostOverview />} />
-          <Route path="about-your-service" element={<AboutYourService />} />
-          <Route path="service-type" element={<ServiceType />} />
-          <Route path="service-title" element={<ServiceTitle />} />
-          <Route path="service-location" element={<ServiceLocation />} />
-          <Route path="make-it-standout" element={<MakeItStandOut />} />
-          <Route path="service-assets" element={<ServiceAssets />} />
-          <Route path="price" element={<Price />} />
-          <Route path="listing-date" element={<ListingDate />} />
-          <Route path="cancellation-policy" element={<CancellationPolicy />} />
-          <Route path="success" element={<Success />} />
+          <Route
+            path="overview"
+            element={
+              User ?? token ?? identifier ? (
+                <BecomeAHostOverview />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="about-your-service"
+            element={
+              User ?? token ?? identifier ? (
+                <AboutYourService />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="service-type"
+            element={
+              User ?? token ?? identifier ? (
+                <ServiceType />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="service-title"
+            element={
+              User ?? token ?? identifier ? (
+                <ServiceTitle />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="service-location"
+            element={
+              User ?? token ?? identifier ? (
+                <ServiceLocation />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="make-it-standout"
+            element={
+              User ?? token ?? identifier ? (
+                <MakeItStandOut />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="service-assets"
+            element={
+              User ?? token ?? identifier ? (
+                <ServiceAssets />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="price"
+            element={
+              User ?? token ?? identifier ? (
+                <Price />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="listing-date"
+            element={
+              User ?? token ?? identifier ? (
+                <ListingDate />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="cancellation-policy"
+            element={
+              User ?? token ?? identifier ? (
+                <CancellationPolicy />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="success"
+            element={
+              User ?? token ?? identifier ? (
+                <Success />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
         </Route>
 
         {/* BOOKING Route */}
         <Route path="/listings" element={<ListingsLayout />}>
-          <Route path="show/:listingID" element={<VisitListing />} />
+          <Route
+            path="show/:listingID"
+            element={
+              User ?? token ?? identifier ? (
+                <VisitListing />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
           <Route path="create-booking/:listingID" element={<MakeABooking />} />
         </Route>
 
         {/* MESSAGES Route */}
-        <Route path="/messages" element={<MessagesLayout />}>
-          <Route path="conversation/:conversationID" element={<Messages />} />
+        <Route
+          path="/messages"
+          element={
+            User ?? token ?? identifier ? (
+              <MessagesLayout />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
+        >
+          <Route
+            path="conversation/:conversationID"
+            element={
+              User ?? token ?? identifier ? (
+                <Messages />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
         </Route>
 
         {/* RESERVATION Route */}
@@ -235,7 +451,16 @@ function Router() {
         />
 
         {/* BOOKINGS Route */}
-        <Route path="/bookings" element={<BookingsLayout />}>
+        <Route
+          path="/bookings"
+          element={
+            User ?? token ?? identifier ? (
+              <BookingsLayout />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
+        >
           <Route path="all" element={<AllBookingRequests />} />
           <Route path="approved" element={<ApprovedBookingRequests />} />
           <Route path="pending" element={<PendingBookingRequests />} />
@@ -248,10 +473,25 @@ function Router() {
           errorElement={<RootLayoutErrorBoundary />}
           element={<HostingLayout />}
         >
-          <Route path="hosting" element={<Hosting />}>
+          <Route
+            path="hosting"
+            element={
+              User ?? token ?? identifier ? (
+                <Hosting />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          >
             <Route
               path="current-reservations"
-              element={<CurrentReservations />}
+              element={
+                User ?? token ?? identifier ? (
+                  <CurrentReservations />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
             />
             <Route
               path="upcoming-reservations"
@@ -316,6 +556,7 @@ function Router() {
       </>,
     ),
   );
+  
   return router;
 }
 

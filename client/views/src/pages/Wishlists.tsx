@@ -31,19 +31,21 @@ function Wishlists() {
   }, []);
 
   return (
-    <section className="flex flex-col gap-6 px-24 py-12">
+    <section className="flex flex-col gap-6 px-24 py-12 max-md:px-14 max-sm:px-8">
       {isPending ? (
         <ListingsLoader />
       ) : (
         <>
           <div className="flex w-full items-center justify-between">
-            <h1 className="text-4xl font-semibold">Wishlists</h1>
+            <h1 className="text-4xl font-semibold max-md:text-2xl">
+              Wishlists
+            </h1>
             <Badge className="h-max w-max">count: {wishlists?.length}</Badge>
           </div>
           {wishlists?.length > 0 ? (
-            <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
+            <div className="grid grid-cols-4 gap-8 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 max-md:gap-2">
               {wishlists?.map((v: TListing) => (
-                <div className="flex flex-col gap-2">
+                <div className="mx-auto flex w-max flex-col gap-2">
                   <Card className="relative h-72 w-72 overflow-hidden p-0">
                     <Link key={v._id} to={`/listings/show/${v._id}`}>
                       {v.listingAssets[0].format === "mp4" ? (
@@ -114,11 +116,11 @@ function Wishlists() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              <span className="text-2xl font-semibold">
+              <span className="text-2xl font-semibold max-md:text-lg">
                 {" "}
                 Create your first wishlist
               </span>
-              <span className="text-lg font-semibold text-gray-600">
+              <span className="text-lg font-semibold text-gray-600 max-md:text-base">
                 As you search, click the heart icon to save your favorite
                 listings and services to a wishlist.
               </span>

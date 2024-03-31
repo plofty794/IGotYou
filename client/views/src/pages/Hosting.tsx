@@ -16,12 +16,16 @@ function Hosting() {
   }, []);
 
   return (
-    <section className="flex flex-col gap-14 p-16">
-      <h1 className="text-3xl font-semibold">Welcome back, {user.username}</h1>
+    <section className="flex flex-col gap-14 p-16 max-md:gap-8 max-md:p-12 max-sm:h-screen max-sm:p-6">
+      <h1 className="text-3xl font-semibold max-md:text-2xl">
+        Welcome back, {user.username}
+      </h1>
       <div className="w-full">
         <div className="flex items-center justify-between">
-          <span className="text-xl font-medium">Your reservations</span>
-          <Button className="rounded-full bg-gray-950 font-semibold">
+          <span className="text-xl font-semibold max-md:text-lg max-sm:text-base">
+            Your reservations
+          </span>
+          <Button className="rounded-full bg-gray-950 p-4 font-semibold max-sm:text-xs">
             <Link to={"/hosting-reservations/all"}>All reservations</Link>
           </Button>
         </div>
@@ -30,9 +34,9 @@ function Hosting() {
           {location.pathname.includes("reservations") ? (
             <Outlet />
           ) : (
-            <CardContent className="mx-auto w-max p-8">
-              <CardHeader>
-                <CardTitle className="text-4xl font-bold">
+            <CardContent className="mx-auto w-max p-8 max-md:p-4 max-sm:p-0">
+              <CardHeader className="max-md:p-4">
+                <CardTitle className="text-4xl font-bold max-md:text-2xl max-sm:text-lg">
                   Today is, {format(new Date(), "iiii MMMM do")}.
                 </CardTitle>
               </CardHeader>

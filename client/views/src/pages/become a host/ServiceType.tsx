@@ -25,13 +25,13 @@ function ServiceType() {
   return (
     <>
       <ScrollArea
-        className={`h-[450px] w-full rounded-md border transition-opacity ${
+        className={`h-[70vh] w-full transition-opacity ${
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
         <section className="my-16 flex flex-col items-center justify-center gap-8">
           <div className="w-3/4 text-center">
-            <h1 className="text-3xl font-semibold">
+            <h1 className="text-3xl font-semibold max-lg:text-2xl max-md:text-xl max-sm:text-base">
               Which of these best categories describes your service?
             </h1>
           </div>
@@ -48,7 +48,7 @@ function ServiceType() {
                     }));
                   }}
                   type="button"
-                  className={`text-950 flex h-max flex-col gap-2 border bg-white p-6 hover:bg-white hover:outline hover:outline-gray-950 ${
+                  className={`text-950 flex h-max flex-col gap-2 border bg-white p-6 hover:bg-white hover:outline hover:outline-gray-950 max-md:text-xs ${
                     selected === category.name ? "outline outline-gray-950" : ""
                   }`}
                 >

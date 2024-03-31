@@ -17,8 +17,10 @@ import DeclineReasons from "./DeclineReasons";
 import UserInformation, { TUserID } from "./UserInformation";
 import useSendBookingRequestUpdate from "@/hooks/useSendBookingRequestUpdate";
 import MessageGuest from "@/partials/components/messages/MessageGuest";
+import { useMediaQuery } from "usehooks-ts";
 
 function BookingRequest() {
+  const matches = useMediaQuery("(max-width: 768px)");
   const { data, isPending } = useGetBookingRequestDetails();
   const sendBookingRequestUpdate = useSendBookingRequestUpdate();
 
@@ -48,7 +50,7 @@ function BookingRequest() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <div className="mx-auto flex w-max flex-col items-center">
-              <div className="h-20 w-20">
+              <div className="h-20 w-20 max-md:h-12 max-md:w-12">
                 <Avatar className="h-full w-full">
                   <AvatarImage
                     className="object-cover"
@@ -80,7 +82,6 @@ function BookingRequest() {
                   {data?.data.bookingRequest.guestCancelReasons}
                 </Badge>
               </div>
-
               <UserInformation
                 userID={data?.data.bookingRequest.guestID as TUserID}
               />
@@ -92,15 +93,14 @@ function BookingRequest() {
               <Link
                 to={`/reservation-details/${data?.data.bookingRequest.reservationID}`}
               >
-                {" "}
-                View reservation details
+                {matches ? "Details" : " View reservation details"}
               </Link>
             </Button>
             <div className="flex items-center justify-center">
               <MessageGuest id={data?.data.bookingRequest.guestID._id} />
               <Button variant={"link"}>
                 <Link
-                  replace
+                  className="max-md:text-xs"
                   to={`/users/visit/show/${data?.data.bookingRequest.guestID._id}`}
                 >
                   View profile
@@ -111,9 +111,11 @@ function BookingRequest() {
         </Card>
       ) : (
         <Card className="w-full">
-          <CardHeader>
-            <div className="flex w-full items-center justify-between">
-              <h1 className="text-xl font-bold">Booking Request Details</h1>
+          <CardHeader className="max-md:p-2">
+            <div className="flex w-full items-center justify-between max-md:flex-col max-md:gap-2">
+              <h1 className="text-xl font-bold max-md:text-lg max-sm:text-base">
+                Booking Request Details
+              </h1>
               <Badge
                 className={` ${
                   data?.data.bookingRequest.status === "pending"
@@ -127,10 +129,10 @@ function BookingRequest() {
               </Badge>
             </div>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4">
+          <CardContent className="flex flex-col gap-4 max-md:p-2">
             <div className="mx-auto flex w-max flex-col items-center">
-              <div className="h-20 w-20">
-                <Avatar className="h-full w-full">
+              <div className="h-20 w-20 max-md:h-12 max-md:w-12">
+                <Avatar className="h-full w-full ">
                   <AvatarImage
                     className="object-cover"
                     src={data?.data.bookingRequest.guestID.photoUrl}
@@ -172,18 +174,20 @@ function BookingRequest() {
             </div>
             <div className="flex flex-col gap-2">
               <div className="p-2">
-                <h3 className="text-sm font-semibold uppercase">Message</h3>
-                <CardDescription className="mt-2 text-sm font-semibold italic">
+                <h3 className="text-sm font-semibold uppercase max-sm:text-xs">
+                  Message
+                </h3>
+                <CardDescription className="mt-2 text-sm font-semibold italic max-sm:text-xs">
                   {data?.data.bookingRequest.message}
                 </CardDescription>
               </div>
-              <div className="flex w-full items-end justify-between">
+              <div className="flex w-full items-end justify-between max-md:w-full max-md:flex-col max-md:gap-2">
                 <UserInformation
                   userID={data?.data.bookingRequest.guestID as TUserID}
                 />
-                <div className="h-max w-max rounded-md border p-3 shadow-md">
-                  <div className="flex items-center justify-between gap-2">
-                    <CardDescription className="text-sm font-semibold text-black">
+                <div className="h-max w-max rounded-md border p-3 shadow-md max-md:w-full">
+                  <div className="flex items-center justify-between gap-2 ">
+                    <CardDescription className="text-sm font-semibold text-black max-sm:text-xs">
                       Requested dates
                     </CardDescription>
                     {data?.data.bookingRequest.status === "approved" ? (
@@ -210,7 +214,7 @@ function BookingRequest() {
                       </Badge>
                     )}
                   </div>
-                  <CardDescription className="mt-2 font-semibold">
+                  <CardDescription className="mt-2 font-semibold max-sm:text-center max-sm:text-xs">
                     {format(
                       new Date(
                         new Date(
@@ -231,7 +235,10 @@ function BookingRequest() {
                     )}
                   </CardDescription>
                   {data?.data.bookingRequest.guestCancelReasons && (
-                    <Badge variant={"destructive"} className="capitalize">
+                    <Badge
+                      variant={"destructive"}
+                      className=" capitalize max-sm:!bg-white max-sm:p-0 max-sm:font-bold max-sm:text-red-600"
+                    >
                       Cancellation Reason -{" "}
                       {data?.data.bookingRequest.guestCancelReasons}
                     </Badge>
@@ -243,8 +250,8 @@ function BookingRequest() {
           {data?.data.bookingRequest.status !== "approved" && (
             <>
               <Separator />
-              <CardFooter className="justify-between gap-2 p-4">
-                <div className="flex items-center gap-2">
+              <CardFooter className="justify-between gap-2 p-4 max-md:flex-col">
+                <div className="flex items-center gap-2 ">
                   <Button
                     disabled={
                       compareAsc(
@@ -290,7 +297,7 @@ function BookingRequest() {
                   <MessageGuest id={data?.data.bookingRequest.guestID._id} />
                   <Button variant={"link"}>
                     <Link
-                      replace
+                      className="max-md:text-xs"
                       to={`/users/visit/show/${data?.data.bookingRequest.guestID._id}`}
                     >
                       View profile
@@ -303,20 +310,23 @@ function BookingRequest() {
           {data?.data.bookingRequest.status === "approved" && (
             <>
               <Separator />
-              <CardFooter className="justify-between gap-2 p-4">
-                <Button size={"sm"} variant={"outline"}>
+              <CardFooter className="justify-between gap-2 p-4 max-md:flex-col">
+                <Button
+                  className="max-md:w-full"
+                  size={"sm"}
+                  variant={"outline"}
+                >
                   <Link
                     to={`/reservation-details/${data?.data.bookingRequest.reservationID}`}
                   >
-                    {" "}
-                    View reservation details
+                    {matches ? "Details" : " View reservation details"}
                   </Link>
                 </Button>
                 <div className="flex items-center justify-center">
                   <MessageGuest id={data?.data.bookingRequest.guestID._id} />
                   <Button variant={"link"}>
                     <Link
-                      replace
+                      className="max-md:text-xs"
                       to={`/users/visit/show/${data?.data.bookingRequest.guestID._id}`}
                     >
                       View profile

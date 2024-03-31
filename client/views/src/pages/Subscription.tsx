@@ -21,7 +21,7 @@ function Subscription() {
   }, []);
 
   return (
-    <div className="flex justify-center gap-4 p-12">
+    <div className="flex justify-center gap-4 p-12 max-lg:flex-col max-md:gap-2 max-md:p-8">
       <Card className="w-full shadow-lg">
         <CardHeader className="flex-row items-center justify-between">
           <CardTitle className="text-lg font-bold">
@@ -103,9 +103,9 @@ function Subscription() {
           </div>
         </Card>
       </Card>
-      <Card className="h-max w-2/4">
+      <Card className="h-max w-2/4 max-lg:w-full">
         <CardHeader className="mx-auto w-max">
-          <CardTitle className="text-4xl font-extrabold">
+          <CardTitle className="text-4xl font-extrabold max-md:text-2xl">
             {differenceInDays(
               new Date(profileData!.data.user.subscriptionExpiresAt).setHours(
                 0,
@@ -115,7 +115,7 @@ function Subscription() {
               ),
               new Date().setHours(0, 0, 0, 0),
             )}{" "}
-            <span className="text-lg font-bold">
+            <span className="text-lg font-bold max-lg:text-sm">
               {" "}
               days before subscription ends
             </span>

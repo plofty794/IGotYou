@@ -46,7 +46,6 @@ function ListingsLayout() {
                   )}
                 </Suspense>
               )}
-
               <UserDropDownButton />
             </span>
           </nav>

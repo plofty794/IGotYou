@@ -1,4 +1,4 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import {
@@ -31,6 +31,7 @@ import Loader from "@/partials/loaders/Loader";
 import useSearchUser from "@/hooks/useSearchUser";
 import { useQueryClient } from "@tanstack/react-query";
 import MessageDialogFilter from "@/partials/components/messages/MessageDialogFilter";
+import { useMediaQuery } from "usehooks-ts";
 
 ping.register();
 
@@ -43,6 +44,7 @@ function MessagesLayout() {
   const [userDetails, setUserDetails] = useState<any[]>([]);
   const { data } = useSearchUser(receiverName);
   const queryClient = useQueryClient();
+  const matches = useMediaQuery("(max-width: 1024px)");
 
   useMemo(() => {
     setTimeout(async () => {
@@ -70,7 +72,7 @@ function MessagesLayout() {
       ) : (
         <>
           <main className="min-h-screen ">
-            <nav className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-28 py-5 shadow 2xl:rounded-b-lg">
+            <nav className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-28 py-5 shadow max-md:px-12 max-sm:px-8 2xl:rounded-b-lg">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -105,9 +107,11 @@ function MessagesLayout() {
               </div>
             </nav>
             <section className="flex w-full">
-              <div className=" w-1/4 p-8">
+              <div className=" w-1/4 p-8 max-lg:p-2">
                 <div className="flex w-full items-center justify-between">
-                  <span className="block text-2xl font-bold">Messages</span>
+                  <span className="block text-2xl font-bold max-lg:hidden">
+                    Messages
+                  </span>
                   <MessageDialogFilter
                     queryClient={queryClient}
                     receiverName={receiverName}
@@ -122,7 +126,7 @@ function MessagesLayout() {
                     <l-ping size="40" speed="2" color="black"></l-ping>
                   </div>
                 ) : (
-                  <ScrollArea className="h-[28rem] pr-4  pt-4">
+                  <ScrollArea className="mr-2 h-[28rem] pt-4">
                     <div className="messages flex w-full flex-col gap-4">
                       {conversations.data?.data.userConversations.length > 0 ? (
                         conversations.data?.data.userConversations.map(
@@ -134,80 +138,108 @@ function MessagesLayout() {
                             participants: any[];
                             _id: string;
                           }) => (
-                            <NavLink
-                              to={`/messages/conversation/${v._id}`}
-                              key={v._id}
-                              className="flex w-full flex-col gap-2 overflow-hidden rounded-md border bg-[#F5F5F5] p-2 text-gray-600"
-                            >
-                              {v.lastMessage != null ? (
-                                <div className="mx-auto w-max">
-                                  {conversations.data.data.currentUserID ===
-                                  v.lastMessage.senderID._id ? (
-                                    <div className="flex items-center gap-1">
-                                      <p className="w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold">
-                                        You: {v.lastMessage.content}{" "}
-                                      </p>
-                                      <CircleIcon className="h-[0.4rem] w-[0.4rem] rounded-full bg-gray-400" />
-                                      <p className="text-xs font-semibold">
-                                        {formatDistanceToNow(
-                                          new Date(v.lastMessage.createdAt),
-                                          { addSuffix: true },
-                                        )}
-                                      </p>
+                            <>
+                              {matches ? (
+                                <NavLink
+                                  replace
+                                  to={`/messages/conversation/${v._id}`}
+                                  key={v._id}
+                                  className="flex w-full flex-col gap-2 overflow-hidden rounded-md border bg-[#F5F5F5] p-2 text-gray-600"
+                                >
+                                  {
+                                    <Avatar className="mx-auto w-max">
+                                      <AvatarImage
+                                        src={
+                                          v.participants.find(
+                                            (user) =>
+                                              user._id !=
+                                              conversations.data.data
+                                                .currentUserID,
+                                          ).photoUrl
+                                        }
+                                      />
+                                      <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                  }
+                                </NavLink>
+                              ) : (
+                                <NavLink
+                                  replace
+                                  to={`/messages/conversation/${v._id}`}
+                                  key={v._id}
+                                  className="flex w-full flex-col gap-2 overflow-hidden rounded-md border bg-[#F5F5F5] p-2 text-gray-600"
+                                >
+                                  {v.lastMessage != null ? (
+                                    <div className="mx-auto w-max">
+                                      {conversations.data.data.currentUserID ===
+                                      v.lastMessage.senderID._id ? (
+                                        <div className="flex items-center gap-1">
+                                          <p className="w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold">
+                                            You: {v.lastMessage.content}{" "}
+                                          </p>
+                                          <CircleIcon className="h-[0.4rem] w-[0.4rem] rounded-full bg-gray-400" />
+                                          <p className="text-xs font-semibold">
+                                            {formatDistanceToNow(
+                                              new Date(v.lastMessage.createdAt),
+                                              { addSuffix: true },
+                                            )}
+                                          </p>
+                                        </div>
+                                      ) : (
+                                        <div className="flex items-center gap-1">
+                                          <p
+                                            className={`w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold ${
+                                              v.lastMessage.read
+                                                ? ""
+                                                : "!font-extrabold text-black"
+                                            }`}
+                                          >
+                                            {v.lastMessage.senderID.username}:{" "}
+                                            {v.lastMessage.content}{" "}
+                                          </p>
+                                          <CircleIcon
+                                            className={`h-[0.4rem] w-[0.4rem] rounded-full  ${
+                                              v.lastMessage.read
+                                                ? "bg-gray-400"
+                                                : "bg-blue-600"
+                                            }`}
+                                          />
+                                          <p
+                                            className={`text-xs font-semibold ${
+                                              v.lastMessage.read
+                                                ? ""
+                                                : "!font-extrabold text-black"
+                                            }`}
+                                          >
+                                            {formatDistanceToNow(
+                                              new Date(v.lastMessage.createdAt),
+                                              { addSuffix: true },
+                                            )}
+                                          </p>
+                                        </div>
+                                      )}
                                     </div>
                                   ) : (
-                                    <div className="flex items-center gap-1">
-                                      <p
-                                        className={`w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold ${
-                                          v.lastMessage.read
-                                            ? ""
-                                            : "!font-extrabold text-black"
-                                        }`}
-                                      >
-                                        {v.lastMessage.senderID.username}:{" "}
-                                        {v.lastMessage.content}{" "}
-                                      </p>
-                                      <CircleIcon
-                                        className={`h-[0.4rem] w-[0.4rem] rounded-full  ${
-                                          v.lastMessage.read
-                                            ? "bg-gray-400"
-                                            : "bg-blue-600"
-                                        }`}
-                                      />
-                                      <p
-                                        className={`text-xs font-semibold ${
-                                          v.lastMessage.read
-                                            ? ""
-                                            : "!font-extrabold text-black"
-                                        }`}
-                                      >
-                                        {formatDistanceToNow(
-                                          new Date(v.lastMessage.createdAt),
-                                          { addSuffix: true },
-                                        )}
-                                      </p>
-                                    </div>
+                                    <p className="mx-auto w-max text-xs font-semibold">
+                                      You are connected with{" "}
+                                    </p>
                                   )}
-                                </div>
-                              ) : (
-                                <p className="mx-auto w-max text-xs font-semibold">
-                                  You are connected with{" "}
-                                </p>
+                                  <p
+                                    className={
+                                      "w-full text-center text-sm font-bold"
+                                    }
+                                  >
+                                    {
+                                      v.participants.find(
+                                        (u) =>
+                                          u._id !=
+                                          conversations.data.data.currentUserID,
+                                      ).username
+                                    }
+                                  </p>
+                                </NavLink>
                               )}
-                              <p
-                                className={
-                                  "w-full text-center text-sm font-bold"
-                                }
-                              >
-                                {
-                                  v.participants.find(
-                                    (u) =>
-                                      u._id !=
-                                      conversations.data.data.currentUserID,
-                                  ).username
-                                }
-                              </p>
-                            </NavLink>
+                            </>
                           ),
                         )
                       ) : (

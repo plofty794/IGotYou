@@ -31,20 +31,20 @@ function CancellationPolicy() {
   return (
     <>
       <ScrollArea
-        className={`h-[450px] w-full rounded-md border transition-opacity ${
+        className={`h-[70vh] w-full transition-opacity ${
           isFadingIn ? "opacity-0" : "opacity-100"
         }`}
       >
         <section className="my-28 flex flex-col items-center justify-center gap-4">
           <div className="w-2/4 text-center">
-            <h1 className="text-4xl font-semibold">
+            <h1 className="text-4xl font-semibold max-lg:text-2xl max-md:text-xl max-sm:text-lg">
               Pick a cancellation policy
             </h1>
-            <span className="font-semibold text-gray-600">
+            <span className="text-center text-lg font-semibold text-zinc-500 max-md:text-sm">
               Choose a policy that caters your service.
             </span>
           </div>
-          <div className="mt-4 flex items-center justify-center gap-6">
+          <div className="mt-4 flex items-center justify-center gap-6 max-md:flex-col">
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Button
@@ -57,14 +57,17 @@ function CancellationPolicy() {
                     }));
                   }}
                   variant={"outline"}
-                  className={`p-10 text-lg font-semibold hover:outline hover:outline-gray-950 ${
+                  className={`p-10 text-lg font-semibold hover:outline hover:outline-gray-950 max-md:w-full ${
                     cancellationPolicy === "Flexible" ? "outline" : ""
                   }`}
                 >
                   Flexible
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent className="mx-auto flex w-full flex-col">
+              <HoverCardContent
+                align="center"
+                className="mx-auto flex w-full flex-col"
+              >
                 <span className="font-bold uppercase text-green-600">
                   Flexible
                 </span>

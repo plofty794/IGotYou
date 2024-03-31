@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import { differenceInDays, formatDistance } from "date-fns";
+import { formatDistance } from "date-fns";
 import Lottie from "lottie-react";
 import { formatValue } from "react-currency-input-field";
 import noRequest from "../../assets/no-pending-payments.json";
@@ -48,7 +48,7 @@ function CancelledBookingRequests() {
           <CardHeader className="flex-row justify-between p-4">
             <div className="flex items-center gap-2">
               <CardTitle className="m-0">
-                <Badge className="rounded-full text-sm">
+                <Badge className="rounded-full text-sm max-sm:bg-white max-sm:p-0 max-sm:text-xs max-sm:font-semibold max-sm:text-black">
                   {v.hostID.username}
                 </Badge>
               </CardTitle>
@@ -91,7 +91,9 @@ function CancelledBookingRequests() {
                   ? "text-amber-600"
                   : v.status === "approved"
                     ? "text-green-600"
-                    : "text-red-600"
+                    : v.status === "cancelled"
+                      ? "text-red-600"
+                      : "text-red-800"
               }`}
               variant={"outline"}
             >
@@ -99,9 +101,9 @@ function CancelledBookingRequests() {
             </Badge>
           </CardHeader>
           <Separator />
-          <CardContent className="flex w-full justify-between p-4">
+          <CardContent className="flex w-full justify-between p-4 max-md:flex-col">
             <div className="flex gap-2">
-              <div className="h-44 w-44 overflow-hidden rounded-md">
+              <div className="h-44 w-44 overflow-hidden rounded-md max-md:h-32 max-md:w-32 max-sm:hidden">
                 {v.listingID.listingAssets[0]?.format === "mp4" ? (
                   <AdvancedImage
                     className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
@@ -174,35 +176,41 @@ function CancelledBookingRequests() {
             </div>
             <div className="flex flex-col items-end justify-between gap-2">
               <div className="flex h-full flex-col items-end justify-between">
-                <Badge variant={"secondary"} className="text-base font-bold">
-                  Total:{" "}
-                  {formatValue({
-                    value: String(
-                      differenceInDays(
-                        new Date(v.requestedBookingDateEndsAt),
-                        new Date(v.requestedBookingDateStartsAt),
-                      ) * v.listingID.price,
-                    ),
-                    intlConfig: {
-                      locale: "PH",
-                      currency: "php",
-                    },
-                  })}
-                </Badge>
+                <div className="flex flex-col">
+                  <Badge
+                    variant={"secondary"}
+                    className="w-max text-base font-bold"
+                  >
+                    Total:{" "}
+                    {formatValue({
+                      value: String(v.totalPrice),
+                      intlConfig: {
+                        locale: "PH",
+                        currency: "php",
+                      },
+                    })}
+                  </Badge>
+                </div>
               </div>
-              <Button
-                disabled={reAttemptBooking.isPending}
-                onClick={() =>
-                  reAttemptBooking.mutate({ bookingRequestID: v._id })
-                }
-                variant={"outline"}
-              >
-                Request again
-              </Button>
-              <Badge className="w-max" variant={"destructive"}>
-                Cancellation Reason -
-                <span className="ml-1 capitalize">{v.guestCancelReasons}</span>
-              </Badge>
+              {v.status === "cancelled" && (
+                <>
+                  <Button
+                    disabled={reAttemptBooking.isPending}
+                    onClick={() =>
+                      reAttemptBooking.mutate({ bookingRequestID: v._id })
+                    }
+                    variant={"outline"}
+                  >
+                    Request again
+                  </Button>
+                  <Badge className="w-max" variant={"destructive"}>
+                    Cancellation Reason -
+                    <span className="ml-1 capitalize">
+                      {v.guestCancelReasons}
+                    </span>
+                  </Badge>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>

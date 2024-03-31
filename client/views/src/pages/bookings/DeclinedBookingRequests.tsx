@@ -43,10 +43,10 @@ function DeclinedBookingRequests() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       page.data.declinedBookingRequests.map((v: any) => (
         <Card className="my-2 w-full" key={v._id}>
-          <CardHeader className="flex-row justify-between">
+          <CardHeader className="flex-row justify-between p-4">
             <div className="flex items-center gap-2">
               <CardTitle className="m-0">
-                <Badge className="rounded-full text-sm">
+                <Badge className="rounded-full text-sm max-sm:bg-white max-sm:p-0 max-sm:text-xs max-sm:font-semibold max-sm:text-black">
                   {v.hostID.username}
                 </Badge>
               </CardTitle>
@@ -99,9 +99,9 @@ function DeclinedBookingRequests() {
             </Badge>
           </CardHeader>
           <Separator />
-          <CardContent className="flex w-full justify-between px-6 py-4">
+          <CardContent className="flex w-full justify-between p-4 max-md:flex-col">
             <div className="flex gap-2">
-              <div className="h-44 w-44 overflow-hidden rounded-md">
+              <div className="h-44 w-44 overflow-hidden rounded-md max-md:h-32 max-md:w-32 max-sm:hidden">
                 {v.listingID.listingAssets[0]?.format === "mp4" ? (
                   <AdvancedImage
                     className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
@@ -172,7 +172,6 @@ function DeclinedBookingRequests() {
                 </Badge>
               </div>
             </div>
-
             <div className="flex flex-col items-end justify-between gap-2">
               <div className="flex h-full flex-col items-end justify-between">
                 <div className="flex flex-col">

@@ -58,12 +58,14 @@ function ConfirmPayment() {
       <div
         className={`${
           isFadingIn ? "opacity-0" : "opacity-100"
-        } flex h-full items-center justify-center gap-12 transition-opacity`}
+        } flex h-full items-center justify-center transition-opacity`}
       >
-        <div className="flex w-2/4 flex-col items-center justify-center gap-2 p-8">
+        <div className="flex w-2/4 flex-col items-center justify-center gap-2">
           <div className="flex flex-col gap-4 p-2 text-center">
-            <h1 className="text-4xl font-semibold ">Confirm your payment</h1>
-            <p className="text-lg font-semibold text-gray-600">
+            <h1 className="text-4xl font-semibold max-lg:text-2xl">
+              Confirm your payment
+            </h1>
+            <p className="text-lg font-semibold text-gray-600 max-md:text-sm max-sm:hidden">
               Take a screenshot or download the photo of the proof of payment
               from GCash containing the amount and the Ref no. and upload it
               here.{" "}
@@ -72,7 +74,7 @@ function ConfirmPayment() {
               </span>
             </p>
           </div>
-          <div className="relative w-3/4 overflow-hidden rounded-lg border border-dashed border-zinc-600">
+          <div className="relative w-3/4 overflow-hidden rounded-lg border border-dashed border-zinc-600 max-lg:w-full">
             {paymentProof?.secure_url && (
               <CrossCircledIcon
                 color="#FFF"
@@ -108,9 +110,9 @@ function ConfirmPayment() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center gap-2 p-12">
-                <span className="text-center text-sm font-semibold text-gray-600">
+                <p className="text-center text-xs font-bold text-gray-600">
                   Your photo will be shown here
-                </span>
+                </p>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

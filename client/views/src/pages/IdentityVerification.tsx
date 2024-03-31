@@ -91,18 +91,18 @@ function IdentityVerification() {
           <Navigate to={"/"} replace />
         )}
       {data?.data.user.identityVerificationStatus === "pending" ? (
-        <div className="flex min-h-[70vh] items-center justify-center p-2">
-          <Card className="flex w-3/5 flex-col justify-center border-none p-4 shadow-none">
+        <div className="flex min-h-[70vh] items-center justify-center max-md:px-4">
+          <Card className="flex w-3/5 flex-col justify-center gap-2 border-none shadow-none max-md:w-full">
             <CardHeader className="mx-auto w-max p-0">
               <Lottie
                 animationData={PoliteChicky}
-                className="mx-auto h-[220px] w-full"
+                className="mx-auto h-[220px] w-full max-md:h-40"
               />
             </CardHeader>
-            <CardDescription className="px-6 pb-4 text-2xl font-bold text-gray-950">
+            <CardDescription className="px-6 pb-4 text-2xl font-bold text-gray-950 max-md:p-2 max-md:text-xl">
               Hello {data.data.user.username}!
             </CardDescription>
-            <CardContent className="flex flex-col gap-2 pb-4 text-base font-semibold text-gray-600">
+            <CardContent className="flex flex-col gap-2 pb-4 text-base  font-semibold text-gray-600 max-md:p-2 max-md:text-xs">
               <span>
                 We wanted to inform you that your identity verification status
                 is{" "}
@@ -118,10 +118,8 @@ function IdentityVerification() {
                 once your subscription is fully processed.
               </span>
             </CardContent>
-
-            <Button className="mb-2 ml-auto mr-4 w-max rounded-full bg-gray-950 p-6 text-base font-semibold text-white">
+            <Button className="mb-2 ml-auto mr-4 w-max rounded-full bg-gray-950 p-6 text-base font-semibold text-white max-md:p-4">
               <Link to={"/"} replace>
-                {" "}
                 Go back
               </Link>
             </Button>
@@ -133,19 +131,21 @@ function IdentityVerification() {
             isFadingIn ? "opacity-0" : "opacity-100"
           } mt-12 flex h-[70vh] flex-col items-center justify-center gap-4 transition-opacity`}
         >
-          <div className="flex w-3/6 flex-col items-center justify-center gap-2">
-            <div className="flex flex-col gap-4 p-2 text-center">
-              <h1 className="text-4xl font-semibold ">Identity Verification</h1>
-              <p className="text-lg font-semibold text-gray-600">
+          <div className="flex w-4/6 flex-col items-center justify-center gap-2">
+            <div className="flex flex-col gap-4 p-2 text-center max-md:gap-2">
+              <h1 className="text-4xl font-semibold max-md:text-3xl">
+                Identity Verification
+              </h1>
+              <p className="text-lg font-semibold text-gray-600 max-sm:text-xs">
                 Upload a scanned copy or clear photo of your government-issued
                 ID through a secure document upload interface.{" "}
-                <span className="mt-1 block text-sm font-bold text-amber-600">
+                <span className="mt-1 block text-sm font-bold text-amber-600 max-md:text-xs">
                   Note: Make sure that the credentials in the photo are not
                   blurry.
                 </span>
               </p>
             </div>
-            <div className="relative w-3/4 overflow-hidden rounded-lg border border-dashed border-zinc-600">
+            <div className="relative h-52 w-3/4 overflow-hidden rounded-lg border border-dashed border-zinc-600 max-md:w-full">
               {identityPhoto.secure_url && (
                 <CrossCircledIcon
                   color="#FFF"
@@ -180,8 +180,8 @@ function IdentityVerification() {
                   </a>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center gap-2 p-16">
-                  <span className="text-center text-sm font-semibold text-gray-600">
+                <div className="flex flex-col items-center justify-center gap-2 p-16 max-md:self-center">
+                  <span className="text-center text-xs font-bold text-gray-600">
                     Your photo will be shown here
                   </span>
                   <svg

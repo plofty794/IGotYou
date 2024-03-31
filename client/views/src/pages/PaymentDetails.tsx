@@ -179,7 +179,7 @@ function PaymentDetails() {
               </Button>
               <h1 className="text-2xl font-bold">Payment</h1>
             </div>
-            <div className="mx-auto flex w-full max-w-5xl gap-6">
+            <div className="mx-auto flex w-full max-w-5xl gap-6 max-lg:flex-col">
               {data?.data.isHost ? (
                 <HostPayoutDetails
                   reservationDetails={

@@ -13,7 +13,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -25,6 +24,7 @@ import { SocketContextProvider } from "@/context/SocketContext";
 import useChatMessage from "@/hooks/useChatMessage";
 import useDeleteConversation from "@/hooks/useDeleteConversation";
 import useGetConversation from "@/hooks/useGetConversation";
+import EmojiPopOverPicker from "@/partials/components/EmojiPopOverPicker";
 import ListingsLoader from "@/partials/loaders/ListingsLoader";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -32,7 +32,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 function Messages() {
-  const latestChatRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const bottomEndPanelRef = useRef<HTMLDivElement | null>(null);
   const { conversationID } = useParams();
   const navigate = useNavigate();
   const chatMessage = useChatMessage();
@@ -63,22 +64,13 @@ function Messages() {
     data?.data.conversation.map((v: { messages: [] }) =>
       setMessages(v.messages),
     );
-    setTimeout(
-      () =>
-        latestChatRef.current?.scrollIntoView({
-          behavior: "instant",
-        }),
-      0,
-    );
   }, [data?.data.conversation, data?.data.currentUserID]);
 
   useEffect(() => {
-    if (chatMessage.isSuccess) {
-      latestChatRef.current?.scrollIntoView({
-        behavior: "smooth",
-      });
+    if (bottomEndPanelRef.current) {
+      bottomEndPanelRef.current?.scrollIntoView();
     }
-  }, [chatMessage.isSuccess]);
+  }, [messages]);
 
   async function readMessage(messageId: string) {
     await axiosPrivateRoute.patch(
@@ -116,12 +108,12 @@ function Messages() {
   }, [conversationID, queryClient, socket]);
 
   return (
-    <div className="px-8 py-6">
+    <div className="px-8 py-6 max-lg:p-2">
       {isPending ? (
         <ListingsLoader />
       ) : (
         <>
-          <div className="mb-4 flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
               <Link to={`/users/visit/show/${participant[0]?._id}`}>
                 <Avatar>
@@ -183,7 +175,7 @@ function Messages() {
                               document.location.reload();
                             }, 600);
                           }}
-                          className="rounded-full bg-gray-950"
+                          className="rounded-full bg-red-600 hover:bg-red-700"
                         >
                           Continue
                         </AlertDialogAction>
@@ -198,7 +190,7 @@ function Messages() {
             </TooltipProvider>
           </div>
           <Separator />
-          <ScrollArea className="relative mt-2 h-[65vh] rounded-md border bg-[#F5F5F5] p-6">
+          <div className="chat-box relative mt-2 overflow-auto rounded-md border bg-[#F5F5F5] p-6 px-0 pb-0 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-thumb-rounded-full max-lg:h-[80vh] lg:h-[60vh]">
             <div className="mx-auto flex w-max flex-col items-center justify-center gap-2">
               <Link to={`/users/visit/show/${participant[0]?._id}`}>
                 <Avatar className="h-24 w-24">
@@ -218,25 +210,22 @@ function Messages() {
                 </Button>
               </Link>
             </div>
-            <div className="mb-10 mt-4 flex h-max flex-col gap-2 p-4">
+            <div className="mb-2 mt-4 flex h-max flex-col gap-2 p-4">
               {messages.map((v, i) =>
                 v.senderID._id === data?.data.currentUserID ? (
                   <>
                     {messages.length == i + 1 ? (
-                      <div
-                        ref={latestChatRef}
-                        className="ml-auto w-max rounded-full bg-blue-500 px-4 py-2"
-                      >
+                      <div className="ml-auto w-max rounded-full bg-blue-500 px-4 py-2 max-lg:px-3">
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               {" "}
-                              <span
+                              <p
                                 key={v._id}
-                                className="text-sm font-semibold text-white"
+                                className="text-sm font-semibold text-white max-lg:text-xs"
                               >
                                 {v.content}
-                              </span>
+                              </p>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>{format(new Date(v.createdAt), "p")}</p>
@@ -245,17 +234,17 @@ function Messages() {
                         </TooltipProvider>
                       </div>
                     ) : (
-                      <div className="ml-auto w-max rounded-full  bg-blue-500 px-4 py-2">
+                      <div className="ml-auto w-max rounded-full  bg-blue-500 px-4 py-2  max-lg:px-3">
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               {" "}
-                              <span
+                              <p
                                 key={v._id}
-                                className="text-sm font-semibold text-white"
+                                className="text-sm font-semibold text-white max-lg:text-xs"
                               >
                                 {v.content}
-                              </span>
+                              </p>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>{format(new Date(v.createdAt), "p")}</p>
@@ -268,20 +257,17 @@ function Messages() {
                 ) : (
                   <>
                     {messages.length == i + 1 ? (
-                      <div
-                        ref={latestChatRef}
-                        className="mr-auto w-max rounded-full bg-[#E5E4E9] px-4 py-2"
-                      >
+                      <div className="mr-auto w-max rounded-full bg-[#E5E4E9] px-4 py-2  max-lg:px-3">
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               {" "}
-                              <span
+                              <p
                                 key={v._id}
-                                className="text-sm font-semibold"
+                                className="text-sm font-semibold max-lg:text-xs"
                               >
                                 {v.content}
-                              </span>
+                              </p>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>{format(new Date(v.createdAt), "p")}</p>
@@ -290,17 +276,17 @@ function Messages() {
                         </TooltipProvider>
                       </div>
                     ) : (
-                      <div className="mr-auto w-max rounded-full bg-[#E5E4E9] px-4 py-2">
+                      <div className="mr-auto w-max rounded-full bg-[#E5E4E9] px-4 py-2  max-lg:px-3">
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               {" "}
-                              <span
+                              <p
                                 key={v._id}
-                                className="text-sm font-semibold"
+                                className="text-sm font-semibold max-lg:text-xs"
                               >
                                 {v.content}
-                              </span>
+                              </p>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>{format(new Date(v.createdAt), "p")}</p>
@@ -312,41 +298,46 @@ function Messages() {
                   </>
                 ),
               )}
+              <div ref={bottomEndPanelRef}></div>
             </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setContent("");
-                chatMessage.mutate({
-                  content,
-                  receiverName: participant[0].username,
-                });
-              }}
-            >
-              <div className="absolute bottom-0 left-0 flex w-full items-center justify-between gap-2 bg-[#F5F5F5] p-2">
-                <Input
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Message..."
-                  onFocus={async () =>
-                    conversation != null &&
-                    !conversation[0]?.lastMessage.read &&
-                    (await readMessage(conversation[0].lastMessage._id))
-                  }
-                  className="w-full rounded-full bg-white p-5 font-medium"
-                  spellCheck="true"
-                />
-                <Button
-                  disabled={!content}
-                  className="rounded-full bg-gray-950 p-6 text-lg"
-                >
-                  Send
-                </Button>
-              </div>
-            </form>
-          </ScrollArea>
+          </div>
         </>
       )}
+      <form
+        className="sticky bottom-0"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setContent("");
+          chatMessage.mutate({
+            content,
+            receiverName: participant[0].username,
+          });
+        }}
+      >
+        <div className="flex items-center justify-between gap-2 rounded-lg border  bg-[#F5F5F5] p-2">
+          <EmojiPopOverPicker inputRef={inputRef} />
+          <Input
+            ref={inputRef}
+            autoFocus
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Message..."
+            onFocus={async () =>
+              conversation != null &&
+              !conversation[0]?.lastMessage.read &&
+              (await readMessage(conversation[0].lastMessage._id))
+            }
+            className="w-full rounded-full bg-white p-5 font-medium"
+            spellCheck="true"
+          />
+          <Button
+            disabled={!content}
+            className="rounded-full bg-gray-950 p-6 text-lg max-lg:p-4 max-lg:text-sm"
+          >
+            Send
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

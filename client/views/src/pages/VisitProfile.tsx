@@ -35,10 +35,10 @@ function VisitProfile() {
         <Loader />
       ) : (
         <>
-          <section className="flex flex-col px-24 py-12 max-xl:items-center">
+          <section className="flex flex-col px-24 py-12 max-xl:items-center max-md:px-12 max-sm:px-6">
             <div className="flex w-full gap-16 max-xl:flex-col">
-              <div className="flex w-max flex-col gap-8">
-                <Card className="flex h-max w-[400px] justify-center shadow-2xl max-xl:mx-auto">
+              <div className="flex w-max flex-col gap-8 max-xl:w-full">
+                <Card className="flex h-max justify-center shadow-2xl max-xl:items-center ">
                   <CardHeader className="flex w-full flex-col items-center justify-center gap-1 px-8">
                     <Dialog>
                       <DialogTrigger className="cursor-zoom-in">
@@ -132,7 +132,7 @@ function VisitProfile() {
                   </div>
                 </Card>
                 <UserConfirmedInformation user={data?.data.user} />
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-2 max-md:flex-col">
                   {data?.data.isBlocker ? (
                     <UnblockUserDialog
                       // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
@@ -154,19 +154,15 @@ function VisitProfile() {
               </div>
               <div className="flex w-full flex-col gap-4">
                 <Card className="border-0 bg-inherit shadow-none">
-                  <CardHeader className="p-0 text-4xl font-semibold max-xl:mx-auto max-xl:w-2/4">
-                    <CardTitle>
-                      <h2>About {data?.data.user.username}</h2>
-                    </CardTitle>
+                  <CardHeader className="p-0 text-4xl font-semibold">
+                    <h2>About {data?.data.user.username}</h2>
                   </CardHeader>
                   <CardContent className="p-0">
                     <UserDetailsAccordion user={data?.data.user} />
                   </CardContent>
                   <CardContent className="p-0">
-                    <CardHeader className="p-0 text-2xl font-semibold max-xl:mx-auto max-xl:w-2/4">
-                      <CardTitle>
-                        <h2>{data?.data.user.username}'s recent ratings</h2>
-                      </CardTitle>
+                    <CardHeader className="p-0 text-2xl font-semibold">
+                      <h2>{data?.data.user.username}'s recent ratings</h2>
                     </CardHeader>
                     <div className="flex w-full items-center justify-center px-8 py-6">
                       {!data?.data.user.rating.length ? (
@@ -182,7 +178,7 @@ function VisitProfile() {
                   </CardContent>
                   <Separator />
                 </Card>
-                <CardHeader className="p-0 text-2xl font-semibold max-xl:mx-auto max-xl:w-2/4">
+                <CardHeader className="p-0 text-2xl font-semibold">
                   <CardTitle>
                     <h2>{data?.data.user.username}'s recent listings</h2>
                   </CardTitle>
