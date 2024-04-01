@@ -51,6 +51,7 @@ const usersSchema = new Schema(
         "doctorate",
         "professional license",
         "no formal education",
+        "",
       ],
     },
     funFact: {
