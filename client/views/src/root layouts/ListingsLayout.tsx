@@ -16,9 +16,9 @@ function ListingsLayout() {
         <Loader />
       ) : (
         <main>
-          <nav className="flex items-center justify-between bg-white px-20 py-5 shadow">
+          <nav className="sticky top-0 z-20 flex items-center justify-between bg-white px-20 py-5 shadow-md max-md:px-12 max-sm:justify-center max-sm:px-8">
             <Link to={"/"}>
-              <span className="h-full w-full">
+              <span className="h-full w-full max-sm:hidden">
                 <img
                   className="max-h-full w-[30px] max-w-full object-cover"
                   loading="lazy"
@@ -31,19 +31,22 @@ function ListingsLayout() {
               {/* outline-1 outline outline-[#FF385C] hover:text-[#FF385C]  */}
               {auth.currentUser?.emailVerified ? (
                 <Button
-                  className="rounded-full text-sm font-semibold hover:bg-zinc-100"
+                  className="rounded-full font-semibold"
                   variant={"ghost"}
                 >
-                  <Link to={"/hosting"} replace>
+                  <Link
+                    to={"/hosting"}
+                    className="max-md:text-xs"
+                    replace
+                    reloadDocument
+                  >
                     {" "}
                     Switch to hosting
                   </Link>
                 </Button>
               ) : (
                 <Suspense>
-                  {auth.currentUser && (
-                    <AlertVerifyEmail User={auth.currentUser} />
-                  )}
+                  <AlertVerifyEmail User={auth.currentUser!} />
                 </Suspense>
               )}
               <UserDropDownButton />

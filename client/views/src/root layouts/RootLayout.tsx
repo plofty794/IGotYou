@@ -18,7 +18,7 @@ function RootLayout() {
         <main className="min-h-screen">
           <nav className="sticky top-0 z-20 flex items-center justify-between bg-white px-20 py-5 shadow-md max-md:px-12 max-sm:justify-center max-sm:px-8">
             <Link to={"/"}>
-              <span className="h-full w-full max-[368px]:hidden">
+              <span className="h-full w-full max-sm:hidden">
                 <img
                   className="max-h-full w-[30px] max-w-full object-cover"
                   loading="lazy"

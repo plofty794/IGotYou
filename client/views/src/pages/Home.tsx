@@ -30,6 +30,7 @@ import { useIntersectionObserver } from "usehooks-ts";
 import { AxiosError, AxiosResponse } from "axios";
 import { Badge } from "@/components/ui/badge";
 import { pulsar, dotPulse } from "ldrs";
+import { toast } from "@/components/ui/use-toast";
 dotPulse.register();
 pulsar.register();
 
@@ -62,6 +63,17 @@ function Home() {
 
   useEffect(() => {
     if (error) {
+      const e = error as AxiosError;
+      if (e.response?.status === 401) {
+        document.location.reload();
+        auth.signOut();
+        localStorage.clear();
+        toast({
+          title: "Uh oh! Something went wrong.",
+          description: "Please log in again.",
+          variant: "destructive",
+        });
+      }
       return;
     }
     if (isIntersecting) {

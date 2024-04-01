@@ -23,7 +23,10 @@ function MessageHost({ listing }: { listing: TListing }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={"outline"} className="rounded-full border-black p-6">
+        <Button
+          variant={"outline"}
+          className="rounded-full border-black p-6 max-md:w-full max-md:p-4"
+        >
           Contact Host
         </Button>
       </DialogTrigger>

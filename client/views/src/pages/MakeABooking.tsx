@@ -94,8 +94,8 @@ function MakeABooking() {
 
   return (
     <>
-      <section className="px-24 py-12">
-        <div className="flex w-full items-center">
+      <section className="px-24 py-12 max-md:px-14 max-sm:p-6">
+        <div className="flex w-full items-center max-lg:mb-4">
           <Button
             variant={"ghost"}
             className="w-max rounded-full"
@@ -116,16 +116,20 @@ function MakeABooking() {
               />
             </svg>
           </Button>
-          <span className="text-4xl font-medium">Make a booking</span>
+          <span className="text-4xl font-medium max-md:text-2xl">
+            Make a booking
+          </span>
         </div>
-        <div className="grid grid-cols-2 gap-8">
-          <div className="mt-8 flex flex-col gap-8 px-12">
+        <div className="flex w-full gap-8 max-lg:flex-col-reverse max-md:gap-4">
+          <div className="mt-8 flex w-full flex-col gap-8 px-12 max-md:mt-4 max-md:gap-4 max-md:px-4">
             <div>
               <span className="text-2xl font-semibold">Your booking</span>
               <div className="mt-4 flex w-full flex-col gap-2">
                 <div className="flex w-full items-start justify-between">
                   <div className="flex flex-col gap-1">
-                    <span className="text-lg font-semibold">Dates</span>
+                    <span className="text-lg font-semibold max-md:text-base">
+                      Dates
+                    </span>
                     <span
                       className={`${
                         date?.from == null || date?.to == null
@@ -151,12 +155,12 @@ function MakeABooking() {
                     <DialogTrigger asChild>
                       <Button
                         variant={"link"}
-                        className="items-start rounded-full p-0 text-lg font-semibold"
+                        className="items-start rounded-full p-0 text-lg font-semibold max-md:text-base"
                       >
                         Edit
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="max-md:p-4">
                       <DialogHeader>
                         <DialogTitle className="text-2xl font-semibold">
                           Choose a date
@@ -217,183 +221,179 @@ function MakeABooking() {
               </div>
             </form>
           </div>
-          <div className="px-12">
-            <Card className="p-6">
-              <CardHeader className="mb-4 flex-row gap-4 p-0">
-                <span className="h-32 w-32 overflow-hidden rounded-md border">
-                  {listing.listingAssets[0]?.format === "mp4" ? (
-                    <AdvancedImage
-                      className="h-full w-full object-cover transition-transform hover:scale-110"
-                      cldImg={cld
-                        .image(listing.listingAssets[0]?.public_id)
-                        .setAssetType("video")
-                        .format("auto:image")}
-                    />
-                  ) : listing.listingAssets[0]?.format === "mp3" ? (
-                    <img
-                      className="h-full w-full object-cover transition-transform hover:scale-110"
-                      src={
-                        "https://png.pngtree.com/png-clipart/20230303/ourmid/pngtree-vinyl-records-png-image_6629914.png"
-                      }
-                      alt="some image"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <AdvancedImage
-                      className="h-full w-full object-cover transition-transform hover:scale-110"
-                      cldImg={cld.image(listing.listingAssets[0].public_id)}
-                    />
-                  )}
+          <Card className="w-full p-6 max-md:p-4">
+            <CardHeader className="mb-4 flex-row gap-4 p-0">
+              <span className="h-32 w-32 overflow-hidden rounded-md border">
+                {listing.listingAssets[0]?.format === "mp4" ? (
+                  <AdvancedImage
+                    className="h-full w-full object-cover transition-transform hover:scale-110"
+                    cldImg={cld
+                      .image(listing.listingAssets[0]?.public_id)
+                      .setAssetType("video")
+                      .format("auto:image")}
+                  />
+                ) : listing.listingAssets[0]?.format === "mp3" ? (
+                  <img
+                    className="h-full w-full object-cover transition-transform hover:scale-110"
+                    src={
+                      "https://png.pngtree.com/png-clipart/20230303/ourmid/pngtree-vinyl-records-png-image_6629914.png"
+                    }
+                    alt="some image"
+                    loading="lazy"
+                  />
+                ) : (
+                  <AdvancedImage
+                    className="h-full w-full object-cover transition-transform hover:scale-110"
+                    cldImg={cld.image(listing.listingAssets[0].public_id)}
+                  />
+                )}
+              </span>
+              <div className="flex w-2/3 flex-col gap-1">
+                <span className="text-lg font-bold">
+                  {listing.serviceDescription}
                 </span>
-                <div className="flex w-2/3 flex-col gap-1">
-                  <span className="text-lg font-bold">
-                    {listing.serviceDescription}
-                  </span>
-                  <Link
-                    to={`https://www.google.com/maps/place/${listing.serviceLocation}`}
-                    target="_blank"
-                    className="text-sm font-bold text-gray-600 hover:underline"
+                <Link
+                  to={`https://www.google.com/maps/place/${listing.serviceLocation}`}
+                  target="_blank"
+                  className="text-sm font-bold text-gray-600 hover:underline"
+                >
+                  {listing.serviceLocation}
+                </Link>
+                <Badge className="w-max">
+                  {formatDistance(
+                    new Date().setHours(0, 0, 0, 0),
+                    new Date(listing.endsAt),
+                  )}{" "}
+                  before listing ends
+                </Badge>
+                <div className="mt-4">
+                  <Badge
+                    variant={"outline"}
+                    className={`font-bold ${
+                      listing.cancellationPolicy === "Flexible"
+                        ? "text-green-600"
+                        : listing.cancellationPolicy === "Moderate"
+                          ? "text-amber-600"
+                          : listing.cancellationPolicy === "Non-refundable"
+                            ? "text-red-600"
+                            : "text-red-800"
+                    }`}
                   >
-                    {listing.serviceLocation}
-                  </Link>
-                  <Badge className="w-max">
-                    {formatDistance(
-                      new Date().setHours(0, 0, 0, 0),
-                      new Date(listing.endsAt),
-                    )}{" "}
-                    before listing ends
+                    Cancellation policy - {listing.cancellationPolicy}
                   </Badge>
-                  <div className="mt-4">
-                    <Badge
-                      variant={"outline"}
-                      className={`font-bold ${
-                        listing.cancellationPolicy === "Flexible"
-                          ? "text-green-600"
-                          : listing.cancellationPolicy === "Moderate"
-                            ? "text-amber-600"
-                            : listing.cancellationPolicy === "Non-refundable"
-                              ? "text-red-600"
-                              : "text-red-800"
-                      }`}
-                    >
-                      Cancellation policy - {listing.cancellationPolicy}
-                    </Badge>
-                  </div>
                 </div>
-              </CardHeader>
-              <Separator />
-              <CardContent className="px-2 py-4">
-                <span className="text-2xl font-semibold">Price details</span>
-                <div className="mt-4 flex flex-col gap-2">
+              </div>
+            </CardHeader>
+            <Separator />
+            <CardContent className="px-2 py-4">
+              <span className="text-2xl font-semibold">Price details</span>
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex w-full items-center justify-between">
+                  <span className="font-semibold text-gray-600">Price</span>
+                  <span className="font-semibold ">
+                    {formatValue({
+                      value: String(listing.price),
+                      intlConfig: {
+                        locale: "PH",
+                        currency: "php",
+                      },
+                    })}
+                  </span>
+                </div>
+                <div className="flex w-full items-center justify-between">
+                  <span className="font-semibold text-gray-600">
+                    {date?.from != null && date.to != null
+                      ? listing.price +
+                        " x " +
+                        formatDistance(date.from, date.to)
+                      : date?.from == null || date?.to == null
+                        ? "Invalid dates"
+                        : "No dates"}
+                  </span>
+                  <span className="font-semibold ">
+                    {listing.cancellationPolicy === "Non-refundable" ? (
+                      <>
+                        {date?.from != null &&
+                          date.to != null &&
+                          formatValue({
+                            value: String(
+                              Math.abs(
+                                listing.price *
+                                  differenceInDays(
+                                    date?.from ?? 0,
+                                    date?.to ?? 0,
+                                  ),
+                              ),
+                            ),
+                            intlConfig: {
+                              locale: "ph",
+                              currency: "php",
+                            },
+                          })}
+                        {date?.from == null ||
+                          (date?.to == null && (
+                            <p className="text-base text-red-600">
+                              Pick 2 dates
+                            </p>
+                          ))}
+                      </>
+                    ) : (
+                      <>
+                        {date?.from != null &&
+                          date.to != null &&
+                          formatValue({
+                            value: String(totalPrice),
+                            intlConfig: {
+                              locale: "ph",
+                              currency: "php",
+                            },
+                          })}
+                        {date?.from == null ||
+                          (date?.to == null && (
+                            <p className="text-base text-red-600">
+                              Pick 2 dates
+                            </p>
+                          ))}
+                      </>
+                    )}
+                  </span>
+                </div>
+                {listing.cancellationPolicy === "Non-refundable" && (
                   <div className="flex w-full items-center justify-between">
-                    <span className="font-semibold text-gray-600">Price</span>
-                    <span className="font-semibold ">
-                      {formatValue({
-                        value: String(listing.price),
+                    <span className="text-sm font-semibold text-gray-600">
+                      Cancellation policy rules applied
+                    </span>
+                    <span className="font-semibold "> - 10%</span>
+                  </div>
+                )}
+                <Separator />
+                <div className="flex w-full items-center justify-between">
+                  <span className="text-lg font-semibold">Total</span>
+                  <span className="font-semibold">
+                    {date?.from == null || date.to == null ? (
+                      <Badge variant={"destructive"}>Invalid date range</Badge>
+                    ) : listing.cancellationPolicy === "Non-refundable" ? (
+                      formatValue({
+                        value: String(totalPrice),
                         intlConfig: {
-                          locale: "PH",
+                          locale: "ph",
                           currency: "php",
                         },
-                      })}
-                    </span>
-                  </div>
-                  <div className="flex w-full items-center justify-between">
-                    <span className="font-semibold text-gray-600">
-                      {date?.from != null && date.to != null
-                        ? listing.price +
-                          " x " +
-                          formatDistance(date.from, date.to)
-                        : date?.from == null || date?.to == null
-                          ? "Invalid dates"
-                          : "No dates"}
-                    </span>
-                    <span className="font-semibold ">
-                      {listing.cancellationPolicy === "Non-refundable" ? (
-                        <>
-                          {date?.from != null &&
-                            date.to != null &&
-                            formatValue({
-                              value: String(
-                                Math.abs(
-                                  listing.price *
-                                    differenceInDays(
-                                      date?.from ?? 0,
-                                      date?.to ?? 0,
-                                    ),
-                                ),
-                              ),
-                              intlConfig: {
-                                locale: "ph",
-                                currency: "php",
-                              },
-                            })}
-                          {date?.from == null ||
-                            (date?.to == null && (
-                              <p className="text-base text-red-600">
-                                Pick 2 dates
-                              </p>
-                            ))}
-                        </>
-                      ) : (
-                        <>
-                          {date?.from != null &&
-                            date.to != null &&
-                            formatValue({
-                              value: String(totalPrice),
-                              intlConfig: {
-                                locale: "ph",
-                                currency: "php",
-                              },
-                            })}
-                          {date?.from == null ||
-                            (date?.to == null && (
-                              <p className="text-base text-red-600">
-                                Pick 2 dates
-                              </p>
-                            ))}
-                        </>
-                      )}
-                    </span>
-                  </div>
-                  {listing.cancellationPolicy === "Non-refundable" && (
-                    <div className="flex w-full items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-600">
-                        Cancellation policy rules applied
-                      </span>
-                      <span className="font-semibold "> - 10%</span>
-                    </div>
-                  )}
-                  <Separator />
-                  <div className="flex w-full items-center justify-between">
-                    <span className="text-lg font-semibold">Total</span>
-                    <span className="font-semibold">
-                      {date?.from == null || date.to == null ? (
-                        <Badge variant={"destructive"}>
-                          Invalid date range
-                        </Badge>
-                      ) : listing.cancellationPolicy === "Non-refundable" ? (
-                        formatValue({
-                          value: String(totalPrice),
-                          intlConfig: {
-                            locale: "ph",
-                            currency: "php",
-                          },
-                        })
-                      ) : (
-                        formatValue({
-                          value: String(totalPrice),
-                          intlConfig: {
-                            locale: "ph",
-                            currency: "php",
-                          },
-                        })
-                      )}
-                    </span>
-                  </div>
+                      })
+                    ) : (
+                      formatValue({
+                        value: String(totalPrice),
+                        intlConfig: {
+                          locale: "ph",
+                          currency: "php",
+                        },
+                      })
+                    )}
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </>

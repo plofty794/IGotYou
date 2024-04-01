@@ -24,8 +24,12 @@ import UpdateWishlist from "@/partials/components/UpdateWishlist";
 import MessageHost from "@/partials/components/messages/MessageHost";
 import VisitListingAccordion from "@/partials/components/VisitListingAccordion";
 import { TRating } from "./HostReviews";
+import { useMediaQuery } from "usehooks-ts";
+import AssetsSlider from "@/partials/components/AssetsSlider";
+import { TListing } from "@/root layouts/BecomeAHostLayout";
 
 function VisitListing() {
+  const matches = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -63,7 +67,11 @@ function VisitListing() {
             <UpdateWishlist listingID={listing._id} />
           </div>
         </div>
-        <AssetsDrawer listing={listing} />
+        {matches ? (
+          <AssetsSlider listings={listing as TListing} />
+        ) : (
+          <AssetsDrawer listing={listing} />
+        )}
         <div className="mb-4 mt-6 flex w-full gap-4 max-lg:flex-col">
           <div className="flex w-full flex-col gap-2">
             <div className="flex flex-col gap-1">
@@ -105,7 +113,7 @@ function VisitListing() {
             </div>
             <Card className="border-0 shadow-none">
               <Separator />
-              <CardHeader className="w-full flex-row items-center justify-between">
+              <CardHeader className="w-full flex-row items-center justify-between max-md:flex-col max-md:gap-2">
                 <div className="flex w-max items-center justify-center gap-2">
                   <Link to={`/users/visit/show/${listing.host._id}`} replace>
                     <Avatar className="h-14 w-14">
@@ -119,7 +127,6 @@ function VisitListing() {
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                   </Link>
-
                   <div className="flex flex-col">
                     <span className="text-lg font-semibold">
                       Hosted by {listing.host.username}
@@ -194,8 +201,8 @@ function VisitListing() {
               <CardContent className="w-full p-0"></CardContent>
             </Card>
           </div>
-          <Card className="h-max w-3/6 border-gray-300 shadow-xl">
-            <CardHeader className="w-full flex-row justify-between">
+          <Card className="h-max w-3/6 border-gray-300 shadow-xl max-lg:w-full">
+            <CardHeader className="w-full flex-row justify-between max-md:p-4">
               <CardTitle className="text-xl font-semibold">
                 {formatValue({
                   value: String(listing.price),
@@ -212,7 +219,7 @@ function VisitListing() {
                 </Badge>
               )}
             </CardHeader>
-            <CardContent>
+            <CardContent className="max-md:px-4 max-md:pb-4">
               <div className="grid w-full grid-cols-2 rounded-md border border-gray-400">
                 <div className="flex flex-col gap-1 border-r border-gray-400 p-2 ">
                   <span className="text-xs font-bold uppercase">
@@ -230,7 +237,7 @@ function VisitListing() {
                 </div>
               </div>
               {auth.currentUser?.emailVerified ? (
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 max-md:gap-2">
                   <Button
                     disabled={
                       compareAsc(
@@ -238,7 +245,7 @@ function VisitListing() {
                         new Date(listing.endsAt),
                       ) >= 0
                     }
-                    className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold"
+                    className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold max-md:mt-2"
                   >
                     <Link
                       className={`w-full ${
@@ -261,7 +268,7 @@ function VisitListing() {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold">
+                    <Button className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold max-md:mt-2">
                       Continue
                     </Button>
                   </AlertDialogTrigger>
