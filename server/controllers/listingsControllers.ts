@@ -467,7 +467,10 @@ export const listingTitleTaken: RequestHandler = async (req, res, next) => {
     }
 
     const titleTaken = await Listings.findOne({
-      serviceTitle: String(serviceTitle).toLowerCase(),
+      serviceTitle: {
+        $regex: serviceTitle,
+        $options: "i",
+      },
     });
 
     if (titleTaken) {
