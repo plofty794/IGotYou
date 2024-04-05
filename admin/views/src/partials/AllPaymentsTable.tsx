@@ -11,6 +11,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -22,12 +23,14 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   totalPages: number;
   fetchNextPage: () => void;
+  totalAmount: number;
 }
 
-function ReportsTable<TData, TValue>({
+function AllPaymentsTable<TData, TValue>({
   columns,
   data,
   totalPages,
+  totalAmount,
   fetchNextPage,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -173,10 +176,18 @@ function ReportsTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
+          <TableFooter className="bg-[#f5f5f5] text-black font-bold">
+            <TableRow>
+              <TableCell className="pl-4" colSpan={5}>
+                Total
+              </TableCell>
+              <TableCell className=" text-green-600">₱{totalAmount}</TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
     </>
   );
 }
 
-export default ReportsTable;
+export default AllPaymentsTable;

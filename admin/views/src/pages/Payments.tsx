@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { formatValue } from "react-currency-input-field";
+import { Link } from "react-router-dom";
 
 function Payments() {
   const { data, isPending } = useGetPendingServicePayments();
@@ -28,7 +29,12 @@ function Payments() {
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4 overflow-clip">
-        <h1 className="font-bold text-3xl">Payments</h1>
+        <div className="w-full flex justify-between">
+          <h1 className="font-bold text-3xl">Service payments</h1>
+          <Button className="bg-gray-950">
+            <Link to={"/all-service-payments"}>View all payments</Link>
+          </Button>
+        </div>
         {data?.pages[0].data.pendingServicePayments.length > 0 ? (
           <div key={"1234"} className="grid grid-cols-3 gap-2">
             {isPending

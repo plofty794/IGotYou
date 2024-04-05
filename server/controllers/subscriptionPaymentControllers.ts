@@ -4,14 +4,13 @@ import createHttpError from "http-errors";
 import Users from "../models/Users";
 import { addDays } from "date-fns";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
-import Notifications from "../models/GuestNotifications";
 import { createTransport } from "nodemailer";
 import env from "../utils/envalid";
 import { emailPaymentSuccess } from "../utils/emails/emailPaymentSuccess";
 import { emailPaymentReject } from "../utils/emails/emailPaymentReject";
 import { emailSubscriptionRequest } from "../utils/emails/emailSubscriptionRequest";
 
-export const getVerifiedPayments: RequestHandler = async (req, res, next) => {
+export const getAllPayments: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
   const limit = 10;
   const page = parseInt(req.params.page ?? "1") ?? 1;
@@ -25,9 +24,8 @@ export const getVerifiedPayments: RequestHandler = async (req, res, next) => {
     }
     const totalPayments = await SubscriptionPayments.countDocuments();
     const totalPages = Math.ceil(totalPayments / limit);
-    const verifiedPayments = await SubscriptionPayments.find({
-      paymentStatus: "success",
-    })
+
+    const allPayments = await SubscriptionPayments.find()
       .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
       .limit(limit)
@@ -38,10 +36,10 @@ export const getVerifiedPayments: RequestHandler = async (req, res, next) => {
       })
       .exec();
 
-    if (!verifiedPayments.length) {
-      return res.status(200).json({ verifiedPayments: null, totalPages: 0 });
+    if (!allPayments.length) {
+      return res.status(200).json({ allPayments: null, totalPages: 0 });
     }
-    res.status(200).json({ verifiedPayments, totalPages });
+    res.status(200).json({ allPayments, totalPages });
   } catch (error) {
     next(error);
   }

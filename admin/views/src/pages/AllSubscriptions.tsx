@@ -1,8 +1,13 @@
-import useGetUsers from "@/hooks/useGetUsers";
-import UsersTable from "@/partials/UsersTable";
-import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
+import { ring } from "ldrs";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { toast } from "sonner";
+import {
+  CaretSortIcon,
+  CheckCircledIcon,
+  DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,29 +15,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  CaretSortIcon,
-  CheckCircledIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import EnableAccount from "@/partials/EnableAccount";
 import DisableAccount from "@/partials/DisableAccount";
+import { Link } from "react-router-dom";
+import useGetSubscriptions from "@/hooks/useGetAllPayments";
+import AllSubscriptionsTable from "@/partials/AllSubscriptionsTable";
+ring.register();
 
-type User = {
-  email: string;
-  username: string;
-  userStatus: string;
-  emailVerified: boolean;
-  identityVerified: boolean;
-  isDisabled: boolean;
-  uid: string;
+type AllSubscriptions = {
+  createdAt: string;
+  paymentProofPhoto: string;
+  paymentStatus: string;
+  user: {
+    email: string;
+    emailVerified: boolean;
+    identityVerified: boolean;
+    mobileVerified: boolean;
+    subscriptionExpiresAt: string;
+    username: string;
+    isDisabled: boolean;
+    uid: string;
+    _id: string;
+  };
 };
 
-const columns: ColumnDef<User>[] = [
+const columns: ColumnDef<AllSubscriptions>[] = [
   {
-    accessorKey: "userStatus",
+    accessorKey: "paymentStatus",
     header: ({ column }) => {
       return (
         <Button
@@ -40,67 +50,41 @@ const columns: ColumnDef<User>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          User status
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: (props) => (
-      <Badge
-        className={`font-bold capitalize ${
-          props.row.original.userStatus === "host"
-            ? "text-blue-600"
-            : "text-green-600"
-        }`}
-        variant={"outline"}
-      >
-        {props.getValue() as string}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="font-medium"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
+          Status
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
       <>
-        <p className="font-bold text-xs">{row.original.email}</p>
-        {row.original.isDisabled && (
-          <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
-            Disabled
-          </Badge>
-        )}
+        <Badge
+          variant={"outline"}
+          className={`font-bold capitalize ${
+            row.original.paymentStatus === "pending"
+              ? " text-amber-600"
+              : row.original.paymentStatus === "reject"
+              ? " text-red-600"
+              : " text-green-600"
+          }`}
+        >
+          {row.original.paymentStatus}
+        </Badge>
       </>
     ),
   },
   {
-    accessorKey: "username",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="font-medium"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Username
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    accessorKey: "paymentProofPhoto",
+    header: "Payment photo",
     cell: ({ row }) => (
-      <p className="font-bold text-xs">{row.original?.username}</p>
+      <a target="_blank" href={row.original.paymentProofPhoto}>
+        <img
+          className="w-2/4 h-10 object-cover rounded border"
+          src={row.original.paymentProofPhoto}
+        />
+      </a>
     ),
   },
+
   {
     accessorKey: "createdAt",
     header: ({ column }) => {
@@ -110,7 +94,7 @@ const columns: ColumnDef<User>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Created
+          Submitted
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -122,57 +106,50 @@ const columns: ColumnDef<User>[] = [
     ),
   },
   {
-    accessorKey: "identityVerified",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="font-medium"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Identity verified
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: (props) => (
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => (
+      <>
+        <p className="font-bold text-xs">{row.original.user.email}</p>
+        {row.original.user.isDisabled && (
+          <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
+            Disabled
+          </Badge>
+        )}
+      </>
+    ),
+  },
+  {
+    header: "Identity verified",
+    cell: ({ row }) => (
       <Badge
         variant={"outline"}
-        className={`font-bold capitalize ${
-          String(props.getValue()) === "true"
-            ? "text-green-600"
-            : "text-red-600"
-        }`}
+        className="capitalize font-bold text-green-600"
       >
-        {String(props.getValue())}
+        {String(row.original.user.identityVerified)}
       </Badge>
     ),
   },
   {
-    accessorKey: "emailVerified",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="font-medium"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email verified
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: (props) => (
+    header: "Email verified",
+    cell: ({ row }) => (
       <Badge
         variant={"outline"}
-        className={`font-bold capitalize ${
-          String(props.getValue()) === "true"
-            ? "text-green-600"
-            : "text-red-600"
-        }`}
+        className="capitalize font-bold text-green-600"
       >
-        {String(props.getValue())}
+        {String(row.original.user.emailVerified)}
       </Badge>
+    ),
+  },
+  {
+    header: "Subscription end date",
+    cell: ({ row }) => (
+      <p className="capitalize font-bold text-xs">
+        {new Date(row.original.user.subscriptionExpiresAt).toDateString() ===
+        "Invalid Date"
+          ? "None"
+          : new Date(row.original.user.subscriptionExpiresAt).toDateString()}
+      </p>
     ),
   },
   {
@@ -190,7 +167,7 @@ const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="center">
             <DropdownMenuItem
               className="p-0"
-              onClick={() => copyToClipboard(row.original.email)}
+              onClick={() => copyToClipboard(row.original.user.email)}
             >
               <Button variant={"outline"} size={"sm"} className="gap-2">
                 <svg
@@ -212,10 +189,10 @@ const columns: ColumnDef<User>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="p-0">
-              {row.original.isDisabled ? (
-                <EnableAccount userID={row.original.uid} />
+              {row.original.user.isDisabled ? (
+                <EnableAccount userID={row.original.user.uid} />
               ) : (
-                <DisableAccount userID={row.original.uid} />
+                <DisableAccount userID={row.original.user.uid} />
               )}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -244,34 +221,47 @@ async function copyToClipboard(email: string) {
   }
 }
 
-function Users() {
-  const users = useGetUsers();
+function AllSubscriptions() {
+  const { data, isPending, fetchNextPage } = useGetSubscriptions();
 
   useEffect(() => {
-    document.title = "Users - Admin IGotYou";
+    document.title = "Verified Payments - Admin";
   }, []);
 
   return (
-    <section className="py-4 px-8">
+    <section className="py-8 px-12">
       <div className="w-full flex flex-col gap-4">
+        <Link to={"/subscriptions"}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="gray"
+            className="w-5 h-5 hover:stroke-black"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+            />
+          </svg>
+        </Link>
         <div className="w-full flex items-center justify-between">
-          <span className="font-bold text-3xl">Users</span>
+          <h1 className="text-2xl font-bold">All subscriptions</h1>
           <span className="font-bold text-lg ">
-            # of users:{" "}
-            {users.data?.pages.flatMap((page) => page.data.totalUsers)[0]}
+            # of subscriptions:{" "}
+            {data?.pages.flatMap((page) => page.data.allPayments).length}
           </span>
         </div>
-        {users.isPending ? (
+        {isPending ? (
           "Loading..."
         ) : (
-          <UsersTable
+          <AllSubscriptionsTable
             columns={columns}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            data={users.data?.pages.flatMap((page) => page.data.users) as any[]}
-            totalPages={
-              users.data?.pages.flatMap((page) => page.data.totalPages)[0]
-            }
-            fetchNextPage={users.fetchNextPage}
+            data={data?.pages.flatMap((page) => page.data.allPayments) as []}
+            totalPages={data!.pages.flatMap((page) => page.data.totalPages)[0]}
+            fetchNextPage={fetchNextPage}
           />
         )}
       </div>
@@ -279,4 +269,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default AllSubscriptions;

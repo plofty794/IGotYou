@@ -8,6 +8,7 @@ import Reports from "../models/Reports";
 import { auth } from "firebase-admin";
 import Reservations from "../models/Reservations";
 import BookingRequests from "../models/BookingRequests";
+import IdentityPhotos from "../models/IdentityPhotos";
 
 export const getActiveUsers: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -321,6 +322,91 @@ export const getCancelledReservations: RequestHandler = async (
       return res.status(200).json({ cancelledReservations: [], totalPages: 0 });
     }
     res.status(200).json({ cancelledReservations, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getIdentityVerificationRequests: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const admin_id = req.cookies.admin_id;
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const identityVerificationRequests = await IdentityPhotos.find()
+      .populate([
+        {
+          path: "user",
+          select:
+            "username email identityVerificationStatus emailVerified identityVerified userStatus",
+        },
+      ])
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: "desc" })
+      .exec();
+
+    const totalIdentityVerificationRequests =
+      await IdentityPhotos.countDocuments();
+    const totalPages = Math.ceil(totalIdentityVerificationRequests / limit);
+
+    if (!identityVerificationRequests.length) {
+      return res
+        .status(200)
+        .json({ identityVerificationRequests: [], totalPages: 0 });
+    }
+    res.status(200).json({ identityVerificationRequests, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getServicePayments: RequestHandler = async (req, res, next) => {
+  const admin_id = req.cookies.admin_id;
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const allServicePayments = await Reservations.find({
+      status: "completed",
+    })
+      .populate([
+        {
+          path: "hostID",
+          select: "username email emailVerified identityVerified",
+        },
+        {
+          path: "guestID",
+          select: "username email emailVerified identityVerified",
+        },
+        {
+          path: "listingID",
+          select:
+            "serviceTitle serviceType listingAssets cancellationPolicy price",
+        },
+      ])
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    if (!allServicePayments.length) {
+      return res.status(200).json({ allServicePayments: [], totalPages: 0 });
+    }
+
+    const totalIServicePayments = await Reservations.countDocuments();
+    const totalPages = Math.ceil(totalIServicePayments / limit);
+
+    res.status(200).json({ allServicePayments, totalPages });
   } catch (error) {
     next(error);
   }

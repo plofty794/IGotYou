@@ -1,10 +1,13 @@
 import { Badge } from "@/components/ui/badge";
-import useGetVerifiedPayments from "@/hooks/useGetVerifiedPayments";
 import { ring } from "ldrs";
 import { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
-import { CheckCircledIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  CaretSortIcon,
+  CheckCircledIcon,
+  DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,15 +18,18 @@ import {
 import { Button } from "@/components/ui/button";
 import EnableAccount from "@/partials/EnableAccount";
 import DisableAccount from "@/partials/DisableAccount";
-import VerifiedPaymentsTable from "@/partials/VerifiedPaymentsTable";
 import { Link } from "react-router-dom";
+import useGetIdentityVerificationRequests from "@/hooks/useGetIdentityVerificationRequests";
+import IdentityVerificationRequestsTable from "@/partials/IdentityVerificationRequestsTable";
+
 ring.register();
 
 type VerifiedPayments = {
   createdAt: string;
-  paymentProofPhoto: string;
-  paymentStatus: string;
+  identityPhoto: string;
+  identityVerificationStatus: string;
   user: {
+    userStatus: string;
     email: string;
     emailVerified: boolean;
     identityVerified: boolean;
@@ -38,15 +44,32 @@ type VerifiedPayments = {
 
 const columns: ColumnDef<VerifiedPayments>[] = [
   {
-    accessorKey: "paymentStatus",
-    header: "Status",
+    accessorKey: "identityVerificationStatus",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="font-medium"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <>
         <Badge
           variant={"outline"}
-          className="font-bold capitalize text-green-600"
+          className={`font-bold capitalize ${
+            row.original.identityVerificationStatus === "pending"
+              ? " text-amber-600"
+              : row.original.identityVerificationStatus === "reject"
+              ? " text-red-600"
+              : " text-green-600"
+          }`}
         >
-          {row.original.paymentStatus}
+          {row.original.identityVerificationStatus}
         </Badge>
       </>
     ),
@@ -55,10 +78,10 @@ const columns: ColumnDef<VerifiedPayments>[] = [
     accessorKey: "paymentProofPhoto",
     header: "Payment photo",
     cell: ({ row }) => (
-      <a target="_blank" href={row.original.paymentProofPhoto}>
+      <a target="_blank" href={row.original.identityPhoto}>
         <img
           className="w-2/4 h-10 object-cover rounded border"
-          src={row.original.paymentProofPhoto}
+          src={row.original.identityPhoto}
         />
       </a>
     ),
@@ -66,7 +89,18 @@ const columns: ColumnDef<VerifiedPayments>[] = [
 
   {
     accessorKey: "createdAt",
-    header: "Submitted",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="font-medium"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Submitted
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: (props) => (
       <p className="font-bold text-xs">
         {new Date(props.getValue() as string).toDateString()}
@@ -110,11 +144,18 @@ const columns: ColumnDef<VerifiedPayments>[] = [
     ),
   },
   {
-    header: "Subscription end date",
+    header: "User status",
     cell: ({ row }) => (
-      <p className="capitalize font-bold text-xs">
-        {new Date(row.original.user.subscriptionExpiresAt).toDateString()}
-      </p>
+      <Badge
+        className={`font-bold capitalize ${
+          row.original.user.userStatus === "host"
+            ? "text-blue-600"
+            : "text-green-600"
+        }`}
+        variant={"outline"}
+      >
+        {row.original.user.userStatus}
+      </Badge>
     ),
   },
   {
@@ -186,48 +227,60 @@ async function copyToClipboard(email: string) {
   }
 }
 
-function VerifiedPayments() {
-  const { data, isPending, fetchNextPage } = useGetVerifiedPayments();
+function AllIdentityVerificationRequests() {
+  const { data, isPending, fetchNextPage } =
+    useGetIdentityVerificationRequests();
 
   useEffect(() => {
-    document.title = "Verified Payments - Admin";
+    document.title = "All Identity Verification Requests - Admin";
   }, []);
 
   return (
     <section className="py-8 px-12">
       <div className="w-full flex flex-col gap-4">
+        <Link to={"/identity-photos"}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="gray"
+            className="w-5 h-5 hover:stroke-black"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+            />
+          </svg>
+        </Link>
         <div className="w-full flex items-center justify-between">
-          <Link to={"/subscriptions"}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="gray"
-              className="w-5 h-5 hover:stroke-black"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-              />
-            </svg>
-          </Link>
+          <h1 className="text-2xl font-bold">
+            All Identity verification request
+          </h1>
           <span className="font-bold text-lg ">
-            # of payments:{" "}
-            {data?.pages.flatMap((page) => page.data.verifiedPayments).length}
+            # of requests:{" "}
+            {
+              data?.pages.flatMap(
+                (page) => page.data.identityVerificationRequests
+              ).length
+            }
           </span>
         </div>
         {isPending ? (
           "Loading..."
         ) : (
-          <VerifiedPaymentsTable
+          <IdentityVerificationRequestsTable
             columns={columns}
             data={
-              data?.pages.flatMap((page) => page.data.verifiedPayments) as []
+              data?.pages.flatMap(
+                (page) => page.data.identityVerificationRequests
+              ) as []
             }
             totalPages={
-              data!.pages.flatMap((page) => page.data.verifiedPayments).length
+              data!.pages.flatMap(
+                (page) => page.data.totalIdentityVerificationRequests
+              ).length
             }
             fetchNextPage={fetchNextPage}
           />
@@ -237,4 +290,4 @@ function VerifiedPayments() {
   );
 }
 
-export default VerifiedPayments;
+export default AllIdentityVerificationRequests;

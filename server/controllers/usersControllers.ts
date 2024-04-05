@@ -842,3 +842,39 @@ export const reportedUser: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const retryIdentityVerification: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const id = req.cookies["_&!d"];
+  const { userID } = req.params;
+  try {
+    if (!id) {
+      res.clearCookie("_&!d");
+      throw createHttpError(
+        400,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const user = await Users.findById(userID);
+
+    if (!user) {
+      throw createHttpError(400, "No user with that ID");
+    }
+
+    await user.updateOne({
+      identityVerificationStatus: "",
+    });
+
+    res
+      .status(200)
+      .json({
+        message: "You can now send a new identity verification request.",
+      });
+  } catch (error) {
+    next(error);
+  }
+};

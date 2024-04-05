@@ -2,8 +2,8 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -23,7 +23,7 @@ interface DataTableProps<TData, TValue> {
   fetchNextPage: () => void;
 }
 
-function VerifiedPaymentsTable<TData, TValue>({
+function IdentityVerificationRequestsTable<TData, TValue>({
   columns,
   data,
   totalPages,
@@ -33,7 +33,7 @@ function VerifiedPaymentsTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     pageCount: totalPages,
   });
@@ -177,4 +177,4 @@ function VerifiedPaymentsTable<TData, TValue>({
   );
 }
 
-export default VerifiedPaymentsTable;
+export default IdentityVerificationRequestsTable;

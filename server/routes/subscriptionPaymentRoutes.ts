@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getPendingPayments,
-  getVerifiedPayments,
+  getAllPayments,
   sendSubscriptionPayment,
   updateSubscriptionPhotosStatus,
   searchUsernameVerifiedPayment,
@@ -10,7 +10,7 @@ import { authToken } from "../middlewares/authToken";
 const router = Router();
 
 router.get("/subscriptions/pending/:page", getPendingPayments);
-router.get("/subscriptions/verified/:page", getVerifiedPayments);
+router.get("/subscriptions/:page", getAllPayments);
 router.get(
   "/subscriptions/verified/search/:username",
   searchUsernameVerifiedPayment

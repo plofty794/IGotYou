@@ -11,7 +11,6 @@ import useVerifyPayment from "@/hooks/useVerifyPayment";
 import Lottie from "lottie-react";
 import noPendingPayment from "../assets/no-pending-payments.json";
 import { Link } from "react-router-dom";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 
@@ -29,7 +28,7 @@ function Subscriptions() {
         <div className="w-full flex justify-between">
           <h1 className="font-bold text-3xl">Subscriptions</h1>
           <Button className="bg-gray-950">
-            <Link to={"/verified-payments"}>View verified payments</Link>
+            <Link to={"/all-subscriptions"}>View all subscriptions</Link>
           </Button>
         </div>
         {data?.pages[0].data.pendingPayments ? (
@@ -43,25 +42,14 @@ function Subscriptions() {
                       {v.paymentStatus === "pending" && (
                         <Card key={v._id}>
                           <CardHeader className="p-0">
-                            <Dialog>
-                              <DialogTrigger className="overflow-hidden rounded-md ">
-                                <img
-                                  className="aspect-square object-cover hover:scale-105 transition-transform"
-                                  src={v.paymentProofPhoto}
-                                  alt=""
-                                  loading="lazy"
-                                />
-                              </DialogTrigger>
-                              <DialogContent className="max-w-3xl w-max h-max max-h-[70%] p-0">
-                                <img
-                                  className="object-cover rounded-md"
-                                  src={v.paymentProofPhoto}
-                                  alt=""
-                                  loading="lazy"
-                                />
-                              </DialogContent>
-                            </Dialog>
-
+                            <Link to={v.paymentProofPhoto}>
+                              <img
+                                className="h-60 w-full object-cover hover:scale-105 transition-transform"
+                                src={v.paymentProofPhoto}
+                                alt=""
+                                loading="lazy"
+                              />
+                            </Link>
                             <Badge className="w-max mx-auto text-xs font-bold bg-gray-950">
                               Proof of payment
                             </Badge>

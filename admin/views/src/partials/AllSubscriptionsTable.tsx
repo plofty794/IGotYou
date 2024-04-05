@@ -24,10 +24,11 @@ interface DataTableProps<TData, TValue> {
   fetchNextPage: () => void;
 }
 
-function ReportsTable<TData, TValue>({
+function AllSubscriptionsTable<TData, TValue>({
   columns,
   data,
   totalPages,
+
   fetchNextPage,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -179,4 +180,4 @@ function ReportsTable<TData, TValue>({
   );
 }
 
-export default ReportsTable;
+export default AllSubscriptionsTable;

@@ -23,6 +23,7 @@ import {
   submitReport,
   writeFeedback,
   reportedUser,
+  retryIdentityVerification,
 } from "../controllers/usersControllers";
 import { verifyUserUpdates } from "../middlewares/verifyUserUpdates";
 import { authToken } from "../middlewares/authToken";
@@ -36,6 +37,8 @@ router.get("/users/host-blocked-dates", authToken, getBlockedDates);
 router.get("/users/search-user/:username", authToken, searchUsername);
 router.get("/users/profile/visit/:userID", authToken, visitUserProfile);
 router.post("/users/submit-report", authToken, submitReport);
+router.post("/users/host-change-availability", authToken, changeAvailability);
+router.post("/users/rate-user", authToken, rateUser);
 router.post("/users/login", logInUser);
 router.post("/users/write-a-feedback", authToken, writeFeedback);
 router.post(
@@ -48,13 +51,16 @@ router.post("/users/current-user/update-wishlist", authToken, updateWishlist);
 router.post("/users/login/google", googleSignIn);
 router.post("/users/register", createUser);
 router.patch(
+  "/users/retry-verification/:userID",
+  authToken,
+  retryIdentityVerification
+);
+router.patch(
   "/users/current-user/update",
   authToken,
   verifyUserUpdates,
   updateUser
 );
-router.post("/users/host-change-availability", authToken, changeAvailability);
-router.post("/users/rate-user", authToken, rateUser);
 router.patch("/users/current-user/verify-email", authToken, verifyEmail);
 router.patch("/users/current-user/update-email", authToken, updateUserEmail);
 router.delete("/users/current-user/logout", logOutUser);

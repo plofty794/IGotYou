@@ -144,6 +144,7 @@ const columns: ColumnDef<TRefunds>[] = [
         variant={"outline"}
         className="capitalize font-bold text-green-600"
       >
+        ₱
         {calculateRefund(
           row.original?.createdAt,
           row.original?.listingID.cancellationPolicy,

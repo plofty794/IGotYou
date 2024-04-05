@@ -12,11 +12,13 @@ import { useContext } from "react";
 import { UserStateContextProvider } from "./context/UserStateContext";
 import Users from "./pages/Users";
 import Subscriptions from "./pages/Subscriptions";
-import VerifiedPayments from "./pages/VerifiedPayments";
+import AllSubscriptions from "./pages/AllSubscriptions";
 import IdentityPhotos from "./pages/IdentityPhotos";
 import Reports from "./pages/Reports";
 import Payments from "./pages/Payments";
 import Refunds from "./pages/Refunds";
+import AllIdentityVerificationRequests from "./pages/AllIdentityVerificationRequests";
+import AllServicePayments from "./pages/AllServicePayments";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
@@ -99,18 +101,39 @@ function App() {
             }
           />
         </Route>
-        <Route>
-          <Route
-            path="/verified-payments"
-            element={
-              state.state ?? isAdmin ? (
-                <VerifiedPayments />
-              ) : (
-                <Navigate to={"/login"} replace />
-              )
-            }
-          />
-        </Route>
+
+        <Route
+          path="/all-subscriptions"
+          element={
+            state.state ?? isAdmin ? (
+              <AllSubscriptions />
+            ) : (
+              <Navigate to={"/login"} replace />
+            )
+          }
+        />
+
+        <Route
+          path="all-service-payments"
+          element={
+            state.state ?? isAdmin ? (
+              <AllServicePayments />
+            ) : (
+              <Navigate to={"/login"} replace />
+            )
+          }
+        />
+
+        <Route
+          path="/identity-photos/all"
+          element={
+            state.state ?? isAdmin ? (
+              <AllIdentityVerificationRequests />
+            ) : (
+              <Navigate to={"/login"} replace />
+            )
+          }
+        />
 
         {/* ADMIN LOGIN Route */}
         <Route>

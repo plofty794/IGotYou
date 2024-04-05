@@ -40,6 +40,7 @@ export const emailIdentityVerificationRequestUpdate = (
                     ? successMessage
                     : rejectMessage
                 }
+                <br/>
                 <p >Thank you for your patience during the verification process. We're committed to providing a secure and trusted experience for all our users.</p>
                 <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#e6ebf1;margin:20px 0" />
                 <p class="paragraph">If you have any questions, please don't hesitate to contact us.</p>
@@ -57,6 +58,6 @@ const rejectMessage = `<p style="font-size:16px;line-height:24px;margin:16px 0;c
 <p style="font-size:16px;line-height:24px;margin:16px 0;color:#525f7f;text-align:left">To proceed, please review the following information and take the necessary actions:</p>
 <br/>
 <ul style="list-style: none; padding: 0; margin: 0;">
-                  <li style="font-size:16px;line-height:24px;color:#525f7f;text-align:left">Reason for rejection: [State the specific reason, such as unclear documents, mismatched information, etc.]</li>
-                  <li style="font-size:16px;line-height:24px;color:#525f7f;text-align:left">Required actions: [Clearly outline the steps the user needs to take to resolve the issue, such as resubmitting documents, verifying information, contacting support, etc.]</li>
+                  <li style="font-size:16px;line-height:24px;color:#525f7f;text-align:left">Reason for rejection: Unclear documents and mismatched information.</li>
+                  <li style="font-size:16px;line-height:24px;color:#525f7f;text-align:left">Required actions: Resubmitting documents, and verifying information.</li>
                 </ul>`;

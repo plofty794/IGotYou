@@ -7,12 +7,12 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import useGetPendingIdentityVerificationRequests from "@/hooks/useGetPendingIdentityVerificationRequests";
 import Lottie from "lottie-react";
 import noPendingPayment from "../assets/no-pending-payments.json";
 import useVerifyIdentityPhoto from "@/hooks/useVerifyIdentityPhoto";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function IdentityPhotos() {
   const { data, isPending } = useGetPendingIdentityVerificationRequests();
@@ -25,7 +25,12 @@ function IdentityPhotos() {
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4 overflow-clip">
-        <h1 className="font-bold text-2xl">ID Verification Requests</h1>
+        <div className="w-full flex justify-between">
+          <h1 className="font-bold text-2xl">ID Verification Requests</h1>
+          <Button className="bg-gray-950">
+            <Link to={"/identity-photos/all"}>View all requests</Link>
+          </Button>
+        </div>
         {data?.pages[0].data.pendingIdentityVerificationRequests.length > 0 ? (
           <div key={"1234"} className="grid grid-cols-4 gap-2">
             {isPending
@@ -38,24 +43,14 @@ function IdentityPhotos() {
                         {v.identityVerificationStatus === "pending" && (
                           <Card key={v._id}>
                             <CardHeader className="p-0">
-                              <Dialog>
-                                <DialogTrigger className="h-72 w-full overflow-hidden rounded-md">
-                                  <img
-                                    className="h-full w-full object-cover hover:scale-105 transition-transform"
-                                    src={v.identityPhoto}
-                                    alt=""
-                                    loading="lazy"
-                                  />
-                                </DialogTrigger>
-                                <DialogContent className="max-w-4xl p-0">
-                                  <img
-                                    className="object-cover rounded-xl w-full"
-                                    src={v.identityPhoto}
-                                    alt=""
-                                    loading="lazy"
-                                  />
-                                </DialogContent>
-                              </Dialog>
+                              <Link to={v.identityPhoto}>
+                                <img
+                                  className="h-60 w-full object-cover hover:scale-105 transition-transform"
+                                  src={v.identityPhoto}
+                                  alt=""
+                                  loading="lazy"
+                                />
+                              </Link>
                               <Badge className="w-max mx-auto text-xs font-bold bg-gray-950">
                                 Identity photo
                               </Badge>

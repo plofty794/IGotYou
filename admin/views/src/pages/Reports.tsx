@@ -9,7 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CheckCircledIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  CaretSortIcon,
+  CheckCircledIcon,
+  DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ReportsTable from "@/partials/ReportsTable";
@@ -50,7 +54,7 @@ const columns: ColumnDef<TReports>[] = [
     header: "Reported user",
     cell: ({ row }) => (
       <>
-        <p className="font-semibold text-sm">
+        <p className="font-bold text-xs text-red-600">
           {row.original.reportedUser.username}
         </p>
         {row.original.reportedUser.isDisabled && (
@@ -65,23 +69,43 @@ const columns: ColumnDef<TReports>[] = [
     accessorKey: "reporter",
     header: "Reporter",
     cell: ({ row }) => (
-      <p className="text-sm font-semibold">{row.original.reporter.username}</p>
+      <p className="text-xs font-bold text-green-600">
+        {row.original.reporter.username}
+      </p>
     ),
   },
   {
     header: "Reported user status",
     cell: ({ row }) => (
-      <p className="text-sm font-semibold capitalize">
+      <Badge
+        variant={"outline"}
+        className={`font-bold text-xs capitalize ${
+          row.original.reportedUser.userStatus === "host"
+            ? "text-blue-600"
+            : "text-green-600"
+        }`}
+      >
         {row.original.reportedUser.userStatus}
-      </p>
+      </Badge>
     ),
   },
   {
     accessorKey: "reason",
-    header: "Reason",
-    cell: (props) => (
-      <Badge variant={"destructive"} className="capitalize">
-        {props.getValue() as string}
+    header: ({ column }) => {
+      return (
+        <Button
+          className="font-medium"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Reason
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <Badge variant={"destructive"} className="font-bold text-xs">
+        {row.original.reason}
       </Badge>
     ),
   },
@@ -89,7 +113,7 @@ const columns: ColumnDef<TReports>[] = [
     accessorKey: "createdAt",
     header: "Submitted at",
     cell: (props) => (
-      <p className="text-sm font-semibold capitalize">
+      <p className="text-xs font-bold capitalize">
         {new Date(props.getValue() as string).toDateString()}
       </p>
     ),
@@ -97,7 +121,7 @@ const columns: ColumnDef<TReports>[] = [
   {
     header: "Total reports",
     cell: ({ row }) => (
-      <p className="text-sm font-semibold">
+      <p className="text-xs font-bold">
         {row.original.reportedUser.reports.length}
       </p>
     ),
@@ -112,7 +136,7 @@ const columns: ColumnDef<TReports>[] = [
         target="_blank"
       >
         <img
-          className="rounded-lg"
+          className="rounded-lg h-10"
           src={row.original.evidence.thumbnail_url}
           loading="lazy"
         />

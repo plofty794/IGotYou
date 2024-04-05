@@ -81,7 +81,7 @@ const usersSchema = new Schema(
     },
     identityVerificationStatus: {
       type: String,
-      enum: ["pending", "success", "reject"],
+      enum: ["pending", "success", "reject", ""],
     },
     subscriptionStatus: {
       type: String,
