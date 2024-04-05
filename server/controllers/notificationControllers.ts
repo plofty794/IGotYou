@@ -35,7 +35,7 @@ export const getGuestNotifications: RequestHandler = async (req, res, next) => {
           select: ["reservationID"],
         },
       ])
-      .sort({ createdAt: "desc" })
+      .sort({ updatedAt: "desc" })
       .exec();
 
     res.status(200).json({ guestNotifications });
@@ -63,7 +63,7 @@ export const getHostNotifications: RequestHandler = async (req, res, next) => {
           populate: "listingID",
         },
       ])
-      .sort({ createdAt: "desc" })
+      .sort({ updatedAt: "desc" })
       .exec();
 
     res.status(200).json({ hostNotifications });

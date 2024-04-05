@@ -115,7 +115,7 @@ export const getListings: RequestHandler = async (req, res, next) => {
           },
         ],
         serviceType: {
-          $regex: serviceType,
+          $regex: serviceType as string,
           $options: "i",
         },
         endsAt: { $gte: new Date() },
@@ -126,6 +126,7 @@ export const getListings: RequestHandler = async (req, res, next) => {
         .populate({
           path: "host",
           select: "username rating wishlists uid",
+          populate: "rating",
           match: {
             subscriptionExpiresAt: {
               $gt: new Date(),
@@ -266,6 +267,7 @@ export const addListing: RequestHandler = async (req, res, next) => {
 
     const newListing = await Listings.create({
       ...req.body,
+      serviceTitle: String(req.body.serviceTitle).toLowerCase(),
       availableAt: new Date(req.body.date.from),
       endsAt: new Date(req.body.date.to),
       host: id,
@@ -312,6 +314,16 @@ export const editListing: RequestHandler = async (req, res, next) => {
         res,
         "A _id cookie is required to access this resource."
       );
+    }
+
+    if (req.body.serviceTitle) {
+      const isTitleTaken = await Listings.findOne({
+        serviceTitle: String(req.body.serviceTitle).toLowerCase(),
+      });
+
+      if (isTitleTaken) {
+        throw createHttpError(400, "Service title already taken.");
+      }
     }
 
     const hasReservation = await Reservations.findOne({
@@ -438,6 +450,31 @@ export const enableListing: RequestHandler = async (req, res, next) => {
     });
 
     res.status(201).json({ message: "Listing has been enabled." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listingTitleTaken: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const { serviceTitle } = req.body;
+  try {
+    if (!id) {
+      clearCookieAndThrowError(
+        res,
+        "A _id cookie is required to access this resource."
+      );
+    }
+
+    const titleTaken = await Listings.findOne({
+      serviceTitle: String(serviceTitle).toLowerCase(),
+    });
+
+    if (titleTaken) {
+      throw createHttpError(400, "Service title is already taken.");
+    }
+
+    res.status(200).json({ message: "Title is available." });
   } catch (error) {
     next(error);
   }

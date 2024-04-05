@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { auth } from "@/firebase config/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
+import { toast as sonnerToast } from "sonner";
 
 function useSendIdentityVerificationRequest() {
   const { toast } = useToast();
@@ -13,13 +14,8 @@ function useSendIdentityVerificationRequest() {
         identityPhoto: data,
       });
     },
-    onSuccess(data) {
-      console.log(data.data);
-      toast({
-        title: "Success! 🎉",
-        description: "Identity photo has been sent.",
-        className: "bg-white",
-      });
+    onSuccess() {
+      sonnerToast.success("Identity photo has been sent.");
       queryClient.invalidateQueries({
         queryKey: ["profile", auth.currentUser?.uid],
       });

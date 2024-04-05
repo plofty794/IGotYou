@@ -141,7 +141,7 @@ function AnimationAnd3DModeling() {
                       </CardHeader>
                       <CardContent className="mt-2 flex justify-between p-0">
                         <div className="flex flex-col">
-                          <span className="text-base font-semibold">
+                          <span className="text-base font-semibold capitalize">
                             {v.serviceTitle}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
@@ -280,7 +280,7 @@ function AnimationAnd3DModeling() {
                       </CardHeader>
                       <CardContent className="mt-2 flex justify-between p-0">
                         <div className="flex flex-col">
-                          <span className="text-base font-semibold">
+                          <span className="text-base font-semibold capitalize">
                             {v.serviceTitle}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">

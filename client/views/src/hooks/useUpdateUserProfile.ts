@@ -29,19 +29,7 @@ function useUpdateUserProfile() {
         ...data,
       });
     },
-    onSuccess(_, variables) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      queryClient.setQueryData(["profile", id], (prevData: any) => {
-        return {
-          data: {
-            activeListings: prevData.data.activeListings,
-            user: {
-              ...prevData.data.user,
-              ...variables,
-            },
-          },
-        };
-      });
+    onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["profile", id] });
       sonnerToast.success("Your profile has been updated.", {
         duration: 1000,

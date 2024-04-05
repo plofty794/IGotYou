@@ -1,7 +1,9 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useConfirmServiceEnded() {
   const { reservationID } = useParams();
@@ -18,10 +20,15 @@ function useConfirmServiceEnded() {
       queryClient.invalidateQueries({
         queryKey: ["reservation", reservationID],
       });
+      sonnerToast.success(data.data.message);
+    },
+    onError(e) {
+      const error = e as AxiosError;
+      const response = error.response as AxiosResponse;
       toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
+        variant: "destructive",
+        title: "Uh oh! Request not sent.",
+        description: response.data.error,
       });
     },
   });

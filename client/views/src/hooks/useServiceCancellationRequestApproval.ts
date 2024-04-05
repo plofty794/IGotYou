@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useServiceCancellationRequestApproval() {
   const { reservationID } = useParams();
@@ -24,15 +25,10 @@ function useServiceCancellationRequestApproval() {
       );
     },
     onSuccess() {
-      console.log("YES");
       queryClient.invalidateQueries({
         queryKey: ["reservation", reservationID],
       });
-      toast({
-        title: "Success! 🎉",
-        description: "Service has been cancelled.",
-        className: "bg-white",
-      });
+      sonnerToast.success("Service has been cancelled.");
     },
     onError(error) {
       toast({

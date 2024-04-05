@@ -28,7 +28,7 @@ function BookingRequest() {
     <>
       {isPending ? (
         "Loading..."
-      ) : data?.data.bookingRequest.type === "Service-Cancellation-Request" ? (
+      ) : data?.data.bookingRequest.type == "Service-Cancellation-Request" ? (
         <Card className="w-full">
           <CardHeader>
             <div className="flex w-full items-center justify-between">

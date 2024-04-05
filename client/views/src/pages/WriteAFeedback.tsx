@@ -12,22 +12,13 @@ import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
 import feedbackIcon from "../assets/feedback.json";
 import useSendFeedback from "@/hooks/useSendFeedback";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
 
 function WriteAFeedback() {
   const [feedback, setFeedback] = useState("");
-  const { mutate, isError, isSuccess, isPending } = useSendFeedback();
+  const { mutate, isPending } = useSendFeedback();
 
   useDocumentTitle("Write A Feedback - IGotYou");
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Feedback has been sent.");
-    } else if (isError) {
-      toast.warning("You've already sent a feedback.");
-    }
-  }, [isError, isSuccess]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center max-md:px-8">

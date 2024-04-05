@@ -32,7 +32,7 @@ function PriceRangeSlider({
             prefix="₱"
             onValueChange={(value) => setMinPrice([parseInt(value!)])}
             allowNegativeValue={false}
-            className="w-max rounded-md p-2 text-lg font-semibold"
+            className="w-max rounded-md border p-2 text-lg font-semibold shadow"
             defaultValue={500}
           />
           <Slider
@@ -57,7 +57,7 @@ function PriceRangeSlider({
             prefix="₱"
             onValueChange={(value) => setMaxPrice([parseInt(value!)])}
             allowNegativeValue={false}
-            className="w-max rounded-md p-2 text-lg font-semibold"
+            className="w-max rounded-md border p-2 text-lg font-semibold shadow"
             defaultValue={500}
           />
           <Slider

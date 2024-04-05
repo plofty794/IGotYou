@@ -1,7 +1,13 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { TFileType as TListingAssets } from "@/root layouts/BecomeAHostLayout";
 import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen/index";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import imgUrl from "/audio_image.png";
 
 const cld = new Cloudinary({
@@ -14,79 +20,77 @@ function ListingAssets({ listingAssets }: { listingAssets: TListingAssets[] }) {
   return (
     <>
       {listingAssets.length > 5 ? (
-        <ScrollArea className="w-[95%] whitespace-nowrap">
-          <div className="flex w-full items-center gap-2 pb-4">
+        <Carousel className="w-full">
+          <CarouselContent>
             {listingAssets?.map((asset) =>
               asset.format === "mp4" ? (
-                <span
-                  onClick={(e) => {
-                    e.currentTarget.scrollIntoView({
-                      block: "end",
-                      behavior: "smooth",
-                    });
-                  }}
-                  className="h-52 w-52 rounded-xl border"
-                  key={asset.public_id}
-                >
-                  <AdvancedImage
-                    className="mx-auto h-full w-full cursor-pointer rounded-xl object-cover"
-                    cldImg={cld
-                      .image(asset.public_id)
-                      .setAssetType("video")
-                      .format("auto:image")}
-                    plugins={[
-                      lazyload(),
-                      responsive({
-                        steps: [800, 1000, 1400],
-                      }),
-                    ]}
-                  />
-                </span>
-              ) : asset.format === "mp3" ? (
-                <span
-                  onClick={(e) => {
-                    e.currentTarget.scrollIntoView({
-                      block: "end",
-                      behavior: "smooth",
-                    });
-                  }}
-                  className="h-52 w-52 rounded-xl border"
-                  key={asset.public_id}
-                >
-                  <img
-                    className="mx-auto h-full w-full rounded-lg border object-cover"
-                    src={imgUrl}
-                    alt="some image"
-                    loading="lazy"
-                  />
-                </span>
-              ) : (
-                <span
+                <CarouselItem
+                  className="max-sm:w-1/2 md:basis-1/3 lg:basis-1/5"
                   key={asset._id}
-                  onClick={(e) => {
-                    e.currentTarget.scrollIntoView({
-                      block: "end",
-                      behavior: "smooth",
-                    });
-                  }}
-                  className="h-52 w-52 cursor-pointer rounded-xl border"
                 >
-                  <AdvancedImage
-                    cldImg={cld.image(asset.public_id)}
-                    plugins={[
-                      lazyload(),
-                      responsive({
-                        steps: [800, 1000, 1400],
-                      }),
-                    ]}
-                    className="mx-auto h-full w-full rounded-lg border object-cover"
-                  />
-                </span>
+                  <span
+                    className="flex aspect-square items-center justify-center"
+                    key={asset.public_id}
+                  >
+                    <AdvancedImage
+                      className="mx-auto h-full w-full cursor-pointer rounded-xl object-cover"
+                      cldImg={cld
+                        .image(asset.public_id)
+                        .setAssetType("video")
+                        .format("auto:image")}
+                      plugins={[
+                        lazyload(),
+                        responsive({
+                          steps: [800, 1000, 1400],
+                        }),
+                      ]}
+                    />
+                  </span>
+                </CarouselItem>
+              ) : asset.format === "mp3" ? (
+                <CarouselItem
+                  className="max-sm:w-1/2 md:basis-1/3 lg:basis-1/5"
+                  key={asset._id}
+                >
+                  <span
+                    className="flex aspect-square items-center justify-center"
+                    key={asset.public_id}
+                  >
+                    <img
+                      className="mx-auto h-full w-full rounded-lg border object-cover"
+                      src={imgUrl}
+                      alt="some image"
+                      loading="lazy"
+                    />
+                  </span>
+                </CarouselItem>
+              ) : (
+                <CarouselItem
+                  className="max-sm:w-1/2 md:basis-1/3 lg:basis-1/5"
+                  key={asset._id}
+                >
+                  <span
+                    key={asset._id}
+                    className="flex aspect-square items-center justify-center"
+                  >
+                    <AdvancedImage
+                      cldImg={cld.image(asset.public_id)}
+                      plugins={[
+                        lazyload(),
+                        responsive({
+                          steps: [800, 1000, 1400],
+                        }),
+                      ]}
+                      className="mx-auto h-full w-full rounded-lg border object-cover"
+                    />
+                  </span>
+                </CarouselItem>
               ),
             )}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+          </CarouselContent>
+          <CarouselPrevious className="-left-8" />
+          <CarouselNext className="-right-8" />
+        </Carousel>
       ) : (
         <div className="flex w-full items-center gap-2 pb-4">
           {listingAssets?.map((asset) =>

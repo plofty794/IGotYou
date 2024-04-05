@@ -24,6 +24,9 @@ function Navigation() {
           <NavLink className="font-bold opacity-70" to={"/reports"}>
             Reports
           </NavLink>
+          <NavLink className="font-bold opacity-70" to={"/refunds"}>
+            Refunds
+          </NavLink>
         </ul>
       </div>
       <AdminDropdownMenu />

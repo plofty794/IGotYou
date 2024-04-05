@@ -19,7 +19,6 @@ const bookingRequestsSchema = new Schema(
     message: {
       type: String,
       trim: true,
-      required: true,
     },
     status: {
       type: String,
@@ -58,6 +57,7 @@ const bookingRequestsSchema = new Schema(
         "no reviews",
         "negative reviews",
         "change of heart",
+        "",
       ],
     },
     reservationID: {

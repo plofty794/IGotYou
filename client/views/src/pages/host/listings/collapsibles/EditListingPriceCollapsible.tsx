@@ -25,10 +25,10 @@ function EditListingPriceCollapsible({ price }: { price: number }) {
           {editListingPricePressed ? (
             <>
               <Label className="text-base font-semibold">Edit price</Label>
-              <div className="flex items-end gap-2">
+              <div className="flex items-end gap-2 max-md:flex-col">
                 <CurrencyInput
                   autoFocus
-                  className="w-1/5 rounded border-none text-base font-semibold focus:outline-none"
+                  className="w-1/5 rounded border-none text-base font-semibold focus:outline-none max-md:w-full"
                   prefix="₱"
                   allowNegativeValue={false}
                   decimalsLimit={2}
@@ -38,7 +38,14 @@ function EditListingPriceCollapsible({ price }: { price: number }) {
                     setListingPrice(parseInt(value ?? "0"))
                   }
                 />
-                <Badge className="min-w-max">
+                <Badge
+                  variant={
+                    listingPrice > PRICE_CAP || listingPrice < BASE_PRICE
+                      ? "destructive"
+                      : "default"
+                  }
+                  className="min-w-max"
+                >
                   {listingPrice > PRICE_CAP
                     ? `Price can't exceed ${formatValue({
                         value: PRICE_CAP.toString(),

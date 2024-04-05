@@ -109,7 +109,6 @@ function Router() {
         !window.location.pathname.includes("account-disabled")
       ) {
         if (window.location.pathname == "/login") {
-          localStorage.clear();
           return setUser(null);
         } else {
           await logOut();
@@ -556,7 +555,7 @@ function Router() {
       </>,
     ),
   );
-  
+
   return router;
 }
 

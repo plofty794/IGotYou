@@ -65,7 +65,7 @@ function VisitProfile() {
                       </DialogContent>
                     </Dialog>
                     <CardTitle className="w-max max-w-md text-center">
-                      <span className="text-2xl font-bold">
+                      <span className="text-2xl font-bold capitalize">
                         {data?.data.user.username}
                       </span>
                     </CardTitle>

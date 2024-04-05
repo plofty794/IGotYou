@@ -2,8 +2,10 @@ import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError, AxiosResponse } from "axios";
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useDeclineBookingRequest() {
   const { socket } = useContext(SocketContextProvider);
@@ -27,11 +29,7 @@ function useDeclineBookingRequest() {
       );
     },
     onSuccess(data) {
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
-      });
+      sonnerToast.success(data.data.message);
       socket?.emit("host-decline-bookingRequest", {
         receiverName: data.data.receiverName,
       });
@@ -40,6 +38,15 @@ function useDeclineBookingRequest() {
       });
       queryClient.invalidateQueries({
         queryKey: ["booking-request", id],
+      });
+    },
+    onError(e) {
+      const error = e as AxiosError;
+      const response = error.response as AxiosResponse;
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Request not sent.",
+        description: response.data.error,
       });
     },
   });

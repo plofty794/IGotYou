@@ -52,7 +52,7 @@ function EditListingAssetsDialog({
         sources: ["local", "google_drive"],
       },
       (_: unknown, result: CloudinaryUploadResult) => {
-        if (result.event === "info") {
+        if (result.event === "success") {
           setListingsAssetsCopy((prev) => [
             ...prev!,
             {

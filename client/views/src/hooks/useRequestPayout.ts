@@ -3,6 +3,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useRequestPayout() {
   const { reservationID } = useParams();
@@ -21,11 +22,7 @@ function useRequestPayout() {
       queryClient.invalidateQueries({
         queryKey: ["reservation", reservationID],
       });
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
-      });
+      sonnerToast.success(data.data.message);
     },
     onError(e) {
       const error = e as AxiosError;

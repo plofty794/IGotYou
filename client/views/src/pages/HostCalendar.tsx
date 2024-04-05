@@ -34,7 +34,7 @@ function HostCalendar() {
   }, [dates]);
 
   return (
-    <div className="max flex w-full justify-center gap-2 p-4 max-lg:flex-col max-lg:items-center">
+    <div className="max flex w-full justify-between gap-2 p-4 max-lg:flex-col max-lg:items-center">
       <ScrollArea className="h-screen max-lg:h-max">
         {isPending ? (
           "Loading"
@@ -376,7 +376,7 @@ function HostCalendar() {
           </>
         )}
       </ScrollArea>
-      <div className="w-2/4 rounded-lg border max-lg:w-full">
+      <div className="w-2/6 rounded-lg border max-lg:w-full">
         <div className="p-4">
           <h1 className="text-2xl font-semibold">Your calendar</h1>
           <div className="py-4">

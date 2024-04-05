@@ -69,7 +69,12 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
       <form onSubmit={handleSubmit(mobilePhoneSubmit)}>
         <div className="mb-2 flex items-center gap-2">
           {<Flag country={"PH"} className="h-9 w-9" />}
-          <Input autoFocus inputMode="numeric" {...register("mobile_phone")} />
+          <Input
+            autoComplete="off"
+            autoFocus
+            inputMode="numeric"
+            {...register("mobile_phone")}
+          />
         </div>
         {errors.mobile_phone && (
           <ErrorMessage message={errors.mobile_phone?.message} />
@@ -83,7 +88,7 @@ function PhoneNumberSelect({ mobilePhone, mobileVerified }: TMobilePhone) {
           </Button>
           {!mobileVerified && mobilePhone ? (
             <Button className="rounded-full bg-gray-950 text-xs">
-              <Link to={`/account/verify-phone/${id}`} replace>
+              <Link to={`/account/verify-phone/${id}`}>
                 Verify mobile phone
               </Link>
             </Button>

@@ -12,11 +12,7 @@ import BookingRequestStatusSelect from "@/partials/components/inbox filters/Book
 import { addDays } from "date-fns";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 
 function BookingRequestsFilter() {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -25,22 +21,21 @@ function BookingRequestsFilter() {
   });
   const [bookingRequestStatus, setBookingRequestStatus] = useState("");
   const search = useSearchParams();
-  const navigate = useNavigate();
 
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        if (!open) {
-          setDate({
-            from: undefined,
-            to: undefined,
-          });
-          setBookingRequestStatus("");
-        }
-      }}
-    >
+    <Dialog>
       <DialogTrigger asChild>
-        <Button className="rounded-full p-2 max-lg:w-full" variant={"outline"}>
+        <Button
+          className={`rounded-full p-2 max-lg:w-full ${
+            localStorage.getItem("hasHostBookingRequestFilter")
+              ? "relative animate-bounce outline outline-2"
+              : ""
+          }`}
+          variant={"outline"}
+        >
+          {localStorage.getItem("hasHostBookingRequestFilter") && (
+            <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-red-500"></span>
+          )}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -75,15 +70,19 @@ function BookingRequestsFilter() {
         </div>
         <div className="flex w-full items-center justify-between">
           <Button
+            disabled={
+              localStorage.getItem("hasHostBookingRequestFilter") == null
+            }
             variant={"outline"}
             onClick={() => {
               setDate({
                 from: undefined,
                 to: undefined,
               });
+              setTimeout(() => document.location.reload(), 200);
               setBookingRequestStatus("");
               search[1]("");
-              setTimeout(() => document.location.reload(), 200);
+              localStorage.removeItem("hasHostBookingRequestFilter");
             }}
           >
             Clear all
@@ -96,9 +95,9 @@ function BookingRequestsFilter() {
                 ["dateFrom", date!.from!.toDateString()],
                 ["dateTo", date!.to!.toDateString()],
               ]);
-              search[1](searchParams.toString());
-              navigate(`/hosting-inbox/${location.search}`);
               setTimeout(() => document.location.reload(), 200);
+              search[1](searchParams.toString());
+              localStorage.setItem("hasHostBookingRequestFilter", "true");
             }}
             className="bg-gray-950"
           >

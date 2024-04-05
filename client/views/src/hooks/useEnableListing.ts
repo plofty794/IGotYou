@@ -1,6 +1,8 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError, AxiosResponse } from "axios";
+import { toast as sonnerToast } from "sonner";
 
 function useEnableListing() {
   const queryClient = useQueryClient();
@@ -8,17 +10,21 @@ function useEnableListing() {
   return useMutation({
     mutationFn: async ({ listingID }: { listingID: string }) => {
       return await axiosPrivateRoute.patch(
-        `/api/listings/enable-listing/${listingID}`
+        `/api/listings/enable-listing/${listingID}`,
       );
     },
     onSuccess(data) {
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
-      });
+      sonnerToast.success(data.data.message);
       queryClient.invalidateQueries({
         queryKey: ["host-listings"],
+      });
+    },
+    onError(error) {
+      toast({
+        title: "Reservations exist!",
+        description: ((error as AxiosError).response as AxiosResponse).data
+          .error,
+        variant: "destructive",
       });
     },
   });

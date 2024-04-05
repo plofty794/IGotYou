@@ -111,7 +111,7 @@ function Listings({ recentListings, listingsCount }: TListingProps) {
 
                 <div className="h-full w-full text-sm">
                   <p className="font-semibold">{listing.serviceType}</p>
-                  <p className="font-medium text-gray-600">
+                  <p className="font-medium capitalize text-gray-600">
                     {listing.serviceTitle}
                   </p>
                 </div>

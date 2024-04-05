@@ -158,9 +158,9 @@ function MessageDialogFilter({
                         />
                       </Avatar>
                       <div className="flex flex-col">
-                        <span className="text-xs font-semibold">
+                        <p className="text-xs font-semibold capitalize">
                           {v.username}
-                        </span>
+                        </p>
                         <div className="flex items-center justify-start">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -175,9 +175,7 @@ function MessageDialogFilter({
                               d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25"
                             />
                           </svg>
-                          <span className="text-xs font-medium ">
-                            {v.email}
-                          </span>
+                          <p className="text-xs font-medium">{v.email}</p>
                         </div>
                       </div>
                     </div>

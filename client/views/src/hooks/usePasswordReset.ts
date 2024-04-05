@@ -5,6 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "@/firebase config/config";
+import { toast as sonnerToast } from "sonner";
+import { FirebaseError } from "firebase/app";
 
 function usePasswordReset() {
   const { toast } = useToast();
@@ -15,20 +17,30 @@ function usePasswordReset() {
         {
           ...data,
         },
-        {}
+        {},
       );
     },
     onSuccess: async (_, variables) => {
       try {
         await sendPasswordResetEmail(auth, variables.email);
-        toast({
-          title: "Password reset email sent.",
+        sonnerToast.info("Password reset email sent.", {
           description:
             "Please check your email for a link to reset your password.",
-          className: "bg-white text-[#222222] font-medium",
         });
       } catch (error) {
-        console.error(error);
+        const err = error as FirebaseError;
+        const message = (
+          err.code.split("/")[1].slice(0, 1).toUpperCase() +
+          err.code.split("/")[1].slice(1)
+        )
+          .split("-")
+          .join(" ");
+
+        toast({
+          title: "Oops! An error occurred.",
+          description: message,
+          variant: "destructive",
+        });
       }
     },
     onError: async (err) => {

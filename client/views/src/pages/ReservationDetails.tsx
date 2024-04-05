@@ -434,6 +434,7 @@ function ReservationDetails() {
                 </CardContent>
               </Card>
               <Separator />
+
               <Button className="border-black" variant={"outline"}>
                 <Link
                   className="w-full"
@@ -442,6 +443,7 @@ function ReservationDetails() {
                   View payment details
                 </Link>
               </Button>
+
               <div className="flex flex-col gap-2 p-2">
                 <p className="text-sm font-semibold">
                   Review {data?.data.isHost ? "guest" : "host"}

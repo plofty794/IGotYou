@@ -20,6 +20,9 @@ function useEnableAccount() {
         queryKey: ["users"],
       });
       queryClient.invalidateQueries({
+        queryKey: ["verified-payments"],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["user-reports"],
       });
     },

@@ -57,7 +57,6 @@ function EmojiPopOverPicker({
           width={"10cm"}
           height={400}
           lazyLoadEmojis
-          searchDisabled
           skinTonesDisabled
           onEmojiClick={(e) => {
             if (inputRef.current) {

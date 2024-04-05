@@ -118,9 +118,11 @@ function ProfileContent({ profileData, recentListings }: TProps) {
       // @ts-ignore
       async (_, res) => {
         if (res.event === "success") {
+          await updateProfile(auth.currentUser!, {
+            photoURL: res.info.secure_url,
+          });
           updateUserProfile.mutate({ photoUrl: res.info.secure_url });
           setPhoto(res.info.secure_url);
-          updateProfile(auth.currentUser!, { photoURL: res.info.secure_url });
         }
       },
     );
@@ -188,7 +190,7 @@ function ProfileContent({ profileData, recentListings }: TProps) {
               </Button>
             </CardHeader>
             <CardFooter className="flex flex-col p-0">
-              <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold capitalize">
                 {profileData?.username ?? (
                   <Skeleton className="h-4 w-[100px]" />
                 )}

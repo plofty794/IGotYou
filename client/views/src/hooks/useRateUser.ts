@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useRateUser() {
   const { toast } = useToast();
@@ -38,17 +39,12 @@ function useRateUser() {
       });
     },
     onSuccess() {
-      toast({
-        title: "Success! 🎉",
-        description: "Rating has been sent.",
-        className: "bg-white",
-      });
+      sonnerToast.success("Rating has been sent.");
       queryClient.invalidateQueries({
         queryKey: ["reservation", reservationID],
       });
     },
     onError(error) {
-      console.error(error);
       toast({
         title: "Uh oh! Rating failed.",
         description: ((error as AxiosError).response as AxiosResponse).data

@@ -42,7 +42,7 @@ function EditListingCancellationPolicy({
                 Change this listings cancellation policy
               </Label>
               <Select onValueChange={(v) => setNewCancellationPolicy(v)}>
-                <SelectTrigger className="mt-2 w-1/4 font-semibold">
+                <SelectTrigger className="mt-2 w-1/4 font-semibold max-md:w-full">
                   <SelectValue placeholder="Select a cancellation policy" />
                 </SelectTrigger>
                 <SelectContent>
@@ -61,7 +61,7 @@ function EditListingCancellationPolicy({
                 </SelectContent>
               </Select>
               {newCancellationPolicy && (
-                <Card className="my-2 w-max max-w-2xl shadow-lg">
+                <Card className="my-2 w-max max-w-2xl shadow-lg max-md:max-w-full">
                   <CardHeader>
                     <CardTitle className="text-xl font-semibold">
                       What is a{" "}

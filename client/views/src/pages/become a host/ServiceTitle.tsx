@@ -40,7 +40,7 @@ function ServiceTitle() {
             maxLength={50}
             spellCheck="true"
             placeholder={"Ex. Mang Juan's Photography Service"}
-            className="mb-2 w-2/5 px-4 py-8 text-xl font-medium max-lg:w-2/4 max-lg:text-lg max-md:w-2/3 max-md:py-6 max-md:text-base max-sm:w-[90%] max-sm:px-2 max-sm:py-4"
+            className="mb-2 w-2/5 px-4 py-8 text-xl font-medium capitalize max-lg:w-2/4 max-lg:text-lg max-md:w-2/3 max-md:py-6 max-md:text-base max-sm:w-[90%] max-sm:px-2 max-sm:py-4"
             value={service.serviceTitle}
             onChange={(e) =>
               setService((prev) => ({

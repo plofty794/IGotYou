@@ -2,7 +2,9 @@ import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError, AxiosResponse } from "axios";
 import { useContext } from "react";
+import { toast as sonnerToast } from "sonner";
 
 function useCancelBookingRequest() {
   const { socket } = useContext(SocketContextProvider);
@@ -25,11 +27,7 @@ function useCancelBookingRequest() {
       );
     },
     onSuccess(data) {
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
-      });
+      sonnerToast.success(data.data.message);
       socket?.emit("guest-cancel-bookingRequest", {
         receiverName: data.data.receiverName,
       });
@@ -38,6 +36,15 @@ function useCancelBookingRequest() {
       });
       queryClient.invalidateQueries({
         queryKey: ["guest-pending-booking-requests"],
+      });
+    },
+    onError(e) {
+      const error = e as AxiosError;
+      const response = error.response as AxiosResponse;
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Request not sent.",
+        description: response.data.error,
       });
     },
   });

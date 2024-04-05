@@ -46,7 +46,7 @@ function ApprovedBookingRequests() {
           <CardHeader className="flex-row justify-between p-4">
             <div className="flex items-center gap-2">
               <CardTitle className="m-0">
-                <Badge className="rounded-full text-sm max-sm:bg-white max-sm:p-0 max-sm:text-xs max-sm:font-semibold max-sm:text-black">
+                <Badge className="rounded-full text-sm capitalize max-sm:bg-white max-sm:p-0 max-sm:text-xs max-sm:font-semibold max-sm:text-black">
                   {v.hostID.username}
                 </Badge>
               </CardTitle>
@@ -73,7 +73,7 @@ function ApprovedBookingRequests() {
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Chat {v.hostID.username}</p>
+                    <p className="capitalize">Chat {v.hostID.username}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -133,9 +133,9 @@ function ApprovedBookingRequests() {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <span className="text-lg font-bold ">
+                <p className="text-lg font-bold capitalize">
                   {v.listingID.serviceTitle}
-                </span>
+                </p>
                 <span className="text-sm font-semibold ">
                   {v.listingID.serviceType}
                 </span>

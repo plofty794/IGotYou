@@ -40,7 +40,9 @@ function Wishlists() {
             <h1 className="text-4xl font-semibold max-md:text-2xl">
               Wishlists
             </h1>
-            <Badge className="h-max w-max">count: {wishlists?.length}</Badge>
+            <Badge variant={"outline"} className="w-max font-bold">
+              count: {wishlists?.length}
+            </Badge>
           </div>
           {wishlists?.length > 0 ? (
             <div className="grid grid-cols-4 gap-8 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1 max-md:gap-2">
@@ -99,11 +101,11 @@ function Wishlists() {
                   <div className="flex flex-col">
                     <div className="flex w-full items-center justify-between">
                       <div className="w-2/4 overflow-hidden text-ellipsis">
-                        <span className=" w-max text-lg font-semibold">
+                        <p className=" w-max text-lg font-semibold capitalize">
                           {v.serviceTitle}
-                        </span>
+                        </p>
                       </div>
-                      <Badge className="truncate font-bold">
+                      <Badge className="truncate font-bold capitalize">
                         {v.host?.username}
                       </Badge>
                     </div>

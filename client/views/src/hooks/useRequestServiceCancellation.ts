@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
+import { toast as sonnerToast } from "sonner";
 
 function useRequestServiceCancellation() {
   const { reservationID } = useParams();
@@ -29,11 +30,7 @@ function useRequestServiceCancellation() {
         newHostNotification: data.data.newHostNotification,
         receiverName: data.data.receiverName,
       });
-      toast({
-        title: "Success! 🎉",
-        description: "Service cancellation request has been sent.",
-        className: "bg-white",
-      });
+      sonnerToast.success("Service cancellation request has been sent.");
     },
     onError(e) {
       const error = e as AxiosError;

@@ -92,7 +92,7 @@ function Inbox() {
                 {guests.map(
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   (v: any) =>
-                    v.type === "Service-Cancellation-Request" ? (
+                    v.type == "Service-Cancellation-Request" ? (
                       <NavLink
                         key={v._id}
                         to={`/hosting-inbox/booking-request/${v._id}`}
@@ -152,8 +152,8 @@ function Inbox() {
                                 </div>
                                 <div className="flex w-full items-center justify-between">
                                   <div className="w-44 overflow-hidden text-ellipsis whitespace-nowrap">
-                                    <span className="max-w-xs text-xs italic">
-                                      {v.message}
+                                    <span className="max-w-xs text-xs italic text-red-600">
+                                      {v.type.split("-").join(" ")}
                                     </span>
                                   </div>
                                   <span
@@ -330,8 +330,8 @@ function Inbox() {
                                       </div>
                                       <div className="flex w-full items-center justify-between">
                                         <div className="w-44 overflow-hidden text-ellipsis whitespace-nowrap">
-                                          <span className="max-w-xs text-xs italic">
-                                            {v.message}
+                                          <span className="max-w-xs text-xs italic text-red-600">
+                                            {v.type.split("-").join(" ")}
                                           </span>
                                         </div>
                                         <span

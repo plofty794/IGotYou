@@ -85,7 +85,7 @@ function AssetsSlider({ listings }: { listings: TListing }) {
       <DrawerContent className="p-0">
         <ScrollArea className="h-screen">
           <DrawerHeader className="flex w-full justify-between">
-            <DrawerTitle className="text-2xl font-bold">
+            <DrawerTitle className="text-2xl font-bold capitalize">
               {listings.serviceTitle}'s Assets
             </DrawerTitle>
           </DrawerHeader>

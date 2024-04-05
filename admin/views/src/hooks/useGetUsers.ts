@@ -10,8 +10,6 @@ function useGetUsers() {
     getNextPageParam: (_, page) => page.length + 1,
     getPreviousPageParam: (_, page) => page.length - 1,
     initialPageParam: 1,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
   });
 }
 

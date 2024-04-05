@@ -25,6 +25,7 @@ import sendingMessage from "@/assets/sendingMessage.json";
 import Lottie from "lottie-react";
 import { useToast } from "@/components/ui/use-toast";
 import { FirebaseError } from "firebase/app";
+import { toast as sonnerToast } from "sonner";
 
 type TLoaderData = {
   user: {
@@ -56,7 +57,6 @@ function VerifyPhone() {
   async function sendOTP() {
     try {
       const reCaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {});
-
       const confirm = await linkWithPhoneNumber(
         auth.currentUser!,
         mobilePhone!,
@@ -73,11 +73,7 @@ function VerifyPhone() {
     try {
       await confirmation?.confirm(OTP);
       mutate({ mobileVerified: true });
-      toast({
-        title: "Success! 🎉",
-        description: "Your phone number has been verified.",
-        className: "bg-white",
-      });
+      sonnerToast.success("Your phone number has been verified.");
       setTimeout(() => {
         history.back();
       }, 1000);

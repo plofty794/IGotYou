@@ -89,7 +89,12 @@ function CollapsibleUsername({ data }: TUser) {
           </span>
           <div className="mt-4 flex gap-2">
             <div className="flex w-full flex-col gap-1">
-              <Input {...register("username")} autoFocus />
+              <Input
+                {...register("username")}
+                autoFocus
+                autoComplete="off"
+                className="capitalize"
+              />
               {errors.username && (
                 <ErrorMessage message={errors.username.message} />
               )}

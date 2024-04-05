@@ -69,17 +69,19 @@ function ListingsNavigation() {
             </SwiperSlide>
           ))}
         </Swiper>
-        <Dialog
-          onOpenChange={(open) => {
-            if (!open) {
-              setMinPrice([500]);
-              setMaxPrice([500]);
-              setServiceType("");
-            }
-          }}
-        >
+        <Dialog>
           <DialogTrigger asChild>
-            <Button variant={"outline"} className="gap-2 px-3 py-6 text-xs">
+            <Button
+              variant={"outline"}
+              className={`gap-2 px-3 py-6 text-xs ${
+                localStorage.getItem("hasListingsFilter")
+                  ? "relative animate-bounce outline outline-2"
+                  : ""
+              }`}
+            >
+              {localStorage.getItem("hasListingsFilter") && (
+                <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-red-500"></span>
+              )}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -126,12 +128,14 @@ function ListingsNavigation() {
             </div>
             <div className="mt-4 flex w-full items-center justify-between">
               <Button
+                disabled={localStorage.getItem("hasListingsFilter") == null}
                 onClick={() => {
                   setMinPrice([500]);
                   setMaxPrice([500]);
                   setServiceType("");
                   search[1]("");
                   setTimeout(() => document.location.reload(), 200);
+                  localStorage.removeItem("hasListingsFilter");
                 }}
                 variant={"outline"}
                 size={"lg"}
@@ -139,7 +143,7 @@ function ListingsNavigation() {
                 Clear all
               </Button>
               <Button
-                disabled={minPrice[0] > maxPrice[0]}
+                disabled={minPrice[0] >= maxPrice[0] || minPrice[0] < 500}
                 onClick={() => {
                   const searchParams = createSearchParams([
                     ["minPrice", minPrice.toString()],
@@ -148,6 +152,7 @@ function ListingsNavigation() {
                   ]);
                   search[1](searchParams.toString());
                   setTimeout(() => document.location.reload(), 200);
+                  localStorage.setItem("hasListingsFilter", "true");
                 }}
                 className="bg-gray-950"
                 size={"lg"}

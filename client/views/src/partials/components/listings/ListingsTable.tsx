@@ -46,7 +46,9 @@ const columns: ColumnDef<TListings>[] = [
     header: "Name",
     accessorKey: "serviceTitle",
     cell: (props) => (
-      <p className="w-max font-semibold">{props.getValue() as string}</p>
+      <p className="w-max font-semibold capitalize">
+        {props.getValue() as string}
+      </p>
     ),
   },
   {
@@ -55,7 +57,7 @@ const columns: ColumnDef<TListings>[] = [
       <div className="w-22">
         {row.original.listingAssets[0]?.format === "mp4" ? (
           <AdvancedImage
-            className="h-10 w-2/4 rounded-md object-cover shadow"
+            className="h-10 w-[90px] rounded-md object-cover shadow"
             cldImg={cld
               .image(row.original.listingAssets[0]?.public_id)
               .setAssetType("video")
@@ -85,7 +87,7 @@ const columns: ColumnDef<TListings>[] = [
                 steps: [800, 1000, 1400],
               }),
             ]}
-            className="h-10 w-2/4 rounded-md object-cover shadow"
+            className="h-10 w-[90px] rounded-md object-cover shadow"
           />
         )}
       </div>

@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -108,7 +109,7 @@ function Messages() {
   }, [conversationID, queryClient, socket]);
 
   return (
-    <div className="px-8 py-6 max-lg:p-2">
+    <div className="px-8 py-6 pl-0 max-lg:p-2">
       {isPending ? (
         <ListingsLoader />
       ) : (
@@ -124,7 +125,7 @@ function Messages() {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </Link>
-              <span className="text-lg font-semibold">
+              <span className="text-lg font-semibold capitalize">
                 {participant[0]?.username}
               </span>
             </div>
@@ -190,7 +191,7 @@ function Messages() {
             </TooltipProvider>
           </div>
           <Separator />
-          <div className="chat-box relative mt-2 overflow-auto rounded-md border bg-[#F5F5F5] p-6 px-0 pb-0 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-thumb-rounded-full max-lg:h-[80vh] lg:h-[60vh]">
+          <ScrollArea className="mt-2 overflow-auto rounded-md border bg-[#F5F5F5] p-6 px-0 pb-0 max-lg:h-[80vh] lg:h-[60vh]">
             <div className="mx-auto flex w-max flex-col items-center justify-center gap-2">
               <Link to={`/users/visit/show/${participant[0]?._id}`}>
                 <Avatar className="h-24 w-24">
@@ -201,7 +202,7 @@ function Messages() {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </Link>
-              <span className="text-xl font-semibold">
+              <span className="text-xl font-semibold capitalize">
                 {participant[0]?.username}
               </span>
               <Link to={`/users/visit/show/${participant[0]?._id}`}>
@@ -300,7 +301,7 @@ function Messages() {
               )}
               <div ref={bottomEndPanelRef}></div>
             </div>
-          </div>
+          </ScrollArea>
         </>
       )}
       <form
@@ -334,7 +335,20 @@ function Messages() {
             disabled={!content}
             className="rounded-full bg-gray-950 p-6 text-lg max-lg:p-4 max-lg:text-sm"
           >
-            Send
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="h-6 w-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              />
+            </svg>
           </Button>
         </div>
       </form>

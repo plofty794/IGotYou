@@ -31,7 +31,7 @@ function EditListingDescriptionCollapsible({
               <Label className="text-base font-semibold">
                 Edit description
               </Label>
-              <div className="flex w-3/4 items-end gap-2">
+              <div className="flex w-3/4 items-end gap-2 max-md:flex-col">
                 <Input
                   autoFocus
                   spellCheck="true"
@@ -42,7 +42,7 @@ function EditListingDescriptionCollapsible({
                 />
                 <Badge
                   variant={
-                    !description || description.length > 30
+                    description.length < 5 || description.length > 30
                       ? "destructive"
                       : "default"
                   }

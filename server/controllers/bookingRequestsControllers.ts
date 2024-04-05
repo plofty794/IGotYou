@@ -197,6 +197,9 @@ export const getGuestBookingRequests: RequestHandler = async (
       message: {
         $ne: null || undefined,
       },
+      type: {
+        $eq: null,
+      },
     })
       .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
@@ -237,15 +240,13 @@ export const getHostBookingRequests: RequestHandler = async (
     ) {
       const bookingRequests = await BookingRequests.find({
         hostID: id,
-        status,
-        requestedBookingDateStartsAt: {
+        status: status as string,
+        createdAt: {
+          $lte: new Date(requestedBookingDateEndsAt.toString()),
           $gte: new Date(requestedBookingDateStartsAt.toString()),
         },
-        requestedBookingDateEndsAt: {
-          $lte: new Date(requestedBookingDateEndsAt.toString()),
-        },
       })
-        .sort({ createdAt: "desc" })
+        .sort({ updatedAt: "desc" })
         .skip((page - 1) * limit)
         .limit(limit)
         .populate([
@@ -260,7 +261,7 @@ export const getHostBookingRequests: RequestHandler = async (
     }
 
     const bookingRequests = await BookingRequests.find({ hostID: id })
-      .sort({ createdAt: "desc" })
+      .sort({ updatedAt: "desc" })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate([
@@ -452,6 +453,9 @@ export const getGuestCancelledBookingRequests: RequestHandler = async (
     const cancelledBookingRequests = await BookingRequests.find({
       guestID: id,
       status: "cancelled",
+      type: {
+        $eq: null,
+      },
     })
       .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
@@ -595,6 +599,7 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       hostID: id,
       guestID: bookingRequest?.guestID,
       bookingStartsAt: bookingRequest?.requestedBookingDateStartsAt,
+      status: "ongoing",
     });
 
     if (hasReservation) {
@@ -622,6 +627,7 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       bookingRequestID,
       {
         status: "approved",
+        guestCancelReasons: "",
       },
       {
         new: true,
@@ -715,7 +721,7 @@ export const reAttemptBookingRequest: RequestHandler = async (
     const bookingReattemptIsInvalid = await BookingRequests.findOne({
       _id: bookingRequestID,
       requestedBookingDateStartsAt: {
-        $lte: new Date().setHours(0, 0, 0, 0),
+        $lt: new Date().setHours(0, 0, 0, 0),
       },
     });
 

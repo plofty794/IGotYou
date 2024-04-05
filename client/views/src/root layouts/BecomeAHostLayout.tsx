@@ -33,6 +33,9 @@ import HostingDropdownMenu from "@/partials/components/HostingDropdownMenu";
 import HostNotification from "@/partials/components/notification/HostNotification";
 import { compareAsc } from "date-fns";
 import { TRating } from "@/pages/HostReviews";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { toast } from "@/components/ui/use-toast";
+import { AxiosError, AxiosResponse } from "axios";
 
 dotPulse.register();
 
@@ -108,6 +111,22 @@ function BecomeAHostLayout() {
     "cancellation-policy",
     "success",
   ]);
+
+  async function serviceTitleTaken(serviceTitle: string) {
+    try {
+      await axiosPrivateRoute.post("/api/listings/title-taken", {
+        serviceTitle,
+      });
+      next();
+    } catch (error) {
+      return toast({
+        title: "Uh oh! Something went wrong",
+        description: ((error as AxiosError).response as AxiosResponse).data
+          .error,
+        variant: "destructive",
+      });
+    }
+  }
 
   useEffect(() => {
     if (status === "success") {
@@ -252,7 +271,9 @@ function BecomeAHostLayout() {
                   <Button
                     disabled={!service.serviceTitle}
                     type="button"
-                    onClick={next}
+                    onClick={async () => {
+                      await serviceTitleTaken(service.serviceTitle);
+                    }}
                     size={"lg"}
                     className="rounded-full bg-gray-950 p-6 text-lg font-semibold"
                   >

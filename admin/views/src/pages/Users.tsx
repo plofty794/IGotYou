@@ -28,11 +28,27 @@ type User = {
 
 const columns: ColumnDef<User>[] = [
   {
+    accessorKey: "userStatus",
+    header: "User status",
+    cell: (props) => (
+      <Badge
+        className={`font-bold capitalize ${
+          props.row.original.userStatus === "host"
+            ? "text-blue-600"
+            : "text-green-600"
+        }`}
+        variant={"outline"}
+      >
+        {props.getValue() as string}
+      </Badge>
+    ),
+  },
+  {
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => (
       <>
-        <p className="font-semibold text-sm">{row.original.email}</p>
+        <p className="font-bold text-xs">{row.original.email}</p>
         {row.original.isDisabled && (
           <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
             Disabled
@@ -45,21 +61,15 @@ const columns: ColumnDef<User>[] = [
     accessorKey: "username",
     header: "Username",
     cell: ({ row }) => (
-      <p className="font-semibold text-sm">{row.original.username}</p>
+      <p className="font-bold text-xs">{row.original?.username}</p>
     ),
   },
-  {
-    accessorKey: "userStatus",
-    header: "User status",
-    cell: (props) => (
-      <Badge className="capitalize">{props.getValue() as string}</Badge>
-    ),
-  },
+
   {
     accessorKey: "createdAt",
     header: "Created",
     cell: (props) => (
-      <p className="font-semibold text-sm">
+      <p className="font-bold text-xs">
         {new Date(props.getValue() as string).toDateString()}
       </p>
     ),
@@ -69,10 +79,12 @@ const columns: ColumnDef<User>[] = [
     header: "Identity verified",
     cell: (props) => (
       <Badge
-        variant={`${
-          String(props.getValue()) === "true" ? "default" : "destructive"
+        variant={"outline"}
+        className={`font-bold capitalize ${
+          String(props.getValue()) === "true"
+            ? "text-green-600"
+            : "text-red-600"
         }`}
-        className="capitalize"
       >
         {String(props.getValue())}
       </Badge>
@@ -83,10 +95,12 @@ const columns: ColumnDef<User>[] = [
     header: "Email verified",
     cell: (props) => (
       <Badge
-        variant={`${
-          String(props.getValue()) === "true" ? "default" : "destructive"
+        variant={"outline"}
+        className={`font-bold capitalize ${
+          String(props.getValue()) === "true"
+            ? "text-green-600"
+            : "text-red-600"
         }`}
-        className="capitalize"
       >
         {String(props.getValue())}
       </Badge>

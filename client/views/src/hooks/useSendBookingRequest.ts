@@ -4,6 +4,8 @@ import { SocketContextProvider } from "@/context/SocketContext";
 import { useContext } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
+import { toast as sonnerToast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 type TBookingRequest = {
   listingID: string;
@@ -15,6 +17,7 @@ type TBookingRequest = {
 };
 
 function useSendBookingRequest() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { socket } = useContext(SocketContextProvider);
   return useMutation({
@@ -25,15 +28,21 @@ function useSendBookingRequest() {
       );
     },
     onSuccess(data) {
-      console.log(data);
       socket?.emit("send-bookingRequest", {
         newHostNotification: data.data.newHostNotification,
         receiverName: data.data.receiverName,
       });
-      toast({
-        title: "Success! 🎉",
-        description: "Booking request has been sent.",
-        className: "bg-white",
+      sonnerToast.success("Booking request has been sent.", {
+        action: {
+          label: "View Request",
+          onClick: () => navigate(`/bookings/all`),
+        },
+        actionButtonStyle: {
+          backgroundColor: "#008A2E",
+          color: "#ECFDF3",
+          border: "1px solid #ECFDF3",
+          borderRadius: "4px",
+        },
       });
     },
     onError(e) {

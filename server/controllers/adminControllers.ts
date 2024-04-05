@@ -6,6 +6,8 @@ import Users from "../models/Users";
 import SubscriptionPayments from "../models/SubscriptionPayments";
 import Reports from "../models/Reports";
 import { auth } from "firebase-admin";
+import Reservations from "../models/Reservations";
+import BookingRequests from "../models/BookingRequests";
 
 export const getActiveUsers: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -267,6 +269,58 @@ export const enableUser: RequestHandler = async (req, res, next) => {
     );
 
     res.status(200).json({ message: "Account has been enabled." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCancelledReservations: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const admin_id = req.cookies.admin_id;
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const cancelledReservations = await BookingRequests.find({
+      type: "Service-Cancellation-Request",
+      status: "cancelled",
+    })
+      .populate([
+        {
+          path: "hostID",
+          select: "username email",
+        },
+        {
+          path: "guestID",
+          select: "username email",
+        },
+        {
+          path: "listingID",
+          select: "serviceTitle cancellationPolicy price",
+        },
+        {
+          path: "reservationID",
+        },
+      ])
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: "desc" })
+      .exec();
+
+    const totalCancelledBookingRequests =
+      await BookingRequests.countDocuments();
+    const totalPages = Math.ceil(totalCancelledBookingRequests / limit);
+
+    if (!cancelledReservations.length) {
+      return res.status(200).json({ cancelledReservations: [], totalPages: 0 });
+    }
+    res.status(200).json({ cancelledReservations, totalPages });
   } catch (error) {
     next(error);
   }

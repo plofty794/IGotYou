@@ -158,15 +158,11 @@ export const getReservations: RequestHandler = async (req, res, next) => {
     await Reservations.updateMany(
       {
         status: "ongoing",
-
-        $or: [
+        $and: [
           {
             bookingEndsAt: {
               $lt: new Date().setHours(0, 0, 0, 0),
             },
-          },
-          {
-            confirmServiceEnded: false,
           },
           {
             confirmServiceEnded: true,
@@ -574,7 +570,7 @@ export const serviceCancellationRequestApproval: RequestHandler = async (
       }
     ).populate([
       {
-        select: "serviceTitle",
+        select: "serviceTitle cancellationPolicy price",
         path: "listingID",
       },
       {
@@ -586,6 +582,30 @@ export const serviceCancellationRequestApproval: RequestHandler = async (
         path: "hostID",
       },
     ]);
+
+    await BookingRequests.findOneAndUpdate(
+      {
+        reservationID,
+        type: "Service-Cancellation-Request",
+      },
+      {
+        status: "cancelled",
+      }
+    );
+
+    await BookingRequests.findOneAndUpdate(
+      {
+        reservationID,
+        totalPrice: {
+          $ne: null,
+        },
+      },
+      {
+        status: "cancelled",
+        guestCancelReasons:
+          hasServiceCancellationRequestFromGuest.guestCancelReasons,
+      }
+    );
 
     await transport.sendMail({
       subject: `Request Reservation Cancellation for ${
@@ -601,7 +621,11 @@ export const serviceCancellationRequestApproval: RequestHandler = async (
         ],
         (cancelledReservation.hostID as { username: string }).username,
         (cancelledReservation.listingID as { serviceTitle: string })
-          .serviceTitle
+          .serviceTitle,
+        (cancelledReservation.listingID as { cancellationPolicy: string })
+          .cancellationPolicy,
+        cancelledReservation.createdAt.toDateString(),
+        (cancelledReservation.listingID as { price: number }).price
       ),
     });
 

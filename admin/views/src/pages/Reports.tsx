@@ -191,8 +191,6 @@ async function copyToClipboard(email: string) {
 function Reports() {
   const { data, isPending, fetchNextPage } = useGetUserReports();
 
-  console.log(data);
-
   useEffect(() => {
     document.title = "Reports - Admin IGotYou";
   }, []);
@@ -201,11 +199,7 @@ function Reports() {
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex items-center justify-between">
-          <span className="font-bold text-3xl">Users</span>
-          <span className="font-bold text-lg ">
-            # of reports:{" "}
-            {data?.pages.flatMap((page) => page.data.totalReports)}
-          </span>
+          <span className="font-bold text-3xl">Reports</span>
         </div>
         {isPending ? (
           "Loading..."

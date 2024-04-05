@@ -52,10 +52,10 @@ function FunFact() {
   return (
     <Dialog>
       <DialogTrigger
-        className={`hover:bg-[#e9e9e9] w-full border font-medium ${
+        className={`w-full border font-medium hover:bg-[#e9e9e9] ${
           data?.data?.user.funFact ? "text-xs" : "text-sm"
         }
-           shadow-md flex justify-start items-center pl-4 pr-6 py-8 rounded`}
+           flex items-center justify-start rounded py-8 pl-4 pr-6 shadow-md`}
       >
         <span className="mr-2">
           <RocketIcon color="black" width={25} height={25} />
@@ -76,13 +76,13 @@ function FunFact() {
         </DialogHeader>
         {data?.data?.user.funFact ? (
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">
+            <p className="mb-2 text-sm font-medium">
               {data?.data?.user.funFact}
             </p>
-            <div className="flex gap-2 items-center pt-2">
+            <div className="flex items-center gap-2 pt-2">
               <Button
                 onClick={() => mutate({ funFact: "" })}
-                className="bg-[#222222] text-white font-medium rounded-full"
+                className="rounded-full bg-[#222222] font-medium text-white"
                 size={"lg"}
                 variant={"secondary"}
               >
@@ -96,6 +96,7 @@ function FunFact() {
               Your Fun Fact
             </Label>
             <Input
+              autoComplete="off"
               {...register("funFact")}
               type="text"
               id="funFact"
@@ -104,9 +105,9 @@ function FunFact() {
             {errors.funFact && (
               <ErrorMessage message={errors.funFact.message} />
             )}
-            <div className="flex gap-2 items-center pt-2">
+            <div className="flex items-center gap-2 pt-2">
               <Button
-                className="bg-[#222222] text-white font-medium rounded-full"
+                className="rounded-full bg-[#222222] font-medium text-white"
                 size={"lg"}
                 variant={"secondary"}
               >

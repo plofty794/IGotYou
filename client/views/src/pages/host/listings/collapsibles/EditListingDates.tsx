@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 import useEditListing from "@/hooks/useEditListing";
+import { useMediaQuery } from "usehooks-ts";
 
 function EditListingDates({
   availableAt,
@@ -16,6 +17,7 @@ function EditListingDates({
   endsAt?: string;
   subscriptionExpiresAt?: string;
 }) {
+  const matches = useMediaQuery("(max-width: 768px)");
   const [editListingServiceDatesPressed, setEditListingServiceDatesPressed] =
     useState(false);
   const [dates, setDates] = useState<DateRange | undefined>({
@@ -39,62 +41,94 @@ function EditListingDates({
         <div className="flex w-full flex-col gap-2 ">
           {editListingServiceDatesPressed ? (
             <>
-              <Label className="text-base font-semibold">
+              <Label className="w-max text-base font-semibold">
                 Change service dates
               </Label>
-              <Calendar
-                styles={{
-                  nav_button_next: {
-                    width: "40px",
-                    height: "40px",
-                  },
-                  nav_button_previous: {
-                    width: "40px",
-                    height: "40px",
-                  },
+              {matches ? (
+                <Calendar
+                  initialFocus
+                  numberOfMonths={1}
+                  className="mx-auto w-max"
+                  modifiers={{
+                    subscriptionExpiresAt: new Date(subscriptionExpiresAt!),
+                  }}
+                  modifiersStyles={{
+                    selected: {
+                      color: "white",
+                      backgroundColor: "#222222",
+                    },
 
-                  head_cell: {
-                    width: "100%",
-                    fontSize: "1.1rem",
-                    color: "black",
-                  },
-                  day: {
-                    width: "60px",
-                    height: "60px",
-                    margin: "1px",
-                    fontWeight: "bold",
-                  },
-                  table: {
-                    marginTop: "40px",
-                  },
-                }}
-                initialFocus
-                numberOfMonths={2}
-                className="mx-auto w-max"
-                modifiers={{
-                  subscriptionExpiresAt: new Date(subscriptionExpiresAt!),
-                }}
-                modifiersStyles={{
-                  selected: {
-                    color: "white",
-                    backgroundColor: "#222222",
-                  },
+                    today: {
+                      outline: "2px dashed black",
+                    },
+                    subscriptionExpiresAt: {
+                      outline: "2px dashed #FF385C",
+                    },
+                  }}
+                  fromDate={new Date()}
+                  disabled={{
+                    after: new Date(subscriptionExpiresAt!),
+                  }}
+                  mode="range"
+                  selected={dates}
+                  onSelect={setDates}
+                />
+              ) : (
+                <Calendar
+                  styles={{
+                    nav_button_next: {
+                      width: "40px",
+                      height: "40px",
+                    },
+                    nav_button_previous: {
+                      width: "40px",
+                      height: "40px",
+                    },
 
-                  today: {
-                    outline: "2px dashed black",
-                  },
-                  subscriptionExpiresAt: {
-                    outline: "2px dashed #FF385C",
-                  },
-                }}
-                fromDate={new Date()}
-                disabled={{
-                  after: new Date(subscriptionExpiresAt!),
-                }}
-                mode="range"
-                selected={dates}
-                onSelect={setDates}
-              />
+                    head_cell: {
+                      width: "100%",
+                      fontSize: "1.1rem",
+                      color: "black",
+                    },
+                    day: {
+                      width: "60px",
+                      height: "60px",
+                      margin: "1px",
+                      fontWeight: "bold",
+                    },
+                    table: {
+                      marginTop: "40px",
+                    },
+                  }}
+                  initialFocus
+                  numberOfMonths={2}
+                  className="mx-auto w-max"
+                  modifiers={{
+                    subscriptionExpiresAt: new Date(subscriptionExpiresAt!),
+                  }}
+                  modifiersStyles={{
+                    selected: {
+                      color: "white",
+                      backgroundColor: "#222222",
+                    },
+
+                    today: {
+                      outline: "2px dashed black",
+                    },
+                    subscriptionExpiresAt: {
+                      outline: "2px dashed #FF385C",
+                    },
+                  }}
+                  fromDate={new Date()}
+                  disabled={{
+                    after: new Date(subscriptionExpiresAt!),
+                  }}
+                  mode="range"
+                  selected={dates}
+                  onSelect={setDates}
+                />
+              )}
+
               <Button
                 onClick={() =>
                   mutate({

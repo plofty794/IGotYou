@@ -33,8 +33,6 @@ function Overview() {
     ];
   }, [data?.data.allUsers]);
 
-  console.log(data?.data);
-
   return (
     <>
       {isPending ? (

@@ -38,31 +38,32 @@ function ForgotPassword() {
   }
 
   return (
-    <div className="bg-[#F2F2F2] min-h-screen flex flex-col gap-4 max-sm:gap-2 items-center justify-center">
-      <Card className="flex max-md:flex-col max-md:p-4 items-center justify-center p-8 max-sm:w-5/6">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F2F2F2] max-sm:gap-2">
+      <Card className="flex items-center justify-center p-8 max-md:flex-col max-md:p-4 max-sm:w-5/6">
         <CardHeader>
           <Lottie
             animationData={forgotPassword}
-            className="w-80 max-md:w-44 h-2/6"
+            className="h-2/6 w-80 max-md:w-44"
           />
         </CardHeader>
         <form className="w-full" onSubmit={handleSubmit(handleFormSubmit)}>
-          <CardContent className="flex flex-col items-center gap-4 h-full p-8 max-sm:p-4">
-            <div className="w-full flex flex-col items-center justify-center gap-3">
-              <span className="text-3xl max-md:2xl max-sm:text-xl font-bold">
+          <CardContent className="flex h-full flex-col items-center gap-4 p-8 max-sm:p-4">
+            <div className="flex w-full flex-col items-center justify-center gap-3">
+              <span className="max-md:2xl text-3xl font-bold max-sm:text-xl">
                 Forgot your password?
               </span>
               <Input
                 {...register("email")}
+                autoComplete="off"
                 autoFocus
                 placeholder="Enter your email"
-                className="w-full text-sm font-medium max-sm:text-xs max-sm:p-2"
+                className="w-full text-sm font-medium max-sm:p-2 max-sm:text-xs"
               />
               {errors.email && <ErrorMessage message={errors.email?.message} />}
               <Button
                 disabled={isPending || !!errors.email?.message}
                 size={"lg"}
-                className="px-8 w-full text-sm max-sm:text-xs font-semibold bg-gray-950 rounded-full"
+                className="w-full rounded-full bg-gray-950 px-8 text-sm font-semibold max-sm:text-xs"
               >
                 {isPending ? (
                   // Default values shown
@@ -90,7 +91,7 @@ function ForgotPassword() {
           </CardContent>
         </form>
       </Card>
-      <Button size={"lg"} variant={"link"} className="text-gray-950 font-bold">
+      <Button size={"lg"} variant={"link"} className="font-bold text-gray-950">
         <Link to={"/login"} replace>
           Go back
         </Link>

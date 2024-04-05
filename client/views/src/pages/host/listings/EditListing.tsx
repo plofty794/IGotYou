@@ -31,7 +31,7 @@ function EditListing() {
         <div className="flex w-full flex-col gap-4">
           <div className="p-4 pt-6">
             <div className="mb-4 flex w-full items-center justify-between">
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold capitalize">
                 {data?.data.listing.serviceTitle}'s Assets
               </h2>
               <EditListingAssetsDialog
@@ -42,11 +42,13 @@ function EditListing() {
               listingAssets={data?.data.listing.listingAssets as TFileType[]}
             />
           </div>
-          <div className="p-4">
-            <Card className="p-6 shadow-lg">
+          <div className="p-4 max-md:p-0">
+            <Card className="p-6 shadow-lg max-sm:p-4">
               <CardHeader className="p-0">
                 <div className="w-full pb-4">
-                  <h2 className="text-xl font-semibold">Listing details</h2>
+                  <h2 className="text-xl font-semibold max-sm:text-lg">
+                    Listing details
+                  </h2>
                 </div>
               </CardHeader>
               <div className="flex w-full flex-col gap-4">

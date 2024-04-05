@@ -20,8 +20,6 @@ import {
   changeAvailability,
   getBlockedDates,
   rateUser,
-  getHostReviews,
-  getGuestReviews,
   submitReport,
   writeFeedback,
   reportedUser,

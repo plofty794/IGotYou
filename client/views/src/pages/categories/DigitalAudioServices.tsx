@@ -149,7 +149,7 @@ function DigitalAudioServices() {
                       </CardHeader>
                       <CardContent className="mt-2 flex justify-between p-0">
                         <div className="flex flex-col">
-                          <span className="text-base font-semibold">
+                          <span className="text-base font-semibold capitalize">
                             {v.serviceTitle}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
@@ -288,7 +288,7 @@ function DigitalAudioServices() {
                       </CardHeader>
                       <CardContent className="mt-2 flex justify-between p-0">
                         <div className="flex flex-col">
-                          <span className="text-base font-semibold">
+                          <span className="text-base font-semibold capitalize">
                             {v.serviceTitle}
                           </span>
                           <span className="text-sm font-semibold text-gray-600">
@@ -378,7 +378,7 @@ function DigitalAudioServices() {
           </div>
         )}
         {error && (
-          <div className="mx-auto w-max">
+          <div className="mx-auto w-max p-8">
             <Badge>
               {((error as AxiosError).response as AxiosResponse).data.message}
             </Badge>

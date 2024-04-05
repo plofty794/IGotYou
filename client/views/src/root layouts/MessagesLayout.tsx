@@ -107,7 +107,7 @@ function MessagesLayout() {
               </div>
             </nav>
             <section className="flex w-full">
-              <div className=" w-1/4 p-8 max-lg:p-2">
+              <div className=" w-1/4 p-8 pr-6 max-lg:p-2">
                 <div className="flex w-full items-center justify-between">
                   <span className="block text-2xl font-bold max-lg:hidden">
                     Messages
@@ -126,7 +126,7 @@ function MessagesLayout() {
                     <l-ping size="40" speed="2" color="black"></l-ping>
                   </div>
                 ) : (
-                  <ScrollArea className="mr-2 h-[28rem] pt-4">
+                  <ScrollArea className="h-[28rem] pr-4 pt-4">
                     <div className="messages flex w-full flex-col gap-4">
                       {conversations.data?.data.userConversations.length > 0 ? (
                         conversations.data?.data.userConversations.map(
@@ -174,8 +174,11 @@ function MessagesLayout() {
                                       {conversations.data.data.currentUserID ===
                                       v.lastMessage.senderID._id ? (
                                         <div className="flex items-center gap-1">
-                                          <p className="w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold">
-                                            You: {v.lastMessage.content}{" "}
+                                          <p className="w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold ">
+                                            <span className="capitalize">
+                                              you
+                                            </span>
+                                            :{v.lastMessage.content}{" "}
                                           </p>
                                           <CircleIcon className="h-[0.4rem] w-[0.4rem] rounded-full bg-gray-400" />
                                           <p className="text-xs font-semibold">
@@ -188,14 +191,16 @@ function MessagesLayout() {
                                       ) : (
                                         <div className="flex items-center gap-1">
                                           <p
-                                            className={`w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold ${
+                                            className={`w-28 max-w-max overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold  ${
                                               v.lastMessage.read
                                                 ? ""
                                                 : "!font-extrabold text-black"
                                             }`}
                                           >
-                                            {v.lastMessage.senderID.username}:{" "}
-                                            {v.lastMessage.content}{" "}
+                                            <span className="capitalize">
+                                              {v.lastMessage.senderID.username}
+                                            </span>
+                                            : {v.lastMessage.content}{" "}
                                           </p>
                                           <CircleIcon
                                             className={`h-[0.4rem] w-[0.4rem] rounded-full  ${
@@ -226,7 +231,7 @@ function MessagesLayout() {
                                   )}
                                   <p
                                     className={
-                                      "w-full text-center text-sm font-bold"
+                                      "w-full text-center text-sm font-bold capitalize"
                                     }
                                   >
                                     {

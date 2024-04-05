@@ -34,7 +34,7 @@ export const getVerifiedPayments: RequestHandler = async (req, res, next) => {
       .populate({
         path: "user",
         select:
-          "email username subscriptionExpiresAt identityVerified emailVerified mobileVerified",
+          "email username subscriptionExpiresAt identityVerified emailVerified mobileVerified uid isDisabled",
       })
       .exec();
 

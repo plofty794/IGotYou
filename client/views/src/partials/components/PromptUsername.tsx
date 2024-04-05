@@ -24,15 +24,17 @@ import Lottie from "lottie-react";
 import wait from "../../assets/wait.json";
 import { updateProfile } from "firebase/auth";
 import { auth } from "@/firebase config/config";
+import { useEffect } from "react";
 
 dotPulse.register();
 
 function PromptUsername() {
-  const { mutate, isPending } = useUpdateUserProfile();
+  const { mutate, isPending, isSuccess } = useUpdateUserProfile();
   const {
     handleSubmit,
     register,
     formState: { errors },
+    getValues,
   } = useForm<PromptUsernameSchema>({
     mode: "onChange",
     defaultValues: {
@@ -42,15 +44,14 @@ function PromptUsername() {
   });
 
   async function usernameSubmit(data: PromptUsernameSchema) {
-    try {
-      if (auth.currentUser) {
-        mutate({ ...data });
-        await updateProfile(auth.currentUser, { displayName: data.username });
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    mutate({ ...data });
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      updateProfile(auth.currentUser!, { displayName: getValues("username") });
+    }
+  }, [getValues, isSuccess]);
 
   return (
     <section className="mt-16 flex flex-col items-center justify-center gap-2">
@@ -87,7 +88,7 @@ function PromptUsername() {
                 {...register("username")}
                 id="username"
                 autoComplete="off"
-                className="col-span-3"
+                className="col-span-3 capitalize"
               />
               {errors.username && (
                 <ErrorMessage message={errors.username?.message} />

@@ -112,10 +112,15 @@ function AssetsDrawer({ listing }: { listing: TListing }) {
       </DrawerTrigger>
       <DrawerContent className="p-0">
         <ScrollArea className="h-screen">
-          <DrawerHeader className="flex w-full justify-between">
-            <DrawerTitle className="text-3xl font-bold">
+          <DrawerHeader className="relative flex w-full items-center justify-between">
+            <DrawerTitle className="text-xl font-bold capitalize">
               {listing.serviceTitle}'s Assets
             </DrawerTitle>
+            <p className="absolute left-[45%] text-xs">
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-semibold opacity-100">
+                Press <span className="text-xs">⌘</span>esc to close
+              </kbd>
+            </p>
             <div className="flex items-center justify-center gap-2 p-2">
               <p className="text-base font-semibold underline">Save</p>
               <UpdateWishlist listingID={listing._id as string} />
@@ -126,7 +131,7 @@ function AssetsDrawer({ listing }: { listing: TListing }) {
               asset.format === "mp4" ? (
                 <div className="relative h-4/6 w-4/5">
                   <AdvancedImage
-                    className="relative -z-10 mx-auto h-full w-full rounded-2xl border object-contain shadow-lg"
+                    className="relative -z-10 mx-auto h-full max-h-screen w-full rounded-2xl border object-contain shadow-lg"
                     cldImg={cld
                       .image(asset.public_id)
                       .setAssetType("video")
@@ -139,7 +144,7 @@ function AssetsDrawer({ listing }: { listing: TListing }) {
                     ]}
                   />
                   <AdvancedVideo
-                    className="absolute left-[50%] top-0 z-0 h-full w-max translate-x-[-50%] rounded-2xl border object-contain opacity-0 shadow-lg hover:z-10 hover:opacity-100"
+                    className="absolute left-[50%] top-0 z-0 h-full max-h-screen w-max translate-x-[-50%] rounded-2xl border object-contain opacity-0 shadow-lg hover:z-10 hover:opacity-100"
                     onMouseOver={(e) => {
                       e.currentTarget.play();
                     }}

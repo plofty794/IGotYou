@@ -19,7 +19,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import useRemoveAsset from "@/hooks/useRemoveAsset";
@@ -34,7 +33,8 @@ import { Cloudinary } from "@cloudinary/url-gen/index";
 import { useEffect, useState } from "react";
 import { dotPulse } from "ldrs";
 import { toast } from "sonner";
-import { CheckCircledIcon } from "@radix-ui/react-icons";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 dotPulse.register();
 
 const REASONS = [
@@ -91,14 +91,7 @@ function ReportUserDialog({
             secure_url: result.info.secure_url,
             thumbnail_url: result.info.thumbnail_url,
           } as TFileType);
-          toast("Photo evidence has been uploaded!", {
-            icon: (
-              <CheckCircledIcon
-                color="#FFF"
-                className="inline-block rounded-full bg-[#39c152]"
-              />
-            ),
-          });
+          toast.success("Photo evidence has been uploaded!");
         }
       },
     );
@@ -173,14 +166,7 @@ function ReportUserDialog({
                   onClick={() => {
                     removeEvidence.mutate({ publicId: evidence.public_id });
                     setEvidence(null);
-                    toast("Photo evidence has been removed!", {
-                      icon: (
-                        <CheckCircledIcon
-                          color="#FFF"
-                          className="inline-block rounded-full bg-[#39c152]"
-                        />
-                      ),
-                    });
+                    toast.success("Photo evidence has been removed!");
                   }}
                   className="absolute right-1 top-1 rounded-full border bg-white p-2 hover:bg-slate-200"
                 >

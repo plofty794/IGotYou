@@ -45,7 +45,7 @@ function VisitListing() {
     <>
       <section className="mx-auto w-5/6">
         <div className="flex w-full items-center justify-between pt-6">
-          <span className="flex items-center gap-1 text-2xl font-semibold">
+          <span className="flex items-center gap-1 text-2xl font-semibold capitalize">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -128,8 +128,11 @@ function VisitListing() {
                     </Avatar>
                   </Link>
                   <div className="flex flex-col">
-                    <span className="text-lg font-semibold">
-                      Hosted by {listing.host.username}
+                    <span className="text-lg font-semibold ">
+                      Hosted by{" "}
+                      <span className="capitalize">
+                        {listing.host.username}
+                      </span>
                     </span>
                     <Badge variant={"outline"} className="w-max">
                       {formatDistanceToNow(

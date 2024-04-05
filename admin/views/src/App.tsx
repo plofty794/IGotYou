@@ -16,6 +16,7 @@ import VerifiedPayments from "./pages/VerifiedPayments";
 import IdentityPhotos from "./pages/IdentityPhotos";
 import Reports from "./pages/Reports";
 import Payments from "./pages/Payments";
+import Refunds from "./pages/Refunds";
 
 function App() {
   const isAdmin = localStorage.getItem("isAdmin");
@@ -82,6 +83,16 @@ function App() {
             element={
               state.state ?? isAdmin ? (
                 <IdentityPhotos />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
+          <Route
+            path="refunds"
+            element={
+              state.state ?? isAdmin ? (
+                <Refunds />
               ) : (
                 <Navigate to={"/login"} replace />
               )

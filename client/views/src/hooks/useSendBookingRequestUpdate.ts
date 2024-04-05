@@ -1,11 +1,13 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { useContext } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { AxiosError, AxiosResponse } from "axios";
+import { toast as sonnerToast } from "sonner";
 
 function useSendBookingRequestUpdate() {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const { socket } = useContext(SocketContextProvider);
   return useMutation({
@@ -20,16 +22,18 @@ function useSendBookingRequestUpdate() {
         },
       );
     },
-    onSuccess(data) {
+    onSuccess(data, { bookingRequestID }) {
+      queryClient.invalidateQueries({
+        queryKey: ["booking-request", bookingRequestID],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["host-booking-requests"],
+      });
       socket?.emit("send-bookingRequest-update", {
         newHostNotification: data.data.newHostNotification,
         receiverName: data.data.receiverName,
       });
-      toast({
-        title: "Success! 🎉",
-        description: "Booking request has been updated.",
-        className: "bg-white",
-      });
+      sonnerToast.success("Booking request has been updated.");
     },
     onError(e) {
       const error = e as AxiosError;

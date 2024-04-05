@@ -1,10 +1,10 @@
 import { rateLimit } from "express-rate-limit";
 
 export const passwordResetLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 60000 * 15,
   limit: 3,
   message: {
-    error: "Too many requests, please try again later.",
+    error: "Too many requests, try again after 15 minutes.",
   },
 });
 
@@ -26,10 +26,10 @@ export const sendIdentityVerificationRequestLimiter = rateLimit({
 });
 
 export const reAttemptBookingRequestLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
+  windowMs: 60000 * 15,
   limit: 3,
   message: {
-    error: "You've reached your daily limit. Try again tomorrow.",
+    error: "You've reached your daily limit. try again after 15 minutes.",
   },
 });
 

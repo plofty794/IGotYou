@@ -164,7 +164,14 @@ export function UserDropDownButton() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuItem className="p-4 font-semibold text-gray-600">
-          <Link to={"/write-a-feedback"} className="w-full">
+          <Link
+            to={`${
+              auth.currentUser?.displayName
+                ? "/write-a-feedback"
+                : `/users/show/${auth.currentUser?.uid}`
+            }`}
+            className="w-full"
+          >
             Write a feedback
           </Link>
         </DropdownMenuItem>

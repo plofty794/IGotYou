@@ -15,8 +15,6 @@ function useGetListingsPerCategory<T>(category: T) {
     },
     initialPageParam: 1,
     enabled: auth.currentUser != null,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 }
 

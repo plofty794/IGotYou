@@ -9,6 +9,7 @@ import {
   getUserReports,
   disableUser,
   enableUser,
+  getCancelledReservations,
 } from "../controllers/adminControllers";
 const router = Router();
 
@@ -17,6 +18,7 @@ router.get("/admin/overview", getAdminOverview);
 router.get("/admin/active-users/:page", getActiveUsers);
 router.get("/admin/users/:page", getUsers);
 router.get("/admin/users-reports/:page", getUserReports);
+router.get("/admin/refunds/:page", getCancelledReservations);
 router.post("/admin/login", loginAdmin);
 router.patch("/admin/disable-user/:userUID", disableUser);
 router.patch("/admin/enable-user/:userUID", enableUser);

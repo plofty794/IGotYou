@@ -8,6 +8,7 @@ import {
   getListings,
   getListingsPerCategory,
   getUserListing,
+  listingTitleTaken,
   renewListing,
 } from "../controllers/listingsControllers";
 import { authToken } from "../middlewares/authToken";
@@ -18,6 +19,7 @@ router.get("/listings/visit/:listingID", authToken, getUserListing);
 router.get("/listings/host-listings/:page", authToken, getHostListings);
 router.get("/listings/:category/:page", authToken, getListingsPerCategory);
 router.post("/listings/make-a-listing", authToken, addListing);
+router.post("/listings/title-taken", authToken, listingTitleTaken);
 router.patch("/listings/renew-listing/:listingID", authToken, renewListing);
 router.patch("/listings/disable-listing/:listingID", authToken, disableListing);
 router.patch("/listings/enable-listing/:listingID", authToken, enableListing);

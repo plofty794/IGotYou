@@ -27,17 +27,19 @@ function EditListingTitleCollapsible({
           {editListingTitlePressed ? (
             <>
               <Label className="text-base font-semibold">Edit title</Label>
-              <div className="flex items-end gap-2">
+              <div className="flex items-end gap-2 max-md:flex-col">
                 <Input
                   autoFocus
                   spellCheck="true"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="rounded-none border-x-0 border-b border-t-0 border-b-black p-0 text-sm font-medium shadow-none focus-visible:border-b-2 focus-visible:ring-0"
+                  className="rounded-none border-x-0 border-b border-t-0 border-b-black p-0 text-sm font-medium capitalize shadow-none focus-visible:border-b-2 focus-visible:ring-0"
                 />
                 <Badge
                   variant={
-                    !title || title.length > 25 ? "destructive" : "default"
+                    title.length < 4 || title.length > 25
+                      ? "destructive"
+                      : "default"
                   }
                   className="h-max w-full max-w-max"
                 >
@@ -54,7 +56,7 @@ function EditListingTitleCollapsible({
                     serviceTitle: title,
                   })
                 }
-                disabled={!title || title.length > 20 || title.length < 5}
+                disabled={!title || title.length > 20 || title.length < 4}
                 className="w-max bg-gray-950"
               >
                 Save changes
@@ -63,7 +65,7 @@ function EditListingTitleCollapsible({
           ) : (
             <>
               <h3 className="text-base font-semibold">Listing title</h3>
-              <p className="text-sm font-semibold text-gray-600">
+              <p className="text-sm font-semibold capitalize text-gray-600">
                 {serviceTitle}
               </p>
             </>
