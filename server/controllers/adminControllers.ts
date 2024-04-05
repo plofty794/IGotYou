@@ -128,6 +128,7 @@ export const getAdminOverview: RequestHandler = async (req, res, next) => {
         ],
       }).select("userStatus");
       const subscribedUsers = await SubscriptionPayments.find({
+        paymentStatus: "success",
         $and: [
           {
             createdAt: {
@@ -152,7 +153,9 @@ export const getAdminOverview: RequestHandler = async (req, res, next) => {
     }
 
     const allUsers = await Users.find().select("userStatus");
-    const subscribedUsers = await SubscriptionPayments.find({})
+    const subscribedUsers = await SubscriptionPayments.find({
+      paymentStatus: "success",
+    })
       .populate({
         path: "user",
         select: "subscriptionExpiresAt photoUrl username email",
