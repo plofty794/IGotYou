@@ -28,7 +28,7 @@ export const verifyUserUpdates = async (
 
   if (username) {
     const usernameExist = await Users.findOne({
-      username: { $regex: username, $options: "i" },
+      username: { $regex: new RegExp(`^${username}+$`), $options: "i" },
     });
 
     if (usernameExist) {

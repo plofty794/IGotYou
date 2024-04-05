@@ -468,7 +468,7 @@ export const listingTitleTaken: RequestHandler = async (req, res, next) => {
 
     const titleTaken = await Listings.findOne({
       serviceTitle: {
-        $regex: serviceTitle,
+        $regex: new RegExp(`^${serviceTitle}+$`),
         $options: "i",
       },
     });
