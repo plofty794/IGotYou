@@ -19,6 +19,12 @@ import { toast } from "sonner";
 import ReportsTable from "@/partials/ReportsTable";
 import EnableAccount from "@/partials/EnableAccount";
 import DisableAccount from "@/partials/DisableAccount";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type TUser = {
   email: string;
@@ -121,7 +127,15 @@ const columns: ColumnDef<TReports>[] = [
   {
     header: "Total reports",
     cell: ({ row }) => (
-      <p className="text-xs font-bold">
+      <p
+        className={`text-xs font-bold ${
+          row.original.reportedUser.reports.length >= 3
+            ? "text-amber-600"
+            : row.original.reportedUser.reports.length >= 5
+            ? "text-red-600"
+            : "text-green-600"
+        }`}
+      >
         {row.original.reportedUser.reports.length}
       </p>
     ),
@@ -224,6 +238,39 @@ function Reports() {
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex items-center justify-between">
           <span className="font-bold text-3xl">Reports</span>
+          <div className="flex items-center justify-center gap-2">
+            <p className="text-xs font-bold"># of reports level</p>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>at least 1 reports</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="w-2 h-2 bg-amber-600 rounded-full"></span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>at least 3 reports</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="w-2 h-2 bg-red-600 rounded-full"></span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>at least 5 reports</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
         {isPending ? (
           "Loading..."

@@ -3,6 +3,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { TFileType } from "@/root layouts/BecomeAHostLayout";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
+import { toast as sonnerToast } from "sonner";
 
 function useReportUser() {
   const { toast } = useToast();
@@ -24,14 +25,9 @@ function useReportUser() {
       });
     },
     onSuccess(data) {
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message,
-        className: "bg-white",
-      });
+      sonnerToast.success(data.data.message);
     },
     onError(error) {
-      console.error(error);
       toast({
         title: "Oops! Report submission failed",
         description: ((error as AxiosError).response as AxiosResponse).data
