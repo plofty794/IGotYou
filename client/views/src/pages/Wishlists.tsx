@@ -98,14 +98,14 @@ function Wishlists() {
                       </svg>
                     </Button>
                   </Card>
-                  <div className="flex flex-col">
-                    <div className="flex w-full items-center justify-between">
-                      <div className="w-2/4 overflow-hidden text-ellipsis">
-                        <p className=" w-max text-lg font-semibold capitalize">
+                  <div className="flex w-72 flex-col">
+                    <div className="flex w-full items-center justify-between ">
+                      <div className="w-2/4">
+                        <p className="truncate text-lg font-semibold">
                           {v.serviceTitle}
                         </p>
                       </div>
-                      <Badge className="truncate font-bold capitalize">
+                      <Badge className="font-bold capitalize">
                         {v.host?.username}
                       </Badge>
                     </div>

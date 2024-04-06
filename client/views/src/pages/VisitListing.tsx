@@ -75,10 +75,10 @@ function VisitListing() {
         <div className="mb-4 mt-6 flex w-full gap-4 max-lg:flex-col">
           <div className="flex w-full flex-col gap-2">
             <div className="flex flex-col gap-1">
-              <div className="w-4/5 overflow-hidden text-ellipsis whitespace-nowrap">
-                <span className="w-max text-xl font-semibold">
+              <div className="w-4/5">
+                <p className="truncate text-xl font-semibold">
                   {listing.serviceLocation}
-                </span>
+                </p>
               </div>
               <span className="w-max text-base font-semibold text-gray-600">
                 {listing.serviceDescription ?? "No description"}
