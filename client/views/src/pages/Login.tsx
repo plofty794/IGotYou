@@ -55,6 +55,31 @@ function Login() {
   }
 
   useEffect(() => {
+    if (googleSignIn.error) {
+      const err = googleSignIn.error as FirebaseError;
+      const message = (
+        err.code.split("/")[1].slice(0, 1).toUpperCase() +
+        err.code.split("/")[1].slice(1)
+      )
+        .split("-")
+        .join(" ");
+      if (message == "User disabled") {
+        sessionStorage.setItem("googleSignIn", "true");
+        toast.warning("Your account has been disabled!", {
+          action: {
+            label: "See why",
+            onClick: () => navigate("/account-disabled", { replace: true }),
+          },
+          actionButtonStyle: {
+            backgroundColor: "#DC7609",
+            color: "white",
+            border: "1px solid #FF9EA1",
+            borderRadius: "4px",
+          },
+          className: "font-bold",
+        });
+      }
+    }
     if (error) {
       const err = error as FirebaseError;
       const message = (
@@ -80,7 +105,7 @@ function Login() {
         });
       }
     }
-  }, [error, getValues, navigate]);
+  }, [error, getValues, googleSignIn.error, navigate]);
 
   return (
     <main className="flex min-h-screen items-center justify-center">

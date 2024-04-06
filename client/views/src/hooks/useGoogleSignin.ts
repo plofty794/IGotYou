@@ -38,6 +38,7 @@ function useGoogleSignin() {
       )
         .split("-")
         .join(" ");
+      if (message == "User disabled") return;
       toast({
         title: "Oops! An error occurred.",
         description: message,

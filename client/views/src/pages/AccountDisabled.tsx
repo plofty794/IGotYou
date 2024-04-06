@@ -14,17 +14,88 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import useGetReportedUser from "@/hooks/useGetReportedUser";
+import { useState } from "react";
 import { useDocumentTitle } from "usehooks-ts";
 
 function AccountDisabled() {
   useDocumentTitle("Account Disabled - IGotYou");
-
   const { data } = useGetReportedUser();
+  const [email, setEmail] = useState("");
 
-  if (sessionStorage.getItem("disabledUser") == null) {
+  if (
+    sessionStorage.getItem("disabledUser") == null &&
+    sessionStorage.getItem("googleSignIn") == null
+  ) {
     return (window.location.pathname = "/");
+  }
+
+  if (sessionStorage.getItem("googleSignIn")) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+        <Dialog modal>
+          <DialogTrigger asChild>
+            <Button variant="destructive" className="font-semibold">
+              Why your account is disabled? Click here.
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Enter your email address</DialogTitle>
+              <DialogDescription>
+                To see why is your account disabled.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-2">
+              <div className="grid flex-1 gap-2">
+                <Label htmlFor="link" className="sr-only">
+                  Link
+                </Label>
+                <Input
+                  id="link"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoFocus
+                  autoComplete="off"
+                />
+              </div>
+              <Button
+                onClick={() => {
+                  sessionStorage.removeItem("googleSignIn");
+                  sessionStorage.setItem("disabledUser", email);
+                  window.location.reload();
+                }}
+                size={"sm"}
+                className=" bg-gray-950"
+              >
+                Continue
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <Button
+          onClick={() => {
+            sessionStorage.clear();
+            window.location.pathname = "/login";
+          }}
+          size={"sm"}
+          variant={"link"}
+        >
+          Go back
+        </Button>
+      </main>
+    );
   }
 
   return (

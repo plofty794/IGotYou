@@ -869,11 +869,9 @@ export const retryIdentityVerification: RequestHandler = async (
       identityVerificationStatus: "",
     });
 
-    res
-      .status(200)
-      .json({
-        message: "You can now send a new identity verification request.",
-      });
+    res.status(200).json({
+      message: "You can now send a new identity verification request.",
+    });
   } catch (error) {
     next(error);
   }
