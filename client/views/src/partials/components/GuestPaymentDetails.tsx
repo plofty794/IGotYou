@@ -527,17 +527,21 @@ function GuestPaymentDetails({
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem
+                        disabled={
+                          reservationDetails.paymentType == "full-payment"
+                        }
                         className="flex flex-row gap-2 font-semibold"
                         value="partial-payment"
                       >
-                        {" "}
                         Partial payment 50%
                       </SelectItem>
                       <SelectItem
+                        disabled={
+                          reservationDetails.paymentType == "partial-payment"
+                        }
                         className="flex gap-2 font-semibold"
                         value="full-payment"
                       >
-                        {" "}
                         Full payment
                       </SelectItem>
                     </SelectGroup>

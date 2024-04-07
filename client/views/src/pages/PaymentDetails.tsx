@@ -1206,7 +1206,7 @@ export type TReservationDetails = {
   paymentAmount: number;
   partialPaymentRefNo: string;
   fullPaymentRefNo: string;
-  paymentType: "full-payment" | "partial-payment";
+  paymentType: string;
   status: string;
   createdAt: string;
   updatedAt: string;
