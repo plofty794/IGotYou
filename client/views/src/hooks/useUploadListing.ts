@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { axiosPrivateRoute } from "@/api/axiosRoute";
+import { AxiosError, AxiosResponse } from "axios";
+import { toast } from "@/components/ui/use-toast";
 
 type TFileType = {
   public_id: string;
@@ -30,8 +32,13 @@ function useUploadListing() {
       queryClient.invalidateQueries({ queryKey: ["profile", id], exact: true });
       queryClient.invalidateQueries({ queryKey: ["listings"] });
     },
-    onError(error) {
-      console.error(error);
+    onError(err) {
+      const error = err as AxiosError;
+      toast({
+        title: "Oops! An error occurred.",
+        description: (error.response as AxiosResponse).data.error,
+        variant: "destructive",
+      });
     },
   });
 }

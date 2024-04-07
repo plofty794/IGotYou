@@ -142,7 +142,7 @@ function Payments() {
                                       <img
                                         loading="lazy"
                                         alt="Partial payment photo"
-                                        className="h-64 w-full max-w-md rounded-lg border object-cover shadow-lg"
+                                        className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                         src={
                                           v.partialPaymentProofPhoto.secure_url
                                         }
@@ -260,7 +260,7 @@ function Payments() {
                                       <img
                                         loading="lazy"
                                         alt="Partial payment photo"
-                                        className="h-64 w-full rounded-lg border object-cover shadow-lg"
+                                        className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                         src={v.fullPaymentProofPhoto.secure_url}
                                       />
                                     </div>
@@ -322,14 +322,14 @@ function Payments() {
                               <Dialog>
                                 <DialogTrigger className="overflow-hidden rounded-md">
                                   <img
-                                    className="aspect-square object-cover hover:scale-105 transition-transform"
+                                    className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                     src={v.partialPaymentProofPhoto.secure_url}
                                     loading="lazy"
                                   />
                                 </DialogTrigger>
                                 <DialogContent className="max-w-3xl w-max h-max max-h-[70%] p-0">
                                   <img
-                                    className="object-cover rounded-md"
+                                    className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                     src={v.partialPaymentProofPhoto.secure_url}
                                     loading="lazy"
                                   />
@@ -433,7 +433,7 @@ function Payments() {
                             <Dialog>
                               <DialogTrigger className="overflow-hidden rounded-md">
                                 <img
-                                  className="object-cover hover:scale-105 transition-transform"
+                                  className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                   src={v.fullPaymentProofPhoto.secure_url}
                                   alt=""
                                   loading="lazy"
@@ -441,7 +441,7 @@ function Payments() {
                               </DialogTrigger>
                               <DialogContent className="max-w-3xl w-max h-max max-h-[70%] p-0">
                                 <img
-                                  className="object-cover rounded-md"
+                                  className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                   src={v.fullPaymentProofPhoto.secure_url}
                                   alt=""
                                   loading="lazy"

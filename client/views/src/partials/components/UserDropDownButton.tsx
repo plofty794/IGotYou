@@ -130,7 +130,7 @@ export function UserDropDownButton() {
             disabled={!auth.currentUser?.emailVerified}
             className="p-4 font-semibold text-gray-600"
           >
-            <Link to={"/bookings"} className="relative w-full">
+            <Link to={"/bookings/all"} className="relative w-full">
               Bookings
               {data?.data.guestNotifications.filter(
                 (v: { read: boolean; notificationType: string }) =>

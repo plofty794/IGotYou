@@ -1,6 +1,8 @@
 import { axiosPrivateRoute } from "@/api/axiosRoute";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError, AxiosResponse } from "axios";
+import { toast as sonnerToast } from "sonner";
 
 type TData = {
   listingID: string;
@@ -15,17 +17,21 @@ function useRenewListing() {
         `/api/listings/renew-listing/${data.listingID}`,
         {
           listingDuration: data.listingDuration,
-        }
+        },
       );
     },
     onSuccess(data) {
-      toast({
-        title: "Success! 🎉",
-        description: data.data.message + ".",
-        className: "bg-white",
-      });
+      sonnerToast.success(data.data.message + ".");
       queryClient.invalidateQueries({
         queryKey: ["host-listings"],
+      });
+    },
+    onError(error) {
+      toast({
+        title: "Oops! Report submission failed",
+        description: ((error as AxiosError).response as AxiosResponse).data
+          .error,
+        variant: "destructive",
       });
     },
   });

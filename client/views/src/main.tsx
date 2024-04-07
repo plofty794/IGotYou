@@ -7,6 +7,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import UserStateContext from "./context/UserStateContext.tsx";
 import SocketContext from "./context/SocketContext.tsx";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import HolyLoader from "holy-loader";
 
 const App = lazy(() => import("./App.tsx"));
 
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <SocketContext>
           <UserStateContext>
+            <HolyLoader color="#DE1261" />
             <App />
           </UserStateContext>
         </SocketContext>

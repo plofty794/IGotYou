@@ -12,11 +12,8 @@ function useRemoveAsset() {
         `/api/cloudinary/delete/${params.publicId}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        },
       );
-    },
-    onSuccess() {
-      console.log("Success");
     },
     retry: 2,
   });

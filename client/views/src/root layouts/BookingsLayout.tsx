@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useGetGuestNotifications from "@/hooks/useGetGuestNotifications";
 import UserDropDownButton from "@/partials/components/UserDropDownButton";
-import { Link, NavLink, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,17 +22,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { AxiosResponse } from "axios";
 import { useMediaQuery } from "usehooks-ts";
 
-const locations = [
-  "/bookings/all",
-  "/bookings/approved",
-  "/bookings/cancelled",
-  "/bookings/pending",
-  "/bookings/declined",
-];
-
 function BookingsLayout() {
   const { socket } = useContext(SocketContextProvider);
-  const location = useLocation();
+
   const { data } = useGetGuestNotifications();
   const queryClient = useQueryClient();
   const matches = useMediaQuery("(max-width: 768px)");
@@ -61,9 +53,6 @@ function BookingsLayout() {
 
   return (
     <>
-      {!locations.includes(location.pathname) && (
-        <Navigate to={"/bookings/all"} />
-      )}
       <main className="min-h-screen">
         <nav className="sticky top-0 z-20 mx-auto flex w-full max-w-screen-2xl items-center justify-between bg-white px-28 py-5 shadow-md max-md:px-12 2xl:rounded-b-lg">
           <Link to={"/"}>
