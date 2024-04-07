@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/card";
 import Lottie from "lottie-react";
 import noPendingPayment from "../assets/no-pending-payments.json";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -139,14 +138,22 @@ function Payments() {
                                     <Separator />
                                     <div className="flex w-full flex-col items-center gap-2">
                                       <Badge>Payment proof photo</Badge>
-                                      <img
-                                        loading="lazy"
-                                        alt="Partial payment photo"
-                                        className="h-60 w-full object-cover hover:scale-105 transition-transform"
-                                        src={
+                                      <Link
+                                        to={
                                           v.partialPaymentProofPhoto.secure_url
                                         }
-                                      />
+                                        target="_blank"
+                                      >
+                                        <img
+                                          loading="lazy"
+                                          alt="Partial payment photo"
+                                          className="h-60 w-full object-cover hover:scale-105 transition-transform"
+                                          src={
+                                            v.partialPaymentProofPhoto
+                                              .secure_url
+                                          }
+                                        />
+                                      </Link>
                                     </div>
                                   </CardContent>
                                   <CardFooter className="flex justify-between gap-2 max-lg:flex-col p-2">
@@ -257,12 +264,21 @@ function Payments() {
                                     <Separator />
                                     <div className="flex w-full flex-col items-center gap-2">
                                       <Badge>Payment proof photo</Badge>
-                                      <img
-                                        loading="lazy"
-                                        alt="Partial payment photo"
-                                        className="h-60 w-full object-cover hover:scale-105 transition-transform"
-                                        src={v.fullPaymentProofPhoto.secure_url}
-                                      />
+                                      <Link
+                                        to={
+                                          v.partialPaymentProofPhoto.secure_url
+                                        }
+                                        target="_blank"
+                                      >
+                                        <img
+                                          loading="lazy"
+                                          alt="Partial payment photo"
+                                          className="h-60 w-full object-cover hover:scale-105 transition-transform"
+                                          src={
+                                            v.fullPaymentProofPhoto.secure_url
+                                          }
+                                        />
+                                      </Link>
                                     </div>
                                   </CardContent>
                                   <CardFooter className="flex justify-between gap-2 max-lg:flex-col p-2">
@@ -319,22 +335,17 @@ function Payments() {
                         ) : (
                           <Card key={v._id}>
                             <CardHeader className="p-0">
-                              <Dialog>
-                                <DialogTrigger className="overflow-hidden rounded-md">
-                                  <img
-                                    className="h-60 w-full object-cover hover:scale-105 transition-transform"
-                                    src={v.partialPaymentProofPhoto.secure_url}
-                                    loading="lazy"
-                                  />
-                                </DialogTrigger>
-                                <DialogContent className="max-w-3xl w-max h-max max-h-[70%] p-0">
-                                  <img
-                                    className="h-60 w-full object-cover hover:scale-105 transition-transform"
-                                    src={v.partialPaymentProofPhoto.secure_url}
-                                    loading="lazy"
-                                  />
-                                </DialogContent>
-                              </Dialog>
+                              <Link
+                                to={v.partialPaymentProofPhoto.secure_url}
+                                target="_blank"
+                              >
+                                <img
+                                  className="h-60 w-full object-cover hover:scale-105 transition-transform"
+                                  src={v.partialPaymentProofPhoto.secure_url}
+                                  loading="lazy"
+                                />
+                              </Link>
+
                               <Badge className="w-max mx-auto text-xs font-bold bg-gray-950">
                                 Proof of payment
                               </Badge>
@@ -430,24 +441,17 @@ function Payments() {
                       ) : (
                         <Card key={v._id}>
                           <CardHeader className="p-0">
-                            <Dialog>
-                              <DialogTrigger className="overflow-hidden rounded-md">
-                                <img
-                                  className="h-60 w-full object-cover hover:scale-105 transition-transform"
-                                  src={v.fullPaymentProofPhoto.secure_url}
-                                  alt=""
-                                  loading="lazy"
-                                />
-                              </DialogTrigger>
-                              <DialogContent className="max-w-3xl w-max h-max max-h-[70%] p-0">
-                                <img
-                                  className="h-60 w-full object-cover hover:scale-105 transition-transform"
-                                  src={v.fullPaymentProofPhoto.secure_url}
-                                  alt=""
-                                  loading="lazy"
-                                />
-                              </DialogContent>
-                            </Dialog>
+                            <Link
+                              to={v.partialPaymentProofPhoto.secure_url}
+                              target="_blank"
+                            >
+                              <img
+                                className="h-60 w-full object-cover hover:scale-105 transition-transform"
+                                src={v.fullPaymentProofPhoto.secure_url}
+                                alt=""
+                                loading="lazy"
+                              />
+                            </Link>
 
                             <Badge className="w-max mx-auto text-xs font-bold bg-gray-950">
                               Proof of payment
