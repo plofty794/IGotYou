@@ -47,7 +47,7 @@ function useSendReservationPaymentToAdmin() {
       const response = error.response as AxiosResponse;
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+        title: "Uh oh! Payment failed.",
         description: response.data.error,
       });
     },

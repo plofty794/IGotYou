@@ -267,6 +267,15 @@ export const sendReservationPaymentToAdmin: RequestHandler = async (
       );
     }
 
+    const isReservationCancelled = await Reservations.findOne({
+      _id: reservationID,
+      status: "cancelled",
+    });
+
+    if (isReservationCancelled) {
+      throw createHttpError(400, "This service is already cancelled.");
+    }
+
     if (paymentType === "partial-payment") {
       const hasPreviousPartialPayment = await Reservations.findOne({
         _id: reservationID,
