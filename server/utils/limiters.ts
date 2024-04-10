@@ -14,7 +14,6 @@ export const sendBookingRequestLimiter = rateLimit({
   message: {
     error: "Too many booking requests, please try again later.",
   },
-  skipSuccessfulRequests: true,
 });
 
 export const sendIdentityVerificationRequestLimiter = rateLimit({
