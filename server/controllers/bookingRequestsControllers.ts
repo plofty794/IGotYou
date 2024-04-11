@@ -593,16 +593,19 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       );
     }
 
-    const bookingRequest = await BookingRequests.findById(bookingRequestID);
-
-    const hasReservation = await Reservations.findOne({
+    const hasReservation = await Reservations.find({
       hostID: id,
-      guestID: bookingRequest?.guestID,
-      bookingStartsAt: bookingRequest?.requestedBookingDateStartsAt,
-      status: "ongoing",
+      $or: [
+        {
+          status: "ongoing",
+        },
+        {
+          status: "upcoming",
+        },
+      ],
     });
 
-    if (hasReservation) {
+    if (hasReservation.length > 0) {
       throw createHttpError(
         400,
         "You have existing reservation for this dates."
