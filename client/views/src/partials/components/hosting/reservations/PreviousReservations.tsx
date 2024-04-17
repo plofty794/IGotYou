@@ -27,7 +27,7 @@ function PreviousReservations() {
       {isPending ? (
         <h1>Loading...</h1>
       ) : data?.pages[0].data.previousReservations?.length > 0 ? (
-        <ScrollArea className="h-max max-h-96">
+        <ScrollArea className="h-[17.5rem] p-2">
           {data?.pages.flatMap((page) =>
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             page.data.previousReservations.map((v: any) => (
@@ -83,10 +83,10 @@ function PreviousReservations() {
                       </Link>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <span className="text-lg font-bold max-md:hidden">
+                      <span className="text-lg font-bold capitalize max-md:hidden">
                         {v.listingID.serviceTitle}
                       </span>
-                      <span className="text-sm font-semibold max-md:hidden">
+                      <span className="text-sm font-semibold capitalize max-md:hidden">
                         {v.listingID.serviceType}
                       </span>
                       <span className="text-sm font-semibold max-md:hidden">

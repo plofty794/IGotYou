@@ -5,6 +5,7 @@ import {
   sendSubscriptionPayment,
   updateSubscriptionPhotosStatus,
   searchUsernameVerifiedPayment,
+  unsubscribeHosting,
 } from "../controllers/subscriptionPaymentControllers";
 import { authToken } from "../middlewares/authToken";
 const router = Router();
@@ -19,6 +20,11 @@ router.post(
   "/subscriptions/send-subscription-photos",
   authToken,
   sendSubscriptionPayment
+);
+router.post(
+  "/subscriptions/cancel-subscription",
+  authToken,
+  unsubscribeHosting
 );
 router.patch(
   "/subscriptions/update-payment-status",

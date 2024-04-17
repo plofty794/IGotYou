@@ -1,11 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import DatePicker from "./DatePicker";
 import { formatValue } from "react-currency-input-field";
 import useGetAdminOverview from "@/hooks/useGetAdminOverview";
-import { Bar, XAxis, YAxis, BarChart } from "recharts";
-import { ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 function Overview() {
   const { data, isPending } = useGetAdminOverview();
@@ -38,12 +47,8 @@ function Overview() {
       {isPending ? (
         "Loading..."
       ) : (
-        <section className="py-4 px-8 w-full">
-          <div className="w-full flex items-center justify-between">
-            <h1 className="font-bold text-3xl">Dashboard</h1>
-            <DatePicker />
-          </div>
-          <div className="my-4 w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
+        <>
+          <div className="w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
             <Card>
               <CardHeader className="flex-row items-center justify-between">
                 <CardTitle>Total Revenue</CardTitle>
@@ -133,82 +138,80 @@ function Overview() {
               </CardContent>
             </Card>
           </div>
-          <div className="flex gap-4">
+          <div className="mt-4 flex gap-4">
             <Card className="w-3/5">
               <CardHeader>
                 <CardTitle className="font-bold text-xl">Users</CardTitle>
               </CardHeader>
-              <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={totalUsers}>
-                  <XAxis
-                    dataKey="name"
-                    stroke="#888888"
-                    fontSize={12}
-                    fontWeight={700}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    fontWeight={700}
-                    axisLine={false}
-                  />
-                  <Bar
-                    dataKey="totalUsers"
-                    fill="currentColor"
-                    radius={[4, 4, 0, 0]}
-                    className="fill-primary"
-                  />
-                  <Bar
-                    dataKey="totalGuests"
-                    fill="currentColor"
-                    radius={[4, 4, 0, 0]}
-                    className="fill-primary"
-                  />
-                  <Bar
-                    dataKey="totalHosts"
-                    fill="currentColor"
-                    radius={[4, 4, 0, 0]}
-                    className="fill-primary"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <CardContent className="h-96 p-4 pt-0 ">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    width={500}
+                    height={300}
+                    data={totalUsers}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey={"h"} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="totalUsers" stackId="a" fill="#5D92F4" />
+                    <Bar dataKey="totalGuests" stackId="a" fill="#8884d8" />
+                    <Bar dataKey="totalHosts" stackId="a" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
             </Card>
             <Card className="w-2/5">
-              <CardHeader>
+              <CardHeader className="flex-row items-center justify-between">
                 <CardTitle className="font-bold text-xl">
                   Recent subscriptions
                 </CardTitle>
+                <Button
+                  className="font-semibold p-0"
+                  size={"sm"}
+                  variant={"link"}
+                >
+                  <Link to={"/all-subscriptions"}>View all subscriptions</Link>
+                </Button>
               </CardHeader>
               <div className="flex flex-col gap-2">
                 {data?.data.subscribedUsers.length > 0 ? (
-                  data?.data.subscribedUsers.map((user: { user: TUser }) => (
-                    <CardContent className="w-full flex justify-between items-center">
-                      <div className="flex items-center justify-center gap-4">
-                        <Avatar>
-                          <AvatarImage src={user.user.photoUrl} />
-                          <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <p className="text-sm font-bold">
-                            {user.user.username}
-                          </p>
-                          <p className="text-sm font-semibold text-gray-600">
-                            {user.user.email}
-                          </p>
+                  data?.data.subscribedUsers
+                    .slice(0, 5)
+                    .map((user: { user: TUser }) => (
+                      <CardContent className="w-full flex justify-between items-center">
+                        <div className="flex items-center justify-center gap-4">
+                          <Avatar>
+                            <AvatarImage src={user.user.photoUrl} />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <p className="text-sm font-bold">
+                              {user.user.username}
+                            </p>
+                            <p className="text-sm font-semibold text-gray-600">
+                              {user.user.email}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <p className="font-bold text-lg">
-                        {formatValue({
-                          value: "50",
-                          intlConfig: {
-                            locale: "ph",
-                            currency: "php",
-                          },
-                        })}
-                      </p>
-                    </CardContent>
-                  ))
+                        <p className="font-bold text-lg">
+                          {formatValue({
+                            value: "50",
+                            intlConfig: {
+                              locale: "ph",
+                              currency: "php",
+                            },
+                          })}
+                        </p>
+                      </CardContent>
+                    ))
                 ) : (
                   <p className="mt-10 text-center text-base font-bold text-gray-600">
                     No users to show
@@ -217,7 +220,7 @@ function Overview() {
               </div>
             </Card>
           </div>
-        </section>
+        </>
       )}
     </>
   );

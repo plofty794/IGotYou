@@ -126,10 +126,16 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
       });
     }
 
-    const hasReservation = await Reservations.findOne({
-      hostID,
-      listingID,
-      confirmServiceEnded: false,
+    const hasReservation = await Reservations.find({
+      hostID: hostID,
+      $or: [
+        {
+          status: "ongoing",
+        },
+        {
+          status: "upcoming",
+        },
+      ],
       $and: [
         {
           bookingStartsAt: { $lte: requestedBookingDateEndsAt },
@@ -140,7 +146,7 @@ export const sendBookingRequest: RequestHandler = async (req, res, next) => {
       ],
     });
 
-    if (hasReservation) {
+    if (hasReservation.length > 0) {
       return res.status(400).json({ error: "Dates are already taken" });
     }
 
@@ -246,7 +252,7 @@ export const getHostBookingRequests: RequestHandler = async (
           $gte: new Date(requestedBookingDateStartsAt.toString()),
         },
       })
-        .sort({ updatedAt: "desc" })
+        .sort({ createdAt: "desc" })
         .skip((page - 1) * limit)
         .limit(limit)
         .populate([
@@ -261,7 +267,7 @@ export const getHostBookingRequests: RequestHandler = async (
     }
 
     const bookingRequests = await BookingRequests.find({ hostID: id })
-      .sort({ updatedAt: "desc" })
+      .sort({ createdAt: "desc" })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate([
@@ -593,6 +599,8 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
       );
     }
 
+    const bookingRequest = await BookingRequests.findById(bookingRequestID);
+
     const hasReservation = await Reservations.find({
       hostID: id,
       $or: [
@@ -601,6 +609,14 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
         },
         {
           status: "upcoming",
+        },
+      ],
+      $and: [
+        {
+          bookingStartsAt: { $lte: bookingRequest.requestedBookingDateEndsAt },
+        },
+        {
+          bookingEndsAt: { $gte: bookingRequest.requestedBookingDateStartsAt },
         },
       ],
     });
@@ -693,7 +709,16 @@ export const acceptBookingRequest: RequestHandler = async (req, res, next) => {
         html: emailPendingServicePayment(
           (approvedBookingRequests?.guestID as { username: string }).username,
           (approvedBookingRequests?.listingID as { serviceTitle: string })
-            .serviceTitle
+            .serviceTitle,
+          [
+            new Date(
+              approvedBookingRequests.requestedBookingDateStartsAt
+            ).toDateString(),
+            new Date(
+              approvedBookingRequests.requestedBookingDateEndsAt
+            ).toDateString(),
+          ],
+          approvedBookingRequests?.totalPrice
         ),
       }),
     ]);

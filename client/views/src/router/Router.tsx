@@ -81,7 +81,6 @@ import PreviousReservationsTab from "../partials/components/hosting/reservations
 import ReservationDetails from "../pages/ReservationDetails";
 import PaymentDetails from "../pages/PaymentDetails";
 import Subscription from "../pages/Subscription";
-import HostReviews from "../pages/HostReviews";
 import WriteAFeedback from "../pages/WriteAFeedback";
 import AccountDisabled from "../pages/AccountDisabled";
 import useLogOutUser from "@/hooks/useLogout";
@@ -90,6 +89,11 @@ import { UserStateContextProvider } from "@/context/UserStateContext";
 import { auth } from "@/firebase config/config";
 import { SocketContextProvider } from "@/context/SocketContext";
 import ListingsLoader from "@/partials/loaders/ListingsLoader";
+import SubscriptionExpired from "@/pages/SubscriptionExpired";
+import HostEarnings from "@/pages/HostEarnings";
+import HostReviewsLayout from "@/root layouts/HostReviewsLayout";
+import HostReviews from "@/pages/HostReviews";
+import GuestReviews from "@/pages/GuestReviews";
 
 function Router() {
   const logOut = useLogOutUser();
@@ -515,7 +519,11 @@ function Router() {
           </Route>
           <Route path="hosting" element={<Hosting />} />
           <Route path="hosting-subscription" element={<Subscription />} />
-          <Route path="hosting-reviews" element={<HostReviews />} />
+          <Route path="hosting-reviews/:userID" element={<HostReviewsLayout />}>
+            <Route path="host" element={<HostReviews />} />
+            <Route path="guest" element={<GuestReviews />} />
+          </Route>
+          <Route path="hosting-earnings" element={<HostEarnings />} />
         </Route>
 
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}
@@ -525,6 +533,11 @@ function Router() {
           <Route path="confirm-payment" element={<ConfirmPayment />} />
           <Route path="payment-success" element={<PaymentSuccessful />} />
         </Route>
+
+        <Route
+          path="/subscription/:id/expired"
+          element={<SubscriptionExpired />}
+        />
 
         {/* LOGIN & PASSWORD RESET & 404 Routes */}
         <Route>

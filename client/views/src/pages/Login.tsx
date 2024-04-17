@@ -6,14 +6,6 @@ import { LoginSchema, ZodLoginSchema } from "@/zod/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "../../node_modules/@geoapify/geocoder-autocomplete/styles/minimal.css";
 import useLogin from "@/hooks/useLogin";
-import {
-  Dialog,
-  DialogHeader,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import Register from "../partials/components/Register";
 import ErrorMessage from "@/partials/components/ErrorMessage";
 import { useEffect } from "react";
@@ -197,40 +189,7 @@ function Login() {
               <span className="font-medium text-gray-600">
                 New to IGotYou?{" "}
               </span>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    className="ml-1 p-0 text-xs font-semibold text-gray-900 underline underline-offset-2"
-                    variant={"link"}
-                    size={"sm"}
-                  >
-                    Sign up
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="border border-slate-300 p-8 max-md:w-full">
-                  <DialogHeader>
-                    <DialogTitle className="flex flex-col items-center justify-center gap-4">
-                      <span className="h-20 w-20 max-lg:w-32 max-md:w-20">
-                        <img
-                          className="mx-auto block max-h-full max-w-full object-cover transition-all hover:scale-105"
-                          loading="lazy"
-                          src="https://uploads.turbologo.com/uploads/icon/preview_image/2880304/draw_svg20200612-15006-1ioouzj.svg.png"
-                          alt="logo"
-                        />
-                      </span>
-                      <span className="text-2xl font-semibold">
-                        Sign up to IGotYou
-                      </span>
-                    </DialogTitle>
-                  </DialogHeader>
-                  <Register />
-                  <DialogFooter className="px-4 py-2 text-center text-xs font-semibold text-gray-600">
-                    Sign up and become a part of the conversation. Share your
-                    thoughts, ideas, and feedback with us and connect with
-                    others who share your interests.
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <Register />
             </div>
           </div>
         </div>

@@ -330,7 +330,23 @@ function PaymentDetails() {
                             <p className="text-sm font-semibold text-gray-600">
                               Payment verification status
                             </p>
-                            <Badge>
+                            <Badge
+                              className={`font-bold capitalize ${
+                                (
+                                  data?.data
+                                    .reservationDetails as TReservationDetails
+                                ).partialPaymentVerificationStatus === "success"
+                                  ? "text-green-600"
+                                  : (
+                                        data?.data
+                                          .reservationDetails as TReservationDetails
+                                      ).partialPaymentVerificationStatus ===
+                                      "rejected"
+                                    ? "text-red-600"
+                                    : "text-amber-600"
+                              }`}
+                              variant={"outline"}
+                            >
                               {
                                 (
                                   data?.data
@@ -560,12 +576,28 @@ function PaymentDetails() {
                             <p className="text-sm font-semibold text-gray-600">
                               Payment verification status
                             </p>
-                            <Badge>
+                            <Badge
+                              className={`font-bold capitalize ${
+                                (
+                                  data?.data
+                                    .reservationDetails as TReservationDetails
+                                ).partialPaymentVerificationStatus === "success"
+                                  ? "text-green-600"
+                                  : (
+                                        data?.data
+                                          .reservationDetails as TReservationDetails
+                                      ).partialPaymentVerificationStatus ===
+                                      "rejected"
+                                    ? "text-red-600"
+                                    : "text-amber-600"
+                              }`}
+                              variant={"outline"}
+                            >
                               {
                                 (
                                   data?.data
                                     .reservationDetails as TReservationDetails
-                                ).fullPaymentVerificationStatus
+                                ).partialPaymentVerificationStatus
                               }
                             </Badge>
                           </div>
@@ -794,7 +826,23 @@ function PaymentDetails() {
                           <p className="text-sm font-semibold text-gray-600">
                             Payment verification status
                           </p>
-                          <Badge>
+                          <Badge
+                            className={`font-bold capitalize ${
+                              (
+                                data?.data
+                                  .reservationDetails as TReservationDetails
+                              ).partialPaymentVerificationStatus === "success"
+                                ? "text-green-600"
+                                : (
+                                      data?.data
+                                        .reservationDetails as TReservationDetails
+                                    ).partialPaymentVerificationStatus ===
+                                    "rejected"
+                                  ? "text-red-600"
+                                  : "text-amber-600"
+                            }`}
+                            variant={"outline"}
+                          >
                             {
                               (
                                 data?.data
@@ -1028,7 +1076,23 @@ function PaymentDetails() {
                           <p className="text-sm font-semibold text-gray-600">
                             Payment verification status
                           </p>
-                          <Badge>
+                          <Badge
+                            className={`font-bold capitalize ${
+                              (
+                                data?.data
+                                  .reservationDetails as TReservationDetails
+                              ).fullPaymentVerificationStatus === "success"
+                                ? "text-green-600"
+                                : (
+                                      data?.data
+                                        .reservationDetails as TReservationDetails
+                                    ).fullPaymentVerificationStatus ===
+                                    "rejected"
+                                  ? "text-red-600"
+                                  : "text-amber-600"
+                            }`}
+                            variant={"outline"}
+                          >
                             {
                               (
                                 data?.data

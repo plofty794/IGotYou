@@ -42,7 +42,7 @@ function IdentityPhotos() {
                       <>
                         {v.identityVerificationStatus === "pending" && (
                           <Card key={v._id}>
-                            <CardHeader className="p-0">
+                            <CardHeader className="p-0 overflow-hidden">
                               <Link to={v.identityPhoto}>
                                 <img
                                   className="h-60 w-full object-cover hover:scale-105 transition-transform"

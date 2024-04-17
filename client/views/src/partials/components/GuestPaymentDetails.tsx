@@ -17,7 +17,7 @@ import {
   CloudinaryUploadWidget,
 } from "@/types/createUploadWidget";
 import useRemoveAsset from "@/hooks/useRemoveAsset";
-import CurrencyInput, { formatValue } from "react-currency-input-field";
+import { formatValue } from "react-currency-input-field";
 import useSendReservationPaymentToAdmin from "@/hooks/useSendReservationPaymentToAdmin";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -506,7 +506,7 @@ function GuestPaymentDetails({
               className="flex flex-col gap-2"
               onSubmit={handleSubmit(handlePaymentSubmit)}
             >
-              <CardContent className="flex flex-col gap-2">
+              <CardContent className="flex flex-col gap-2 pb-0">
                 <div className="flex items-center justify-center gap-1">
                   <p className="text-sm font-semibold">Pay with</p>{" "}
                   <img
@@ -514,13 +514,34 @@ function GuestPaymentDetails({
                     alt="Gcash"
                   />
                 </div>
+
                 <Badge
                   variant={"outline"}
                   className="mx-auto w-max font-bold text-blue-600"
                 >
                   Send the payment to +63907 925 1189
                 </Badge>
-                <Select onValueChange={(value) => setPaymentType(value)}>
+                <Badge
+                  variant={"outline"}
+                  className="mx-auto w-max font-bold text-blue-600"
+                >
+                  Recipient: Ace Guevarra
+                </Badge>
+
+                <Select
+                  onValueChange={(value) => {
+                    setPaymentType(value);
+                    if (value === "partial-payment") {
+                      setExpectedPaymentAmount(
+                        String(reservationDetails.paymentAmount / 2),
+                      );
+                    } else {
+                      setExpectedPaymentAmount(
+                        String(reservationDetails.paymentAmount),
+                      );
+                    }
+                  }}
+                >
                   <SelectTrigger className="flex w-full items-center justify-center gap-2 font-semibold">
                     <SelectValue placeholder="Payment type" />
                   </SelectTrigger>
@@ -563,31 +584,7 @@ function GuestPaymentDetails({
                     {errors.paymentRefNo.message}
                   </p>
                 )}
-                <CurrencyInput
-                  prefix="₱"
-                  allowNegativeValue={false}
-                  decimalsLimit={2}
-                  className="rounded-md border p-2 text-sm font-medium outline-none focus-within:border-black"
-                  placeholder={`Expected amount ${
-                    paymentType === "partial-payment"
-                      ? formatValue({
-                          value: String(reservationDetails.paymentAmount / 2),
-                          intlConfig: {
-                            locale: "ph",
-                            currency: "php",
-                          },
-                        })
-                      : formatValue({
-                          value: String(reservationDetails.paymentAmount),
-                          intlConfig: {
-                            locale: "ph",
-                            currency: "php",
-                          },
-                        })
-                  }`}
-                  onValueChange={(value) => setExpectedPaymentAmount(value)}
-                  value={expectedPaymentAmount}
-                />
+
                 {paymentType === "partial-payment" &&
                   expectedPaymentAmount != null &&
                   parseInt(expectedPaymentAmount) !==
@@ -716,7 +713,7 @@ function GuestPaymentDetails({
                       />
                     </svg>
                   </Button>
-                  <CardFooter className="px-0">
+                  <CardFooter className="px-0 pb-0">
                     <div className="flex w-full flex-col gap-2">
                       {reservationDetails.status === "cancelled" ? (
                         <Button

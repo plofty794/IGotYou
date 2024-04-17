@@ -70,6 +70,7 @@ export const emailServiceCancellationApproval = (
       <p>Based on the cancellation policy and your cancellation date of ${cancellationDate}, 
       your refund amount is calculated as follows:</p>
       <p><strong>Refund Amount:</strong> ${calculateRefund(
+        reservationDates[0],
         cancellationDate,
         cancellationPolicy,
         price
@@ -82,7 +83,8 @@ export const emailServiceCancellationApproval = (
   </body>
   </html>`;
 
-const calculateRefund = (
+export const calculateRefund = (
+  bookingStartsAt: string,
   cancellationDate: string,
   cancellationPolicy: string,
   bookingAmount: number
@@ -91,25 +93,45 @@ const calculateRefund = (
   switch (cancellationPolicy) {
     case "Flexible":
       refundPercentage =
-        differenceInDays(new Date(), new Date(cancellationDate)) >= 1 ? 100 : 0; // Full refund if cancelled 1 day prior
+        differenceInDays(
+          new Date(bookingStartsAt).setHours(0, 0, 0, 0),
+          new Date(cancellationDate).setHours(0, 0, 0, 0)
+        ) >= 1
+          ? 100
+          : 0;
       break;
     case "Moderate":
       refundPercentage =
-        differenceInDays(new Date(), new Date(cancellationDate)) >= 3 ? 100 : 0; // Full refund if cancelled at least 3 days prior
+        differenceInDays(
+          new Date(bookingStartsAt).setHours(0, 0, 0, 0),
+          new Date(cancellationDate).setHours(0, 0, 0, 0)
+        ) >= 3
+          ? 100
+          : 0;
       break;
     case "Strict":
-      if (differenceInDays(new Date(), new Date(cancellationDate)) >= 5)
-        refundPercentage = 100; // Full refund if cancelled 5 days prior
-      else if (differenceInDays(new Date(), new Date(cancellationDate)) >= 3)
-        refundPercentage = 50; // 50% refund if cancelled 3-5 days prior
+      if (
+        differenceInDays(
+          new Date(bookingStartsAt).setHours(0, 0, 0, 0),
+          new Date(cancellationDate).setHours(0, 0, 0, 0)
+        ) >= 5
+      )
+        refundPercentage = 100;
+      else if (
+        differenceInDays(
+          new Date(bookingStartsAt).setHours(0, 0, 0, 0),
+          new Date(cancellationDate).setHours(0, 0, 0, 0)
+        ) >= 3
+      )
+        refundPercentage = 50;
       break;
     case "Non-refundable":
-      refundPercentage = 0; // Non-refundable policy
+      refundPercentage = 0;
       break;
     default:
-      refundPercentage = 0; // Default to no refund if policy not recognized
+      refundPercentage = 0;
   }
 
-  const refundAmount = (refundPercentage / 100) * bookingAmount; // Assuming bookingAmount is defined elsewhere
-  return refundAmount.toFixed(2); // Return refund amount rounded to 2 decimal places
+  const refundAmount = (refundPercentage / 100) * bookingAmount;
+  return refundAmount.toFixed(2);
 };

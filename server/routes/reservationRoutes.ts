@@ -3,10 +3,12 @@ import {
   confirmServiceEnded,
   getCurrentReservation,
   getCurrentReservationDetails,
+  getHostReservationPaymentsTransactions,
   getPendingServicePayments,
   getPreviousReservations,
   getReservations,
   getUpcomingReservations,
+  hostEarnings,
   requestServiceCancellation,
   sendRequestPayout,
   sendReservationPaymentToAdmin,
@@ -22,6 +24,12 @@ router.get(
   "/reservation-details/:reservationID",
   authToken,
   getCurrentReservationDetails
+);
+router.get("/reservations/total-earnings", authToken, hostEarnings);
+router.get(
+  "/reservations/reservation-payments-transactions/:page",
+  authToken,
+  getHostReservationPaymentsTransactions
 );
 router.get("/reservations/current", authToken, getCurrentReservation);
 router.get("/reservations/all/:page", authToken, getReservations);

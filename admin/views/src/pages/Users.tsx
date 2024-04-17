@@ -256,10 +256,12 @@ function Users() {
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex items-center justify-between">
           <span className="font-bold text-3xl">Users</span>
-          <span className="font-bold text-lg ">
-            # of users:{" "}
-            {users.data?.pages.flatMap((page) => page.data.totalUsers)[0]}
-          </span>
+          <div>
+            <span className="font-bold text-lg ">
+              # of users:{" "}
+              {users.data?.pages.flatMap((page) => page.data.totalUsers)[0]}
+            </span>
+          </div>
         </div>
         {users.isPending ? (
           "Loading..."

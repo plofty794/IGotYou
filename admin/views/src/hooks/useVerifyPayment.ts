@@ -23,7 +23,7 @@ function useVerifyPayment() {
         description: "Pending payment has been updated.",
         className: "bg-[#FFF]",
       });
-      queryClient.invalidateQueries({ queryKey: ["pending-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["pending-subscriptions"] });
     },
     onError(data) {
       console.log(data);

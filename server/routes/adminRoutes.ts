@@ -12,11 +12,20 @@ import {
   getCancelledReservations,
   getIdentityVerificationRequests,
   getServicePayments,
+  getAnalytics,
+  getReports,
+  getReservationPaymentsTransactions,
 } from "../controllers/adminControllers";
 const router = Router();
 
 router.get("/admin", getAdminInfo);
 router.get("/admin/overview", getAdminOverview);
+router.get(
+  "/admin/reservation-payments-transactions/:page",
+  getReservationPaymentsTransactions
+);
+router.get("/admin/analytics", getAnalytics);
+router.get("/admin/reports", getReports);
 router.get("/admin/active-users/:page", getActiveUsers);
 router.get("/admin/users/:page", getUsers);
 router.get("/admin/users-reports/:page", getUserReports);

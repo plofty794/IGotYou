@@ -21,8 +21,8 @@ function Navigation() {
           <NavLink className="font-bold opacity-70" to={"/payments"}>
             Payments
           </NavLink>
-          <NavLink className="font-bold opacity-70" to={"/reports"}>
-            Reports
+          <NavLink className="font-bold opacity-70" to={"/complaints"}>
+            Complaints
           </NavLink>
           <NavLink className="font-bold opacity-70" to={"/refunds"}>
             Refunds

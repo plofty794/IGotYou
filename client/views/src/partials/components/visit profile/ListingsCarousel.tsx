@@ -54,11 +54,11 @@ function ListingsCarousel({ listings }: { listings: TListing[] }) {
                   />
                 )}
                 <div className="h-full w-full text-sm">
-                  <p className="font-semibold">{v.serviceType}</p>
-                  <div className="w-2/4 overflow-hidden text-ellipsis">
-                    <span className=" w-max text-lg font-semibold">
+                  <p className="font-medium text-gray-600">{v.serviceType}</p>
+                  <div className="w-3/4">
+                    <p className="truncate text-lg font-semibold capitalize">
                       {v.serviceTitle}
-                    </span>
+                    </p>
                   </div>
                 </div>
               </div>

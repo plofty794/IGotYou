@@ -136,11 +136,20 @@ function Payments() {
                                       </p>
                                     </div>
                                     <Separator />
+                                    <div className="flex w-full items-center justify-between">
+                                      <p className="text-sm font-semibold text-gray-600">
+                                        From
+                                      </p>
+                                      <p className="text-xs font-semibold">
+                                        {v.guestID.username}
+                                      </p>
+                                    </div>
+                                    <Separator />
                                     <div className="flex w-full flex-col items-center gap-2">
                                       <Badge>Payment proof photo</Badge>
                                       <Link
                                         to={
-                                          v.partialPaymentProofPhoto.secure_url
+                                          v.partialPaymentProofPhoto?.secure_url
                                         }
                                         target="_blank"
                                       >
@@ -150,7 +159,7 @@ function Payments() {
                                           className="h-60 w-full object-cover hover:scale-105 transition-transform"
                                           src={
                                             v.partialPaymentProofPhoto
-                                              .secure_url
+                                              ?.secure_url
                                           }
                                         />
                                       </Link>
@@ -262,12 +271,19 @@ function Payments() {
                                       </p>
                                     </div>
                                     <Separator />
+                                    <div className="flex w-full items-center justify-between">
+                                      <p className="text-sm font-semibold text-gray-600">
+                                        From
+                                      </p>
+                                      <p className="text-xs font-semibold">
+                                        {v.guestID.username}
+                                      </p>
+                                    </div>
+                                    <Separator />
                                     <div className="flex w-full flex-col items-center gap-2">
                                       <Badge>Payment proof photo</Badge>
                                       <Link
-                                        to={
-                                          v.partialPaymentProofPhoto.secure_url
-                                        }
+                                        to={v.fullPaymentProofPhoto?.secure_url}
                                         target="_blank"
                                       >
                                         <img
@@ -334,7 +350,7 @@ function Payments() {
                           </>
                         ) : (
                           <Card key={v._id}>
-                            <CardHeader className="p-0">
+                            <CardHeader className="p-0 overflow-hidden">
                               <Link
                                 to={v.partialPaymentProofPhoto.secure_url}
                                 target="_blank"
@@ -396,6 +412,15 @@ function Payments() {
                                 </p>
                               </div>
                               <Separator />
+                              <div className="flex w-full items-center justify-between">
+                                <p className="text-sm font-semibold text-gray-600">
+                                  From
+                                </p>
+                                <p className="text-xs font-semibold">
+                                  {v.guestID.username}
+                                </p>
+                              </div>
+                              <Separator />
                             </CardContent>
                             <CardFooter className="flex justify-between gap-2 max-lg:flex-col p-2">
                               <Button
@@ -440,9 +465,9 @@ function Payments() {
                         )
                       ) : (
                         <Card key={v._id}>
-                          <CardHeader className="p-0">
+                          <CardHeader className="p-0 overflow-hidden">
                             <Link
-                              to={v.partialPaymentProofPhoto.secure_url}
+                              to={v.fullPaymentProofPhoto.secure_url}
                               target="_blank"
                             >
                               <img
@@ -506,6 +531,15 @@ function Payments() {
                               </p>
                               <p className="text-xs font-semibold">
                                 {format(new Date(v.fullPaymentDate), "PP p")}
+                              </p>
+                            </div>
+                            <Separator />
+                            <div className="flex w-full items-center justify-between">
+                              <p className="text-sm font-semibold text-gray-600">
+                                From
+                              </p>
+                              <p className="text-xs font-semibold">
+                                {v.guestID.username}
                               </p>
                             </div>
                             <Separator />

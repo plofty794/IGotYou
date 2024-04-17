@@ -14,7 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,6 +37,7 @@ function RefundsTable<TData, TValue>({
   totalPages,
   fetchNextPage,
 }: DataTableProps<TData, TValue>) {
+  const queryClient = useQueryClient();
   const table = useReactTable({
     data,
     columns,
@@ -98,6 +107,25 @@ function RefundsTable<TData, TValue>({
             </Button>
           </div>
         )}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() =>
+                  queryClient.invalidateQueries({
+                    queryKey: ["user-refunds"],
+                  })
+                }
+                variant={"outline"}
+              >
+                <ReloadIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Reload</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div className="rounded-md border">
         <Table>

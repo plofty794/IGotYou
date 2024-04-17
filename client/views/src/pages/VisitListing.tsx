@@ -27,8 +27,10 @@ import { TRating } from "./HostReviews";
 import { useMediaQuery } from "usehooks-ts";
 import AssetsSlider from "@/partials/components/AssetsSlider";
 import { TListing } from "@/root layouts/BecomeAHostLayout";
+import useGetCurrentUserProfile from "@/hooks/useGetUserProfile";
 
 function VisitListing() {
+  const { data } = useGetCurrentUserProfile();
   const matches = useMediaQuery("(max-width: 768px)");
   const navigate = useNavigate();
   const {
@@ -134,15 +136,17 @@ function VisitListing() {
                         {listing.host.username}
                       </span>
                     </span>
-                    <Badge variant={"outline"} className="w-max">
-                      {formatDistanceToNow(
-                        subDays(
-                          new Date(listing.host.subscriptionExpiresAt),
-                          30,
-                        ),
-                      )}{" "}
-                      of hosting
-                    </Badge>
+                    {listing.host.subscriptionExpiresAt && (
+                      <Badge variant={"outline"} className="w-max">
+                        {formatDistanceToNow(
+                          subDays(
+                            new Date(listing.host.subscriptionExpiresAt),
+                            30,
+                          ),
+                        )}{" "}
+                        of hosting
+                      </Badge>
+                    )}
                   </div>
                 </div>
                 <MessageHost listing={listing} />
@@ -239,14 +243,15 @@ function VisitListing() {
                   </span>
                 </div>
               </div>
-              {auth.currentUser?.emailVerified ? (
+              {auth.currentUser?.emailVerified &&
+              data?.data.user.identityVerified ? (
                 <div className="flex flex-col items-center gap-4 max-md:gap-2">
                   <Button
                     disabled={
                       compareAsc(
                         new Date().setHours(0, 0, 0, 0),
                         new Date(listing.endsAt),
-                      ) >= 0
+                      ) >= 0 || listing.host.subscriptionExpiresAt == null
                     }
                     className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold max-md:mt-2"
                   >
@@ -255,7 +260,7 @@ function VisitListing() {
                         compareAsc(
                           new Date().setHours(0, 0, 0, 0),
                           new Date(listing.endsAt),
-                        ) >= 0
+                        ) >= 0 || listing.host.subscriptionExpiresAt == null
                           ? "pointer-events-none"
                           : ""
                       } `}
@@ -271,7 +276,15 @@ function VisitListing() {
               ) : (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold max-md:mt-2">
+                    <Button
+                      disabled={
+                        compareAsc(
+                          new Date().setHours(0, 0, 0, 0),
+                          new Date(listing.endsAt),
+                        ) >= 0 || listing.host.subscriptionExpiresAt == null
+                      }
+                      className="mt-6 w-full rounded-full bg-gray-950 p-6 text-sm font-semibold max-md:mt-2"
+                    >
                       Continue
                     </Button>
                   </AlertDialogTrigger>
@@ -284,7 +297,7 @@ function VisitListing() {
                           height={25}
                         />
                         <AlertDialogTitle className="text-base font-semibold">
-                          Oops! Your email isn't verified yet.
+                          Oops! Your email and identity isn't verified yet.
                         </AlertDialogTitle>
                       </div>
                     </AlertDialogHeader>
@@ -302,15 +315,13 @@ function VisitListing() {
                             trustworthiness
                           </span>{" "}
                           of our platform, we kindly request your assistance in
-                          verifying your email address. This verification is
-                          necessary before you can proceed to create a listing
-                          on our website.
+                          verifying your email address and identity. This
+                          verification is necessary before you can proceed to
+                          book a listing on our website.
                         </span>
                         <span className="text-sm text-zinc-900 ">
                           Thank you for your cooperation in ensuring the
-                          security and integrity of our platform. We look
-                          forward to having your verified email and seeing your
-                          listing soon!
+                          security and integrity of our platform.
                         </span>
                       </div>
                     </div>

@@ -269,6 +269,13 @@ function AllIdentityVerificationRequests() {
         </div>
         {isPending ? (
           "Loading..."
+        ) : data?.pages == null ? (
+          <IdentityVerificationRequestsTable
+            columns={columns}
+            data={[]}
+            totalPages={0}
+            fetchNextPage={fetchNextPage}
+          />
         ) : (
           <IdentityVerificationRequestsTable
             columns={columns}

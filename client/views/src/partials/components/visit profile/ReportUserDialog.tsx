@@ -110,7 +110,7 @@ function ReportUserDialog({
           >
             <path d="M3.5 2.75a.75.75 0 0 0-1.5 0v14.5a.75.75 0 0 0 1.5 0v-4.392l1.657-.348a6.449 6.449 0 0 1 4.271.572 7.948 7.948 0 0 0 5.965.524l2.078-.64A.75.75 0 0 0 18 12.25v-8.5a.75.75 0 0 0-.904-.734l-2.38.501a7.25 7.25 0 0 1-4.186-.363l-.502-.2a8.75 8.75 0 0 0-5.053-.439l-1.475.31V2.75Z" />
           </svg>
-          Report {username}
+          Report {username?.split(" ")[0]}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl gap-4">
@@ -118,7 +118,7 @@ function ReportUserDialog({
           <div className="w-full">
             <DialogHeader>
               <DialogTitle className="mb-4 text-xl font-bold">
-                Why are you reporting {username}?
+                Why are you reporting {username?.split(" ")[0]}?
               </DialogTitle>
             </DialogHeader>
             <ScrollArea className="h-72 pr-4">
@@ -239,7 +239,7 @@ function ReportUserDialog({
                     >
                       <path d="M3.5 2.75a.75.75 0 0 0-1.5 0v14.5a.75.75 0 0 0 1.5 0v-4.392l1.657-.348a6.449 6.449 0 0 1 4.271.572 7.948 7.948 0 0 0 5.965.524l2.078-.64A.75.75 0 0 0 18 12.25v-8.5a.75.75 0 0 0-.904-.734l-2.38.501a7.25 7.25 0 0 1-4.186-.363l-.502-.2a8.75 8.75 0 0 0-5.053-.439l-1.475.31V2.75Z" />
                     </svg>
-                    Report {username}
+                    Report {username?.split(" ")[0]}
                   </>
                 )}
               </Button>
@@ -247,7 +247,7 @@ function ReportUserDialog({
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="font-bold">
-                  Are you sure you want to report {username}?
+                  Are you sure you want to report {username?.split(" ")[0]}?
                 </AlertDialogTitle>
               </AlertDialogHeader>
               <AlertDialogDescription className="font-semibold">

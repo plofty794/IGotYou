@@ -3,16 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import useGetRefunds from "@/hooks/useGetRefunds";
 import RefundsTable from "@/partials/RefundsTable";
-import { differenceInDays } from "date-fns";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { formatValue } from "react-currency-input-field";
 
 type TUser = {
   email: string;
@@ -47,6 +38,9 @@ type TRefunds = {
     paymentStatus: string;
     status: string;
     updatedAt: string;
+    partialPaymentAmount: number;
+    fullPaymentAmount: number;
+    refundAmount: string;
     _id: string;
   };
   guestCancelReasons: string;
@@ -55,20 +49,6 @@ type TRefunds = {
 };
 
 const columns: ColumnDef<TRefunds>[] = [
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <>
-        <Badge
-          className="text-red-600 font-bold capitalize"
-          variant={"outline"}
-        >
-          {row.original?.status}
-        </Badge>
-      </>
-    ),
-  },
   {
     header: "Host",
     cell: ({ row }) => (
@@ -94,11 +74,60 @@ const columns: ColumnDef<TRefunds>[] = [
     ),
   },
   {
-    header: "Price",
+    header: "To pay",
     cell: ({ row }) => (
       <p className="font-bold text-xs capitalize text-green-600">
-        {row.original?.listingID.price}
+        {formatValue({
+          value: String(row.original?.reservationID.paymentAmount),
+          intlConfig: {
+            locale: "ph",
+            currency: "php",
+          },
+          decimalScale: 2,
+        })}
       </p>
+    ),
+  },
+  {
+    header: "Paid amount",
+    cell: ({ row }) => (
+      <p className="font-bold text-xs capitalize text-green-600">
+        {formatValue({
+          value: isNaN(
+            row.original?.reservationID.paymentStatus === "partially-paid"
+              ? row.original?.reservationID.partialPaymentAmount
+              : row.original?.reservationID.paymentAmount
+          )
+            ? "0"
+            : String(
+                row.original?.reservationID.paymentStatus === "partially-paid"
+                  ? row.original?.reservationID.partialPaymentAmount
+                  : row.original?.reservationID.paymentAmount
+              ),
+          intlConfig: {
+            locale: "ph",
+            currency: "php",
+          },
+          decimalScale: 2,
+        })}
+      </p>
+    ),
+  },
+  {
+    header: "Payment Status",
+    cell: ({ row }) => (
+      <Badge
+        variant={"outline"}
+        className={`font-bold capitalize ${
+          row.original.reservationID.paymentStatus === "pending"
+            ? "text-amber-600"
+            : row.original.reservationID.paymentStatus === "fully-paid"
+            ? "text-green-600"
+            : "text-blue-600"
+        }`}
+      >
+        {row.original?.reservationID.paymentStatus}
+      </Badge>
     ),
   },
   {
@@ -142,14 +171,16 @@ const columns: ColumnDef<TRefunds>[] = [
     cell: ({ row }) => (
       <Badge
         variant={"outline"}
-        className="capitalize font-bold text-green-600"
+        className="capitalize font-bold text-amber-600"
       >
-        ₱
-        {calculateRefund(
-          row.original?.createdAt,
-          row.original?.listingID.cancellationPolicy,
-          row.original?.reservationID.paymentAmount
-        )}
+        {formatValue({
+          value: String(row.original.reservationID.refundAmount),
+          intlConfig: {
+            locale: "ph",
+            currency: "php",
+          },
+          decimalScale: 2,
+        })}
       </Badge>
     ),
   },
@@ -205,7 +236,6 @@ const columns: ColumnDef<TRefunds>[] = [
 
 function Refunds() {
   const { data, isPending, fetchNextPage } = useGetRefunds();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     document.title = "Refunds - Admin IGotYou";
@@ -216,28 +246,16 @@ function Refunds() {
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex items-center justify-between">
           <span className="font-bold text-3xl">Refunds</span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() =>
-                    queryClient.invalidateQueries({
-                      queryKey: ["user-refunds"],
-                    })
-                  }
-                  variant={"outline"}
-                >
-                  <ReloadIcon />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Reload</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
         {isPending ? (
           "Loading..."
+        ) : data?.pages == null ? (
+          <RefundsTable
+            columns={columns}
+            data={[]}
+            totalPages={0}
+            fetchNextPage={fetchNextPage}
+          />
         ) : (
           <RefundsTable
             columns={columns}
@@ -255,37 +273,5 @@ function Refunds() {
     </section>
   );
 }
-
-const calculateRefund = (
-  cancellationDate: string,
-  cancellationPolicy: string,
-  bookingAmount: number
-) => {
-  let refundPercentage = 0;
-  switch (cancellationPolicy) {
-    case "Flexible":
-      refundPercentage =
-        differenceInDays(new Date(), new Date(cancellationDate)) >= 1 ? 100 : 0; // Full refund if cancelled 1 day prior
-      break;
-    case "Moderate":
-      refundPercentage =
-        differenceInDays(new Date(), new Date(cancellationDate)) >= 3 ? 100 : 0; // Full refund if cancelled at least 3 days prior
-      break;
-    case "Strict":
-      if (differenceInDays(new Date(), new Date(cancellationDate)) >= 5)
-        refundPercentage = 100; // Full refund if cancelled 5 days prior
-      else if (differenceInDays(new Date(), new Date(cancellationDate)) >= 3)
-        refundPercentage = 50; // 50% refund if cancelled 3-5 days prior
-      break;
-    case "Non-refundable":
-      refundPercentage = 0; // Non-refundable policy
-      break;
-    default:
-      refundPercentage = 0; // Default to no refund if policy not recognized
-  }
-
-  const refundAmount = (refundPercentage / 100) * bookingAmount; // Assuming bookingAmount is defined elsewhere
-  return refundAmount.toFixed(2); // Return refund amount rounded to 2 decimal places
-};
 
 export default Refunds;

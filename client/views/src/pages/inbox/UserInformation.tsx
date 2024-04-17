@@ -29,7 +29,7 @@ function UserInformation({ userID }: { userID: TUserID }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="border-black text-xs" variant={"outline"}>
+        <Button className="border-black text-xs capitalize" variant={"outline"}>
           {userID.username}'s information
         </Button>
       </DialogTrigger>

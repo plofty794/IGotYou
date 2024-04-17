@@ -75,7 +75,11 @@ const columns: ColumnDef<TPreviousReservations>[] = [
     },
     cell: ({ row }) => (
       <Badge
-        className="rounded-full font-bold uppercase text-green-600"
+        className={`rounded-full font-bold uppercase ${
+          row.original.status === "completed"
+            ? "text-green-600"
+            : "text-red-600"
+        }`}
         variant={"outline"}
       >
         {row.original.status}
@@ -111,7 +115,9 @@ const columns: ColumnDef<TPreviousReservations>[] = [
   {
     header: "Listing",
     cell: ({ row }) => (
-      <p className="text-xs font-bold">{row.original.listingID.serviceTitle}</p>
+      <p className="text-xs font-bold capitalize">
+        {row.original.listingID.serviceTitle}
+      </p>
     ),
   },
   {
@@ -150,13 +156,14 @@ const columns: ColumnDef<TPreviousReservations>[] = [
   {
     header: "Amount",
     cell: ({ row }) => (
-      <p className="text-xs font-bold">
+      <p className="text-xs font-bold text-green-600">
         {formatValue({
           value: row.original.paymentAmount.toString(),
           intlConfig: {
             locale: "ph",
             currency: "php",
           },
+          decimalScale: 2,
         })}
       </p>
     ),

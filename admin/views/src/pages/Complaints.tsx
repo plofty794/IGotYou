@@ -226,27 +226,27 @@ async function copyToClipboard(email: string) {
   }
 }
 
-function Reports() {
+function Complaints() {
   const { data, isPending, fetchNextPage } = useGetUserReports();
 
   useEffect(() => {
-    document.title = "Reports - Admin IGotYou";
+    document.title = "Complaints - Admin IGotYou";
   }, []);
 
   return (
     <section className="py-4 px-8">
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex items-center justify-between">
-          <span className="font-bold text-3xl">Reports</span>
+          <span className="font-bold text-3xl">Complaints</span>
           <div className="flex items-center justify-center gap-2">
-            <p className="text-xs font-bold"># of reports level</p>
+            <p className="text-xs font-bold"># of complaints level</p>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="w-2 h-2 bg-green-600 rounded-full"></span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>at least 1 reports</p>
+                  <p>at least 1 complaint</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -256,7 +256,7 @@ function Reports() {
                   <span className="w-2 h-2 bg-amber-600 rounded-full"></span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>at least 3 reports</p>
+                  <p>at least 3 complaints</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -266,7 +266,7 @@ function Reports() {
                   <span className="w-2 h-2 bg-red-600 rounded-full"></span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>at least 5 reports</p>
+                  <p>at least 5 complaints</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -274,6 +274,13 @@ function Reports() {
         </div>
         {isPending ? (
           "Loading..."
+        ) : data?.pages == null ? (
+          <ReportsTable
+            columns={columns}
+            data={[]}
+            totalPages={0}
+            fetchNextPage={fetchNextPage}
+          />
         ) : (
           <ReportsTable
             columns={columns}
@@ -288,4 +295,4 @@ function Reports() {
   );
 }
 
-export default Reports;
+export default Complaints;

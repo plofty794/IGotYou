@@ -110,7 +110,7 @@ function Inbox() {
                                 <AvatarFallback>CN</AvatarFallback>
                               </Avatar>
                               <div className="flex w-full flex-col gap-2 max-sm:hidden">
-                                <span className="text-xs">
+                                <span className="text-xs capitalize">
                                   {v.guestID.username}
                                 </span>
                                 <span
@@ -138,7 +138,7 @@ function Inbox() {
                               </Avatar>
                               <div className="flex w-full flex-col">
                                 <div className="flex w-full items-start justify-between">
-                                  <span className="text-xs">
+                                  <span className="text-xs capitalize">
                                     {v.guestID.username}
                                   </span>
                                   <span className="text-xs text-gray-600">
@@ -191,7 +191,7 @@ function Inbox() {
                                 <AvatarFallback>CN</AvatarFallback>
                               </Avatar>
                               <div className="flex w-full flex-col gap-2 max-sm:hidden">
-                                <span className="text-xs">
+                                <span className="text-xs capitalize">
                                   {v.guestID.username}
                                 </span>
                                 <span
@@ -219,7 +219,7 @@ function Inbox() {
                               </Avatar>
                               <div className="flex w-full flex-col">
                                 <div className="flex w-full items-start justify-between">
-                                  <span className="text-xs">
+                                  <span className="text-xs capitalize">
                                     {v.guestID.username}
                                   </span>
                                   <span className="text-xs text-gray-600">
@@ -288,7 +288,7 @@ function Inbox() {
                                       <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
                                     <div className="flex w-full flex-col gap-2 max-sm:hidden">
-                                      <span className="text-xs">
+                                      <span className="text-xs capitalize">
                                         {v.guestID.username}
                                       </span>
                                       <span
@@ -316,7 +316,7 @@ function Inbox() {
                                     </Avatar>
                                     <div className="flex w-full flex-col">
                                       <div className="flex w-full items-start justify-between">
-                                        <span className="text-xs">
+                                        <span className="text-xs capitalize">
                                           {v.guestID.username}
                                         </span>
                                         <span className="text-xs text-gray-600">
@@ -369,7 +369,7 @@ function Inbox() {
                                       <AvatarFallback>CN</AvatarFallback>
                                     </Avatar>
                                     <div className="flex w-full flex-col gap-2 max-sm:hidden">
-                                      <span className="text-xs">
+                                      <span className="text-xs capitalize">
                                         {v.guestID.username}
                                       </span>
                                       <span
@@ -397,7 +397,7 @@ function Inbox() {
                                     </Avatar>
                                     <div className="flex w-full flex-col">
                                       <div className="flex w-full items-start justify-between">
-                                        <span className="text-xs">
+                                        <span className="text-xs capitalize">
                                           {v.guestID.username}
                                         </span>
                                         <span className="text-xs text-gray-600">

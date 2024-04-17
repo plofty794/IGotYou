@@ -67,7 +67,7 @@ function BookingRequest() {
                 </span>
                 <Link
                   to={`/hosting-listings/edit/${data?.data.bookingRequest.listingID._id}`}
-                  className="text-sm font-semibold underline"
+                  className="text-sm font-semibold capitalize underline"
                 >
                   {data?.data.bookingRequest.listingID.serviceTitle}
                 </Link>
@@ -75,12 +75,14 @@ function BookingRequest() {
             </div>
             <div className="flex flex-col gap-2">
               <div className="p-2">
-                <h3 className="text-sm font-semibold uppercase">
+                <h3 className="text-base font-medium text-gray-600">
                   Cancellation reason
                 </h3>
-                <Badge variant={"destructive"} className="mt-2 capitalize">
-                  {data?.data.bookingRequest.guestCancelReasons}
-                </Badge>
+                <blockquote className="my-4 mt-2 border-s-4 border-gray-300 bg-gray-50 p-4">
+                  <p className="font-medium capitalize italic max-sm:text-xs">
+                    " {data?.data.bookingRequest.guestCancelReasons}"
+                  </p>
+                </blockquote>
               </div>
               <UserInformation
                 userID={data?.data.bookingRequest.guestID as TUserID}
@@ -147,7 +149,7 @@ function BookingRequest() {
               <div className="flex gap-1">
                 <Link
                   to={`/hosting-listings/edit/${data?.data.bookingRequest.listingID._id}`}
-                  className="text-sm font-semibold underline"
+                  className="text-sm font-semibold capitalize underline"
                 >
                   {data?.data.bookingRequest.listingID.serviceTitle}
                 </Link>
@@ -162,24 +164,29 @@ function BookingRequest() {
                     ),
                   )}
                   {" - "}
-                  {formatValue({
-                    value: String(data?.data.bookingRequest.totalPrice),
-                    intlConfig: {
-                      locale: "PH",
-                      currency: "php",
-                    },
-                  })}
+                  <span className="text-green-600">
+                    {formatValue({
+                      value: String(data?.data.bookingRequest.totalPrice),
+                      intlConfig: {
+                        locale: "PH",
+                        currency: "php",
+                      },
+                      decimalScale: 2,
+                    })}
+                  </span>
                 </span>
               </div>
             </div>
             <div className="flex flex-col gap-2">
               <div className="p-2">
-                <h3 className="text-sm font-semibold uppercase max-sm:text-xs">
+                <h3 className="text-base font-medium text-gray-600 max-sm:text-xs">
                   Message
                 </h3>
-                <CardDescription className="mt-2 text-sm font-semibold italic max-sm:text-xs">
-                  {data?.data.bookingRequest.message}
-                </CardDescription>
+                <blockquote className="my-4 mt-2 border-s-4 border-gray-300 bg-gray-50 p-4">
+                  <p className="font-medium italic max-sm:text-xs">
+                    "{data?.data.bookingRequest.message}"
+                  </p>
+                </blockquote>
               </div>
               <div className="flex w-full items-end justify-between max-md:w-full max-md:flex-col max-md:gap-2">
                 <UserInformation

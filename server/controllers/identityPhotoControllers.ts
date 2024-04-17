@@ -36,7 +36,7 @@ export const getIdentityVerificationRequests: RequestHandler = async (
 
     if (!pendingIdentityVerificationRequests.length) {
       return res
-        .status(200)
+        .status(400)
         .json({ pendingIdentityVerificationRequests: [], totalPages: 0 });
     }
 

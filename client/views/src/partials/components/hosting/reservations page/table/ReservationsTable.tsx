@@ -52,6 +52,7 @@ type TReservations = {
     _id: string;
     serviceType: string;
     serviceTitle: string;
+    cancellationPolicy: string;
   };
   paymentAmount: number;
   paymentStatus: "pending" | "fully-paid" | "partially-paid" | "refunded";
@@ -96,7 +97,9 @@ const columns: ColumnDef<TReservations>[] = [
   {
     header: "Guest",
     cell: ({ row }) => (
-      <p className="text-xs font-bold">{row.original.guestID.username}</p>
+      <p className="text-xs font-bold capitalize">
+        {row.original.guestID.username}
+      </p>
     ),
   },
   {
@@ -119,7 +122,28 @@ const columns: ColumnDef<TReservations>[] = [
   {
     header: "Listing",
     cell: ({ row }) => (
-      <p className="text-xs font-bold">{row.original.listingID.serviceTitle}</p>
+      <p className="text-xs font-bold capitalize">
+        {row.original.listingID.serviceTitle}
+      </p>
+    ),
+  },
+  {
+    header: "Policy",
+    cell: ({ row }) => (
+      <Badge
+        variant={"outline"}
+        className={`font-bold uppercase ${
+          row.original.listingID.cancellationPolicy === "Flexible"
+            ? "text-green-600"
+            : row.original.listingID.cancellationPolicy === "Moderate"
+              ? "text-amber-600"
+              : row.original.listingID.cancellationPolicy === "Non-refundable"
+                ? "text-red-600"
+                : "text-red-800"
+        }`}
+      >
+        {row.original.listingID.cancellationPolicy}
+      </Badge>
     ),
   },
   {
@@ -158,13 +182,14 @@ const columns: ColumnDef<TReservations>[] = [
   {
     header: "Amount",
     cell: ({ row }) => (
-      <p className="text-xs font-bold">
+      <p className="text-xs font-bold text-green-600">
         {formatValue({
           value: row.original.paymentAmount.toString(),
           intlConfig: {
             locale: "ph",
             currency: "php",
           },
+          decimalScale: 2,
         })}
       </p>
     ),

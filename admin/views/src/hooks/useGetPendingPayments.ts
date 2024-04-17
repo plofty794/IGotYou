@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 function useGetPendingPayments() {
   return useInfiniteQuery({
-    queryKey: ["pending-payments"],
+    queryKey: ["pending-subscriptions"],
     queryFn: async ({ pageParam }) => {
       return await axiosPrivateRoute.get(
         `/api/subscriptions/pending/${pageParam}`

@@ -1,13 +1,26 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/firebase config/config";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { TUser } from "./Home";
 import { formatValue } from "react-currency-input-field";
-import { differenceInDays, subDays } from "date-fns";
+import { formatDistance, subDays } from "date-fns";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
+import useUnSubscribeHosting from "@/hooks/useUnSubscribeHosting";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 function Subscription() {
   const queryClient = useQueryClient();
@@ -104,25 +117,74 @@ function Subscription() {
         </Card>
       </Card>
       <Card className="h-max w-2/4 max-lg:w-full">
-        <CardHeader className="mx-auto w-max">
+        <CardHeader>
           <CardTitle className="text-4xl font-extrabold max-md:text-2xl">
-            {differenceInDays(
-              new Date(profileData!.data.user.subscriptionExpiresAt).setHours(
-                0,
-                0,
-                0,
-                0,
-              ),
+            {formatDistance(
+              new Date(profileData!.data.user.subscriptionExpiresAt),
               new Date().setHours(0, 0, 0, 0),
+              {
+                addSuffix: true,
+              },
             )}{" "}
-            <span className="text-lg font-bold max-lg:text-sm">
-              {" "}
-              days before subscription ends
-            </span>
           </CardTitle>
+          <span className="text-lg font-medium max-lg:text-sm">
+            before subscription ends
+          </span>
         </CardHeader>
+        <CardFooter className="ml-auto w-max">
+          <AlertDialogUnSubscribe />
+        </CardFooter>
       </Card>
     </div>
+  );
+}
+
+function AlertDialogUnSubscribe() {
+  const { mutate } = useUnSubscribeHosting();
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="gap-2 rounded-full" variant={"destructive"}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-6 w-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+            />
+          </svg>
+          Unsubscribe
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {" "}
+            Are you sure you want to unsubscribe from becoming a host on
+            IGotYou?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            By unsubscribing, you will lose access to hosting features and
+            opportunities to showcase your skills to potential clients.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="rounded-full bg-red-600 hover:bg-red-500"
+            onClick={() => mutate()}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 

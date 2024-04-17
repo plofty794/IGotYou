@@ -120,13 +120,14 @@ const columns: ColumnDef<TListings>[] = [
       );
     },
     cell: (props) => (
-      <p className="text-center text-sm font-semibold">
+      <p className="text-center text-sm font-semibold text-green-600">
         {formatValue({
           value: String(props.getValue()),
           intlConfig: {
-            locale: "PH-ph",
+            locale: "ph",
             currency: "php",
           },
+          decimalScale: 2,
         })}
       </p>
     ),

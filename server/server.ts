@@ -14,13 +14,14 @@ import { notificationRoutes } from "./routes/notificationRoutes";
 import { identityRoutes } from "./routes/identityPhotoRoutes";
 import { reservationRoutes } from "./routes/reservationRoutes";
 import { bookingRequestRoutes } from "./routes/bookingRequestRoutes";
-import Users from "./models/Users";
-import { addDays } from "date-fns";
+
 import cron from "node-cron";
 import { createTransport } from "nodemailer";
 import { blockedUsersRoutes } from "./routes/blockUsersRoutes";
 import express from "express";
 import { ratingRoutes } from "./routes/ratingRoutes";
+import { subscriptionEndsInFiveDays } from "./utils/subscriptionEndsInFiveDays";
+import Users from "./models/Users";
 
 const app = express();
 const server = app
@@ -150,7 +151,12 @@ io.on("connection", (socket) => {
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173", env.CLIENT_URL, env.ADMIN_URL],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      env.CLIENT_URL,
+      env.ADMIN_URL,
+    ],
     credentials: true,
   })
 );
@@ -161,6 +167,52 @@ app.use(
   })
 );
 
+app.get("/api/events", (req, res) => {
+  const transport = createTransport({
+    service: "gmail",
+    auth: {
+      user: env.ADMIN_EMAIL,
+      pass: env.APP_PASSWORD,
+    },
+  });
+
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+    "Access-Control-Allow-Origin": "*",
+  });
+
+  cron.schedule("*/2 * * * *", async () => {
+    const expiredUserSubscriptions = await Users.find({
+      subscriptionExpiresAt: {
+        $lte: new Date().setHours(0, 0, 0, 0),
+      },
+    });
+
+    if (expiredUserSubscriptions.length > 0) {
+      await Users.updateMany(
+        {
+          subscriptionExpiresAt: {
+            $lte: new Date().setHours(0, 0, 0, 0),
+          },
+        },
+        {
+          userStatus: "guest",
+          $unset: { subscriptionExpiresAt: "", subscriptionStatus: "" },
+        }
+      );
+      expiredUserSubscriptions.map(async (user) => {
+        await transport.sendMail({
+          to: user.email,
+          subject: "Subscription Status Update",
+          html: "<p>Tapos na ang subscription mo!</p><p>Subscribe ka ulit sa IGotYou Hosting!</p>",
+        });
+      });
+      res.write("data: " + new Date().toLocaleTimeString() + "\n\n");
+    }
+  });
+});
 app.use("/api", userRoutes);
 app.use("/api", listingRoutes);
 app.use("/api", assetRoutes);
@@ -187,25 +239,7 @@ cron.schedule("0 8 * * *", async () => {
     },
   });
   try {
-    const fiveDaysFromNow = addDays(new Date().setHours(0, 0, 0, 0), 5);
-
-    const subscriptionEndsInFiveDays = await Users.find({
-      subscriptionExpiresAt: {
-        $lte: fiveDaysFromNow,
-      },
-    }).select("username email");
-
-    if (!subscriptionEndsInFiveDays.length) return;
-
-    await Promise.all(
-      subscriptionEndsInFiveDays.map(async (user) => {
-        await transport.sendMail({
-          to: user.email,
-          subject: "Subscription Status Update",
-          html: "<p>Patapos na ang subscription mo!</p><p>Subscribe ka ulit sa IGotYou Hosting!</p>",
-        });
-      })
-    );
+    await subscriptionEndsInFiveDays(transport);
   } catch (error) {
     console.error(error);
   }

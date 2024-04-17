@@ -14,7 +14,7 @@ import Users from "./pages/Users";
 import Subscriptions from "./pages/Subscriptions";
 import AllSubscriptions from "./pages/AllSubscriptions";
 import IdentityPhotos from "./pages/IdentityPhotos";
-import Reports from "./pages/Reports";
+import Complaints from "./pages/Complaints";
 import Payments from "./pages/Payments";
 import Refunds from "./pages/Refunds";
 import AllIdentityVerificationRequests from "./pages/AllIdentityVerificationRequests";
@@ -71,10 +71,10 @@ function App() {
             }
           />
           <Route
-            path="reports"
+            path="complaints"
             element={
               state.state ?? isAdmin ? (
-                <Reports />
+                <Complaints />
               ) : (
                 <Navigate to={"/login"} replace />
               )

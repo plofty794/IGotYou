@@ -41,7 +41,7 @@ function Subscriptions() {
                     <>
                       {v.paymentStatus === "pending" && (
                         <Card key={v._id}>
-                          <CardHeader className="p-0">
+                          <CardHeader className="p-0 overflow-hidden">
                             <Link to={v.paymentProofPhoto}>
                               <img
                                 className="h-60 w-full object-cover hover:scale-105 transition-transform"
@@ -105,7 +105,7 @@ function Subscriptions() {
               className="w-56 h-56"
             />
             <span className="text-gray-600 font-semibold text-lg">
-              No pending payments.
+              No pending subscription payments.
             </span>
           </div>
         )}

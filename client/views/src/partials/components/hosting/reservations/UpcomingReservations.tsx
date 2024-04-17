@@ -27,7 +27,7 @@ function UpcomingReservations() {
       {isPending ? (
         <h1>Loading...</h1>
       ) : data?.pages[0].data.upcomingReservations?.length > 0 ? (
-        <ScrollArea className="h-max max-h-96">
+        <ScrollArea className="h-[17.5rem] p-2">
           {data?.pages.flatMap((page) =>
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             page.data.upcomingReservations.map((v: any) => (
@@ -35,7 +35,7 @@ function UpcomingReservations() {
                 <CardHeader className="flex-row justify-between p-4 max-md:justify-normal">
                   <div className="flex items-center gap-2">
                     <CardTitle className="m-0">
-                      <Badge className="rounded-full text-sm">
+                      <Badge className="rounded-full text-sm capitalize">
                         {v.guestID.username}
                       </Badge>
                     </CardTitle>
@@ -81,10 +81,10 @@ function UpcomingReservations() {
                       />
                     </div>
                     <div className="flex flex-col gap-2">
-                      <span className="text-lg font-bold max-md:hidden">
+                      <span className="text-lg font-bold capitalize max-md:hidden">
                         {v.listingID.serviceTitle}
                       </span>
-                      <span className="text-sm font-semibold ">
+                      <span className="text-sm font-semibold capitalize">
                         {v.listingID.serviceType}
                       </span>
                       <span className="text-sm font-semibold max-md:hidden">

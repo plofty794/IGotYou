@@ -76,6 +76,36 @@
   border: 1px dashed black;
 }
 
+.reviews > .active {
+  color: black;
+}
+
+.reviews > .active::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0.18rem;
+  background-color: rgb(56, 54, 54);
+  bottom: -0.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.reservations > .active {
+  color: black;
+}
+
+.reservations > .active::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0.18rem;
+  background-color: rgb(56, 54, 54);
+  bottom: -0.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .profile-sheet {
   scrollbar-gutter: stable both-edges;
 }
@@ -132,4 +162,13 @@
 .chat-box::-webkit-scrollbar-thumb {
   border-radius: 8px;
   background: #c2c9d2;
+}
+
+.show-more-less-clickable {
+  color: rgb(145, 145, 145) !important;
+}
+
+.show-more-less-clickable:hover {
+  cursor: pointer !important;
+  text-decoration: underline !important;
 }

@@ -30,7 +30,7 @@ function useUpdateServicePayment() {
         className: "bg-[#FFF]",
       });
       queryClient.invalidateQueries({
-        queryKey: ["service-payments"],
+        queryKey: ["pending-service-payments"],
       });
     },
     onError(error) {

@@ -59,13 +59,13 @@ function BlockUserDialog({
               clipRule="evenodd"
             />
           </svg>
-          Block {username}
+          Block {username?.split(" ")[0]}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg gap-4">
         <DialogHeader>
           <DialogTitle className="mb-2 text-xl font-bold">
-            Why are you blocking {username}?
+            Why are you blocking {username?.split(" ")[0]}?
           </DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-72 pr-4">
@@ -112,13 +112,13 @@ function BlockUserDialog({
                     clipRule="evenodd"
                   />
                 </svg>
-                Block {username}
+                Block {username?.split(" ")[0]}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="font-bold">
-                  Are you sure you want to block {username}?
+                  Are you sure you want to block {username?.split(" ")[0]}?
                 </AlertDialogTitle>
               </AlertDialogHeader>
               <AlertDialogDescription className="font-semibold">

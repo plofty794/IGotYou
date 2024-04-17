@@ -40,8 +40,6 @@ const cld = new Cloudinary({
 });
 
 function Listings({ recentListings, listingsCount }: TListingProps) {
-  console.log(recentListings);
-
   return (
     <>
       <div className="w-full rounded-xl border bg-white p-6 shadow-xl">
@@ -53,7 +51,7 @@ function Listings({ recentListings, listingsCount }: TListingProps) {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant={"ghost"} className="rounded-full p-2">
-                      <Link to={"/hosting-listings"} replace>
+                      <Link to={"/hosting-listings"} replace reloadDocument>
                         <ArchiveIcon className="h-5 w-5 stroke-2" />
                       </Link>
                     </Button>
@@ -69,14 +67,11 @@ function Listings({ recentListings, listingsCount }: TListingProps) {
         {recentListings?.length > 0 ? (
           <div className="grid items-center justify-center gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
             {recentListings?.map((listing, idx) => (
-              <div
-                key={idx + idx}
-                className="flex flex-col items-center justify-center gap-2"
-              >
+              <div key={idx + idx} className="flex flex-col gap-2">
                 {listing.listingAssets[0].format === "mp4" ? (
                   <Link to={`/hosting-listings/edit/${listing._id}`}>
                     <AdvancedImage
-                      className="h-[250px] max-h-full w-full max-w-full rounded-lg object-cover"
+                      className="h-[250px] w-full rounded-lg object-cover"
                       cldImg={cld
                         .image(listing.listingAssets[0].public_id)
                         .setAssetType("video")
@@ -86,7 +81,7 @@ function Listings({ recentListings, listingsCount }: TListingProps) {
                 ) : listing.listingAssets[0].format === "mp3" ? (
                   <Link to={`/hosting-listings/edit/${listing._id}`}>
                     <img
-                      className="h-[250px] max-h-full w-full max-w-full rounded-lg object-cover"
+                      className="h-[250px] w-full rounded-lg object-cover"
                       src={
                         "https://png.pngtree.com/png-clipart/20230303/ourmid/pngtree-vinyl-records-png-image_6629914.png"
                       }
@@ -97,7 +92,7 @@ function Listings({ recentListings, listingsCount }: TListingProps) {
                 ) : (
                   <Link to={`/hosting-listings/edit/${listing._id}`}>
                     <AdvancedImage
-                      className="h-[250px] max-h-full w-full max-w-full rounded-lg object-cover"
+                      className="h-[250px] w-full rounded-lg object-cover"
                       cldImg={cld.image(listing.listingAssets[0].public_id)}
                       plugins={[
                         lazyload(),

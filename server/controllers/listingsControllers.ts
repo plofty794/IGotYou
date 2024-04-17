@@ -7,6 +7,7 @@ import createHttpError from "http-errors";
 import { clearCookieAndThrowError } from "../utils/clearCookieAndThrowError";
 import { addDays, compareAsc } from "date-fns";
 import Reservations from "../models/Reservations";
+import BlockedUsers from "../models/BlockedUsers";
 
 cloudinary.v2.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -36,9 +37,16 @@ export const getHostListings: RequestHandler = async (req, res, next) => {
       Listings.updateMany(
         {
           availableAt: {
-            $lte: new Date(),
+            $eq: new Date().setHours(0, 0, 0, 0),
           },
-          status: "Inactive",
+          $or: [
+            {
+              status: "Inactive",
+            },
+            {
+              status: "Ended",
+            },
+          ],
         },
         { status: "Active" }
       ),
@@ -72,7 +80,7 @@ export const getHostListings: RequestHandler = async (req, res, next) => {
     const totalPages = Math.ceil(hostListings.length / limit);
 
     if (hostListings.length == 0) {
-      return res.status(200).json({ hostListings: [], totalPages: 0 });
+      return res.status(400).json({ hostListings: [], totalPages: 0 });
     }
 
     res.status(200).json({ hostListings, totalPages });
@@ -104,8 +112,17 @@ export const getListings: RequestHandler = async (req, res, next) => {
       { status: "Active" }
     );
 
+    const isBlocked = await BlockedUsers.find({
+      blockedID: id,
+    });
+
+    const blockedBy = isBlocked.map((v) => v.blockerID);
+
     if (minPrice != null || maxPrice != null || serviceType != null) {
       const listings = await Listings.find({
+        host: {
+          $nin: blockedBy,
+        },
         $and: [
           {
             price: { $gte: minPrice },
@@ -140,10 +157,15 @@ export const getListings: RequestHandler = async (req, res, next) => {
         return res.status(400).json({ message: "Nothing more to load" });
       }
 
-      return res.status(200).json({ listings });
+      return res
+        .status(200)
+        .json({ listings: listings.filter((v) => v.host != null) });
     }
 
     const listings = await Listings.find({
+      host: {
+        $nin: blockedBy,
+      },
       endsAt: { $gte: new Date() },
       $or: [{ status: "Active" }, { status: "Inactive" }],
     })
@@ -166,7 +188,7 @@ export const getListings: RequestHandler = async (req, res, next) => {
       return res.status(400).json({ message: "Nothing more to load" });
     }
 
-    res.status(200).json({ listings });
+    res.status(200).json({ listings: listings.filter((v) => v.host != null) });
   } catch (error) {
     next(error);
   }
@@ -214,7 +236,9 @@ export const getListingsPerCategory: RequestHandler = async (
       return res.status(400).json({ message: "Nothing more to load" });
     }
 
-    res.status(200).json({ categorizedListings });
+    res.status(200).json({
+      categorizedListings: categorizedListings.filter((v) => v.host != null),
+    });
   } catch (error) {
     next(error);
   }

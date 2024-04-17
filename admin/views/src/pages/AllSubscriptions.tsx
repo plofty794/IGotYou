@@ -256,6 +256,13 @@ function AllSubscriptions() {
         </div>
         {isPending ? (
           "Loading..."
+        ) : data?.pages == null ? (
+          <AllSubscriptionsTable
+            columns={columns}
+            data={[]}
+            totalPages={0}
+            fetchNextPage={fetchNextPage}
+          />
         ) : (
           <AllSubscriptionsTable
             columns={columns}

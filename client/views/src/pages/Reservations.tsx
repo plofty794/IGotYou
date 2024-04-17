@@ -23,7 +23,7 @@ function Reservations() {
         <h1 className="text-2xl font-bold">Reservations</h1>
       </div>
       <ReservationsTabs />
-      <Card className="mt-4 border-none py-4 shadow-none">
+      <Card className="border-none shadow-none">
         {location.pathname.includes("/all") ||
         location.pathname.includes("/upcoming") ||
         location.pathname.includes("/previous") ? (

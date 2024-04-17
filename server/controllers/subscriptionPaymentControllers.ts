@@ -9,6 +9,8 @@ import env from "../utils/envalid";
 import { emailPaymentSuccess } from "../utils/emails/emailPaymentSuccess";
 import { emailPaymentReject } from "../utils/emails/emailPaymentReject";
 import { emailSubscriptionRequest } from "../utils/emails/emailSubscriptionRequest";
+import { emailUnsubscribeConfirmation } from "../utils/emails/emailUnsubscribeConfirmation";
+import Reservations from "../models/Reservations";
 
 export const getAllPayments: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -37,7 +39,7 @@ export const getAllPayments: RequestHandler = async (req, res, next) => {
       .exec();
 
     if (!allPayments.length) {
-      return res.status(200).json({ allPayments: null, totalPages: 0 });
+      return res.status(400).json({ allPayments: [], totalPages: 0 });
     }
     res.status(200).json({ allPayments, totalPages });
   } catch (error) {
@@ -69,7 +71,7 @@ export const getPendingPayments: RequestHandler = async (req, res, next) => {
       .exec();
 
     if (!pendingPayments.length) {
-      return res.status(200).json({ pendingPayments: null, totalPages: 0 });
+      return res.status(400).json({ pendingPayments: [], totalPages: 0 });
     }
     res.status(200).json({ pendingPayments, totalPages });
   } catch (error) {
@@ -242,6 +244,63 @@ export const updateSubscriptionPhotosStatus: RequestHandler = async (
 
       return res.status(200).json({ paymentReject });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unsubscribeHosting: RequestHandler = async (req, res, next) => {
+  const id = req.cookies["_&!d"];
+  const transport = createTransport({
+    service: "gmail",
+    auth: {
+      user: env.ADMIN_EMAIL,
+      pass: env.APP_PASSWORD,
+    },
+  });
+  try {
+    if (!id) {
+      if (!id) {
+        clearCookieAndThrowError(
+          res,
+          "A _id cookie is required to access this resource."
+        );
+      }
+    }
+
+    const hasActiveReservations = await Reservations.find({
+      hostID: id,
+      $or: [
+        {
+          status: "scheduled",
+        },
+        {
+          status: "ongoing",
+        },
+      ],
+    });
+
+    if (hasActiveReservations.length > 0) {
+      throw createHttpError(
+        400,
+        "You can't unsubscribe as you have ongoing or upcoming reservations."
+      );
+    }
+
+    const user = await Users.findByIdAndUpdate(id, {
+      userStatus: "guest",
+      $unset: { subscriptionExpiresAt: "", subscriptionStatus: "" },
+    });
+
+    await transport.sendMail({
+      to: user?.email,
+      subject: "IGotYou - Subscription Cancellation",
+      html: emailUnsubscribeConfirmation(),
+    });
+
+    res.status(200).json({
+      message: "You have successfully unsubscribed to the IGotYou Hosting.",
+    });
   } catch (error) {
     next(error);
   }

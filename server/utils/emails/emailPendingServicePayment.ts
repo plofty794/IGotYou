@@ -1,6 +1,8 @@
 export const emailPendingServicePayment = (
   name: string,
-  serviceTitle: string
+  serviceTitle: string,
+  bookingDates: string[],
+  paymentAmount: number
 ) => `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
@@ -33,13 +35,15 @@ export const emailPendingServicePayment = (
 <div class="container">
                
                 <h1>Action Required: Complete Your Service Payment</h1>
-                <p >Hi ${name},</p>
-                <p >This is a friendly reminder that your payment for ${serviceTitle} is still pending. To ensure your service is booked and ready to go, please complete your payment as soon as possible.</p>
+                <p >Hi ${name.toUpperCase()},</p>
+                <p >This is a friendly reminder that your payment for ${serviceTitle.toUpperCase()} is still pending. To ensure your service is booked and ready to go, please complete your payment as soon as possible.</p>
                 <p >Here are the details of your booking:</p>
                 <ul style="padding: 0; margin: 0;">
-                  <li ><strong>Service:</strong> [Service Title]</li>
-                  <li ><strong>Booking Date:</strong> [Booking Date]</li>
-                  <li ><strong>Total Amount Due:</strong> [Total Amount]</li>
+                  <li ><strong>Service:</strong> ${serviceTitle.toUpperCase()}</li>
+                  <li ><strong>Booking Date:</strong> ${bookingDates[0]} - ${
+  bookingDates[1]
+}</li>
+                  <li ><strong>Total Amount Due:</strong> ${paymentAmount}</li>
                 </ul>
                 <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#e6ebf1;margin:20px 0" />
                 <p class="paragraph">If you have any questions, please don't hesitate to contact us.</p>

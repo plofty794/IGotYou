@@ -13,6 +13,22 @@ function Profile() {
   const { data, status } = useGetCurrentUserProfile();
 
   useEffect(() => {
+    const eventSource = new EventSource("http://localhost:5030/api/events");
+
+    if (typeof EventSource != "undefined") {
+      console.log("connected!");
+    } else {
+      console.log("connection not established.");
+    }
+
+    eventSource.onmessage = (event) => {
+      if (event.data) {
+        window.location.href = `/subscription/${data?.data.user._id}/expired`;
+      }
+    };
+  }, [data?.data.user._id]);
+
+  useEffect(() => {
     document.title = "Your Profile - IGotYou";
   }, []);
 

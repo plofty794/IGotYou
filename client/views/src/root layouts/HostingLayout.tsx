@@ -19,10 +19,28 @@ import {
 } from "@/components/ui/sheet";
 
 import { useMediaQuery } from "usehooks-ts";
+import { useEffect } from "react";
+import { auth } from "@/firebase config/config";
 
 function HostingLayout() {
   const userProfileData = useGetCurrentUserProfile();
   const matches = useMediaQuery("(max-width: 768px)");
+
+  useEffect(() => {
+    const eventSource = new EventSource("http://localhost:5030/api/events");
+
+    if (typeof EventSource != "undefined") {
+      console.log("connected!");
+    } else {
+      console.log("connection not established.");
+    }
+
+    eventSource.onmessage = (event) => {
+      if (event.data) {
+        window.location.href = `/subscription/${userProfileData.data?.data.user._id}/expired`;
+      }
+    };
+  }, [userProfileData.data?.data.user._id]);
 
   return (
     <>
@@ -107,6 +125,14 @@ function HostingLayout() {
                       <SheetClose asChild>
                         <Link
                           className="text-base font-medium text-gray-600"
+                          to={"/hosting-earnings"}
+                        >
+                          Earnings
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link
+                          className="text-base font-medium text-gray-600"
                           to={"/hosting-reviews"}
                         >
                           Reviews
@@ -181,16 +207,20 @@ function HostingLayout() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                       <DropdownMenuItem className="p-4 font-medium text-gray-600">
-                        <Link to={"/hosting-reviews"}>Reviews</Link>
+                        <Link to={"/hosting-earnings"}>Earnings</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="p-4 font-medium text-gray-600">
+                        <Link
+                          to={`/hosting-reviews/${auth.currentUser?.uid}/guest`}
+                        >
+                          Reviews
+                        </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem className="p-4 font-medium text-gray-600">
                         <Link to={"/hosting-reservations/all"}>
                           Reservations
                         </Link>
                       </DropdownMenuItem>
-                      {/* <DropdownMenuItem className="p-4 font-medium text-gray-600">
-                    Earnings
-                  </DropdownMenuItem> */}
                       <DropdownMenuItem className="p-4 font-medium text-gray-600">
                         <Link
                           to={`/become-a-host/${userProfileData.data?.data.user.uid}`}

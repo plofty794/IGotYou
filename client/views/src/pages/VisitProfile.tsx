@@ -17,6 +17,7 @@ import UnblockUserDialog from "@/partials/components/visit profile/UnblockUserDi
 import { Navigate } from "react-router-dom";
 import ReportUserDialog from "@/partials/components/visit profile/ReportUserDialog";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ShowMoreReviews from "@/partials/components/ShowMoreReviews";
 
 function VisitProfile() {
   const { data, isPending, isError } = useVisitProfile() as UseQueryResult<
@@ -161,8 +162,11 @@ function VisitProfile() {
                     <UserDetailsAccordion user={data?.data.user} />
                   </CardContent>
                   <CardContent className="p-0">
-                    <CardHeader className="p-0 text-2xl font-semibold">
-                      <h2>{data?.data.user.username}'s recent ratings</h2>
+                    <CardHeader className="flex-row items-center justify-between p-0">
+                      <h2 className="text-2xl font-semibold">
+                        {data?.data.user.username}'s recent reviews
+                      </h2>
+                      <ShowMoreReviews />
                     </CardHeader>
                     <div className="flex w-full items-center justify-center px-8 py-6">
                       {!data?.data.user.rating.length ? (

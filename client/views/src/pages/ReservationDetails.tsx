@@ -51,28 +51,44 @@ function ReservationDetails() {
         <Loader />
       ) : (
         <section className="p-6">
-          <div className="flex w-max items-center justify-center gap-2">
-            <Button
-              onClick={() => history.back()}
-              variant={"ghost"}
-              className="rounded-full"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="h-4 w-4"
+          <div className="flex items-center justify-between">
+            <div className="flex w-max items-center justify-center gap-2">
+              <Button
+                onClick={() => history.back()}
+                variant={"ghost"}
+                className="rounded-full"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
-                />
-              </svg>
-            </Button>
-            <h1 className="text-2xl font-bold">Reservation details</h1>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="h-4 w-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                  />
+                </svg>
+              </Button>
+              <h1 className="text-2xl font-bold">Reservation details</h1>
+            </div>
+            <Badge
+              className={`rounded-full font-bold uppercase text-white ${
+                data?.data.reservationDetails.status === "scheduled"
+                  ? "bg-blue-600"
+                  : data?.data.reservationDetails.status === "ongoing"
+                    ? "bg-yellow-600"
+                    : data?.data.reservationDetails.status === "completed"
+                      ? "bg-green-600"
+                      : "bg-red-600"
+              }`}
+              variant={"outline"}
+            >
+              {data?.data.reservationDetails.status}
+            </Badge>
           </div>
           <div className="flex w-full gap-4 max-lg:flex-col max-lg:gap-0">
             <div className="flex w-2/4 flex-col gap-4 px-4 py-6 max-lg:w-full">
@@ -318,7 +334,7 @@ function ReservationDetails() {
             </div>
             <div className="flex w-2/4 flex-col gap-4 px-4 py-6 max-lg:w-full max-lg:p-2">
               <Card>
-                <CardHeader className="pb-2">
+                <CardHeader className=" pb-2">
                   <CardTitle className="text-lg">
                     {data?.data.isHost ? "Payout" : "Payment"}
                   </CardTitle>

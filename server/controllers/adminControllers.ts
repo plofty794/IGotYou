@@ -9,6 +9,13 @@ import { auth } from "firebase-admin";
 import Reservations from "../models/Reservations";
 import BookingRequests from "../models/BookingRequests";
 import IdentityPhotos from "../models/IdentityPhotos";
+import {
+  endOfDay,
+  endOfMonth,
+  startOfDay,
+  startOfMonth,
+  subDays,
+} from "date-fns";
 
 export const getActiveUsers: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -30,7 +37,7 @@ export const getActiveUsers: RequestHandler = async (req, res, next) => {
       .sort({ createdAt: "desc" })
       .exec();
     if (!activeUsers.length) {
-      return res.status(200).json({ activeUsers: [], totalPages: 0 });
+      return res.status(400).json({ activeUsers: [], totalPages: 0 });
     }
     res.status(200).json({ activeUsers, totalPages });
   } catch (error) {
@@ -62,7 +69,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
     const totalPages = Math.ceil(totalUsers / limit);
 
     if (!users.length) {
-      return res.status(200).json({ users: [], totalPages: 0, totalUsers: 0 });
+      return res.status(400).json({ users: [], totalPages: 0, totalUsers: 0 });
     }
     res.status(200).json({ users, totalPages, totalUsers });
   } catch (error) {
@@ -146,8 +153,7 @@ export const getAdminOverview: RequestHandler = async (req, res, next) => {
           path: "user",
           select: "subscriptionExpiresAt photoUrl username email",
         })
-        .sort({ createdAt: "desc" })
-        .limit(5);
+        .sort({ createdAt: "desc" });
 
       return res.status(200).json({ allUsers, subscribedUsers });
     }
@@ -160,10 +166,340 @@ export const getAdminOverview: RequestHandler = async (req, res, next) => {
         path: "user",
         select: "subscriptionExpiresAt photoUrl username email",
       })
-      .sort({ createdAt: "desc" })
-      .limit(5);
+      .sort({ createdAt: "desc" });
 
-    res.status(200).json({ allUsers, subscribedUsers });
+    res.status(200).json({
+      allUsers,
+      subscribedUsers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAnalytics: RequestHandler = async (req, res, next) => {
+  const admin_id = req.cookies.admin_id;
+
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const lastMonth = startOfDay(subDays(new Date(), 30));
+    const nextMonth = endOfDay(new Date());
+
+    const userRegistrationStats = await Users.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: lastMonth, $lte: nextMonth },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%b-%d", date: "$createdAt" } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const percentageOfVerifiedEmailsIdentityMobile = await Users.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalUsers: { $sum: 1 },
+          disabledUsers: {
+            $sum: { $cond: { if: "$isDisabled", then: 1, else: 0 } },
+          },
+          verifiedEmails: {
+            $sum: { $cond: { if: "$emailVerified", then: 1, else: 0 } },
+          },
+          verifiedIdentity: {
+            $sum: { $cond: { if: "$identityVerified", then: 1, else: 0 } },
+          },
+          verifiedMobile: {
+            $sum: { $cond: { if: "$mobileVerified", then: 1, else: 0 } },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalUsers: 1,
+          disabledUsers: 1,
+          verifiedEmailPercentage: {
+            $multiply: [{ $divide: ["$verifiedEmails", "$totalUsers"] }, 100],
+          },
+          verifiedIdentityPercentage: {
+            $multiply: [{ $divide: ["$verifiedIdentity", "$totalUsers"] }, 100],
+          },
+          verifiedMobilePercentage: {
+            $multiply: [{ $divide: ["$verifiedMobile", "$totalUsers"] }, 100],
+          },
+        },
+      },
+    ]);
+
+    const bookingRequestsByServiceType = await BookingRequests.find({})
+      .populate({
+        path: "listingID",
+        select: "serviceType",
+      })
+      .exec();
+
+    const bookingRequestsPercentageStatus = await BookingRequests.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          status: "$_id",
+          count: 1,
+          percentage: {
+            $multiply: [
+              {
+                $divide: [
+                  "$count",
+                  { $sum: bookingRequestsByServiceType.length },
+                ],
+              },
+              100,
+            ],
+          },
+        },
+      },
+    ]);
+
+    const bookingRequestsPerDay = await BookingRequests.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: lastMonth, $lte: nextMonth },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%b-%d", date: "$createdAt" } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    res.status(200).json({
+      userRegistrationStats,
+      percentageOfVerifiedEmailsIdentityMobile,
+      bookingRequestsPerDay,
+      bookingRequestsPercentageStatus,
+      bookingRequestsByServiceType: bookingRequestsByServiceType.reduce(
+        (acc, bookingRequest) => {
+          const name = (bookingRequest.listingID as { serviceType: string })
+            .serviceType;
+
+          const existingServiceType = acc.find((item) => item.name === name);
+
+          if (existingServiceType) {
+            existingServiceType.count++;
+          } else {
+            acc.push({ name, count: 1 });
+          }
+
+          return acc;
+        },
+        []
+      ),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReports: RequestHandler = async (req, res, next) => {
+  const admin_id = req.cookies.admin_id;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const lastMonth = startOfDay(subDays(new Date(), 30));
+    const nextMonth = endOfDay(new Date());
+
+    const reservationsPerDay = await Reservations.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: lastMonth, $lte: nextMonth },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%b-%d", date: "$createdAt" } },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const reservationStatusOvertime = await Reservations.aggregate([
+      {
+        $group: {
+          _id: null,
+          scheduled: {
+            $sum: {
+              $cond: {
+                if: { $eq: ["$status", "scheduled"] },
+                then: 1,
+                else: 0,
+              },
+            },
+          },
+          ongoing: {
+            $sum: {
+              $cond: { if: { $eq: ["$status", "ongoing"] }, then: 1, else: 0 },
+            },
+          },
+          completed: {
+            $sum: {
+              $cond: {
+                if: { $eq: ["$status", "completed"] },
+                then: 1,
+                else: 0,
+              },
+            },
+          },
+          cancelled: {
+            $sum: {
+              $cond: {
+                if: { $eq: ["$status", "cancelled"] },
+                then: 1,
+                else: 0,
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    const reservationsRevenue = await Reservations.aggregate([
+      {
+        $match: {
+          paymentStatus: {
+            $in: ["fully-paid", "partially-paid"],
+          },
+          createdAt: { $gte: lastMonth, $lte: nextMonth },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%b-%d", date: "$createdAt" } },
+          totalRevenue: { $sum: "$earnings" },
+        },
+      },
+    ]);
+
+    const reservationPaymentAndVerificationStatus =
+      await Reservations.aggregate([
+        {
+          $group: {
+            _id: null,
+            count: { $sum: 1 },
+            partialPayments: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $eq: ["$paymentType", "partial-payment"] },
+                      { $eq: ["$partialPaymentVerificationStatus", "success"] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            fullPayments: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $eq: ["$paymentType", "full-payment"] },
+                      { $eq: ["$fullPaymentVerificationStatus", "success"] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+          },
+        },
+      ]);
+
+    const reservationCompletionAndCancellation = await Reservations.aggregate([
+      {
+        $match: { $or: [{ status: "cancelled" }, { status: "completed" }] },
+      },
+      {
+        $group: {
+          _id: null,
+          cancellations: {
+            $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, 1, 0] },
+          },
+          completions: {
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          completionConfirmationRate: {
+            $multiply: [
+              {
+                $divide: ["$completions", await Reservations.countDocuments()],
+              },
+              100,
+            ],
+          },
+          cancellationRate: {
+            $multiply: [
+              {
+                $divide: [
+                  "$cancellations",
+                  await Reservations.countDocuments(),
+                ],
+              },
+              100,
+            ],
+          },
+        },
+      },
+    ]);
+
+    const reservationPaymentRefund = await Reservations.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: lastMonth, $lte: nextMonth },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRefunds: { $sum: "$refundAmount" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      reservationsRevenue,
+      reservationPaymentAndVerificationStatus,
+      reservationCompletionAndCancellation,
+      reservationPaymentRefund,
+      reservationStatusOvertime,
+      reservationsPerDay,
+    });
   } catch (error) {
     next(error);
   }
@@ -202,7 +538,7 @@ export const getUserReports: RequestHandler = async (req, res, next) => {
 
     if (!userReports.length) {
       return res
-        .status(200)
+        .status(400)
         .json({ userReports: [], totalPages: 0, totalReports: 0 });
     }
     res.status(200).json({ userReports, totalPages, totalReports });
@@ -317,13 +653,17 @@ export const getCancelledReservations: RequestHandler = async (
       .sort({ createdAt: "desc" })
       .exec();
 
-    const totalCancelledBookingRequests =
-      await BookingRequests.countDocuments();
-    const totalPages = Math.ceil(totalCancelledBookingRequests / limit);
+    const totalCancelledBookingRequests = await BookingRequests.find({
+      type: "Service-Cancellation-Request",
+      status: "cancelled",
+    });
+
+    const totalPages = Math.ceil(totalCancelledBookingRequests.length / limit);
 
     if (!cancelledReservations.length) {
-      return res.status(200).json({ cancelledReservations: [], totalPages: 0 });
+      return res.status(400).json({ cancelledReservations: [], totalPages: 0 });
     }
+
     res.status(200).json({ cancelledReservations, totalPages });
   } catch (error) {
     next(error);
@@ -362,7 +702,7 @@ export const getIdentityVerificationRequests: RequestHandler = async (
 
     if (!identityVerificationRequests.length) {
       return res
-        .status(200)
+        .status(400)
         .json({ identityVerificationRequests: [], totalPages: 0 });
     }
     res.status(200).json({ identityVerificationRequests, totalPages });
@@ -403,13 +743,67 @@ export const getServicePayments: RequestHandler = async (req, res, next) => {
       .exec();
 
     if (!allServicePayments.length) {
-      return res.status(200).json({ allServicePayments: [], totalPages: 0 });
+      return res.status(400).json({ allServicePayments: [], totalPages: 0 });
     }
 
     const totalIServicePayments = await Reservations.countDocuments();
     const totalPages = Math.ceil(totalIServicePayments / limit);
 
     res.status(200).json({ allServicePayments, totalPages });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReservationPaymentsTransactions: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const admin_id = req.cookies.admin_id;
+  const limit = 10;
+  const page = parseInt(req.params.page ?? "1") ?? 1;
+  try {
+    if (!admin_id) {
+      throw createHttpError(401, "This action requires an identifier");
+    }
+
+    const reservationPaymentsTransactionLog = await Reservations.find({
+      $or: [
+        {
+          fullPaymentAmount: {
+            $gt: 0,
+          },
+        },
+        {
+          partialPaymentAmount: {
+            $gt: 0,
+          },
+        },
+      ],
+    })
+      .populate([
+        {
+          path: "guestID",
+          select: "username",
+        },
+        {
+          path: "listingID",
+          select: "serviceTitle",
+        },
+      ])
+      .select(
+        "fullPaymentVerificationStatus partialPaymentVerificationStatus fullPaymentAmount partialPaymentAmount paymentType partialPaymentDate fullPaymentDate fullPaymentProofPhoto"
+      )
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+
+    if (!reservationPaymentsTransactionLog.length) {
+      return res.status(400).json({ reservationPaymentsTransactionLog: [] });
+    }
+
+    res.status(200).json({ reservationPaymentsTransactionLog });
   } catch (error) {
     next(error);
   }

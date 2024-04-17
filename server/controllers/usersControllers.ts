@@ -63,7 +63,11 @@ export const getCurrentUserProfile: RequestHandler = async (req, res, next) => {
       .limit(5)
       .exec();
 
-    res.status(200).json({ user, recentListings });
+    if (user.userStatus === "host") {
+      return res.status(200).json({ user, recentListings });
+    } else {
+      res.status(200).json({ user, recentListings: [] });
+    }
   } catch (error) {
     next(error);
   }
@@ -97,14 +101,17 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
 
     const user = await Users.findById(userID)
       .select(
-        "-password -providerId -uid -hostNotifications -guestNotifications -subscriptionStatus -bookingRequests -wishlists -identityVerificationStatus"
+        "-password -providerId -hostNotifications -guestNotifications -subscriptionStatus -bookingRequests -wishlists -identityVerificationStatus"
       )
       .populate([
         {
           path: "listings",
           select: "listingAssets serviceTitle serviceType",
           options: {
-            limit: 10,
+            limit: 4,
+            sort: {
+              createdAt: "desc",
+            },
           },
         },
         {
@@ -112,15 +119,25 @@ export const visitUserProfile: RequestHandler = async (req, res, next) => {
           populate: [
             {
               path: "guestID",
-              select: "username email",
+              select: "username email photoUrl uid",
             },
             {
               path: "hostID",
-              select: "username email",
+              select: "username email photoUrl uid",
+            },
+            {
+              path: "reservationID",
+              populate: {
+                path: "listingID",
+                select: "serviceTitle listingAssets",
+              },
             },
           ],
           options: {
-            limit: 10,
+            limit: 4,
+            sort: {
+              createdAt: "desc",
+            },
           },
         },
       ])
@@ -619,7 +636,8 @@ export const rateUser: RequestHandler = async (req, res, next) => {
 
 export const getHostReviews: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
-  const limit = 10;
+  const { userID } = req.params;
+  const limit = 12;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
     if (!id) {
@@ -630,37 +648,95 @@ export const getHostReviews: RequestHandler = async (req, res, next) => {
       );
     }
 
-    const hostRatings = await Ratings.find({
-      hostID: id,
-      $and: [
-        {
-          guestFeedback: {
-            $ne: null,
-          },
-        },
-        {
-          guestRating: {
-            $ne: null,
-          },
-        },
-      ],
-    })
-      .populate([
-        { path: "guestID", select: "username email photoUrl" },
-        {
-          path: "reservationID",
-          populate: {
-            path: "listingID",
-            select: "serviceTitle",
-          },
-        },
-      ])
-      .sort({ createdAt: "desc" })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .exec();
+    if (isValidObjectId(userID)) {
+      const user = await Users.findOne({
+        _id: userID,
+      });
 
-    res.status(200).json({ hostRatings });
+      if (!user) {
+        throw createHttpError(400, "No user with that id.");
+      }
+
+      const hostRatings = await Ratings.find({
+        guestID: user._id,
+        $and: [
+          {
+            hostFeedback: {
+              $ne: null,
+            },
+          },
+          {
+            hostRating: {
+              $ne: null,
+            },
+          },
+        ],
+      })
+        .populate([
+          { path: "hostID", select: "username email photoUrl" },
+          {
+            path: "reservationID",
+            populate: {
+              path: "listingID",
+              select: "serviceTitle listingAssets",
+            },
+          },
+        ])
+        .sort({ createdAt: "desc" })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+
+      if (!hostRatings.length) {
+        throw createHttpError(400, "No more reviews to load.");
+      }
+
+      res.status(200).json({ hostRatings });
+    } else {
+      const user = await Users.findOne({
+        uid: userID,
+      });
+
+      if (!user) {
+        throw createHttpError(400, "No user with that id.");
+      }
+
+      const hostRatings = await Ratings.find({
+        guestID: user._id,
+        $and: [
+          {
+            hostFeedback: {
+              $ne: null,
+            },
+          },
+          {
+            hostRating: {
+              $ne: null,
+            },
+          },
+        ],
+      })
+        .populate([
+          { path: "hostID", select: "username email photoUrl" },
+          {
+            path: "reservationID",
+            populate: {
+              path: "listingID",
+              select: "serviceTitle listingAssets",
+            },
+          },
+        ])
+        .sort({ createdAt: "desc" })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+
+      if (!hostRatings.length) {
+        throw createHttpError(400, "No more reviews to load.");
+      }
+
+      res.status(200).json({ hostRatings });
+    }
   } catch (error) {
     next(error);
   }
@@ -668,7 +744,8 @@ export const getHostReviews: RequestHandler = async (req, res, next) => {
 
 export const getGuestReviews: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
-  const limit = 10;
+  const { userID } = req.params;
+  const limit = 12;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
     if (!id) {
@@ -679,25 +756,95 @@ export const getGuestReviews: RequestHandler = async (req, res, next) => {
       );
     }
 
-    const hostRatings = await Ratings.find({
-      guestID: id,
-    })
-      .populate([
-        { path: "hostID", select: "username email photoUrl" },
-        {
-          path: "reservationID",
-          populate: {
-            path: "listingID",
-            select: "serviceTitle",
-          },
-        },
-      ])
-      .sort({ createdAt: "desc" })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .exec();
+    if (isValidObjectId(userID)) {
+      const user = await Users.findOne({
+        _id: userID,
+      });
 
-    res.status(200).json({ hostRatings });
+      if (!user) {
+        throw createHttpError(400, "No user with that id.");
+      }
+
+      const guestRatings = await Ratings.find({
+        hostID: user._id,
+        $and: [
+          {
+            guestFeedback: {
+              $ne: null,
+            },
+          },
+          {
+            guestRating: {
+              $ne: null,
+            },
+          },
+        ],
+      })
+        .populate([
+          { path: "guestID", select: "username email photoUrl" },
+          {
+            path: "reservationID",
+            populate: {
+              path: "listingID",
+              select: "serviceTitle listingAssets",
+            },
+          },
+        ])
+        .sort({ createdAt: "desc" })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+
+      if (!guestRatings.length) {
+        throw createHttpError(400, "No more reviews to load.");
+      }
+
+      res.status(200).json({ guestRatings });
+    } else {
+      const user = await Users.findOne({
+        uid: userID,
+      });
+
+      if (!user) {
+        throw createHttpError(400, "No user with that id.");
+      }
+
+      const guestRatings = await Ratings.find({
+        hostID: user._id,
+        $and: [
+          {
+            guestFeedback: {
+              $ne: null,
+            },
+          },
+          {
+            guestRating: {
+              $ne: null,
+            },
+          },
+        ],
+      })
+        .populate([
+          { path: "guestID", select: "username email photoUrl" },
+          {
+            path: "reservationID",
+            populate: {
+              path: "listingID",
+              select: "serviceTitle listingAssets",
+            },
+          },
+        ])
+        .sort({ createdAt: "desc" })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+
+      if (!guestRatings.length) {
+        throw createHttpError(400, "No more reviews to load.");
+      }
+
+      res.status(200).json({ guestRatings });
+    }
   } catch (error) {
     next(error);
   }

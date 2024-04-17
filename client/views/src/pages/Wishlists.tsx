@@ -101,7 +101,7 @@ function Wishlists() {
                   <div className="flex w-72 flex-col">
                     <div className="flex w-full items-center justify-between ">
                       <div className="w-2/4">
-                        <p className="truncate text-lg font-semibold">
+                        <p className="truncate text-lg font-semibold capitalize">
                           {v.serviceTitle}
                         </p>
                       </div>

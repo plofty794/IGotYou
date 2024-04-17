@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import AllPaymentsTable from "@/partials/AllPaymentsTable";
 import { Link } from "react-router-dom";
 import useGetServicePayments from "@/hooks/useGetServicePayments";
+import ViewPaymentTransactions from "@/partials/ViewPaymentTransactions";
 ring.register();
 
 type TUser = {
@@ -155,35 +156,49 @@ function AllServicePayments() {
   return (
     <section className="py-8 px-12">
       <div className="w-full flex flex-col gap-4">
-        <Link to={"/payments"}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="gray"
-            className="w-5 h-5 hover:stroke-black"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-            />
-          </svg>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link className="w-max" to={"/payments"}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="gray"
+              className="w-5 h-5 hover:stroke-black"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+              />
+            </svg>
+          </Link>
+          <ViewPaymentTransactions />
+        </div>
         <div className="w-full flex items-center justify-between">
           <h1 className="text-2xl font-bold">All Service payments</h1>
           <span className="font-bold text-lg ">
-            # of payments:{" "}
-            {data?.pages.flatMap((page) => page.data.allServicePayments).length}
+            # of complete payments:{" "}
+            {
+              data?.pages?.flatMap((page) => page.data.allServicePayments)
+                .length
+            }
           </span>
         </div>
         {isPending ? (
           "Loading..."
+        ) : data?.pages == null ? (
+          <AllPaymentsTable
+            totalAmount={0}
+            columns={columns}
+            data={[]}
+            totalPages={0}
+            fetchNextPage={fetchNextPage}
+          />
         ) : (
           <AllPaymentsTable
             totalAmount={
-              data?.pages.flatMap((page) =>
+              data?.pages?.flatMap((page) =>
                 page.data.allServicePayments.reduce(
                   (acc: number, v: { paymentAmount: number }) =>
                     v.paymentAmount + acc,
