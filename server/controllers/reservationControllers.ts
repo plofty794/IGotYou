@@ -92,6 +92,9 @@ export const getUpcomingReservations: RequestHandler = async (
           select: "serviceTitle serviceType listingAssets cancellationPolicy",
         },
       ])
+      .sort({
+        createdAt: "desc",
+      })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
@@ -135,6 +138,9 @@ export const getPreviousReservations: RequestHandler = async (
           select: "serviceTitle serviceType listingAssets cancellationPolicy",
         },
       ])
+      .sort({
+        createdAt: "desc",
+      })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
@@ -190,7 +196,7 @@ export const getReservations: RequestHandler = async (req, res, next) => {
           select: "serviceTitle serviceType listingAssets cancellationPolicy",
         },
       ])
-      .sort({ bookingStartsAt: "desc" })
+      .sort({ createdAt: "desc" })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
@@ -1023,8 +1029,9 @@ export const getHostReservationPaymentsTransactions: RequestHandler = async (
         },
       ])
       .select(
-        "fullPaymentVerificationStatus partialPaymentVerificationStatus fullPaymentAmount partialPaymentAmount paymentType partialPaymentDate fullPaymentDate fullPaymentProofPhoto"
+        "status fullPaymentVerificationStatus partialPaymentVerificationStatus fullPaymentAmount partialPaymentAmount paymentType partialPaymentDate fullPaymentDate partialPaymentProofPhoto fullPaymentProofPhoto"
       )
+      .sort({ createdAt: "desc" })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();

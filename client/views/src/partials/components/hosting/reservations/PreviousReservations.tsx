@@ -17,6 +17,14 @@ import { formatValue } from "react-currency-input-field";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import MessageGuest from "../../messages/MessageGuest";
 import { useMediaQuery } from "usehooks-ts";
+import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen/index";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dop5kqpod",
+  },
+});
 
 function PreviousReservations() {
   const { data, isPending } = useGetPreviousReservations();
@@ -75,11 +83,37 @@ function PreviousReservations() {
                   <div className="flex gap-2">
                     <div className="h-full w-44 overflow-hidden rounded-md max-md:w-full">
                       <Link to={`/hosting-listings/edit/${v.listingID._id}`}>
-                        <img
-                          src={v.listingID.listingAssets[0]?.secure_url}
-                          alt="Image"
-                          className="h-44 w-full object-cover transition-transform hover:scale-110"
-                        />
+                        {v.listingID.listingAssets[0]?.format === "mp4" ? (
+                          <AdvancedImage
+                            className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
+                            cldImg={cld
+                              .image(v.listingID.listingAssets[0].public_id)
+                              .setAssetType("video")
+                              .format("auto:image")}
+                          />
+                        ) : v.listingID.listingAssets[0]?.format === "mp3" ? (
+                          <img
+                            className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
+                            src={
+                              "https://png.pngtree.com/png-clipart/20230303/ourmid/pngtree-vinyl-records-png-image_6629914.png"
+                            }
+                            alt="some image"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <AdvancedImage
+                            cldImg={cld.image(
+                              v.listingID.listingAssets[0].public_id,
+                            )}
+                            plugins={[
+                              lazyload(),
+                              responsive({
+                                steps: [800, 1000, 1400],
+                              }),
+                            ]}
+                            className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
+                          />
+                        )}
                       </Link>
                     </div>
                     <div className="flex flex-col gap-2">

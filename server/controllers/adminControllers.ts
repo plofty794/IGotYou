@@ -735,9 +735,10 @@ export const getServicePayments: RequestHandler = async (req, res, next) => {
         {
           path: "listingID",
           select:
-            "serviceTitle serviceType listingAssets cancellationPolicy price",
+            "serviceTitle serviceType listingAssets cancellationPolicy price bookingStartsAt bookingEndsAt",
         },
       ])
+      .sort({ createdAt: "desc" })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
@@ -784,6 +785,10 @@ export const getReservationPaymentsTransactions: RequestHandler = async (
     })
       .populate([
         {
+          path: "hostID",
+          select: "username",
+        },
+        {
           path: "guestID",
           select: "username",
         },
@@ -793,8 +798,9 @@ export const getReservationPaymentsTransactions: RequestHandler = async (
         },
       ])
       .select(
-        "fullPaymentVerificationStatus partialPaymentVerificationStatus fullPaymentAmount partialPaymentAmount paymentType partialPaymentDate fullPaymentDate fullPaymentProofPhoto"
+        "status fullPaymentVerificationStatus partialPaymentVerificationStatus fullPaymentAmount partialPaymentAmount paymentType partialPaymentDate fullPaymentDate partialPaymentProofPhoto fullPaymentProofPhoto"
       )
+      .sort({ createdAt: "desc" })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();

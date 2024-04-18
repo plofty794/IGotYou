@@ -21,13 +21,16 @@ import {
 import { useMediaQuery } from "usehooks-ts";
 import { useEffect } from "react";
 import { auth } from "@/firebase config/config";
+import { axiosPrivateRoute } from "@/api/axiosRoute";
 
 function HostingLayout() {
   const userProfileData = useGetCurrentUserProfile();
   const matches = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
-    const eventSource = new EventSource("http://localhost:5030/api/events");
+    const eventSource = new EventSource(
+      axiosPrivateRoute.getUri() + "/api/events",
+    );
 
     if (typeof EventSource != "undefined") {
       console.log("connected!");

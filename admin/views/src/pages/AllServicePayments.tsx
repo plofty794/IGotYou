@@ -8,6 +8,7 @@ import AllPaymentsTable from "@/partials/AllPaymentsTable";
 import { Link } from "react-router-dom";
 import useGetServicePayments from "@/hooks/useGetServicePayments";
 import ViewPaymentTransactions from "@/partials/ViewPaymentTransactions";
+import { formatValue } from "react-currency-input-field";
 ring.register();
 
 type TUser = {
@@ -33,6 +34,8 @@ type AllServicePayments = {
   };
   paymentAmount: number;
   fullPaymentDate: string;
+  bookingStartsAt: string;
+  bookingEndsAt: string;
 };
 
 const columns: ColumnDef<AllServicePayments>[] = [
@@ -66,7 +69,7 @@ const columns: ColumnDef<AllServicePayments>[] = [
     header: "Host",
     cell: ({ row }) => (
       <>
-        <p className="font-bold text-xs">{row.original.hostID.email}</p>
+        <p className="font-bold text-xs">{row.original.hostID.username}</p>
         {row.original.hostID.isDisabled && (
           <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
             Disabled
@@ -79,7 +82,7 @@ const columns: ColumnDef<AllServicePayments>[] = [
     header: "Guest",
     cell: ({ row }) => (
       <>
-        <p className="font-bold text-xs">{row.original.guestID.email}</p>
+        <p className="font-bold text-xs">{row.original.guestID.username}</p>
         {row.original.guestID.isDisabled && (
           <Badge className="mt-2 rounded-full text-red-600" variant={"outline"}>
             Disabled
@@ -96,9 +99,29 @@ const columns: ColumnDef<AllServicePayments>[] = [
       </p>
     ),
   },
-
   {
-    accessorKey: "Full payment date",
+    accessorKey: "bookingStartsAt",
+    header: ({ column }) => {
+      return (
+        <Button
+          className="font-medium"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Booking dates
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <p className="text-xs capitalize font-bold">
+        {new Date(row.original.bookingStartsAt).toDateString()} -{" "}
+        {new Date(row.original.bookingEndsAt).toDateString()}
+      </p>
+    ),
+  },
+  {
+    accessorKey: "fullPaymentDate",
     header: ({ column }) => {
       return (
         <Button
@@ -139,7 +162,14 @@ const columns: ColumnDef<AllServicePayments>[] = [
           variant={"outline"}
           className="font-bold capitalize text-green-600"
         >
-          {row.original.paymentAmount}
+          {formatValue({
+            value: String(row.original.paymentAmount),
+            intlConfig: {
+              locale: "ph",
+              currency: "php",
+            },
+            decimalScale: 2,
+          })}
         </Badge>
       </>
     ),

@@ -16,6 +16,14 @@ import { format } from "date-fns";
 import { formatValue } from "react-currency-input-field";
 import MessageGuest from "../../messages/MessageGuest";
 import { useMediaQuery } from "usehooks-ts";
+import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen/index";
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dop5kqpod",
+  },
+});
 
 function CurrentReservations() {
   const { data, isPending } = useGetCurrentReservations();
@@ -71,14 +79,38 @@ function CurrentReservations() {
             <CardContent className="flex w-full justify-between p-4">
               <div className="flex gap-2">
                 <div className="h-44 w-44 overflow-hidden rounded-md max-md:w-full">
-                  <img
-                    src={v.listingID.listingAssets[0]?.secure_url}
-                    alt="Image"
-                    className="h-full w-full object-cover transition-transform hover:scale-110"
-                  />
+                  {v.listingID.listingAssets[0]?.format === "mp4" ? (
+                    <AdvancedImage
+                      className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
+                      cldImg={cld
+                        .image(v.listingID.listingAssets[0].public_id)
+                        .setAssetType("video")
+                        .format("auto:image")}
+                    />
+                  ) : v.listingID.listingAssets[0]?.format === "mp3" ? (
+                    <img
+                      className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
+                      src={
+                        "https://png.pngtree.com/png-clipart/20230303/ourmid/pngtree-vinyl-records-png-image_6629914.png"
+                      }
+                      alt="some image"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <AdvancedImage
+                      cldImg={cld.image(v.listingID.listingAssets[0].public_id)}
+                      plugins={[
+                        lazyload(),
+                        responsive({
+                          steps: [800, 1000, 1400],
+                        }),
+                      ]}
+                      className="h-full w-full rounded-lg object-cover transition-transform hover:scale-105"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <span className="text-lg font-bold max-md:hidden">
+                  <span className="text-lg font-bold capitalize max-md:hidden">
                     {v.listingID.serviceTitle}
                   </span>
                   <span className="text-sm font-semibold max-md:hidden">

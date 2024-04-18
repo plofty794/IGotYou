@@ -17,6 +17,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { formatValue } from "react-currency-input-field";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -176,12 +178,26 @@ function AllPaymentsTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
-          <TableFooter className="bg-[#f5f5f5] text-black font-bold">
+          <TableFooter className="bg-slate-50 text-black font-bold border">
             <TableRow>
-              <TableCell className="pl-4" colSpan={5}>
-                Total
+              <TableCell className="pl-4 p-6" colSpan={6}>
+                <p className="text-lg">Total</p>
               </TableCell>
-              <TableCell className=" text-green-600">₱{totalAmount}</TableCell>
+              <TableCell>
+                <Badge
+                  variant={"outline"}
+                  className="text-lg text-green-600 bg-white"
+                >
+                  {formatValue({
+                    value: String(totalAmount),
+                    intlConfig: {
+                      locale: "ph",
+                      currency: "php",
+                    },
+                    decimalScale: 2,
+                  })}
+                </Badge>
+              </TableCell>
             </TableRow>
           </TableFooter>
         </Table>

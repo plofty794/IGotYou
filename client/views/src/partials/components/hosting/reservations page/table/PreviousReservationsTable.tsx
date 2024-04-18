@@ -113,7 +113,7 @@ const columns: ColumnDef<TPreviousReservations>[] = [
     ),
   },
   {
-    header: "Listing",
+    header: "Service title",
     cell: ({ row }) => (
       <p className="text-xs font-bold capitalize">
         {row.original.listingID.serviceTitle}

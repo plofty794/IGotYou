@@ -14,7 +14,7 @@ function useGetPaymentTransactions(): UseInfiniteQueryResult<
     queryKey: ["payment-transactions"],
     queryFn: async ({ pageParam = 1 }) => {
       return axiosPrivateRoute.get(
-        `/api/reservations/reservation-payments-transactions/${pageParam}`
+        `/api/reservations/reservation-payments-transactions/${pageParam}`,
       );
     },
     initialPageParam: 1,
@@ -31,14 +31,21 @@ type TPaymentTransactions = {
       fullPaymentAmount: number;
       fullPaymentDate: string;
       partialPaymentDate: string;
-      fullPaymentProofPhoto: [
-        {
-          public_id: string;
-          secure_url: string;
-          thumbnail_url: string;
-          _id: string;
-        }
-      ];
+      status: string;
+      partialPaymentProofPhoto: {
+        public_id: string;
+        secure_url: string;
+        thumbnail_url: string;
+        _id: string;
+      };
+
+      fullPaymentProofPhoto: {
+        public_id: string;
+        secure_url: string;
+        thumbnail_url: string;
+        _id: string;
+      };
+
       guestID: {
         username: string;
         _id: string;
@@ -48,7 +55,7 @@ type TPaymentTransactions = {
       };
       paymentType: string;
       _id: string;
-    }
+    },
   ];
 };
 

@@ -31,14 +31,24 @@ type TPaymentTransactions = {
       fullPaymentAmount: number;
       fullPaymentDate: string;
       partialPaymentDate: string;
-      fullPaymentProofPhoto: [
-        {
-          public_id: string;
-          secure_url: string;
-          thumbnail_url: string;
-          _id: string;
-        }
-      ];
+      status: string;
+      partialPaymentProofPhoto: {
+        public_id: string;
+        secure_url: string;
+        thumbnail_url: string;
+        _id: string;
+      };
+      fullPaymentProofPhoto: {
+        public_id: string;
+        secure_url: string;
+        thumbnail_url: string;
+        _id: string;
+      };
+
+      hostID: {
+        username: string;
+        _id: string;
+      };
       guestID: {
         username: string;
         _id: string;
