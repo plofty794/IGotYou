@@ -12,6 +12,7 @@ import {
 } from "../utils/emails/emailServiceCancellationApproval";
 import { emailRequestPayout } from "../utils/emails/emailRequestPayout";
 import { emailRejectedServicePayment } from "../utils/emails/emailRejectedServicePayment";
+import mongoose from "mongoose";
 
 export const getCurrentReservation: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
@@ -957,6 +958,7 @@ export const hostEarnings: RequestHandler = async (req, res, next) => {
           earnings: {
             $gt: 0,
           },
+          hostID: mongoose.Types.ObjectId.createFromHexString(id),
         },
       },
       {

@@ -16,6 +16,7 @@ import {
   startOfMonth,
   subDays,
 } from "date-fns";
+import Ratings from "../models/Ratings";
 
 export const getActiveUsers: RequestHandler = async (req, res, next) => {
   const admin_id = req.cookies.admin_id;
@@ -396,6 +397,11 @@ export const getReports: RequestHandler = async (req, res, next) => {
           totalRevenue: { $sum: "$earnings" },
         },
       },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
     ]);
 
     const reservationPaymentAndVerificationStatus =
@@ -492,6 +498,121 @@ export const getReports: RequestHandler = async (req, res, next) => {
       },
     ]);
 
+    const avgRatings = await Ratings.aggregate([
+      {
+        $group: {
+          _id: null,
+          avgGuestRating: { $avg: "$guestRating" },
+          avgHostRating: { $avg: "$hostRating" },
+          totalHostRatings: {
+            $sum: {
+              $cond: { if: { $gt: ["$hostRating", 0] }, then: 1, else: 0 },
+            },
+          },
+          totalGuestRatings: {
+            $sum: {
+              $cond: { if: { $gt: ["$guestRating", 0] }, then: 1, else: 0 },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          avgGuestRating: 1,
+          avgHostRating: 1,
+          totalHostRatings: 1,
+          totalGuestRatings: 1,
+        },
+      },
+    ]);
+
+    const guestRatingDistribution = await Ratings.aggregate([
+      {
+        $group: {
+          _id: "$guestRating",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    const hostRatingDistribution = await Ratings.aggregate([
+      {
+        $group: {
+          _id: "$hostRating",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    let topRatedGuests = await Ratings.aggregate([
+      {
+        $lookup: {
+          from: "Users",
+          localField: "_id",
+          foreignField: "guestID",
+          as: "guestDetails",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          guestID: "$guestID",
+          averageRating: { $avg: "$hostRating" },
+        },
+      },
+      {
+        $sort: { averageRating: -1 },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+
+    topRatedGuests = await Ratings.populate(topRatedGuests, [
+      {
+        path: "guestID",
+        select: "username photoUrl email",
+      },
+    ]);
+
+    let topRatedHosts = await Ratings.aggregate([
+      {
+        $lookup: {
+          from: "Users",
+          localField: "_id",
+          foreignField: "hostID",
+          as: "hostDetails",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          hostID: "$hostID",
+          averageRating: { $avg: "$guestRating" },
+        },
+      },
+      {
+        $sort: { averageRating: -1 },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+
+    topRatedHosts = await Ratings.populate(topRatedHosts, [
+      {
+        path: "hostID",
+        select: "username photoUrl email",
+      },
+    ]);
+
     res.status(200).json({
       reservationsRevenue,
       reservationPaymentAndVerificationStatus,
@@ -499,6 +620,29 @@ export const getReports: RequestHandler = async (req, res, next) => {
       reservationPaymentRefund,
       reservationStatusOvertime,
       reservationsPerDay,
+      avgRatings,
+      topRatedGuests: topRatedGuests
+        .filter((v) => v.averageRating != null)
+        .filter((item, index, arr) => {
+          const existingIndex = arr.findIndex(
+            (obj) => obj.guestID._id.toString() === item.guestID._id.toString()
+          );
+          return index === existingIndex;
+        }),
+      topRatedHosts: topRatedHosts
+        .filter((v) => v.averageRating != null)
+        .filter((item, index, arr) => {
+          const existingIndex = arr.findIndex(
+            (obj) => obj.hostID._id.toString() === item.hostID._id.toString()
+          );
+          return index === existingIndex;
+        }),
+      guestRatingDistribution: guestRatingDistribution.filter(
+        (v) => v._id != null
+      ),
+      hostRatingDistribution: hostRatingDistribution.filter(
+        (v) => v._id != null
+      ),
     });
   } catch (error) {
     next(error);

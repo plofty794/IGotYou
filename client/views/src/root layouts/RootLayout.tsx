@@ -15,7 +15,7 @@ function RootLayout() {
   return (
     <>
       {auth.currentUser ? (
-        <main className="min-h-screen">
+        <main className="min-h-[100dvh]">
           <nav className="sticky top-0 z-20 flex items-center justify-between bg-white px-20 py-5 shadow-md max-md:px-12 max-sm:justify-center max-sm:px-8">
             <Link to={"/"}>
               <span className="h-full w-full max-sm:hidden">

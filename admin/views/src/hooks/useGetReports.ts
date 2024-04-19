@@ -12,10 +12,52 @@ function useGetReports() {
 
 type TReports = {
   data: {
+    avgRatings: [
+      {
+        avgGuestRating: number;
+        avgHostRating: number;
+        totalGuestRatings: number;
+        totalHostRatings: number;
+      }
+    ];
     reservationCompletionAndCancellation: [
       {
         completionConfirmationRate: number;
         cancellationRate: number;
+      }
+    ];
+    guestRatingDistribution: [
+      {
+        count: number;
+        _id: number;
+      }
+    ];
+    hostRatingDistribution: [
+      {
+        count: number;
+        _id: number;
+      }
+    ];
+    topRatedGuests: [
+      {
+        averageRating: number;
+        guestID: {
+          username: string;
+          photoUrl: string;
+          email: string;
+          _id: string;
+        };
+      }
+    ];
+    topRatedHosts: [
+      {
+        averageRating: number;
+        hostID: {
+          username: string;
+          photoUrl: string;
+          email: string;
+          _id: string;
+        };
       }
     ];
     reservationPaymentAndVerificationStatus: [

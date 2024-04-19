@@ -96,7 +96,7 @@ function ReservationDetails() {
                 <Card className="flex w-full items-center justify-between max-lg:flex-col-reverse max-lg:p-2">
                   <div>
                     <CardHeader className="px-6 py-4 max-lg:p-4">
-                      <CardTitle className="text-center text-xl font-bold">
+                      <CardTitle className="text-xl font-bold max-lg:text-center">
                         Guest information
                       </CardTitle>
                     </CardHeader>
@@ -155,7 +155,7 @@ function ReservationDetails() {
                 <Card className="flex w-full items-center justify-between max-lg:flex-col-reverse max-lg:p-2">
                   <div>
                     <CardHeader className="px-6 py-4 max-lg:p-4">
-                      <CardTitle className="text-center text-xl font-bold">
+                      <CardTitle className="text-xl font-bold max-lg:text-center">
                         Host information
                       </CardTitle>
                     </CardHeader>

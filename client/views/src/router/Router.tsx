@@ -417,7 +417,16 @@ function Router() {
               )
             }
           />
-          <Route path="create-booking/:listingID" element={<MakeABooking />} />
+          <Route
+            path="create-booking/:listingID"
+            element={
+              User ?? token ?? identifier ? (
+                <MakeABooking />
+              ) : (
+                <Navigate to={"/login"} replace />
+              )
+            }
+          />
         </Route>
 
         {/* MESSAGES Route */}
@@ -446,11 +455,23 @@ function Router() {
         {/* RESERVATION Route */}
         <Route
           path="/reservation-details/:reservationID"
-          element={<ReservationDetails />}
+          element={
+            User ?? token ?? identifier ? (
+              <ReservationDetails />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
         />
         <Route
           path="/reservation-details/:reservationID/payment-details"
-          element={<PaymentDetails />}
+          element={
+            User ?? token ?? identifier ? (
+              <PaymentDetails />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
         />
 
         {/* BOOKINGS Route */}
@@ -464,11 +485,56 @@ function Router() {
             )
           }
         >
-          <Route path="all" element={<AllBookingRequests />} />
-          <Route path="approved" element={<ApprovedBookingRequests />} />
-          <Route path="pending" element={<PendingBookingRequests />} />
-          <Route path="declined" element={<DeclinedBookingRequests />} />
-          <Route path="cancelled" element={<CancelledBookingRequests />} />
+          <Route
+            path="all"
+            element={
+              User ?? token ?? identifier ? (
+                <AllBookingRequests />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="approved"
+            element={
+              User ?? token ?? identifier ? (
+                <ApprovedBookingRequests />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="pending"
+            element={
+              User ?? token ?? identifier ? (
+                <PendingBookingRequests />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="declined"
+            element={
+              User ?? token ?? identifier ? (
+                <DeclinedBookingRequests />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="cancelled"
+            element={
+              User ?? token ?? identifier ? (
+                <CancelledBookingRequests />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
         </Route>
 
         {/* HOSTING Route */}
@@ -498,45 +564,243 @@ function Router() {
             />
             <Route
               path="upcoming-reservations"
-              element={<UpcomingReservations />}
+              element={
+                User ?? token ?? identifier ? (
+                  <UpcomingReservations />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
             />
             <Route
               path="previous-reservations"
-              element={<PreviousReservations />}
+              element={
+                User ?? token ?? identifier ? (
+                  <PreviousReservations />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
             />
           </Route>
-          <Route path="hosting-calendar" element={<HostCalendar />} />
-          <Route path="hosting-reservations" element={<Reservations />}>
-            <Route path="all" element={<AllReservationsTab />} />
-            <Route path="upcoming" element={<UpcomingReservationsTab />} />
-            <Route path="previous" element={<PreviousReservationsTab />} />
+          <Route
+            path="hosting-calendar"
+            element={
+              User ?? token ?? identifier ? (
+                <HostCalendar />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="hosting-reservations"
+            element={
+              User ?? token ?? identifier ? (
+                <Reservations />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          >
+            <Route
+              path="all"
+              element={
+                User ?? token ?? identifier ? (
+                  <AllReservationsTab />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
+            <Route
+              path="upcoming"
+              element={
+                User ?? token ?? identifier ? (
+                  <UpcomingReservationsTab />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
+            <Route
+              path="previous"
+              element={
+                User ?? token ?? identifier ? (
+                  <PreviousReservationsTab />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
           </Route>
-          <Route path="hosting-inbox" element={<Inbox />}>
-            <Route path="booking-request/:id" element={<BookingRequest />} />
+          <Route
+            path="hosting-inbox"
+            element={
+              User ?? token ?? identifier ? (
+                <Inbox />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          >
+            <Route
+              path="booking-request/:id"
+              element={
+                User ?? token ?? identifier ? (
+                  <BookingRequest />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
           </Route>
-          <Route path="hosting-listings" element={<Listings />}>
-            <Route path="edit/:listingID" element={<EditListing />} />
+          <Route
+            path="hosting-listings"
+            element={
+              User ?? token ?? identifier ? (
+                <Listings />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          >
+            <Route
+              path="edit/:listingID"
+              element={
+                User ?? token ?? identifier ? (
+                  <EditListing />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
           </Route>
-          <Route path="hosting" element={<Hosting />} />
-          <Route path="hosting-subscription" element={<Subscription />} />
-          <Route path="hosting-reviews/:userID" element={<HostReviewsLayout />}>
-            <Route path="host" element={<HostReviews />} />
-            <Route path="guest" element={<GuestReviews />} />
+          <Route
+            path="hosting"
+            element={
+              User ?? token ?? identifier ? (
+                <Hosting />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="hosting-subscription"
+            element={
+              User ?? token ?? identifier ? (
+                <Subscription />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="hosting-reviews/:userID"
+            element={
+              User ?? token ?? identifier ? (
+                <HostReviewsLayout />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          >
+            <Route
+              path="host"
+              element={
+                User ?? token ?? identifier ? (
+                  <HostReviews />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
+            <Route
+              path="guest"
+              element={
+                User ?? token ?? identifier ? (
+                  <GuestReviews />
+                ) : (
+                  <Navigate replace to={"/login"} />
+                )
+              }
+            />
           </Route>
-          <Route path="hosting-earnings" element={<HostEarnings />} />
+          <Route
+            path="hosting-earnings"
+            element={
+              User ?? token ?? identifier ? (
+                <HostEarnings />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
         </Route>
 
         {/* MAKE SUBSCRIPTION PAYMENT Routes */}
-        <Route path="/subscription/:id" element={<SubscriptionLayout />}>
-          <Route path="welcome" element={<SubscriptionWelcome />} />
-          <Route path="send-payment" element={<SubscriptionPayment />} />
-          <Route path="confirm-payment" element={<ConfirmPayment />} />
-          <Route path="payment-success" element={<PaymentSuccessful />} />
+        <Route
+          path="/subscription/:id"
+          element={
+            User ?? token ?? identifier ? (
+              <SubscriptionLayout />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
+        >
+          <Route
+            path="welcome"
+            element={
+              User ?? token ?? identifier ? (
+                <SubscriptionWelcome />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="send-payment"
+            element={
+              User ?? token ?? identifier ? (
+                <SubscriptionPayment />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="confirm-payment"
+            element={
+              User ?? token ?? identifier ? (
+                <ConfirmPayment />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
+          <Route
+            path="payment-success"
+            element={
+              User ?? token ?? identifier ? (
+                <PaymentSuccessful />
+              ) : (
+                <Navigate replace to={"/login"} />
+              )
+            }
+          />
         </Route>
 
         <Route
           path="/subscription/:id/expired"
-          element={<SubscriptionExpired />}
+          element={
+            User ?? token ?? identifier ? (
+              <SubscriptionExpired />
+            ) : (
+              <Navigate replace to={"/login"} />
+            )
+          }
         />
 
         {/* LOGIN & PASSWORD RESET & 404 Routes */}

@@ -40,7 +40,7 @@ function ShowMoreReviews() {
             <TabsList className="gap-2 bg-white">
               <TabsTrigger value="guests">From guests</TabsTrigger>
               <Separator orientation="vertical" />
-              <TabsTrigger value="hosts">From Hosts</TabsTrigger>
+              <TabsTrigger value="hosts">From hosts</TabsTrigger>
             </TabsList>
             <TabsContent className="w-full" value="guests">
               <ReviewsFromGuest />

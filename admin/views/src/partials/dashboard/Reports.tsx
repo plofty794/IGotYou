@@ -7,6 +7,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Rectangle,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,6 +15,9 @@ import {
 } from "recharts";
 import { ComposedChart, Line, Bar } from "recharts";
 import { BarChart, Legend } from "recharts";
+import { Separator } from "@/components/ui/separator";
+import { formatValue } from "react-currency-input-field";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Reports() {
   const { isPending, data } = useGetReports();
@@ -261,6 +265,7 @@ function Reports() {
                   <BarChart
                     data={data?.data.reservationPaymentAndVerificationStatus}
                   >
+                    <XAxis dataKey={"count"} />
                     <CartesianGrid strokeDasharray="3 3" />
                     <YAxis />
                     <Tooltip />
@@ -270,6 +275,273 @@ function Reports() {
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
+            </Card>
+            <Card className="mt-10 p-8">
+              <div className="w-full flex flex-col gap-6">
+                <div className="flex gap-4">
+                  <Card className="w-2/4">
+                    <CardHeader className="flex-row items-center justify-between">
+                      <CardTitle>Total Ratings</CardTitle>
+                      <p className="font-semibold text-2xl">
+                        {formatValue({
+                          value: String(
+                            (data?.data.avgRatings[0].totalGuestRatings ?? 0) +
+                              (data?.data.avgRatings[0].totalHostRatings ?? 0)
+                          ),
+                        })}
+                      </p>
+                    </CardHeader>
+                    <Separator />
+                    <CardHeader className="flex-row items-center justify-between">
+                      <CardTitle>Average Ratings</CardTitle>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
+                        />
+                      </svg>
+                    </CardHeader>
+                    <CardContent className="mt-2 flex flex-col gap-6">
+                      <div className="flex flex-col gap-4">
+                        <CardTitle>For Hosts</CardTitle>
+                        <div className="flex items-center justify-center">
+                          <p className="text-4xl font-bold">
+                            {data?.data.avgRatings[0].avgHostRating}
+                          </p>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="#FCBF02"
+                            className="h-5 w-5"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-4">
+                        <CardTitle>For Guests</CardTitle>
+                        <div className="flex items-center justify-center">
+                          <p className="text-4xl font-bold">
+                            {data?.data.avgRatings[0].avgGuestRating.toFixed(2)}
+                          </p>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="#FCBF02"
+                            className="h-5 w-5"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="w-full">
+                    <CardHeader className="flex-row items-center justify-between pb-8">
+                      <CardTitle>Rating Distributions</CardTitle>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
+                        />
+                      </svg>
+                    </CardHeader>
+                    <Separator />
+                    <div className="flex items-center justify-between px-14 py-4">
+                      <h1 className="text-lg font-semibold">Guest</h1>
+                      <h1 className="text-lg font-semibold">Host</h1>
+                    </div>
+                    <CardContent className="h-52 flex p-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data?.data.guestRatingDistribution}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="_id" />
+                          <YAxis />
+                          <Tooltip />
+                          <Bar
+                            dataKey="count"
+                            fill="#82ca9d"
+                            activeBar={
+                              <Rectangle fill="gold" stroke="purple" />
+                            }
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data?.data.hostRatingDistribution}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="_id" />
+                          <YAxis />
+                          <Tooltip />
+                          <Bar
+                            dataKey="count"
+                            fill="#82ca9d"
+                            activeBar={
+                              <Rectangle fill="gold" stroke="purple" />
+                            }
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="flex gap-8">
+                  <Card className="w-full">
+                    <CardHeader className="flex-row items-center justify-between">
+                      <CardTitle>Top rated Guests</CardTitle>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0"
+                        />
+                      </svg>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="flex flex-col gap-2">
+                        {data?.data.topRatedGuests &&
+                        data.data.topRatedGuests.length > 0 ? (
+                          data?.data.topRatedGuests.map((v) => (
+                            <CardContent className="w-full flex justify-between items-center">
+                              <div className="flex items-center justify-center gap-4">
+                                <Avatar>
+                                  <AvatarImage src={v.guestID.photoUrl} />
+                                  <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                  <p className="text-sm font-bold">
+                                    {v.guestID.username}
+                                  </p>
+                                  <p className="text-sm font-semibold text-gray-600">
+                                    {v.guestID.email}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-center gap-1">
+                                <p className="font-bold text-lg">
+                                  {v.averageRating.toFixed(2)}
+                                </p>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="#FCBF02"
+                                  className="h-5 w-5"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </CardContent>
+                          ))
+                        ) : (
+                          <p className="mt-10 text-center text-base font-bold text-gray-600">
+                            No users to show
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="w-full">
+                    <CardHeader className="flex-row items-center justify-between">
+                      <CardTitle>Top Rated Hosts</CardTitle>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0"
+                        />
+                      </svg>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="flex flex-col gap-2">
+                        {data?.data.topRatedHosts &&
+                        data.data.topRatedHosts.length > 0 ? (
+                          data?.data.topRatedHosts.map((v) => (
+                            <CardContent className="w-full flex justify-between items-center">
+                              <div className="flex items-center justify-center gap-4">
+                                <Avatar>
+                                  <AvatarImage src={v.hostID.photoUrl} />
+                                  <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                  <p className="text-sm font-bold">
+                                    {v.hostID.username}
+                                  </p>
+                                  <p className="text-sm font-semibold text-gray-600">
+                                    {v.hostID.email}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-center gap-1">
+                                <p className="font-bold text-lg">
+                                  {v.averageRating.toFixed(2)}
+                                </p>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="#FCBF02"
+                                  className="h-5 w-5"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </CardContent>
+                          ))
+                        ) : (
+                          <p className="mt-10 text-center text-base font-bold text-gray-600">
+                            No users to show
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </Card>
           </div>
         </>

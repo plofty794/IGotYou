@@ -91,7 +91,7 @@ export const getHostListings: RequestHandler = async (req, res, next) => {
 
 export const getListings: RequestHandler = async (req, res, next) => {
   const id = req.cookies["_&!d"];
-  const limit = 4;
+  const limit = 12;
   const { minPrice, maxPrice, serviceType } = req.query;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   try {
@@ -200,7 +200,7 @@ export const getListingsPerCategory: RequestHandler = async (
   next
 ) => {
   const id = req.cookies["_&!d"];
-  const limit = 4;
+  const limit = 12;
   const page = parseInt(req.params.page ?? "1") ?? 1;
   const category = req.params.category;
 
