@@ -94,9 +94,8 @@ function CollapsibleEmail({ data }: TCollapsibleData) {
           duration: 2000,
         },
       );
-      setTimeout(async () => {
-        await logOut();
-        window.location.reload();
+      setTimeout(() => {
+        logOut.mutate();
       }, 3000);
     } catch (err) {
       const error = err as FirebaseError;
@@ -119,7 +118,7 @@ function CollapsibleEmail({ data }: TCollapsibleData) {
           ),
           action: {
             label: "Log out",
-            onClick: async () => await logOut(),
+            onClick: () => logOut.mutate(),
           },
           actionButtonStyle: {
             backgroundColor: "white",

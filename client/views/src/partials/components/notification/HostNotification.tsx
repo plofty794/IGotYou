@@ -162,9 +162,9 @@ function HostNotification() {
                 <Separator />
                 <ScrollArea className="h-60">
                   <div className="flex flex-col items-center">
-                    {notifications?.map((v) => (
+                    {notifications?.map((v, i) => (
                       <>
-                        <DropdownMenuItem className="w-full p-0">
+                        <DropdownMenuItem key={v._id} className="w-full p-0">
                           <Link
                             onClick={() =>
                               readHostBookingRequestNotification(v._id)
@@ -198,7 +198,7 @@ function HostNotification() {
                             </div>
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator key={i} />
                       </>
                     ))}
                   </div>

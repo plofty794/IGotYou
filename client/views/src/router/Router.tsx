@@ -96,7 +96,7 @@ import HostReviews from "@/pages/HostReviews";
 import GuestReviews from "@/pages/GuestReviews";
 
 function Router() {
-  const logOut = useLogOutUser();
+  const { mutate } = useLogOutUser();
   const [User, setUser] = useState<User | null>();
   const { socket } = useContext(SocketContextProvider);
   const identifier = localStorage.getItem("token");
@@ -105,7 +105,7 @@ function Router() {
   } = useContext(UserStateContextProvider);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (
         !user &&
         !window.location.pathname.includes("get-started") &&
@@ -115,8 +115,7 @@ function Router() {
         if (window.location.pathname == "/login") {
           return setUser(null);
         } else {
-          await logOut();
-          window.location.href = "/login";
+          mutate();
           return setUser(null);
         }
       } else {
@@ -127,7 +126,7 @@ function Router() {
         });
       }
     });
-  }, [logOut, socket]);
+  }, [mutate, socket]);
 
   const router = createBrowserRouter(
     createRoutesFromElements(

@@ -20,7 +20,7 @@ export function UserDropDownButton() {
   const { socket } = useContext(SocketContextProvider);
   const { data } = useGetGuestNotifications();
   const User = auth.currentUser;
-  const logOutUser = useLogOutUser();
+  const { mutate } = useLogOutUser();
 
   useEffect(() => {
     socket?.on("receive-message", (conversationID) => {
@@ -177,10 +177,7 @@ export function UserDropDownButton() {
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-[#e1e0e0]" />
         <DropdownMenuItem className="p-4 font-semibold text-gray-600">
-          <span
-            className="w-full cursor-pointer"
-            onClick={async () => await logOutUser()}
-          >
+          <span className="w-full cursor-pointer" onClick={() => mutate()}>
             Log out
           </span>
         </DropdownMenuItem>
