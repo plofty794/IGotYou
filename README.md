@@ -1,6 +1,6 @@
 # IGotYou: Multimedia Booking Management System
 
-## Capstone Project
+## A Capstone Project presented to Laguna University
 
 The aim of this study was to develop IGotYou: Multimedia Booking Management System, a multimedia booking system that enables the multimedia artists of the residents of Sta. Cruz, Laguna to display their works and services to the guests and make it easy and reliable for the guests to make a booking. 
 
