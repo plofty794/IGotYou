@@ -10,7 +10,7 @@ This project is used by the following:
 - Hosts are also the users of this website. However, they have the authority to book and to be booked. They are the multimedia personalities that the Users’ seek.
 
 ## 🛠 Technologies used
-Built using MERN with Typescript, Firebase Auth, Socket.io and Cloudinary for asset management and storage.
+[![My Skills](https://skillicons.dev/icons?i=mongodb,express,react,nodejs,ts,firebase&perline=4)](https://skillicons.dev)
 
 ## Features
 
@@ -18,5 +18,3 @@ Built using MERN with Typescript, Firebase Auth, Socket.io and Cloudinary for as
 - Manage/book listings according to available dates 
 - Rating system
 - Mobile phone verification with OTP, identity verification and email verification
-
-[![My Skills](https://skillicons.dev/icons?i=aws,gcp,azure,react,vue,flutter&perline=3)](https://skillicons.dev)
