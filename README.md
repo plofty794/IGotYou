@@ -16,7 +16,7 @@ This project is used by the following:
 &nbsp;
 <img height="50" src="https://tanstack.com/_build/assets/logo-color-100w-lPbOTx1K.png">
 &nbsp;
-<img height="50" src="[https://tanstack.com/_build/assets/logo-color-100w-lPbOTx1K.png](https://res-s.cloudinary.com/prod/image/upload/d_console:cld_new_default_cloud_logo_regular_padding.svg/w_32,h_32,c_fill,dpr_2.0/console/customer-logos/ac317985188f9d1e8b6e04553b0f13d2)">
+<img height="50" src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*lyR05OVIQAA5i5K--t44gA.png">
 
 
 ## Features
