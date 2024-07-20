@@ -10,7 +10,7 @@ This project is used by the following:
 - Hosts are also the users of this website. However, they have the authority to book and to be booked. They are the multimedia personalities that the Users’ seek.
 
 ## 🛠 Technologies used
-[![Technologies](https://skillicons.dev/icons?i=mongodb,express,react,nodejs,ts,firebase,tailwind&perline=)](https://skillicons.dev)<img height="50" src="https://user-images.githubusercontent.com/25181517/187070862-03888f18-2e63-4332-95fb-3ba4f2708e59.png">
+[![Technologies](https://skillicons.dev/icons?i=mongodb,express,react,nodejs,ts,firebase,tailwind&perline=)](https://skillicons.dev)<img height="50" src="https://socket.io/images/logo-dark.svg">
 <img height="50" src="https://tanstack.com/_build/assets/logo-color-100w-lPbOTx1K.png">
 
 ## Features
