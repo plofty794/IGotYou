@@ -10,7 +10,7 @@ This project is used by the following:
 - Hosts are also the users of this website. However, they have the authority to book and to be booked. They are the multimedia personalities that the Users’ seek.
 
 ## 🛠 Technologies used
-Built using MERN, Firebase Auth, Socket.io and Cloudinary for asset management and storage.
+Built using MERN with Typescript, Firebase Auth, Socket.io and Cloudinary for asset management and storage.
 
 ## Features
 
