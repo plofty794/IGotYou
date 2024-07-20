@@ -19,3 +19,4 @@ Built using MERN with Typescript, Firebase Auth, Socket.io and Cloudinary for as
 - Rating system
 - Mobile phone verification with OTP, identity verification and email verification
 
+[![My Skills](https://skillicons.dev/icons?i=aws,gcp,azure,react,vue,flutter&perline=3)](https://skillicons.dev)
